@@ -15,6 +15,8 @@ gen/
 # Local configuration file (sdk path, etc)
 local.properties
 
-# Eclipse project files
-.classpath
-.project
+# I think we want these files:
+# http://wiki.eclipse.org/FAQ_How_do_I_set_up_a_Java_project_to_share_in_a_repository%3F
+# # Eclipse project files
+# .classpath
+# .project
