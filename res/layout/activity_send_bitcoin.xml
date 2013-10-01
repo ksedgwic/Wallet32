@@ -1,18 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="horizontal" >
 
-    <Button
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="@string/button_send" />
+  <EditText
+      android:id="@+id/bitcoin_amount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minWidth="60dp"
+      android:maxWidth="120dp"
+      android:gravity="right"
+      android:hint="@string/bitcoin_amount_hint" />
 
-    <Button
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="@string/button_receive" />
+  <TextView
+      android:id="@+id/btc_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/btc_label" />
+
+  <TextView
+      android:id="@+id/eq_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="6dp"
+      android:layout_marginRight="6dp"
+      android:text="@string/eq_label" />
+
+  <EditText
+      android:id="@+id/fiat_amount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minWidth="45dp"
+      android:maxWidth="120dp"
+      android:gravity="right"
+      android:hint="@string/fiat_amount_hint" />
+
+  <TextView
+      android:id="@+id/fiat_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/fiat_label" />
 
 </LinearLayout>
