@@ -2,7 +2,9 @@
 <resources>
 
     <string name="app_name">Android Electrum</string>
+    <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="button_send">Send Bitcoin</string>
+    <string name="button_receive">Receive Bitcoin</string>
 
 </resources>

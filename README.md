@@ -1,7 +1,7 @@
 AndroidElectrum
 ===============
 
-# Setup
+### Setup in Eclipse
 
     git clone git@github.com:ksedgwic/AndroidElectrum.git
 
