@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="button_send">Send Bitcoin</string>
     <string name="button_receive">Receive Bitcoin</string>
+    <string name="title_activity_send_bitcoin">Send Bitcoin</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

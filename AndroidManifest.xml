@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.bonsai.androidelectrum.SendBitcoinActivity"
+            android:label="@string/title_activity_send_bitcoin"
+            android:parentActivityName="com.bonsai.androidelectrum.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bonsai.androidelectrum.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
