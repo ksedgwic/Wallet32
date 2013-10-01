@@ -3,17 +3,34 @@ package com.bonsai.androidelectrum;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class SendBitcoinActivity extends ActionBarActivity {
+
+    protected EditText mBTCAmountEditText;
+    protected EditText mFiatAmountEditText;
+
+    protected double mFiatPerBTC;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_bitcoin);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mFiatPerBTC = 127.30;
+
+        mBTCAmountEditText = (EditText) findViewById(R.id.bitcoin_amount);
+        mFiatAmountEditText = (EditText) findViewById(R.id.fiat_amount);
+
+        mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
+        mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
     }
 
     @Override
@@ -33,4 +50,73 @@ public class SendBitcoinActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+    private final TextWatcher mBTCAmountWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence ss,
+                                          int start,
+                                          int count,
+                                          int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence ss,
+                                      int start,
+                                      int before,
+                                      int count) {}
+
+            @Override
+            public void afterTextChanged(Editable ss) {
+                // Avoid recursion by removing the other fields listener.
+                mFiatAmountEditText.removeTextChangedListener
+                    (mFiatAmountWatcher);
+
+                String ffs;
+                try {
+                    double bb = Double.parseDouble(ss.toString());
+                    double ff = bb * mFiatPerBTC;
+                    ffs = String.format("%.2f", ff);
+                } catch (final NumberFormatException ex) {
+                    ffs = "";
+                }
+                mFiatAmountEditText.setText(ffs, TextView.BufferType.EDITABLE);
+
+                // Restore the other fields listener.
+                mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
+            }
+
+        };
+
+    private final TextWatcher mFiatAmountWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence ss,
+                                          int start,
+                                          int count,
+                                          int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence ss,
+                                      int start,
+                                      int before,
+                                      int count) {}
+
+            @Override
+            public void afterTextChanged(Editable ss) {
+                // Avoid recursion by removing the other fields listener.
+                mBTCAmountEditText.removeTextChangedListener
+                    (mBTCAmountWatcher);
+
+                String bbs;
+                try {
+                    double ff = Double.parseDouble(ss.toString());
+                    double bb = ff / mFiatPerBTC;
+                    bbs = String.format("%.4f", bb);
+                } catch (final NumberFormatException ex) {
+                    bbs = "";
+                }
+                mBTCAmountEditText.setText(bbs, TextView.BufferType.EDITABLE);
+
+                // Restore the other fields listener.
+                mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
+            }
+        };
 }
