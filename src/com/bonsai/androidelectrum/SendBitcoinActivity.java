@@ -2,7 +2,6 @@ package com.bonsai.androidelectrum;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -20,10 +19,6 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
     protected double mFiatPerBTC;
 
-    protected int mRateUpdateInterval = 5000;
-
-    protected Handler mRateUpdateHandler;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +32,6 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
-
-        mRateUpdateHandler = new Handler();
-        startRateUpdate();
     }
 
     @Override
@@ -136,24 +128,4 @@ public class SendBitcoinActivity extends ActionBarActivity {
                 mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
             }
         };
-
-    Runnable mRateUpdater = new Runnable() {
-            @Override 
-            public void run() {
-                updateRate();
-                mRateUpdateHandler.postDelayed(mRateUpdater, mRateUpdateInterval);
-            }
-        };
-
-    protected void startRateUpdate() {
-        mRateUpdater.run(); 
-    }
-
-    protected void stopRateUpdate() {
-        mRateUpdateHandler.removeCallbacks(mRateUpdater);
-    }
-
-    protected void updateRate() {
-        
-    }
 }
