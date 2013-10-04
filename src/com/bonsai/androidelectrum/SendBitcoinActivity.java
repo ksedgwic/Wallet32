@@ -1,6 +1,8 @@
 package com.bonsai.androidelectrum;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -18,19 +20,26 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
     protected double mFiatPerBTC;
 
+    protected int mRateUpdateInterval = 5000;
+
+    protected Handler mRateUpdateHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_bitcoin);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mFiatPerBTC = 127.30;
+        mFiatPerBTC = 0.0;
 
         mBTCAmountEditText = (EditText) findViewById(R.id.bitcoin_amount);
         mFiatAmountEditText = (EditText) findViewById(R.id.fiat_amount);
 
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
+
+        mRateUpdateHandler = new Handler();
+        startRateUpdate();
     }
 
     @Override
@@ -64,7 +73,8 @@ public class SendBitcoinActivity extends ActionBarActivity {
                                       int before,
                                       int count) {}
 
-            @Override
+            @SuppressLint("DefaultLocale")
+			@Override
             public void afterTextChanged(Editable ss) {
                 // Avoid recursion by removing the other fields listener.
                 mFiatAmountEditText.removeTextChangedListener
@@ -99,7 +109,8 @@ public class SendBitcoinActivity extends ActionBarActivity {
                                       int before,
                                       int count) {}
 
-            @Override
+            @SuppressLint("DefaultLocale")
+			@Override
             public void afterTextChanged(Editable ss) {
                 // Avoid recursion by removing the other fields listener.
                 mBTCAmountEditText.removeTextChangedListener
@@ -108,8 +119,14 @@ public class SendBitcoinActivity extends ActionBarActivity {
                 String bbs;
                 try {
                     double ff = Double.parseDouble(ss.toString());
-                    double bb = ff / mFiatPerBTC;
-                    bbs = String.format("%.4f", bb);
+                    double bb;
+                    if (mFiatPerBTC == 0.0) {
+                        bbs = "";
+                    }
+                    else {
+                        bb = ff / mFiatPerBTC;
+                        bbs = String.format("%.4f", bb);
+                    }
                 } catch (final NumberFormatException ex) {
                     bbs = "";
                 }
@@ -119,4 +136,24 @@ public class SendBitcoinActivity extends ActionBarActivity {
                 mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
             }
         };
+
+    Runnable mRateUpdater = new Runnable() {
+            @Override 
+            public void run() {
+                updateRate();
+                mRateUpdateHandler.postDelayed(mRateUpdater, mRateUpdateInterval);
+            }
+        };
+
+    protected void startRateUpdate() {
+        mRateUpdater.run(); 
+    }
+
+    protected void stopRateUpdate() {
+        mRateUpdateHandler.removeCallbacks(mRateUpdater);
+    }
+
+    protected void updateRate() {
+        
+    }
 }
