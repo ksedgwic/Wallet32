@@ -16,6 +16,12 @@
         android:label="@string/app_name"
 	android:theme="@style/Theme.AppCompat.Light" >
 
+        <service
+            android:name=".WalletService"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name" >
+        </service>
+
         <activity
             android:name="com.bonsai.androidelectrum.MainActivity"
             android:label="@string/app_name" >
