@@ -7,14 +7,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MainActivity extends ActionBarActivity {
 
+    protected Logger mLogger;
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+    {
+        mLogger = LoggerFactory.getLogger(MainActivity.class);
+
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_main);
 
-        startService(new Intent(this, WalletService.class));
+        mLogger.info("MainActivity created");
 	}
 
 	@Override
