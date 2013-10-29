@@ -10,6 +10,7 @@ import android.os.IBinder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DumpedPrivateKey;
@@ -42,6 +43,9 @@ public class WalletService extends Service
             Context context = getApplicationContext();
 
             mLogger.info("creating new wallet app kit");
+
+            byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
+            HDWallet hdwallet = new HDWallet(mParams, seed);
 
             mKit =
                 new WalletAppKit(mParams, context.getFilesDir(), filePrefix)
