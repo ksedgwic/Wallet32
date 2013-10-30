@@ -17,6 +17,7 @@ import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet.BalanceType;
+import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
@@ -69,6 +70,11 @@ public class WalletService extends Service
 
             mLogger.info("avail balance = " + bal0.toString());
             mLogger.info("estim balance = " + bal1.toString());
+
+            // Compute balances and transaction counts.
+            Iterable<WalletTransaction> iwt =
+                mKit.wallet().getWalletTransactions();
+            hdwallet.applyAllTransactions(iwt);
 
             // FIXME - Need to add Progress and Result.
 			return null;

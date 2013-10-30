@@ -1,13 +1,12 @@
 package com.bonsai.androidelectrum;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -21,7 +20,7 @@ public class HDChain {
     private boolean				mIsReceive;
     private String				mChainName;
 
-    private ArrayList<DeterministicKey>		mAddrs;
+    private ArrayList<HDAddress>	mAddrs;
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
@@ -32,33 +31,50 @@ public class HDChain {
         mLogger = LoggerFactory.getLogger(HDChain.class);
 
         mParams = params;
-        int chainnum = isReceive ? 0 : 1;
-        mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
         mIsReceive = isReceive;
+        int chainnum = mIsReceive ? 0 : 1;
+        mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
         mChainName = chainName;
 
         mLogger.info("created HDChain " + mChainName + ": " +
                      mChainKey.getPath());
-
-        mAddrs = new ArrayList<DeterministicKey>();
-        for (int ii = 0; ii < numAddrs; ++ii) {
-            DeterministicKey dk = HDKeyDerivation.deriveChildKey(mChainKey, ii);
-            logAddress(dk);
-            mAddrs.add(dk);
-        }
+        
+        mAddrs = new ArrayList<HDAddress>();
+        for (int ii = 0; ii < numAddrs; ++ii)
+            mAddrs.add(new HDAddress(mParams, mChainKey, ii));
     }
 
     public void addAllKeys(Wallet wallet) {
-        for (DeterministicKey dk : mAddrs) {
-            ECKey key = dk.toECKey();
-            wallet.addKey(key);
-        }
+        for (HDAddress hda : mAddrs)
+            hda.addKey(wallet);
     }
 
-    private void logAddress(DeterministicKey dk) {
-        ECKey key = dk.toECKey();
-        mLogger.info("created address " + dk.getPath() + ": " +
-                     key.toAddress(mParams).toString() + " " +
-                     key.getPrivateKeyEncoded(mParams).toString());
+    public void applyOutput(byte[] pubkey,
+                            byte[] pubkeyhash,
+                            BigInteger value) {
+        for (HDAddress hda: mAddrs)
+            hda.applyOutput(pubkey, pubkeyhash, value);
+    }
+
+    public void applyInput(byte[] pubkey, BigInteger value) {
+        for (HDAddress hda: mAddrs)
+            hda.applyInput(pubkey, value);
+    }
+
+    public void clearBalance() {
+        for (HDAddress hda: mAddrs)
+            hda.clearBalance();
+    }
+
+    public BigInteger balance() {
+        BigInteger balance = BigInteger.ZERO;
+        for (HDAddress hda: mAddrs)
+            balance = balance.add(hda.balance());
+        return balance;
+    }
+
+    public void logBalance() {
+        for (HDAddress hda: mAddrs)
+            hda.logBalance();
     }
 }
