@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -42,6 +44,7 @@ public class HDChain {
         for (int ii = 0; ii < numAddrs; ++ii)
         {
             DeterministicKey dk = HDKeyDerivation.deriveChildKey(mChainKey, ii);
+
             mLogger.info("created address " + dk.getPath() + ": " +
                          dk.toECKey().toAddress(params).toString());
             mAddrs.add(dk);
@@ -49,7 +52,14 @@ public class HDChain {
     }
 
     public void addAllKeys(Wallet wallet) {
-        for (DeterministicKey dk : mAddrs)
-            wallet.addKey(dk.toECKey());
+        for (DeterministicKey dk : mAddrs) {
+            ECKey key = dk.toECKey();
+            // Set the key's creation time to now.  If the key already
+            // exists in the wallet then this key will be ignored and the
+            // earlier time will still stand.
+            //
+            key.setCreationTimeSeconds(Utils.now().getTime() / 1000);
+            wallet.addKey(key);
+        }
     }
 }
