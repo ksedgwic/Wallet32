@@ -44,33 +44,16 @@ public class WalletService extends Service
 
             mLogger.info("creating new wallet app kit");
 
-            byte[] seed = Hex.decode("000102030405060708090a0b0c0d0e0f");
-            HDWallet hdwallet = new HDWallet(mParams, seed);
+            byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
+            final HDWallet hdwallet = new HDWallet(mParams, seed);
 
             mKit =
                 new WalletAppKit(mParams, context.getFilesDir(), filePrefix)
                 {
                     @Override
                     protected void onSetupCompleted() {
-                        
-                        DumpedPrivateKey dpk;
-						try {
-				            mLogger.info("adding keys");
-
-                            // w32_test0
-							dpk = new DumpedPrivateKey(mParams,
-                                                       "xxx");
-	                        wallet().addKey(dpk.getKey());
-                            // w32_test1
-							dpk = new DumpedPrivateKey(mParams,
-                                                       "yyy");
-	                        wallet().addKey(dpk.getKey());
-
-						} catch (AddressFormatException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-                        
+                        mLogger.info("adding keys");
+                        hdwallet.addAllKeys(wallet());
                     }
                 };
 
