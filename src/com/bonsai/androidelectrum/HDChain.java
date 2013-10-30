@@ -41,12 +41,9 @@ public class HDChain {
                      mChainKey.getPath());
 
         mAddrs = new ArrayList<DeterministicKey>();
-        for (int ii = 0; ii < numAddrs; ++ii)
-        {
+        for (int ii = 0; ii < numAddrs; ++ii) {
             DeterministicKey dk = HDKeyDerivation.deriveChildKey(mChainKey, ii);
-
-            mLogger.info("created address " + dk.getPath() + ": " +
-                         dk.toECKey().toAddress(params).toString());
+            logAddress(dk);
             mAddrs.add(dk);
         }
     }
@@ -54,12 +51,14 @@ public class HDChain {
     public void addAllKeys(Wallet wallet) {
         for (DeterministicKey dk : mAddrs) {
             ECKey key = dk.toECKey();
-            // Set the key's creation time to now.  If the key already
-            // exists in the wallet then this key will be ignored and the
-            // earlier time will still stand.
-            //
-            key.setCreationTimeSeconds(Utils.now().getTime() / 1000);
             wallet.addKey(key);
         }
+    }
+
+    private void logAddress(DeterministicKey dk) {
+        ECKey key = dk.toECKey();
+        mLogger.info("created address " + dk.getPath() + ": " +
+                     key.toAddress(mParams).toString() + " " +
+                     key.getPrivateKeyEncoded(mParams).toString());
     }
 }
