@@ -7,12 +7,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.Wallet.SendRequest;
+import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -104,5 +107,22 @@ public class HDWallet {
         // Log balance summary.
         for (HDAccount acct : mAccounts)
             acct.logBalance();
+    }
+
+    public void sendCoins(Wallet wallet,
+                          int acctnum,
+                          Address dest,
+                          BigInteger value,
+                          BigInteger fee) {
+
+        // Which account are we using for this send?
+        HDAccount acct = mAccounts.get(acctnum);
+
+        SendRequest req = SendRequest.to(dest, value);
+        req.fee = fee;
+        req.changeAddress = acct.nextChangeAddress();
+        req.coinSelector = acct.coinSelector();
+
+        SendResult result = wallet.sendCoins(req);
     }
 }

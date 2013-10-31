@@ -12,12 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WalletTransaction;
+import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
@@ -75,6 +77,26 @@ public class WalletService extends Service
             Iterable<WalletTransaction> iwt =
                 mKit.wallet().getWalletTransactions();
             hdwallet.applyAllTransactions(iwt);
+
+            // Send a transaction.
+            if (false) {
+                try {
+                    int acctnum = 1;
+                    Address dest =
+                        new Address(mParams,
+                                    "19jh2GWRBJ5ktjyMeoe2scghwqYK3enJQH");
+                    BigInteger value = BigInteger.valueOf(100000);
+                    BigInteger fee = BigInteger.valueOf(20000);
+                    hdwallet.sendCoins(mKit.wallet(), acctnum, dest, value, fee);
+
+                } catch (WrongNetworkException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (AddressFormatException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
             // FIXME - Need to add Progress and Result.
 			return null;

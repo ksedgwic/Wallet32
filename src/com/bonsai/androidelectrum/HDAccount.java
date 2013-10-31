@@ -1,14 +1,22 @@
 package com.bonsai.androidelectrum;
 
 import java.math.BigInteger;
+import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.ScriptException;
+import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.core.Wallet.CoinSelection;
+import com.google.bitcoin.core.Wallet.CoinSelector;
+import com.google.bitcoin.core.Wallet.DefaultCoinSelector;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.script.Script;
 
 public class HDAccount {
 
@@ -74,5 +82,57 @@ public class HDAccount {
         // Now log any active addresses in this account.
         mReceiveChain.logBalance();
         mChangeChain.logBalance();
+    }
+
+    public Address nextChangeAddress() {
+        return mChangeChain.nextUnusedAddress();
+    }
+
+    public CoinSelector coinSelector() {
+        return new AccountCoinSelector();
+    }
+
+    public class AccountCoinSelector implements CoinSelector {
+
+        private DefaultCoinSelector mDefaultCoinSelector;
+
+        public AccountCoinSelector() {
+            mDefaultCoinSelector = new DefaultCoinSelector();
+        }
+
+        public CoinSelection select(BigInteger biTarget,
+                                    LinkedList<TransactionOutput> candidates) {
+            // Filter the candidates so only coins from this account
+            // are considered.  Let the Wallet.DefaultCoinSelector do
+            // all the remaining work.
+            LinkedList<TransactionOutput> filtered =
+                new LinkedList<TransactionOutput>();
+            for (TransactionOutput to : candidates) {
+				try {
+                    byte[] pubkey = null;
+                    byte[] pubkeyhash = null;
+                    Script script = to.getScriptPubKey();
+                    if (script.isSentToRawPubKey())
+                        pubkey = script.getPubKey();
+                    else
+                        pubkeyhash = script.getPubKeyHash();
+
+                    if (mReceiveChain.isInChain(pubkey, pubkeyhash))
+                        filtered.add(to);
+                    else if (mChangeChain.isInChain(pubkey, pubkeyhash))
+                        filtered.add(to);
+                    else
+                        // Not in this account ...
+                        continue;
+
+				} catch (ScriptException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+
+            // Does all the real work ...
+            return mDefaultCoinSelector.select(biTarget, filtered);
+        }
     }
 }

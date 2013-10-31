@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet;
@@ -21,6 +22,7 @@ public class HDAddress {
     private ECKey				mECKey;
     private byte[]				mPubKey;
     private byte[]				mPubKeyHash;
+    private Address				mAddress;
 
     private int				mNumTrans;
     private BigInteger		mBalance;
@@ -36,12 +38,13 @@ public class HDAddress {
         mECKey = mAddrKey.toECKey();
         mPubKey = mECKey.getPubKey();
         mPubKeyHash = mECKey.getPubKeyHash();
+        mAddress = mECKey.toAddress(mParams);
 
         mNumTrans = 0;
         mBalance = BigInteger.ZERO;
 
         mLogger.info("created address " + mAddrKey.getPath() + ": " +
-                     mECKey.toAddress(mParams).toString() + " " +
+                     mAddress.toString() + " " +
                      mECKey.getPrivateKeyEncoded(mParams).toString());
     }
 
@@ -49,17 +52,22 @@ public class HDAddress {
         wallet.addKey(mECKey);
     }
 
+    public boolean isMatch(byte[] pubkey, byte[] pubkeyhash) {
+        if (pubkey != null)
+            return Arrays.equals(pubkey, mPubKey);
+        else if (pubkeyhash != null)
+            return Arrays.equals(pubkeyhash, mPubKeyHash);
+        else
+            return false;
+    }
+
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
                             BigInteger value) {
+
         // Does this output apply to this address?
-        if (pubkey != null) {
-            if (!Arrays.equals(pubkey, mPubKey))
-                return;
-        } else if (pubkeyhash != null) {
-            if (!Arrays.equals(pubkeyhash, mPubKeyHash))
-                return;
-        }
+        if (!isMatch(pubkey, pubkeyhash))
+            return;
 
         ++mNumTrans;
         mBalance = mBalance.add(value);
@@ -95,5 +103,13 @@ public class HDAddress {
                          Integer.toString(mNumTrans) + " " +
                          mBalance.toString());
         }
+    }
+
+    public boolean isUnused() {
+        return mNumTrans == 0;
+    }
+
+    public Address getAddress() {
+        return mAddress;
     }
 }

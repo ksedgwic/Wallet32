@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -76,5 +77,21 @@ public class HDChain {
     public void logBalance() {
         for (HDAddress hda: mAddrs)
             hda.logBalance();
+    }
+
+    public Address nextUnusedAddress() {
+        for (HDAddress hda : mAddrs) {
+            if (hda.isUnused())
+                return hda.getAddress();
+        }
+        return null;	// FIXME - bogus.
+    }
+
+    public boolean isInChain(byte[] pubkey, byte[] pubkeyhash) {
+        for (HDAddress hda : mAddrs) {
+            if (hda.isMatch(pubkey, pubkeyhash))
+                return true;
+        }
+        return false;
     }
 }
