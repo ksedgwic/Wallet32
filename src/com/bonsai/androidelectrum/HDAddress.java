@@ -49,6 +49,10 @@ public class HDAddress {
     }
 
     public void addKey(Wallet wallet) {
+
+        // Set the creation time to Tue Oct 15 11:18:03 PDT 2013
+        mECKey.setCreationTimeSeconds(1381861127);
+
         wallet.addKey(mECKey);
     }
 
