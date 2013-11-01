@@ -28,9 +28,9 @@ public class WalletService extends Service
 {
     private Logger mLogger;
 
-    public WalletAppKit mKit;
-    public NetworkParameters mParams;
-    public SetupWalletTask mTask;
+    private WalletAppKit mKit;
+    private NetworkParameters mParams;
+    private SetupWalletTask mTask;
 
     private class SetupWalletTask extends AsyncTask<Void, Void, Void>
     {

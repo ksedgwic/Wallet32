@@ -13,5 +13,6 @@
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>
     <string name="eq_label">=</string>
+    <string name="network_status_unknown">Network Status Unknown</string>
 
 </resources>
