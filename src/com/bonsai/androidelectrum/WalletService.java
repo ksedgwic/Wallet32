@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,8 @@ public class WalletService extends Service
                     }
                 };
 
+            setState(State.SYNCING);
+
             mLogger.info("waiting for blockchain setup");
 
             // Download the block chain and wait until it's done.
@@ -89,6 +92,8 @@ public class WalletService extends Service
             Iterable<WalletTransaction> iwt =
                 mKit.wallet().getWalletTransactions();
             hdwallet.applyAllTransactions(iwt);
+
+            setState(State.READY);
 
             // Send a transaction.
             if (false) {
@@ -116,6 +121,7 @@ public class WalletService extends Service
     }
 
     public WalletService() {
+        mState = State.INITIALIZING;
     }
 
     @Override
@@ -172,5 +178,15 @@ public class WalletService extends Service
         WalletService getService() {
             return WalletService.this;
         }
+    }
+
+    private void setState(State newstate) {
+        mState = newstate;
+        sendStateChanged();
+    }
+
+    private void sendStateChanged() {
+        Intent intent = new Intent("wallet-state-changed");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }
