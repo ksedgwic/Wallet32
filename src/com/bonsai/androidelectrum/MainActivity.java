@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 public class MainActivity extends ActionBarActivity {
 
-    protected Logger mLogger;
+    private Logger mLogger;
+
+    private WalletService	mWalletService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

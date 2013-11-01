@@ -5,7 +5,9 @@ import java.math.BigInteger;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.IBinder;
 
 import org.slf4j.Logger;
@@ -26,11 +28,23 @@ import com.google.bitcoin.params.RegTestParams;
 
 public class WalletService extends Service
 {
+    public enum State {
+        INITIALIZING,
+        SYNCING,
+        READY,
+        ERROR
+    }
+
     private Logger mLogger;
 
-    private WalletAppKit mKit;
-    private NetworkParameters mParams;
-    private SetupWalletTask mTask;
+    private final IBinder mBinder = new WalletServiceBinder();
+
+    private State				mState;
+    private WalletAppKit		mKit;
+    private NetworkParameters	mParams;
+    private SetupWalletTask		mTask;
+    private Context				mContext;
+    private Resources			mResources;
 
     private class SetupWalletTask extends AsyncTask<Void, Void, Void>
     {
@@ -43,15 +57,13 @@ public class WalletService extends Service
 
             String filePrefix = "android-electrum";
 
-            Context context = getApplicationContext();
-
             mLogger.info("creating new wallet app kit");
 
             byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
             final HDWallet hdwallet = new HDWallet(mParams, seed);
 
             mKit =
-                new WalletAppKit(mParams, context.getFilesDir(), filePrefix)
+                new WalletAppKit(mParams, mContext.getFilesDir(), filePrefix)
                 {
                     @Override
                     protected void onSetupCompleted() {
@@ -108,8 +120,7 @@ public class WalletService extends Service
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
     }
 
     @Override
@@ -118,6 +129,9 @@ public class WalletService extends Service
         mLogger = LoggerFactory.getLogger(WalletService.class);
 
         mLogger.info("WalletService created");
+
+        mContext = getApplicationContext();
+        mResources = mContext.getResources();
     }
 
     @Override
@@ -133,5 +147,30 @@ public class WalletService extends Service
 
     @Override
     public void onDestroy() {
+    }
+
+    public State getState() {
+        return mState;
+    }
+
+    public String getStateString() {
+        switch (mState) {
+        case INITIALIZING:
+            return mResources.getString(R.string.network_status_init);
+        case SYNCING:
+            return mResources.getString(R.string.network_status_sync);
+        case READY:
+            return mResources.getString(R.string.network_status_ready);
+        case ERROR:
+            return mResources.getString(R.string.network_status_error);
+        default:
+            return mResources.getString(R.string.network_status_unknown);
+        }
+    }
+
+    public class WalletServiceBinder extends Binder {
+        WalletService getService() {
+            return WalletService.this;
+        }
     }
 }
