@@ -121,12 +121,14 @@ public class WalletService extends Service
     }
 
     @Override
-    public void onStart(Intent intent, int startId)
+    public int onStartCommand(Intent intent, int flags, int startId)
     {
         mTask = new SetupWalletTask();
         mTask.execute();
 
         mLogger.info("WalletService started");
+
+        return Service.START_STICKY;
     }
 
     @Override
