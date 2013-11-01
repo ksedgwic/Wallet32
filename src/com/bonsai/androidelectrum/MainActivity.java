@@ -41,8 +41,8 @@ public class MainActivity extends ActionBarActivity {
     };
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-    {
+	protected void onCreate(Bundle savedInstanceState) {
+
         mLogger = LoggerFactory.getLogger(MainActivity.class);
 
 		super.onCreate(savedInstanceState);

@@ -1,10 +1,21 @@
 package com.bonsai.androidelectrum;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,9 +39,32 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
     protected boolean mUserSetFiat;
 
+    private Logger mLogger;
+
+    private WalletService	mWalletService;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName className,
+                                           IBinder binder) {
+                mWalletService =
+                    ((WalletService.WalletServiceBinder) binder).getService();
+                mLogger.info("WalletService bound");
+                updateWalletStatus();
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mWalletService = null;
+                mLogger.info("WalletService unbound");
+            }
+
+    };
+
     @SuppressLint("HandlerLeak")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
+
+        mLogger = LoggerFactory.getLogger(MainActivity.class);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_bitcoin);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,6 +90,34 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
         mBitStampRateUpdater = new BitStampRateUpdater(mRateUpdateHandler);
         mBitStampRateUpdater.start();
+
+        mLogger.info("SendBitcoinActivity created");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindService(new Intent(this, WalletService.class), mConnection,
+                    Context.BIND_ADJUST_WITH_ACTIVITY);
+
+        LocalBroadcastManager
+            .getInstance(this)
+            .registerReceiver(mMessageReceiver,
+                              new IntentFilter("wallet-state-changed"));
+
+        mLogger.info("SendBitcoinActivity resumed");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(mConnection);
+
+        LocalBroadcastManager
+            .getInstance(this)
+            .unregisterReceiver(mMessageReceiver);
+
+        mLogger.info("SendBitcoinActivity paused");
     }
 
     @Override
@@ -75,6 +137,13 @@ public class SendBitcoinActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateWalletStatus();
+            }
+        };
 
     private final TextWatcher mBTCAmountWatcher = new TextWatcher() {
             @Override
@@ -169,6 +238,14 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
             // Restore the other fields listener.
             mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
+        }
+    }
+
+    private void updateWalletStatus() {
+        if (mWalletService != null) {
+            String state = mWalletService.getStateString();
+            TextView tv = (TextView) findViewById(R.id.network_status);
+            tv.setText(state);
         }
     }
 
