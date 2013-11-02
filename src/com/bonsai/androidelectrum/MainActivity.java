@@ -125,4 +125,11 @@ public class MainActivity extends ActionBarActivity {
     public void receiveBitcoin(View view) {
         // Do something in response to button
     }
+
+    public void exitApp(View view) {
+        mLogger.info("Application Exiting");
+        stopService(new Intent(this, WalletService.class));
+        finish();
+        System.exit(0);
+    }
 }

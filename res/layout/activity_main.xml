@@ -29,12 +29,21 @@
 
       <!-- Children layed out from bottom to top -->
       <Button
+          android:id="@+id/exit"
+          android:layout_width="180dp"
+          android:layout_height="wrap_content"
+          android:text="@string/button_exit"
+	  android:onClick="exitApp"
+	  android:layout_alignParentBottom="true"
+	  android:layout_centerHorizontal="true" />
+
+      <Button
           android:id="@+id/receive"
           android:layout_width="180dp"
           android:layout_height="wrap_content"
           android:text="@string/button_receive"
 	  android:onClick="receiveBitcoin"
-	  android:layout_alignParentBottom="true"
+          android:layout_above="@id/exit"
 	  android:layout_centerHorizontal="true" />
 
       <Button
