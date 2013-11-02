@@ -23,7 +23,6 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.core.WrongNetworkException;
-import com.google.bitcoin.kits.WalletAppKit;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
 
@@ -41,7 +40,7 @@ public class WalletService extends Service
     private final IBinder mBinder = new WalletServiceBinder();
 
     private State				mState;
-    private WalletAppKit		mKit;
+    private MyWalletAppKit		mKit;
     private NetworkParameters	mParams;
     private SetupWalletTask		mTask;
     private Context				mContext;
@@ -64,7 +63,7 @@ public class WalletService extends Service
             final HDWallet hdwallet = new HDWallet(mParams, seed);
 
             mKit =
-                new WalletAppKit(mParams, mContext.getFilesDir(), filePrefix)
+                new MyWalletAppKit(mParams, mContext.getFilesDir(), filePrefix)
                 {
                     @Override
                     protected void onSetupCompleted() {
