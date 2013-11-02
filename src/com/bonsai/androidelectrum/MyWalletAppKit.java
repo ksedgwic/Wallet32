@@ -36,6 +36,7 @@ public class MyWalletAppKit extends AbstractIdleService {
     private volatile SPVBlockStore vStore;
     private volatile Wallet vWallet;
     private volatile PeerGroup vPeerGroup;
+    private final DownloadListener listener;
 
     private final File directory;
     private volatile File vWalletFile;
@@ -43,10 +44,14 @@ public class MyWalletAppKit extends AbstractIdleService {
     private boolean useAutoSave = true;
     private PeerAddress[] peerAddresses;
 
-    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix) {
+    public MyWalletAppKit(NetworkParameters params,
+                          File directory,
+                          String filePrefix,
+                          DownloadListener listener) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);
+        this.listener = listener;
     }
 
     /** Will only connect to the given addresses. Cannot be called after startup. */
@@ -128,7 +133,18 @@ public class MyWalletAppKit extends AbstractIdleService {
             vPeerGroup.addWallet(vWallet);
             onSetupCompleted();
             vPeerGroup.startAndWait();
-            vPeerGroup.downloadBlockChain();
+
+            // Replaced this call with it's contents so we can install
+            // our own listener ...
+            // vPeerGroup.downloadBlockChain();
+            //
+            vPeerGroup.startBlockChainDownload(listener);
+            try {
+                listener.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             // Make sure we shut down cleanly.
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override public void run() {

@@ -1,6 +1,7 @@
 package com.bonsai.androidelectrum;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 import android.app.Service;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.format.DateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -45,6 +48,17 @@ public class WalletService extends Service
     private SetupWalletTask		mTask;
     private Context				mContext;
     private Resources			mResources;
+    private int					mPercentDone = 0;
+
+    private DownloadListener mDownloadListener = new DownloadListener() {
+            protected void progress(double pct, int blocksToGo, Date date) {
+                mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO", (int) pct, blocksToGo));
+                if (mPercentDone != (int) pct) {
+                    mPercentDone = (int) pct;
+                    setState(State.SYNCING);
+                }
+            }
+    };
 
     private class SetupWalletTask extends AsyncTask<Void, Void, Void>
     {
@@ -63,7 +77,10 @@ public class WalletService extends Service
             final HDWallet hdwallet = new HDWallet(mParams, seed);
 
             mKit =
-                new MyWalletAppKit(mParams, mContext.getFilesDir(), filePrefix)
+                new MyWalletAppKit(mParams,
+                                   mContext.getFilesDir(),
+                                   filePrefix,
+                                   mDownloadListener)
                 {
                     @Override
                     protected void onSetupCompleted() {
@@ -163,7 +180,8 @@ public class WalletService extends Service
         case INITIALIZING:
             return mResources.getString(R.string.network_status_init);
         case SYNCING:
-            return mResources.getString(R.string.network_status_sync);
+            return mResources.getString(R.string.network_status_sync,
+                                        mPercentDone);
         case READY:
             return mResources.getString(R.string.network_status_ready);
         case ERROR:
