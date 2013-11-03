@@ -13,6 +13,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import org.slf4j.LoggerFactory;
 public class MainActivity extends ActionBarActivity {
 
     private Logger mLogger;
+    private LocalBroadcastManager mLBM;
 
     private WalletService	mWalletService;
 
@@ -44,10 +47,13 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
         mLogger = LoggerFactory.getLogger(MainActivity.class);
+        mLBM = LocalBroadcastManager.getInstance(this);
 
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
+
+        updateBalances();
 
         mLogger.info("MainActivity created");
 	}
@@ -58,9 +64,7 @@ public class MainActivity extends ActionBarActivity {
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .registerReceiver(mMessageReceiver,
+        mLBM.registerReceiver(mMessageReceiver,
                               new IntentFilter("wallet-state-changed"));
 
         mLogger.info("MainActivity resumed");
@@ -71,9 +75,7 @@ public class MainActivity extends ActionBarActivity {
         super.onPause();
         unbindService(mConnection);
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .unregisterReceiver(mMessageReceiver);
+        mLBM.unregisterReceiver(mMessageReceiver);
 
         mLogger.info("MainActivity paused");
     }
@@ -110,6 +112,29 @@ public class MainActivity extends ActionBarActivity {
             TextView tv = (TextView) findViewById(R.id.network_status);
             tv.setText(state);
         }
+    }
+
+    private void updateBalances() {
+        String[] balanceData = new String[12];
+        balanceData[0] = "Account";
+        balanceData[1] = "BTC";
+        balanceData[2] = "USD";
+        balanceData[3] = "Account0";
+        balanceData[4] = "1.000";
+        balanceData[5] = "208.40";
+        balanceData[6] = "Account1";
+        balanceData[7] = "0.1000";
+        balanceData[8] = "20.84";
+        balanceData[9] = "Total";
+        balanceData[10] = "1.1000";
+        balanceData[11] = "229.24";
+        
+        ArrayAdapter balanceadapter =
+            new ArrayAdapter<String>(this,
+                                     android.R.layout.simple_list_item_1,
+                                     balanceData);
+        GridView gridview = (GridView) findViewById(R.id.balances);
+        gridview.setAdapter(balanceadapter);
     }
 
     protected void openSettings()

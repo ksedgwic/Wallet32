@@ -8,7 +8,7 @@
     android:paddingBottom="16dp"
     >
 
-    <!-- Children layed out from bottom to top -->
+    <!-- Child layout from bottom to top -->
     <TextView
 	android:id="@+id/network_status"
 	android:text="@string/network_status_unknown"
@@ -27,15 +27,16 @@
         android:layout_above="@id/network_status"
 	>
 
-      <!-- Children layed out from bottom to top -->
+      <!-- Child layout from bottom to top -->
       <Button
           android:id="@+id/exit"
           android:layout_width="180dp"
           android:layout_height="wrap_content"
           android:text="@string/button_exit"
 	  android:onClick="exitApp"
+	  android:layout_centerHorizontal="true"
 	  android:layout_alignParentBottom="true"
-	  android:layout_centerHorizontal="true" />
+	  />
 
       <Button
           android:id="@+id/receive"
@@ -43,8 +44,9 @@
           android:layout_height="wrap_content"
           android:text="@string/button_receive"
 	  android:onClick="receiveBitcoin"
+	  android:layout_centerHorizontal="true"
           android:layout_above="@id/exit"
-	  android:layout_centerHorizontal="true" />
+	  />
 
       <Button
           android:id="@+id/send"
@@ -52,8 +54,29 @@
           android:layout_height="wrap_content"
           android:text="@string/button_send"
 	  android:onClick="sendBitcoin"
+	  android:layout_centerHorizontal="true"
           android:layout_above="@id/receive"
-	  android:layout_centerHorizontal="true" />
+	  />
+
+      <!-- Balances are aligned with the top -->
+
+      <GridView
+	  android:id="@+id/balances"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:numColumns="3"
+	  android:gravity="center"
+	  android:stretchMode="columnWidth"
+	  android:layout_centerHorizontal="true"
+	  android:layout_alignParentTop="true"
+	  />
+
+      <!--
+	  android:stretchMode="spacingWidthUniform"
+	  android:columnWidth="90dp"
+	  android:verticalSpacing="10dp"
+	  android:horizontalSpacing="10dp"
+      -->
 
     </RelativeLayout>
 
