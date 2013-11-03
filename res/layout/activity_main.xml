@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
     >
-
-    <!-- Child layout from bottom to top -->
-    <TextView
-	android:id="@+id/network_status"
-	android:text="@string/network_status_unknown"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_alignParentBottom="true"
-	android:layout_centerHorizontal="true" />
 
     <LinearLayout
 	android:id="@+id/main_body"
@@ -23,7 +16,7 @@
 	android:layout_height="fill_parent"
 	android:orientation="vertical"
 	android:gravity="center"
-        android:layout_above="@id/network_status"
+	android:layout_weight="1"
 	>
 
       <GridView
@@ -33,7 +26,6 @@
 	  android:numColumns="3"
 	  android:gravity="center"
 	  android:stretchMode="columnWidth"
-	  android:layout_centerHorizontal="true"
 	  />
 
       <!--
@@ -43,7 +35,7 @@
 	  android:horizontalSpacing="10dp"
       -->
 
-      <!-- Spacer -->
+      <!-- Stretchy Spacer -->
       <View
 	  android:layout_width="fill_parent"
 	  android:layout_height="fill_parent"
@@ -56,7 +48,6 @@
           android:layout_height="wrap_content"
           android:text="@string/button_send"
 	  android:onClick="sendBitcoin"
-	  android:layout_centerHorizontal="true"
 	  />
 
       <Button
@@ -65,7 +56,6 @@
           android:layout_height="wrap_content"
           android:text="@string/button_receive"
 	  android:onClick="receiveBitcoin"
-	  android:layout_centerHorizontal="true"
 	  />
 
       <Button
@@ -74,9 +64,21 @@
           android:layout_height="wrap_content"
           android:text="@string/button_exit"
 	  android:onClick="exitApp"
-	  android:layout_centerHorizontal="true"
 	  />
 
     </LinearLayout>
 
-</RelativeLayout>
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="10dp"
+	/>
+
+    <TextView
+	android:id="@+id/network_status"
+	android:text="@string/network_status_unknown"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	/>
+
+</LinearLayout>
