@@ -17,58 +17,23 @@
 	android:layout_alignParentBottom="true"
 	android:layout_centerHorizontal="true" />
 
-    <RelativeLayout
+    <LinearLayout
 	android:id="@+id/main_body"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:paddingLeft="16dp"
-	android:paddingRight="16dp"
-	android:paddingBottom="16dp"
+	android:orientation="vertical"
+	android:gravity="center"
         android:layout_above="@id/network_status"
 	>
-
-      <!-- Child layout from bottom to top -->
-      <Button
-          android:id="@+id/exit"
-          android:layout_width="180dp"
-          android:layout_height="wrap_content"
-          android:text="@string/button_exit"
-	  android:onClick="exitApp"
-	  android:layout_centerHorizontal="true"
-	  android:layout_alignParentBottom="true"
-	  />
-
-      <Button
-          android:id="@+id/receive"
-          android:layout_width="180dp"
-          android:layout_height="wrap_content"
-          android:text="@string/button_receive"
-	  android:onClick="receiveBitcoin"
-	  android:layout_centerHorizontal="true"
-          android:layout_above="@id/exit"
-	  />
-
-      <Button
-          android:id="@+id/send"
-          android:layout_width="180dp"
-          android:layout_height="wrap_content"
-          android:text="@string/button_send"
-	  android:onClick="sendBitcoin"
-	  android:layout_centerHorizontal="true"
-          android:layout_above="@id/receive"
-	  />
-
-      <!-- Balances are aligned with the top -->
 
       <GridView
 	  android:id="@+id/balances"
 	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
+	  android:layout_height="200dp"
 	  android:numColumns="3"
 	  android:gravity="center"
 	  android:stretchMode="columnWidth"
 	  android:layout_centerHorizontal="true"
-	  android:layout_alignParentTop="true"
 	  />
 
       <!--
@@ -78,6 +43,40 @@
 	  android:horizontalSpacing="10dp"
       -->
 
-    </RelativeLayout>
+      <!-- Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent"
+	  android:layout_weight="1"
+	  />
+
+      <Button
+          android:id="@+id/send"
+          android:layout_width="180dp"
+          android:layout_height="wrap_content"
+          android:text="@string/button_send"
+	  android:onClick="sendBitcoin"
+	  android:layout_centerHorizontal="true"
+	  />
+
+      <Button
+          android:id="@+id/receive"
+          android:layout_width="180dp"
+          android:layout_height="wrap_content"
+          android:text="@string/button_receive"
+	  android:onClick="receiveBitcoin"
+	  android:layout_centerHorizontal="true"
+	  />
+
+      <Button
+          android:id="@+id/exit"
+          android:layout_width="180dp"
+          android:layout_height="wrap_content"
+          android:text="@string/button_exit"
+	  android:onClick="exitApp"
+	  android:layout_centerHorizontal="true"
+	  />
+
+    </LinearLayout>
 
 </RelativeLayout>
