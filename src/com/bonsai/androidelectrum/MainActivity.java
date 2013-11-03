@@ -120,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
         balanceData[1] = "BTC";
         balanceData[2] = "USD";
         balanceData[3] = "Account0";
-        balanceData[4] = "1.000";
+        balanceData[4] = "1.0000";
         balanceData[5] = "208.40";
         balanceData[6] = "Account1";
         balanceData[7] = "0.1000";
@@ -131,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
         
         ArrayAdapter balanceadapter =
             new ArrayAdapter<String>(this,
-                                     android.R.layout.simple_list_item_1,
+                                     R.layout.balances_item,
                                      balanceData);
         GridView gridview = (GridView) findViewById(R.id.balances);
         gridview.setAdapter(balanceadapter);
