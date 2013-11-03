@@ -1,22 +1,23 @@
-# built application files
-*.apk
-*.ap_
 
-# files for the dex VM
-*.dex
 
-# Java class files
-*.class
 
-# generated files
-bin/
-gen/
 
-# Local configuration file (sdk path, etc)
-local.properties
 
-# I think we want these files:
-# http://wiki.eclipse.org/FAQ_How_do_I_set_up_a_Java_project_to_share_in_a_repository%3F
 # # Eclipse project files
 # .classpath
 # .project
+# I think we want these files:
+# Java class files
+# Local configuration file (sdk path, etc)
+# built application files
+# files for the dex VM
+# generated files
+# http://wiki.eclipse.org/FAQ_How_do_I_set_up_a_Java_project_to_share_in_a_repository%3F
+*.ap_
+*.apk
+*.class
+*.dex
+/ID
+bin/
+gen/
+local.properties

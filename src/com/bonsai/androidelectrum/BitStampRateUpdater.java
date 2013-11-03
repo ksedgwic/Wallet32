@@ -13,16 +13,24 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import android.os.Handler;
-import android.os.Message;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
-public class BitStampRateUpdater extends Thread {
+public class BitStampRateUpdater extends Thread implements RateUpdater {
 
-    protected Handler mRateUpdateHandler;
+    private Logger mLogger;
 
-    public BitStampRateUpdater(Handler rateUpdateHandler) {
-        mRateUpdateHandler = rateUpdateHandler;
+    private double mRate = 0.0;
+    private String mCode = "USD";
+    private LocalBroadcastManager mLBM;
+
+    public BitStampRateUpdater(Context context) {
+        mLogger = LoggerFactory.getLogger(BitStampRateUpdater.class);
+        mLBM = LocalBroadcastManager.getInstance(context);
     }
 
     @Override
@@ -30,10 +38,13 @@ public class BitStampRateUpdater extends Thread {
         while (true) {
             double rate = fetchLatestRate();
 
-            // Update the rate in the activity.
-            Message msg = mRateUpdateHandler.obtainMessage();
-            msg.obj = Double.valueOf(rate);
-            mRateUpdateHandler.sendMessage(msg);
+            // Did the rate change?
+            if (mRate != rate) {
+                mLogger.info(String.format("rate changed to %f", rate));
+                mRate = rate;
+                Intent intent = new Intent("rate-changed");
+                mLBM.sendBroadcast(intent);
+            }
 
             // Wait a while before doing it again.
             try {
@@ -79,5 +90,13 @@ public class BitStampRateUpdater extends Thread {
             e.printStackTrace();
         }
 		return 0;
+    }
+
+    public double getRate() {
+        return mRate;
+    }
+
+    public String getCode() {
+        return mCode;
     }
 }

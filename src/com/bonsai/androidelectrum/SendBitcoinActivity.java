@@ -25,8 +25,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.bonsai.androidelectrum.BitStampRateUpdater;
-
 public class SendBitcoinActivity extends ActionBarActivity {
 
     protected EditText mBTCAmountEditText;
@@ -34,12 +32,10 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
     protected double mFiatPerBTC;
 
-    protected Handler mRateUpdateHandler;
-    protected BitStampRateUpdater mBitStampRateUpdater;
-
     protected boolean mUserSetFiat;
 
     private Logger mLogger;
+    private LocalBroadcastManager mLBM;
 
     private WalletService	mWalletService;
 
@@ -50,6 +46,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
                 updateWalletStatus();
+                updateRate();
             }
 
             public void onServiceDisconnected(ComponentName className) {
@@ -64,6 +61,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         mLogger = LoggerFactory.getLogger(MainActivity.class);
+        mLBM = LocalBroadcastManager.getInstance(getApplicationContext());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_bitcoin);
@@ -80,17 +78,6 @@ public class SendBitcoinActivity extends ActionBarActivity {
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
 
-        mRateUpdateHandler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    updateRate(((Double) msg.obj).doubleValue());
-                    super.handleMessage(msg);
-                }
-            };
-
-        mBitStampRateUpdater = new BitStampRateUpdater(mRateUpdateHandler);
-        mBitStampRateUpdater.start();
-
         mLogger.info("SendBitcoinActivity created");
     }
 
@@ -100,10 +87,10 @@ public class SendBitcoinActivity extends ActionBarActivity {
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .registerReceiver(mMessageReceiver,
+        mLBM.registerReceiver(mWalletStateChangedReceiver,
                               new IntentFilter("wallet-state-changed"));
+        mLBM.registerReceiver(mRateChangedReceiver,
+                              new IntentFilter("rate-changed"));
 
         mLogger.info("SendBitcoinActivity resumed");
     }
@@ -113,9 +100,8 @@ public class SendBitcoinActivity extends ActionBarActivity {
         super.onPause();
         unbindService(mConnection);
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .unregisterReceiver(mMessageReceiver);
+        mLBM.unregisterReceiver(mWalletStateChangedReceiver);
+        mLBM.unregisterReceiver(mRateChangedReceiver);
 
         mLogger.info("SendBitcoinActivity paused");
     }
@@ -138,12 +124,27 @@ public class SendBitcoinActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mWalletStateChangedReceiver =
+        new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateWalletStatus();
             }
         };
+
+    private BroadcastReceiver mRateChangedReceiver =
+        new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateRate();
+            }
+        };
+
+    // NOTE - This code implements a pair of "cross updating" fields.
+    // If the user changes the BTC amount the fiat field is constantly
+    // updated at the current mFiatPerBTC rate.  If the user changes
+    // the fiat field the BTC field is constantly updated at the
+    // current rate.
 
     private final TextWatcher mBTCAmountWatcher = new TextWatcher() {
             @Override
@@ -249,8 +250,10 @@ public class SendBitcoinActivity extends ActionBarActivity {
         }
     }
 
-    protected void updateRate(double rate) {
-        mFiatPerBTC = rate;
-        updateAmountFields();
+    private void updateRate() {
+        if (mWalletService != null) {
+            mFiatPerBTC = mWalletService.getRate();
+            updateAmountFields();
+        }
     }
 }

@@ -50,6 +50,8 @@ public class WalletService extends Service
     private Resources			mResources;
     private int					mPercentDone = 0;
 
+    private RateUpdater			mRateUpdater;
+
     private DownloadListener mDownloadListener = new DownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date) {
                 mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO", (int) pct, blocksToGo));
@@ -154,6 +156,10 @@ public class WalletService extends Service
 
         mContext = getApplicationContext();
         mResources = mContext.getResources();
+
+        BitStampRateUpdater bsru = new BitStampRateUpdater(getApplicationContext());
+        bsru.start();
+        mRateUpdater = bsru;
     }
 
     @Override
@@ -195,6 +201,14 @@ public class WalletService extends Service
         WalletService getService() {
             return WalletService.this;
         }
+    }
+
+    public double getRate() {
+        return mRateUpdater.getRate();
+    }
+
+    public String getCode() {
+        return mRateUpdater.getCode();
     }
 
     private void setState(State newstate) {
