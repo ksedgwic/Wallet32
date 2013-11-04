@@ -1,5 +1,7 @@
 package com.bonsai.androidelectrum;
 
+import java.util.List;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,6 +35,8 @@ public class MainActivity extends ActionBarActivity {
 
     private WalletService	mWalletService;
 
+    private double mFiatPerBTC = 210.0;	// FIXME
+
     // Used to convert dp to px programatically.
     private static Float mScale;
     public static int dpToPixel(int dp, Context context) {
@@ -48,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
                 updateWalletStatus();
+                updateBalances();
             }
 
             public void onServiceDisconnected(ComponentName className) {
@@ -68,8 +73,6 @@ public class MainActivity extends ActionBarActivity {
 
 		setContentView(R.layout.activity_main);
 
-        updateBalances();
-
         mLogger.info("MainActivity created");
 	}
 
@@ -79,8 +82,10 @@ public class MainActivity extends ActionBarActivity {
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
 
-        mLBM.registerReceiver(mMessageReceiver,
+        mLBM.registerReceiver(mWalletStateChangedReceiver,
                               new IntentFilter("wallet-state-changed"));
+        mLBM.registerReceiver(mRateChangedReceiver,
+                              new IntentFilter("rate-changed"));
 
         mLogger.info("MainActivity resumed");
     }
@@ -90,7 +95,9 @@ public class MainActivity extends ActionBarActivity {
         super.onPause();
         unbindService(mConnection);
 
-        mLBM.unregisterReceiver(mMessageReceiver);
+        mLBM.unregisterReceiver(mWalletStateChangedReceiver);
+        mLBM.unregisterReceiver(mRateChangedReceiver);
+
 
         mLogger.info("MainActivity paused");
     }
@@ -114,10 +121,19 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mWalletStateChangedReceiver =
+        new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateWalletStatus();
+            }
+        };
+
+    private BroadcastReceiver mRateChangedReceiver =
+        new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateRate();
             }
         };
 
@@ -127,8 +143,15 @@ public class MainActivity extends ActionBarActivity {
             TextView tv = (TextView) findViewById(R.id.network_status);
             tv.setText(state);
         }
+        updateBalances();
     }
 
+    private void updateRate() {
+        if (mWalletService != null) {
+            mFiatPerBTC = mWalletService.getRate();
+            updateBalances();
+        }
+    }
     private void addBalanceHeader(TableLayout table) {
         // create a new TableRow
         TableRow row = new TableRow(this);
@@ -192,7 +215,7 @@ public class MainActivity extends ActionBarActivity {
         row.addView(tv0);
 
         TextView tv1 = new TextView(this);
-        tv1.setText(String.format("%.04f", btc));
+        tv1.setText(String.format("%.06f", btc));
         tv1.setTextAppearance(this, android.R.style.TextAppearance_Medium);
         if (isTotal)
             tv1.setTypeface(tv0.getTypeface(), Typeface.BOLD);
@@ -214,12 +237,30 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void updateBalances() {
+        if (mWalletService == null)
+            return;
 
         TableLayout table = (TableLayout) findViewById(R.id.balance_table);
+
+        // Clear any existing table content.
+        table.removeAllViews();
+
         addBalanceHeader(table);
-        addBalanceRow(table, "Account0", 1.0000, 210.00, false);
-        addBalanceRow(table, "Account1", 0.1000, 21.00, false);
-        addBalanceRow(table, "Total", 1.1000, 231.00, true);
+
+        double sumbtc = 0.0;
+        List<Balance> balances = mWalletService.getBalances();
+        if (balances != null) {
+            for (Balance bal : balances) {
+                sumbtc += bal.balance;
+                addBalanceRow(table,
+                              bal.accountName,
+                              bal.balance,
+                              bal.balance * mFiatPerBTC,
+                              false);
+            }
+        }
+
+        addBalanceRow(table, "Total", sumbtc, sumbtc * mFiatPerBTC, true);
     }
 
     protected void openSettings()

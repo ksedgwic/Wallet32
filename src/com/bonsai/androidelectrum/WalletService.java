@@ -2,6 +2,8 @@ package com.bonsai.androidelectrum;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.app.Service;
 import android.content.Context;
@@ -50,6 +52,8 @@ public class WalletService extends Service
     private Resources			mRes;
     private int					mPercentDone = 0;
 
+    private HDWallet			mHDWallet = null;
+
     private RateUpdater			mRateUpdater;
 
     private DownloadListener mDownloadListener = new DownloadListener() {
@@ -76,7 +80,7 @@ public class WalletService extends Service
             mLogger.info("creating new wallet app kit");
 
             byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
-            final HDWallet hdwallet = new HDWallet(mParams, seed);
+            mHDWallet = new HDWallet(mParams, seed);
 
             mKit =
                 new MyWalletAppKit(mParams,
@@ -87,7 +91,7 @@ public class WalletService extends Service
                     @Override
                     protected void onSetupCompleted() {
                         mLogger.info("adding keys");
-                        hdwallet.addAllKeys(wallet());
+                        mHDWallet.addAllKeys(wallet());
                     }
                 };
 
@@ -109,7 +113,7 @@ public class WalletService extends Service
             // Compute balances and transaction counts.
             Iterable<WalletTransaction> iwt =
                 mKit.wallet().getWalletTransactions();
-            hdwallet.applyAllTransactions(iwt);
+            mHDWallet.applyAllTransactions(iwt);
 
             setState(State.READY);
 
@@ -122,7 +126,7 @@ public class WalletService extends Service
                                     "19jh2GWRBJ5ktjyMeoe2scghwqYK3enJQH");
                     BigInteger value = BigInteger.valueOf(100000);
                     BigInteger fee = BigInteger.valueOf(20000);
-                    hdwallet.sendCoins(mKit.wallet(), acctnum, dest, value, fee);
+                    mHDWallet.sendCoins(mKit.wallet(), acctnum, dest, value, fee);
 
                 } catch (WrongNetworkException e) {
                     // TODO Auto-generated catch block
@@ -209,6 +213,15 @@ public class WalletService extends Service
 
     public String getCode() {
         return mRateUpdater.getCode();
+    }
+
+    public List<Balance> getBalances() {
+        if (mHDWallet == null)
+            return null;
+
+        List<Balance> balances = new LinkedList<Balance>();
+        mHDWallet.getBalances(balances);
+        return balances;
     }
 
     private void setState(State newstate) {

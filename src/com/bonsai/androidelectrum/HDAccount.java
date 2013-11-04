@@ -69,6 +69,10 @@ public class HDAccount {
         mChangeChain.clearBalance();
     }
 
+    public String getName() {
+        return mAccountName;
+    }
+
     public BigInteger balance() {
         BigInteger balance = BigInteger.ZERO;
         balance = balance.add(mReceiveChain.balance());

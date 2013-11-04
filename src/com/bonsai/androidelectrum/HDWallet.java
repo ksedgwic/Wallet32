@@ -109,6 +109,12 @@ public class HDWallet {
             acct.logBalance();
     }
 
+    public void getBalances(List<Balance> balances) {
+        for (HDAccount acct : mAccounts)
+            balances.add(new Balance(acct.getName(),
+                                     acct.balance().doubleValue() / 1e8));
+    }
+
     public void sendCoins(Wallet wallet,
                           int acctnum,
                           Address dest,
