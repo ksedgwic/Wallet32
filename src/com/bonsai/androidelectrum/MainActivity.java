@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -153,42 +154,10 @@ public class MainActivity extends ActionBarActivity {
         }
     }
     private void addBalanceHeader(TableLayout table) {
-        // create a new TableRow
-        TableRow row = new TableRow(this);
-
-        TableRow.LayoutParams rowParams =
-            new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                      TableRow.LayoutParams.WRAP_CONTENT);
-        rowParams.leftMargin = dpToPixel(10, this);
-        rowParams.rightMargin = dpToPixel(10, this);
-
-        TextView tv0 = new TextView(this);
-        // tv0.setText(mRes.getString(R.string.balance_header_acct));
-        tv0.setText("");	// Looks better blank ...
-        tv0.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-        tv0.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-        tv0.setLayoutParams(rowParams);
-        tv0.setGravity(Gravity.LEFT);
-        row.addView(tv0);
-
-        TextView tv1 = new TextView(this);
-        tv1.setText(mRes.getString(R.string.balance_header_btc));
-        tv1.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-        tv1.setTypeface(tv1.getTypeface(), Typeface.BOLD);
-        tv1.setLayoutParams(rowParams);
-        tv1.setGravity(Gravity.CENTER);
-        row.addView(tv1);
-
-        TextView tv2 = new TextView(this);
-        tv2.setText(mRes.getString(R.string.balance_header_fiat));
-        tv2.setTextAppearance(this, android.R.style.TextAppearance_Medium);
-        tv2.setTypeface(tv2.getTypeface(), Typeface.BOLD);
-        tv2.setLayoutParams(rowParams);
-        tv2.setGravity(Gravity.CENTER);
-        row.addView(tv2);
-
-        // add the TableRow to the TableLayout
-        table.addView(row, rowParams);
+        TableRow row =
+            (TableRow) LayoutInflater.from(this)
+            .inflate(R.layout.balance_table_header, table, false);
+        table.addView(row);
     }
 
     private void addBalanceRow(TableLayout table,
@@ -196,44 +165,26 @@ public class MainActivity extends ActionBarActivity {
                                double btc,
                                double fiat,
                                boolean isTotal) {
-        // create a new TableRow
-        TableRow row = new TableRow(this);
+        TableRow row =
+            (TableRow) LayoutInflater.from(this)
+            .inflate(R.layout.balance_table_row, table, false);
 
-        TableRow.LayoutParams rowParams =
-            new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                      TableRow.LayoutParams.WRAP_CONTENT);
-        rowParams.leftMargin = dpToPixel(10, this);
-        rowParams.rightMargin = dpToPixel(10, this);
-
-        TextView tv0 = new TextView(this);
+        TextView tv0 = (TextView) row.findViewById(R.id.row_label);
         tv0.setText(acct);
-        tv0.setTextAppearance(this, android.R.style.TextAppearance_Medium);
         if (isTotal)
             tv0.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-        tv0.setLayoutParams(rowParams);
-        tv0.setGravity(Gravity.LEFT);
-        row.addView(tv0);
 
-        TextView tv1 = new TextView(this);
+        TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
         tv1.setText(String.format("%.06f", btc));
-        tv1.setTextAppearance(this, android.R.style.TextAppearance_Medium);
         if (isTotal)
             tv1.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-        tv1.setLayoutParams(rowParams);
-        tv1.setGravity(Gravity.RIGHT);
-        row.addView(tv1);
 
-        TextView tv2 = new TextView(this);
+        TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
-        tv2.setTextAppearance(this, android.R.style.TextAppearance_Medium);
         if (isTotal)
             tv2.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-        tv2.setLayoutParams(rowParams);
-        tv2.setGravity(Gravity.RIGHT);
-        row.addView(tv2);
 
-        // add the TableRow to the TableLayout
-        table.addView(row, rowParams);
+        table.addView(row);
     }
 
     private void updateBalances() {
