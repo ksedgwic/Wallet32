@@ -19,12 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.core.WrongNetworkException;
@@ -42,6 +44,7 @@ public class WalletService extends Service
     }
 
     private Logger mLogger;
+    private LocalBroadcastManager mLBM;
 
     private final IBinder mBinder = new WalletServiceBinder();
 
@@ -57,7 +60,8 @@ public class WalletService extends Service
 
     private RateUpdater			mRateUpdater;
 
-    private DownloadListener mDownloadListener = new DownloadListener() {
+    private DownloadListener mDownloadListener =
+        new DownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date) {
                 mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO", (int) pct, blocksToGo));
                 if (mPercentDone != (int) pct) {
@@ -65,7 +69,21 @@ public class WalletService extends Service
                     setState(State.SYNCING);
                 }
             }
-    };
+        };
+
+    private AbstractWalletEventListener mWalletListener =
+        new AbstractWalletEventListener() {
+            @Override
+            public void onWalletChanged(Wallet wallet) {
+                // Compute balances and transaction counts.
+                Iterable<WalletTransaction> iwt =
+                    mKit.wallet().getWalletTransactions();
+                mHDWallet.applyAllTransactions(iwt);
+
+                Intent intent = new Intent("wallet-state-changed");
+                mLBM.sendBroadcast(intent);
+            }
+        };
 
     private class SetupWalletTask extends AsyncTask<Void, Void, Void>
     {
@@ -116,6 +134,9 @@ public class WalletService extends Service
                 mKit.wallet().getWalletTransactions();
             mHDWallet.applyAllTransactions(iwt);
 
+            // Listen for future wallet changes.
+            mKit.wallet().addEventListener(mWalletListener);
+
             setState(State.READY);
 
             // Send a transaction.
@@ -156,6 +177,7 @@ public class WalletService extends Service
     public void onCreate()
     {
         mLogger = LoggerFactory.getLogger(WalletService.class);
+        mLBM = LocalBroadcastManager.getInstance(this);
 
         mLogger.info("WalletService created");
 
@@ -234,6 +256,6 @@ public class WalletService extends Service
 
     private void sendStateChanged() {
         Intent intent = new Intent("wallet-state-changed");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        mLBM.sendBroadcast(intent);
     }
 }
