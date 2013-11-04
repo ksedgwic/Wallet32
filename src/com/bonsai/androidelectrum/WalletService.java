@@ -47,7 +47,7 @@ public class WalletService extends Service
     private NetworkParameters	mParams;
     private SetupWalletTask		mTask;
     private Context				mContext;
-    private Resources			mResources;
+    private Resources			mRes;
     private int					mPercentDone = 0;
 
     private RateUpdater			mRateUpdater;
@@ -155,7 +155,7 @@ public class WalletService extends Service
         mLogger.info("WalletService created");
 
         mContext = getApplicationContext();
-        mResources = mContext.getResources();
+        mRes = mContext.getResources();
 
         BitStampRateUpdater bsru = new BitStampRateUpdater(getApplicationContext());
         bsru.start();
@@ -184,16 +184,16 @@ public class WalletService extends Service
     public String getStateString() {
         switch (mState) {
         case INITIALIZING:
-            return mResources.getString(R.string.network_status_init);
+            return mRes.getString(R.string.network_status_init);
         case SYNCING:
-            return mResources.getString(R.string.network_status_sync,
+            return mRes.getString(R.string.network_status_sync,
                                         mPercentDone);
         case READY:
-            return mResources.getString(R.string.network_status_ready);
+            return mRes.getString(R.string.network_status_ready);
         case ERROR:
-            return mResources.getString(R.string.network_status_error);
+            return mRes.getString(R.string.network_status_error);
         default:
-            return mResources.getString(R.string.network_status_unknown);
+            return mRes.getString(R.string.network_status_unknown);
         }
     }
 

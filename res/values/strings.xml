@@ -19,5 +19,8 @@
     <string name="network_status_ready">Network Ready</string>
     <string name="network_status_error">Network Error</string>
     <string name="network_status_unknown">Network Status Unknown</string>
+    <string name="balance_header_acct">Account</string>
+    <string name="balance_header_btc">BTC</string>
+    <string name="balance_header_fiat">USD</string>
 
 </resources>
