@@ -175,12 +175,12 @@ public class MainActivity extends ActionBarActivity {
             tv0.setTypeface(tv0.getTypeface(), Typeface.BOLD);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.06f", btc));
+        tv1.setText(String.format("%.05f", btc));
         if (isTotal)
             tv1.setTypeface(tv0.getTypeface(), Typeface.BOLD);
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.02f", fiat));
+        tv2.setText(String.format("%.03f", fiat));
         if (isTotal)
             tv2.setTypeface(tv0.getTypeface(), Typeface.BOLD);
 
