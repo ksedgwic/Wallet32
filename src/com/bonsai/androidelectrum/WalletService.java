@@ -34,7 +34,8 @@ import com.google.bitcoin.params.RegTestParams;
 public class WalletService extends Service
 {
     public enum State {
-        INITIALIZING,
+        SETUP,
+        START,
         SYNCING,
         READY,
         ERROR
@@ -95,7 +96,7 @@ public class WalletService extends Service
                     }
                 };
 
-            setState(State.SYNCING);
+            setState(State.START);
 
             mLogger.info("waiting for blockchain setup");
 
@@ -143,7 +144,7 @@ public class WalletService extends Service
     }
 
     public WalletService() {
-        mState = State.INITIALIZING;
+        mState = State.SETUP;
     }
 
     @Override
@@ -187,8 +188,10 @@ public class WalletService extends Service
 
     public String getStateString() {
         switch (mState) {
-        case INITIALIZING:
-            return mRes.getString(R.string.network_status_init);
+        case SETUP:
+            return mRes.getString(R.string.network_status_setup);
+        case START:
+            return mRes.getString(R.string.network_status_start);
         case SYNCING:
             return mRes.getString(R.string.network_status_sync,
                                         mPercentDone);

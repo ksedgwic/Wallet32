@@ -14,7 +14,8 @@
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>
     <string name="eq_label">=</string>
-    <string name="network_status_init">Network Initializing</string>
+    <string name="network_status_setup">Wallet Initializing</string>
+    <string name="network_status_start">Network Starting</string>
     <string name="network_status_sync">Network Syncing, %1$d%% Done</string>
     <string name="network_status_ready">Network Ready</string>
     <string name="network_status_error">Network Error</string>
