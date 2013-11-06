@@ -111,15 +111,16 @@ public class HDWallet {
 
     public void getBalances(List<Balance> balances) {
         for (HDAccount acct : mAccounts)
-            balances.add(new Balance(acct.getName(),
+            balances.add(new Balance(acct.getId(),
+                                     acct.getName(),
                                      acct.balance().doubleValue() / 1e8));
     }
 
-    public void sendCoins(Wallet wallet,
-                          int acctnum,
-                          Address dest,
-                          BigInteger value,
-                          BigInteger fee) {
+    public void sendAccountCoins(Wallet wallet,
+                                 int acctnum,
+                                 Address dest,
+                                 BigInteger value,
+                                 BigInteger fee) {
 
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);

@@ -25,6 +25,7 @@ public class HDAccount {
     private NetworkParameters	mParams;
     private DeterministicKey	mAccountKey;
     private String				mAccountName;
+    private int					mAccountId;
 
     private HDChain				mReceiveChain;
     private HDChain				mChangeChain;
@@ -71,6 +72,10 @@ public class HDAccount {
 
     public String getName() {
         return mAccountName;
+    }
+
+    public int getId() {
+        return mAccountId;
     }
 
     public BigInteger balance() {

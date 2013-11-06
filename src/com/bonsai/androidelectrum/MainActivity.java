@@ -36,15 +36,7 @@ public class MainActivity extends ActionBarActivity {
 
     private WalletService	mWalletService;
 
-    private double mFiatPerBTC = 210.0;	// FIXME
-
-    // Used to convert dp to px programatically.
-    private static Float mScale;
-    public static int dpToPixel(int dp, Context context) {
-        if (mScale == null)
-            mScale = context.getResources().getDisplayMetrics().density;
-        return (int) ((float) dp * mScale);
-    }
+    private double mFiatPerBTC = 0.0;
 
     private ServiceConnection mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className,
@@ -52,8 +44,7 @@ public class MainActivity extends ActionBarActivity {
                 mWalletService =
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
-                updateWalletStatus();
-                updateBalances();
+                updateWalletStatus(); // calls updateBalances() ...
             }
 
             public void onServiceDisconnected(ComponentName className) {

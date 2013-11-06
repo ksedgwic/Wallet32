@@ -5,8 +5,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:paddingTop="24dp"
     android:paddingBottom="16dp"
     >
@@ -21,7 +19,6 @@
         <TableRow
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:paddingBottom="24dp"
 	    >
 
 	    <TextView
@@ -29,40 +26,32 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/send_from_label"
-		android:gravity="right"
-		android:layout_gravity="top"
-		android:paddingTop="8dp"
+		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:textStyle="bold"
+		android:layout_span="7"
 		/>
-
-	    <LinearLayout
-		android:id="@+id/from_choices"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:gravity="left"
-		android:layout_span="5"
-		>
-
-	        <CheckBox
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="Account 0"
-		    />
-
-		<CheckBox
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="Account 1"
-		    />
-
-	    </LinearLayout>
 
 	</TableRow>
 
         <TableRow
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:paddingBottom="24dp"
+	    >
+
+	    <TableLayout
+		android:id="@+id/from_choices"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="left"
+		android:layout_span="7"
+		/>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="30dp"
 	    >
 
 	    <TextView
@@ -70,22 +59,9 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/send_to_label"
-		android:gravity="right"
-		/>
-
-	    <EditText
-		android:id="@+id/to_address"
-		android:inputType="text"
-		android:singleLine="true"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textSize="12dp"
-		android:minWidth="300dp"
-		android:maxWidth="400dp"
-		android:gravity="left"
-		android:hint="@string/send_to_hint"
-		android:layout_span="5"
-		android:text="1234567890123456789012345678901234"
+		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:textStyle="bold"
+		android:layout_span="7"
 		/>
 
 	</TableRow>
@@ -93,7 +69,26 @@
         <TableRow
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:paddingBottom="24dp"
+	    >
+
+	    <EditText
+		android:id="@+id/to_address"
+		android:inputType="text"
+		android:singleLine="true"
+		android:layout_width="800dp"
+		android:layout_height="wrap_content"
+		android:textSize="14dp"
+		android:gravity="left"
+		android:hint="@string/send_to_hint"
+		android:layout_span="7"
+		/>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="30dp"
 	    >
 
 	    <TextView
@@ -101,7 +96,22 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/send_amount_label"
-		android:gravity="right"
+		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:textStyle="bold"
+		android:layout_span="7"
+		/>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    >
+
+	    <!-- Spacer -->
+	    <View
+		android:layout_width="40dp"
+		android:layout_height="fill_parent"
 		/>
 
             <EditText
@@ -151,12 +161,18 @@
 		android:text="@string/fiat_label"
 		/>
 
+	    <!-- Spacer -->
+	    <View
+		android:layout_width="40dp"
+		android:layout_height="fill_parent"
+		/>
+
 	</TableRow>
 
         <TableRow
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:paddingBottom="24dp"
+	    android:paddingTop="30dp"
 	    >
 
 	    <TextView
@@ -164,7 +180,22 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/send_fee_label"
-		android:gravity="right"
+		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:textStyle="bold"
+		android:layout_span="7"
+		/>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    >
+
+	    <!-- Spacer -->
+	    <View
+		android:layout_width="40dp"
+		android:layout_height="fill_parent"
 		/>
 
             <EditText
@@ -214,6 +245,12 @@
 		android:text="@string/fiat_label"
 		/>
 
+	    <!-- Spacer -->
+	    <View
+		android:layout_width="40dp"
+		android:layout_height="fill_parent"
+		/>
+
 	</TableRow>
 
     </TableLayout>
@@ -223,6 +260,20 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:layout_weight="1"
+	/>
+
+    <Button
+	android:id="@+id/send"
+	android:layout_width="180dp"
+	android:layout_height="wrap_content"
+	android:text="@string/send_bitcoin"
+	android:onClick="sendBitcoin"
+	/>
+
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="10dp"
 	/>
 
     <TextView

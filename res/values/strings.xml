@@ -14,17 +14,19 @@
     <string name="button_exit">Exit Application</string>
 
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
-    <string name="send_from_label">From:</string>
-    <string name="send_to_label">To:</string>
+    <string name="send_from_label">Send From:</string>
+    <string name="send_to_label">Send To:</string>
     <string name="send_to_hint">Bitcoin Address</string>
 
-    <string name="send_amount_label">Amount:</string>
+    <string name="send_amount_label">Send Amount:</string>
     <string name="amount_btc_hint">0.0000</string>
     <string name="amount_fiat_hint">0.00</string>
 
-    <string name="send_fee_label">Fee:</string>
+    <string name="send_fee_label">Miner\'s Fee:</string>
     <string name="fee_btc_hint">0.00000</string>
     <string name="fee_fiat_hint">0.000</string>
+
+    <string name="send_bitcoin">Send Bitcoin</string>
 
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>

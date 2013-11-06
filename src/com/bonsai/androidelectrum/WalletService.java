@@ -139,26 +139,6 @@ public class WalletService extends Service
 
             setState(State.READY);
 
-            // Send a transaction.
-            if (false) {
-                try {
-                    int acctnum = 1;
-                    Address dest =
-                        new Address(mParams,
-                                    "19jh2GWRBJ5ktjyMeoe2scghwqYK3enJQH");
-                    BigInteger value = BigInteger.valueOf(100000);
-                    BigInteger fee = BigInteger.valueOf(20000);
-                    mHDWallet.sendCoins(mKit.wallet(), acctnum, dest, value, fee);
-
-                } catch (WrongNetworkException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (AddressFormatException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
             // FIXME - Need to add Progress and Result.
 			return null;
 		}
@@ -247,6 +227,30 @@ public class WalletService extends Service
         List<Balance> balances = new LinkedList<Balance>();
         mHDWallet.getBalances(balances);
         return balances;
+    }
+
+    public void sendCoinsFromAccount(int acctnum,
+                                     String address,
+                                     double amount,
+                                     double fee) {
+        try {
+            Address dest = new Address(mParams, address);
+            BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
+            BigInteger ff = BigInteger.valueOf((int)(amount * 1e8));
+
+            mLogger.info(String
+                         .format("send coins: acct=%d, dest=%s, val=%s, fee=%s",
+                                 acctnum, address, vv, ff));
+            
+            // mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest, vv, ff);
+
+        } catch (WrongNetworkException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (AddressFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void setState(State newstate) {
