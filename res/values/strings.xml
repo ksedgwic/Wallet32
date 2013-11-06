@@ -3,25 +3,38 @@
 
     <string name="app_name">Android Electrum</string>
     <string name="service_name">Wallet Service</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="balance_header_acct">Account</string>
+    <string name="balance_header_btc">BTC</string>
+    <string name="balance_header_fiat">USD</string>
     <string name="button_send">Send Bitcoin</string>
     <string name="button_receive">Receive Bitcoin</string>
     <string name="button_exit">Exit Application</string>
+
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
-    <string name="bitcoin_amount_hint">0.0000</string>
-    <string name="fiat_amount_hint">0.00</string>
+    <string name="send_from_label">From:</string>
+    <string name="send_to_label">To:</string>
+    <string name="send_to_hint">Bitcoin Address</string>
+
+    <string name="send_amount_label">Amount:</string>
+    <string name="amount_btc_hint">0.0000</string>
+    <string name="amount_fiat_hint">0.00</string>
+
+    <string name="send_fee_label">Fee:</string>
+    <string name="fee_btc_hint">0.00000</string>
+    <string name="fee_fiat_hint">0.000</string>
+
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>
     <string name="eq_label">=</string>
+
     <string name="network_status_setup">Wallet Initializing</string>
     <string name="network_status_start">Network Starting</string>
     <string name="network_status_sync">Network Syncing, %1$d%% Done</string>
     <string name="network_status_ready">Network Ready</string>
     <string name="network_status_error">Network Error</string>
     <string name="network_status_unknown">Network Status Unknown</string>
-    <string name="balance_header_acct">Account</string>
-    <string name="balance_header_btc">BTC</string>
-    <string name="balance_header_fiat">USD</string>
 
 </resources>

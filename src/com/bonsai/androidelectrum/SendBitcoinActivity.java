@@ -72,8 +72,8 @@ public class SendBitcoinActivity extends ActionBarActivity {
         // Start off presuming the user set the BTC amount.
         mUserSetFiat = false;
 
-        mBTCAmountEditText = (EditText) findViewById(R.id.bitcoin_amount);
-        mFiatAmountEditText = (EditText) findViewById(R.id.fiat_amount);
+        mBTCAmountEditText = (EditText) findViewById(R.id.amount_btc);
+        mFiatAmountEditText = (EditText) findViewById(R.id.amount_fiat);
 
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);

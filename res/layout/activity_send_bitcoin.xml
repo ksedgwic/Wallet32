@@ -1,75 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:paddingTop="24dp"
     android:paddingBottom="16dp"
     >
 
-    <!-- Children layed out from bottom to top -->
+    <TableLayout
+	android:id="@+id/send_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	android:gravity="center"
+	>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="24dp"
+	    >
+
+	    <TextView
+		android:id="@+id/from_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/send_from_label"
+		android:gravity="right"
+		android:layout_gravity="top"
+		android:paddingTop="8dp"
+		/>
+
+	    <LinearLayout
+		android:id="@+id/from_choices"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="left"
+		android:layout_span="5"
+		>
+
+	        <CheckBox
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Account 0"
+		    />
+
+		<CheckBox
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Account 1"
+		    />
+
+	    </LinearLayout>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="24dp"
+	    >
+
+	    <TextView
+		android:id="@+id/to_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/send_to_label"
+		android:gravity="right"
+		/>
+
+	    <EditText
+		android:id="@+id/to_address"
+		android:inputType="text"
+		android:singleLine="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="12dp"
+		android:minWidth="300dp"
+		android:maxWidth="400dp"
+		android:gravity="left"
+		android:hint="@string/send_to_hint"
+		android:layout_span="5"
+		android:text="1234567890123456789012345678901234"
+		/>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="24dp"
+	    >
+
+	    <TextView
+		android:id="@+id/amount_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/send_amount_label"
+		android:gravity="right"
+		/>
+
+            <EditText
+		android:id="@+id/amount_btc"
+		android:inputType="numberDecimal"
+		android:singleLine="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:minWidth="60dp"
+		android:maxWidth="120dp"
+		android:gravity="right"
+		android:hint="@string/amount_btc_hint"
+		/>
+
+	    <TextView
+		android:id="@+id/amount_btc_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/btc_label"
+		/>
+
+	    <TextView
+		android:id="@+id/amount_eq_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="6dp"
+		android:layout_marginRight="6dp"
+		android:text="@string/eq_label"
+		/>
+
+	    <EditText
+		android:id="@+id/amount_fiat"
+		android:inputType="numberDecimal"
+		android:singleLine="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:minWidth="45dp"
+		android:maxWidth="120dp"
+		android:gravity="right"
+		android:hint="@string/amount_fiat_hint"
+		/>
+
+	    <TextView
+		android:id="@+id/amount_fiat_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/fiat_label"
+		/>
+
+	</TableRow>
+
+        <TableRow
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="24dp"
+	    >
+
+	    <TextView
+		android:id="@+id/fee_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/send_fee_label"
+		android:gravity="right"
+		/>
+
+            <EditText
+		android:id="@+id/fee_btc"
+		android:inputType="numberDecimal"
+		android:singleLine="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:minWidth="60dp"
+		android:maxWidth="120dp"
+		android:gravity="right"
+		android:hint="@string/fee_btc_hint"
+		/>
+
+	    <TextView
+		android:id="@+id/fee_btc_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/btc_label"
+		/>
+
+	    <TextView
+		android:id="@+id/fee_eq_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="6dp"
+		android:layout_marginRight="6dp"
+		android:text="@string/eq_label"
+		/>
+
+	    <EditText
+		android:id="@+id/fee_fiat"
+		android:inputType="numberDecimal"
+		android:singleLine="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:minWidth="45dp"
+		android:maxWidth="120dp"
+		android:gravity="right"
+		android:hint="@string/fee_fiat_hint"
+		/>
+
+	    <TextView
+		android:id="@+id/fee_fiat_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/fiat_label"
+		/>
+
+	</TableRow>
+
+    </TableLayout>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/network_status"
 	android:text="@string/network_status_unknown"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_alignParentBottom="true"
-	android:layout_centerHorizontal="true" />
+	/>
 
-    <LinearLayout
-	android:id="@+id/send_body"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:paddingTop="16dp"
-	android:paddingLeft="16dp"
-	android:paddingRight="16dp"
-	android:orientation="horizontal"
-	android:layout_above="@id/network_status"
-	>
-
-        <EditText
-	    android:id="@+id/bitcoin_amount"
-	    android:inputType="numberDecimal"
-	    android:singleLine="true"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:minWidth="60dp"
-	    android:maxWidth="120dp"
-	    android:gravity="right"
-	    android:hint="@string/bitcoin_amount_hint" />
-
-	<TextView
-	    android:id="@+id/btc_label"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="@string/btc_label" />
-
-	<TextView
-	    android:id="@+id/eq_label"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_marginLeft="6dp"
-	    android:layout_marginRight="6dp"
-	    android:text="@string/eq_label" />
-
-	<EditText
-	    android:id="@+id/fiat_amount"
-	    android:inputType="numberDecimal"
-	    android:singleLine="true"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:minWidth="45dp"
-	    android:maxWidth="120dp"
-	    android:gravity="right"
-	    android:hint="@string/fiat_amount_hint" />
-
-	<TextView
-	    android:id="@+id/fiat_label"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="@string/fiat_label" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

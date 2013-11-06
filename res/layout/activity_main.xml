@@ -4,72 +4,61 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="24dp"
     android:paddingBottom="16dp"
+    android:gravity="center"
     >
 
-    <LinearLayout
-	android:id="@+id/main_body"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical"
-	android:gravity="center"
-	android:layout_weight="1"
-	>
+  <TableLayout
+      android:id="@+id/balance_table"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      />
+  
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
 
-      <TableLayout
-	  android:id="@+id/balance_table"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-	  />
-        
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="fill_parent"
-	  android:layout_weight="1"
-	  />
+  <Button
+      android:id="@+id/send"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_send"
+      android:onClick="sendBitcoin"
+      />
 
-      <Button
-          android:id="@+id/send"
-          android:layout_width="180dp"
-          android:layout_height="wrap_content"
-          android:text="@string/button_send"
-	  android:onClick="sendBitcoin"
-	  />
+  <Button
+      android:id="@+id/receive"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_receive"
+      android:onClick="receiveBitcoin"
+      />
 
-      <Button
-          android:id="@+id/receive"
-          android:layout_width="180dp"
-          android:layout_height="wrap_content"
-          android:text="@string/button_receive"
-	  android:onClick="receiveBitcoin"
-	  />
+  <Button
+      android:id="@+id/exit"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_exit"
+      android:onClick="exitApp"
+      />
 
-      <Button
-          android:id="@+id/exit"
-          android:layout_width="180dp"
-          android:layout_height="wrap_content"
-          android:text="@string/button_exit"
-	  android:onClick="exitApp"
-	  />
+  <!-- Rigid Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="10dp"
+      />
 
-    </LinearLayout>
-
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="10dp"
-	/>
-
-    <TextView
-	android:id="@+id/network_status"
-	android:text="@string/network_status_unknown"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	/>
+  <TextView
+      android:id="@+id/network_status"
+      android:text="@string/network_status_unknown"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      />
 
 </LinearLayout>
