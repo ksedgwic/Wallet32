@@ -140,7 +140,6 @@ public class WalletService extends Service
 
             setState(State.READY);
 
-            // FIXME - Need to add Progress and Result.
 			return null;
 		}
     }
@@ -165,7 +164,8 @@ public class WalletService extends Service
         mContext = getApplicationContext();
         mRes = mContext.getResources();
 
-        BitStampRateUpdater bsru = new BitStampRateUpdater(getApplicationContext());
+        BitStampRateUpdater bsru =
+            new BitStampRateUpdater(getApplicationContext());
         bsru.start();
         mRateUpdater = bsru;
     }
