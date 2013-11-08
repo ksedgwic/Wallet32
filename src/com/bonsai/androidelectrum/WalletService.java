@@ -26,6 +26,7 @@ import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WalletTransaction;
@@ -218,6 +219,11 @@ public class WalletService extends Service
 
     public String getCode() {
         return mRateUpdater.getCode();
+    }
+
+    static public double getDefaultFee() {
+        final BigInteger dmtf = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
+        return dmtf.doubleValue() / 1e8;
     }
 
     public List<Balance> getBalances() {

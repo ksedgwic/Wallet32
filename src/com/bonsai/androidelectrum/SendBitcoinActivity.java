@@ -99,6 +99,12 @@ public class SendBitcoinActivity extends ActionBarActivity {
         mBTCFeeEditText.addTextChangedListener(mBTCFeeWatcher);
         mFiatFeeEditText.addTextChangedListener(mFiatFeeWatcher);
 
+        // Set the default fee value.
+        double defaultFee = WalletService.getDefaultFee();
+        String defaultFeeString = String.format("%05f", defaultFee);
+        EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
+        feeEditText.setText(defaultFeeString);
+
         mLogger.info("SendBitcoinActivity created");
     }
 
@@ -464,6 +470,9 @@ public class SendBitcoinActivity extends ActionBarActivity {
         }
 
         // Which account was selected?
+        if (mCheckedFromId == -1) {
+            
+        }
 
         // Fetch the address.
 
