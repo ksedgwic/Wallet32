@@ -548,6 +548,18 @@ public class SendBitcoinActivity extends ActionBarActivity {
             return;
         }
 
-        showErrorDialog("This isn't implemented!");
+        try {
+            mWalletService.sendCoinsFromAccount(mCheckedFromId,
+                                                addrString,
+                                                amount,
+                                                fee);
+
+            // For now return to main screen on success.
+            finish();
+
+        } catch (RuntimeException ex) {
+            showErrorDialog(ex.getMessage());
+            return;
+        }
     }
 }

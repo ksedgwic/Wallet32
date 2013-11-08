@@ -120,16 +120,19 @@ public class HDWallet {
                                  int acctnum,
                                  Address dest,
                                  BigInteger value,
-                                 BigInteger fee) {
+                                 BigInteger fee) throws RuntimeException {
 
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
 
         SendRequest req = SendRequest.to(dest, value);
         req.fee = fee;
+        req.feePerKb = BigInteger.ZERO;
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector();
 
         SendResult result = wallet.sendCoins(req);
+        if (result == null)
+            throw new RuntimeException("Not enough BTC in account");
     }
 }

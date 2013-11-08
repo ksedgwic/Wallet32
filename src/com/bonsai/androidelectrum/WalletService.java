@@ -238,24 +238,24 @@ public class WalletService extends Service
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
                                      double amount,
-                                     double fee) {
+                                     double fee) throws RuntimeException {
         try {
             Address dest = new Address(mParams, address);
             BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
-            BigInteger ff = BigInteger.valueOf((int)(amount * 1e8));
+            BigInteger ff = BigInteger.valueOf((int)(fee * 1e8));
 
             mLogger.info(String
                          .format("send coins: acct=%d, dest=%s, val=%s, fee=%s",
                                  acctnum, address, vv, ff));
             
-            // mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest, vv, ff);
+            mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest, vv, ff);
 
-        } catch (WrongNetworkException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (AddressFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (WrongNetworkException ex) {
+            String msg = "Address for wrong network: " + ex.getMessage();
+            throw new RuntimeException(msg);
+        } catch (AddressFormatException ex) {
+            String msg = "Malformed bitcoin address: " + ex.getMessage();
+            throw new RuntimeException(msg);
         }
     }
 
