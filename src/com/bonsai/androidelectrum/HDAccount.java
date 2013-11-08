@@ -40,6 +40,7 @@ public class HDAccount {
         mParams = params;
         mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, acctnum);
         mAccountName = accountName;
+        mAccountId = acctnum;
 
         mLogger.info("created HDAccount " + mAccountName + ": " +
                      mAccountKey.getPath());

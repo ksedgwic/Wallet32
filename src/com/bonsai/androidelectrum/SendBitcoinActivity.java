@@ -1,5 +1,6 @@
 package com.bonsai.androidelectrum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -26,8 +27,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -362,6 +365,30 @@ public class SendBitcoinActivity extends ActionBarActivity {
         }
     }
 
+    private List<Integer> mAccountIds;
+    private int mCheckedFromId = -1;
+
+    private OnCheckedChangeListener mSendFromListener =
+        new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton cb,
+                                         boolean isChecked) {
+                if (cb.isChecked()) {
+                    TableLayout table =
+                        (TableLayout) findViewById(R.id.from_choices);
+                    mCheckedFromId = cb.getId();
+                    for (Integer acctid : mAccountIds) {
+                        int rbid = acctid.intValue();
+                        if (rbid != mCheckedFromId) {
+                            RadioButton rb =
+                                (RadioButton) table.findViewById(rbid);
+                            rb.setChecked(false);
+                        }
+                    }
+                }
+			}
+        };
+
     private void addAccountRow(TableLayout table,
                                int acctId,
                                String acctName,
@@ -371,9 +398,12 @@ public class SendBitcoinActivity extends ActionBarActivity {
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.send_from_row, table, false);
 
-        CheckBox tv0 = (CheckBox) row.findViewById(R.id.from_account);
+        RadioButton tv0 = (RadioButton) row.findViewById(R.id.from_account);
         tv0.setId(acctId);		// Change id to the acctId.
         tv0.setText(acctName);
+        tv0.setOnCheckedChangeListener(mSendFromListener);
+        if (acctId == mCheckedFromId)
+            tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
         tv1.setText(String.format("%.04f BTC", btc));
@@ -392,6 +422,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
         // Clear any existing table content.
         table.removeAllViews();
+        mAccountIds = new ArrayList<Integer>();
 
         double sumbtc = 0.0;
         List<Balance> balances = mWalletService.getBalances();
@@ -403,6 +434,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
                               bal.accountName,
                               bal.balance,
                               bal.balance * mFiatPerBTC);
+                mAccountIds.add(bal.accountId);
             }
         }
     }

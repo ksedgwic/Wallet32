@@ -5,24 +5,23 @@
     android:layout_height="wrap_content"
     >
 
-    <CheckBox
+    <RadioButton
 	android:id="@+id/from_account"
-	android:text=""
+	android:text="Sample Account"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="left"
+	android:layout_marginRight="10dp"
+	android:gravity="center_vertical|left"
 	/>
 
     <TextView
 	android:id="@+id/row_btc"
-	android:text="0.000000"
+	android:text="0.0000"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:layout_marginLeft="10dp"
 	android:layout_marginRight="10dp"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
+	android:gravity="center_vertical|right"
 	/>
   
     <TextView
@@ -32,8 +31,7 @@
 	android:layout_height="wrap_content"
 	android:layout_marginLeft="10dp"
 	android:layout_marginRight="10dp"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
+	android:gravity="center_vertical|right"
 	/>
 
 </TableRow>
