@@ -7,16 +7,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -49,6 +54,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
     protected boolean mUserSetFeeFiat;
 
     private Logger mLogger;
+    private Resources mRes;
     private LocalBroadcastManager mLBM;
 
     private WalletService	mWalletService;
@@ -75,6 +81,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         mLogger = LoggerFactory.getLogger(MainActivity.class);
+        mRes = getResources();
         mLBM = LocalBroadcastManager.getInstance(getApplicationContext());
 
         super.onCreate(savedInstanceState);
@@ -463,21 +470,84 @@ public class SendBitcoinActivity extends ActionBarActivity {
         }
     }
 
+    public static class ErrorDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+            String msg = getArguments().getString("msg");
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            builder
+                .setMessage(msg)
+                .setPositiveButton(R.string.send_error_ok,
+                                   new DialogInterface.OnClickListener() {
+                                       public void onClick(DialogInterface di,
+                                                           int id) {
+                                           // Do we need to do anything?
+                                       }
+                                   });
+            return builder.create();
+        }
+    }
+
+    private void showErrorDialog(String msg) {
+        DialogFragment df = new ErrorDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("msg", msg);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "error");
+    }
+
     public void sendBitcoin(View view) {
         if (mWalletService == null) {
-            // FIXME - need error message here.
+            showErrorDialog(mRes.getString(R.string.send_error_nowallet));
             return;
         }
 
         // Which account was selected?
         if (mCheckedFromId == -1) {
-            
+            showErrorDialog(mRes.getString(R.string.send_error_noaccount));
+            return;
         }
 
         // Fetch the address.
+        EditText addrEditText = (EditText) findViewById(R.id.to_address);
+        String addrString = addrEditText.getText().toString();
+        if (addrString.length() == 0) {
+            showErrorDialog(mRes.getString(R.string.send_error_noaddr));
+            return;
+        }
 
         // Fetch the amount to send.
+        EditText amountEditText = (EditText) findViewById(R.id.amount_btc);
+        String amountString = amountEditText.getText().toString();
+        if (amountString.length() == 0) {
+            showErrorDialog(mRes.getString(R.string.send_error_noamount));
+            return;
+        }
+        double amount;
+        try {
+            amount = Double.parseDouble(amountString);
+        } catch (NumberFormatException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_badamount));
+            return;
+        }
 
         // Fetch the fee amount.
+        EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
+        String feeString = feeEditText.getText().toString();
+        if (feeString.length() == 0) {
+            showErrorDialog(mRes.getString(R.string.send_error_nofee));
+            return;
+        }
+        double fee;
+        try {
+            fee = Double.parseDouble(feeString);
+        } catch (NumberFormatException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_badfee));
+            return;
+        }
+
+        showErrorDialog("This isn't implemented!");
     }
 }
