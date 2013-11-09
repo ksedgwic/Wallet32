@@ -101,6 +101,7 @@ public class WalletService extends Service
 
             byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
             mHDWallet = new HDWallet(mParams, seed);
+            mLogger.info(HDAddress.statsString());
 
             mKit =
                 new MyWalletAppKit(mParams,
