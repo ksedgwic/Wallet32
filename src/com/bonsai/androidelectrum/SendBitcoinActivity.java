@@ -120,9 +120,6 @@ public class SendBitcoinActivity extends ActionBarActivity {
         EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
         feeEditText.setText(defaultFeeString);
 
-        // CaptureActivity
-        ZXScanHelper.scan(this, 12345);
-
         mLogger.info("SendBitcoinActivity created");
     }
 
@@ -541,6 +538,11 @@ public class SendBitcoinActivity extends ActionBarActivity {
         args.putString("msg", msg);
         df.setArguments(args);
         df.show(getSupportFragmentManager(), "error");
+    }
+
+    public void scanQR(View view) {
+        // CaptureActivity
+        ZXScanHelper.scan(this, 12345);
     }
 
     public void sendBitcoin(View view) {

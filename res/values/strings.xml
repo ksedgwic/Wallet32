@@ -17,6 +17,7 @@
     <string name="send_from_label">Send From:</string>
     <string name="send_to_label">Send To:</string>
     <string name="send_to_hint">Bitcoin Address</string>
+    <string name="send_to_qr">QR</string>
 
     <string name="send_amount_label">Send Amount:</string>
     <string name="amount_btc_hint">0.0000</string>

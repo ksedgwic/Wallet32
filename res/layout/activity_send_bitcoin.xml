@@ -54,15 +54,41 @@
 	    android:paddingTop="30dp"
 	    >
 
-	    <TextView
-		android:id="@+id/to_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/send_to_label"
-		android:textAppearance="@android:style/TextAppearance.Medium"
-		android:textStyle="bold"
-		android:layout_span="7"
-		/>
+	  <LinearLayout
+	      android:layout_width="fill_parent"
+	      android:layout_height="fill_parent"
+	      android:orientation="horizontal"
+	      android:layout_span="7"
+	      >
+
+  	      <TextView
+		  android:id="@+id/to_label"
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:text="@string/send_to_label"
+		  android:textAppearance="@android:style/TextAppearance.Medium"
+		  android:textStyle="bold"
+		  />
+
+	      <!-- Stretchy Spacer -->
+	      <View
+		  android:layout_width="fill_parent"
+		  android:layout_height="fill_parent"
+		  android:layout_weight="1"
+		  />
+
+	      <Button
+		  android:id="@+id/qr"
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		  android:text="@string/send_to_qr"
+		  android:onClick="scanQR"
+		  android:textAppearance="@android:style/TextAppearance.Small"
+		  android:minHeight="0dp"
+		  android:minWidth="0dp"
+		  />
+
+	  </LinearLayout>
 
 	</TableRow>
 
