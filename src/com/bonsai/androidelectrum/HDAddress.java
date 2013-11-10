@@ -8,7 +8,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -31,6 +33,43 @@ public class HDAddress {
 
     private int				mNumTrans;
     private BigInteger		mBalance;
+
+    public HDAddress(NetworkParameters params,
+                     DeterministicKey chainKey,
+                     JsonNode addrNode)
+        throws RuntimeException {
+
+        mLogger = LoggerFactory.getLogger(HDAddress.class);
+
+        mParams = params;
+
+        mAddrNum = addrNode.path("addrNum").intValue();
+
+        mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
+
+        // Derive ECKey.
+        byte[] prvBytes = mAddrKey.getPrivKeyBytes();
+        try {
+            mPubBytes = Base58.decode(addrNode.path("pubBytes").textValue());
+        } catch (AddressFormatException ex) {
+            throw new RuntimeException("failed to decode pubByts");
+        }
+        
+        mECKey = new ECKey(prvBytes, mPubBytes);
+
+        // Derive public key, public hash and address.
+        mPubKey = mECKey.getPubKey();
+        mPubKeyHash = mECKey.getPubKeyHash();
+        mAddress = mECKey.toAddress(mParams);
+
+        // Initialize transaction count and balance.
+        mNumTrans = addrNode.path("numTrans").intValue();
+        mBalance = addrNode.path("balance").bigIntegerValue();
+
+        mLogger.info("created address " + mAddrKey.getPath() + ": " +
+                     mAddress.toString() + " " +
+                     mECKey.getPrivateKeyEncoded(mParams).toString());
+    }
 
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,

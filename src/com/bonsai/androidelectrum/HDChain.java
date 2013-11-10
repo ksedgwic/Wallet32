@@ -3,12 +3,14 @@ package com.bonsai.androidelectrum;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet;
@@ -25,6 +27,33 @@ public class HDChain {
     private String				mChainName;
 
     private ArrayList<HDAddress>	mAddrs;
+
+    public HDChain(NetworkParameters params,
+                   DeterministicKey accountKey,
+                   JsonNode chainNode)
+        throws RuntimeException {
+
+        mLogger = LoggerFactory.getLogger(HDChain.class);
+
+        mParams = params;
+
+        mChainName = chainNode.path("name").textValue();
+        mIsReceive = chainNode.path("isReceive").booleanValue();
+
+        int chainnum = mIsReceive ? 0 : 1;
+
+        mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
+
+        mLogger.info("created HDChain " + mChainName + ": " +
+                     mChainKey.getPath());
+        
+        mAddrs = new ArrayList<HDAddress>();
+        Iterator<JsonNode> it = chainNode.path("addrs").iterator();
+        while (it.hasNext()) {
+            JsonNode addrNode = it.next();
+            mAddrs.add(new HDAddress(mParams, mChainKey, addrNode));
+        }
+    }
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,

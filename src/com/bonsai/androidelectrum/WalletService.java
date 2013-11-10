@@ -81,6 +81,7 @@ public class WalletService extends Service
                 Iterable<WalletTransaction> iwt =
                     mKit.wallet().getWalletTransactions();
                 mHDWallet.applyAllTransactions(iwt);
+                mHDWallet.persist();
 
                 Intent intent = new Intent("wallet-state-changed");
                 mLBM.sendBroadcast(intent);
@@ -98,13 +99,21 @@ public class WalletService extends Service
 
             String filePrefix = "android-electrum";
 
-            mLogger.info("creating new wallet app kit");
+            // Try to restore existing wallet.
+            mHDWallet = HDWallet.restore(mParams,
+                                         mContext.getFilesDir(),
+                                         filePrefix);
 
-            byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
-            mHDWallet = new HDWallet(mParams,
-                                     mContext.getFilesDir(),
-                                     filePrefix,
-                                     seed);
+            if (mHDWallet == null) {
+                // Create a new wallet from scratch.
+                byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
+                mHDWallet = new HDWallet(mParams,
+                                         mContext.getFilesDir(),
+                                         filePrefix,
+                                         seed);
+            }
+
+            mLogger.info("creating new wallet app kit");
 
             mKit =
                 new MyWalletAppKit(mParams,
@@ -138,7 +147,6 @@ public class WalletService extends Service
             Iterable<WalletTransaction> iwt =
                 mKit.wallet().getWalletTransactions();
             mHDWallet.applyAllTransactions(iwt);
-
             mHDWallet.persist();
 
             // Listen for future wallet changes.

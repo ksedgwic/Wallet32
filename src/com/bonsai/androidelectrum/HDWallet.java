@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
@@ -31,7 +34,7 @@ import com.google.bitcoin.script.Script;
 
 public class HDWallet {
 
-    private Logger mLogger;
+    private static Logger mLogger = LoggerFactory.getLogger(HDWallet.class);
 
     private final NetworkParameters	mParams;
     private final File				mDirectory;
@@ -41,13 +44,64 @@ public class HDWallet {
 
     private ArrayList<HDAccount>	mAccounts;
 
+    public static String persistPath(String filePrefix) {
+        return filePrefix + ".hdwallet";
+    }
+
+    // Create an HDWallet from persisted file data.
+    public static HDWallet restore(NetworkParameters params,
+                                   File directory,
+                                   String filePrefix) {
+
+        String path = persistPath(filePrefix);
+        mLogger.info("restoring HDWallet from " + path);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(new File(directory, path));
+            return new HDWallet(params, directory, filePrefix, node);
+        } catch (JsonProcessingException ex) {
+            mLogger.warn("trouble parsing JSON: " + ex.toString());
+        } catch (IOException ex) {
+            mLogger.warn("trouble reading " + path + ": " + ex.toString());
+        } catch (RuntimeException ex) {
+            mLogger.warn("trouble restoring wallet: " + ex.toString());
+        }
+        return null;
+    }
+
+    public HDWallet(NetworkParameters params,
+                    File directory,
+                    String filePrefix,
+                    JsonNode walletNode)
+        throws RuntimeException {
+
+        mParams = params;
+        mDirectory = directory;
+        mFilePrefix = filePrefix;
+
+        try {
+			mSeed = Base58.decode(walletNode.path("seed").textValue());
+		} catch (AddressFormatException e) {
+            throw new RuntimeException("couldn't decode seed value");
+		}
+
+        mMasterKey = HDKeyDerivation.createMasterPrivateKey(mSeed);
+
+        mLogger.info("restored HDWallet " + mMasterKey.getPath());
+
+        mAccounts = new ArrayList<HDAccount>();
+        Iterator<JsonNode> it = walletNode.path("accounts").iterator();
+        while (it.hasNext()) {
+            JsonNode acctNode = it.next();
+            mAccounts.add(new HDAccount(mParams, mMasterKey, acctNode));
+        }
+    }
+
     public HDWallet(NetworkParameters params,
                     File directory,
                     String filePrefix,
                     byte[] seed) {
         
-        mLogger = LoggerFactory.getLogger(HDWallet.class);
-
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
@@ -155,7 +209,7 @@ public class HDWallet {
     }
 
     public void persist() {
-        String path = mFilePrefix + ".hdwallet";
+        String path = persistPath(mFilePrefix);
         String tmpPath = path + ".tmp";
         try {
             ObjectMapper mapper = new ObjectMapper();

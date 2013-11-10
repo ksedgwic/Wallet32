@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
@@ -31,6 +32,29 @@ public class HDAccount {
 
     private HDChain				mReceiveChain;
     private HDChain				mChangeChain;
+
+    public HDAccount(NetworkParameters params,
+                     DeterministicKey masterKey,
+                     JsonNode acctNode)
+        throws RuntimeException {
+
+        mLogger = LoggerFactory.getLogger(HDAccount.class);
+
+        mParams = params;
+
+        mAccountName = acctNode.path("name").textValue();
+        mAccountId = acctNode.path("id").intValue();
+
+        mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
+
+        mLogger.info("created HDAccount " + mAccountName + ": " +
+                     mAccountKey.getPath());
+
+        mReceiveChain =
+            new HDChain(mParams, mAccountKey, acctNode.path("receive"));
+        mChangeChain =
+            new HDChain(mParams, mAccountKey, acctNode.path("change"));
+    }
 
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
