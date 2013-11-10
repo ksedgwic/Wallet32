@@ -1,7 +1,9 @@
 package com.bonsai.androidelectrum;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,5 +146,16 @@ public class HDAccount {
             // Does all the real work ...
             return mDefaultCoinSelector.select(biTarget, filtered);
         }
+    }
+
+    public Object dumps() {
+        Map<String,Object> obj = new HashMap<String,Object>();
+
+        obj.put("name", mAccountName);
+        obj.put("id", mAccountId);
+        obj.put("receive", mReceiveChain.dumps());
+        obj.put("change", mChangeChain.dumps());
+
+        return obj;
     }
 }

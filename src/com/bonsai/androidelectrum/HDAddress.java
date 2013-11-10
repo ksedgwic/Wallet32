@@ -2,6 +2,8 @@ package com.bonsai.androidelectrum;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,9 @@ public class HDAddress {
     private Logger mLogger;
 
     private NetworkParameters	mParams;
+    private int					mAddrNum;
     private DeterministicKey	mAddrKey;
+    private byte[]				mPubBytes;
     private ECKey				mECKey;
     private byte[]				mPubKey;
     private byte[]				mPubKeyHash;
@@ -28,10 +32,6 @@ public class HDAddress {
     private int				mNumTrans;
     private BigInteger		mBalance;
 
-    private static long mPrvTime = 0;
-    private static long mPubTime = 0;
-    private static long mKeyTime = 0;
-
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,
                      int addrnum) {
@@ -39,41 +39,27 @@ public class HDAddress {
         mLogger = LoggerFactory.getLogger(HDAddress.class);
 
         mParams = params;
+        mAddrNum = addrnum;
+
         mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, addrnum);
 
-        // mECKey = mAddrKey.toECKey();	// Expensive
-
-        long t0 = System.nanoTime();
+        // Derive ECKey.
         byte[] prvBytes = mAddrKey.getPrivKeyBytes();
-        long t1 = System.nanoTime();
-        byte[] pubBytes = mAddrKey.getPubKeyBytes(); // Expensive
-        long t2 = System.nanoTime();
-        mECKey = new ECKey(prvBytes, pubBytes);
-        long t3 = System.nanoTime();
+        mPubBytes = mAddrKey.getPubKeyBytes(); // Expensive, save.
+        mECKey = new ECKey(prvBytes, mPubBytes);
 
-        mPrvTime += t1 - t0;
-        mPubTime += t2 - t1;
-        mKeyTime += t3 - t2;
-
+        // Derive public key, public hash and address.
         mPubKey = mECKey.getPubKey();
         mPubKeyHash = mECKey.getPubKeyHash();
         mAddress = mECKey.toAddress(mParams);
 
+        // Initialize transaction count and balance.
         mNumTrans = 0;
         mBalance = BigInteger.ZERO;
-
-        mLogger.info("pubkey = " + Base58.encode(pubBytes));
 
         mLogger.info("created address " + mAddrKey.getPath() + ": " +
                      mAddress.toString() + " " +
                      mECKey.getPrivateKeyEncoded(mParams).toString());
-    }
-
-    public static String statsString() {
-        return String.format("prv = %f, pub = %f, key = %f",
-                             (double) mPrvTime / 1e9,
-                             (double) mPubTime / 1e9,
-                             (double) mKeyTime / 1e9);
     }
 
     public void addKey(Wallet wallet) {
@@ -143,5 +129,16 @@ public class HDAddress {
 
     public Address getAddress() {
         return mAddress;
+    }
+
+    public Object dumps() {
+        Map<String,Object> obj = new HashMap<String,Object>();
+
+        obj.put("addrNum", mAddrNum);
+        obj.put("pubBytes", Base58.encode(mPubBytes));
+        obj.put("numTrans", Integer.valueOf(mNumTrans));
+        obj.put("balance", mBalance);
+
+        return obj;
     }
 }

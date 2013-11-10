@@ -1,13 +1,21 @@
 package com.bonsai.androidelectrum;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
@@ -25,16 +33,26 @@ public class HDWallet {
 
     private Logger mLogger;
 
-    private NetworkParameters	mParams;
-    private DeterministicKey	mMasterKey;
+    private final NetworkParameters	mParams;
+    private final File				mDirectory;
+    private final String			mFilePrefix;
+    private final byte[]			mSeed;
+    private final DeterministicKey	mMasterKey;
 
     private ArrayList<HDAccount>	mAccounts;
 
-    public HDWallet(NetworkParameters params, byte[] seed) {
+    public HDWallet(NetworkParameters params,
+                    File directory,
+                    String filePrefix,
+                    byte[] seed) {
         
         mLogger = LoggerFactory.getLogger(HDWallet.class);
 
         mParams = params;
+        mDirectory = directory;
+        mFilePrefix = filePrefix;
+        mSeed = seed;
+
         mMasterKey = HDKeyDerivation.createMasterPrivateKey(seed);
 
         mLogger.info("created HDWallet " + mMasterKey.getPath());
@@ -134,5 +152,41 @@ public class HDWallet {
         SendResult result = wallet.sendCoins(req);
         if (result == null)
             throw new RuntimeException("Not enough BTC in account");
+    }
+
+    public void persist() {
+        String path = mFilePrefix + ".hdwallet";
+        String tmpPath = path + ".tmp";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Object obj = dumps();
+            File tmpFile = new File(mDirectory, tmpPath);
+            if (tmpFile.exists())
+                tmpFile.delete();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            mapper.writeValue(tmpFile, obj);
+            File newFile = new File(mDirectory, path);
+            if (!tmpFile.renameTo(newFile))
+                mLogger.warn("failed to rename to " + newFile);
+            else
+                mLogger.info("persisted to " + path);
+        } catch (JsonProcessingException ex) {
+            mLogger.warn("failed generating JSON: " + ex.toString());
+        } catch (IOException ex) {
+            mLogger.warn("failed to write to " + tmpPath + ": " + ex.toString());
+		}
+    }
+
+    public Object dumps() {
+        Map<String,Object> obj = new HashMap<String,Object>();
+
+        obj.put("seed", Base58.encode(mSeed));
+
+        List<Object> acctList = new ArrayList<Object>();
+        for (HDAccount acct : mAccounts)
+            acctList.add(acct.dumps());
+        obj.put("accounts", acctList);
+
+        return obj;
     }
 }

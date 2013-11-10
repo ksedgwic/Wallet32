@@ -2,6 +2,9 @@ package com.bonsai.androidelectrum;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,5 +96,19 @@ public class HDChain {
                 return true;
         }
         return false;
+    }
+
+    public Object dumps() {
+        Map<String,Object> obj = new HashMap<String,Object>();
+
+        obj.put("name", mChainName);
+        obj.put("isReceive", Boolean.valueOf(mIsReceive));
+
+        List<Object> addrsList = new ArrayList<Object>();
+        for (HDAddress addr : mAddrs)
+            addrsList.add(addr.dumps());
+        obj.put("addrs", addrsList);
+
+        return obj;
     }
 }

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -100,8 +101,10 @@ public class WalletService extends Service
             mLogger.info("creating new wallet app kit");
 
             byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
-            mHDWallet = new HDWallet(mParams, seed);
-            mLogger.info(HDAddress.statsString());
+            mHDWallet = new HDWallet(mParams,
+                                     mContext.getFilesDir(),
+                                     filePrefix,
+                                     seed);
 
             mKit =
                 new MyWalletAppKit(mParams,
@@ -135,6 +138,8 @@ public class WalletService extends Service
             Iterable<WalletTransaction> iwt =
                 mKit.wallet().getWalletTransactions();
             mHDWallet.applyAllTransactions(iwt);
+
+            mHDWallet.persist();
 
             // Listen for future wallet changes.
             mKit.wallet().addEventListener(mWalletListener);
