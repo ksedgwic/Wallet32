@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/jackson-core-2.2.3.jar"/>
 	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/jackson-databind-2.2.3.jar"/>
 	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/jackson-annotations-2.2.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CaptureActivity"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

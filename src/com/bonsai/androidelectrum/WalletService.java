@@ -227,6 +227,10 @@ public class WalletService extends Service
         }
     }
 
+    public NetworkParameters getParams() {
+        return mParams;
+    }
+
     public double getRate() {
         return mRateUpdater.getRate();
     }

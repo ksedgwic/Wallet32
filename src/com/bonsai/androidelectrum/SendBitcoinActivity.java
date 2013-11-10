@@ -1,10 +1,18 @@
 package com.bonsai.androidelectrum;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.uri.BitcoinURI;
+import com.google.bitcoin.uri.BitcoinURIParseException;
+
+import eu.livotov.zxscan.ZXScanHelper;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -111,6 +119,9 @@ public class SendBitcoinActivity extends ActionBarActivity {
         String defaultFeeString = String.format("%05f", defaultFee);
         EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
         feeEditText.setText(defaultFeeString);
+
+        // CaptureActivity
+        ZXScanHelper.scan(this, 12345);
 
         mLogger.info("SendBitcoinActivity created");
     }
@@ -487,6 +498,40 @@ public class SendBitcoinActivity extends ActionBarActivity {
                                        }
                                    });
             return builder.create();
+        }
+    }
+
+    protected void onActivityResult(final int requestCode,
+                                    final int resultCode,
+                                    final Intent data)
+    {
+        if (resultCode == RESULT_OK && requestCode == 12345)
+        {
+            String scannedCode = ZXScanHelper.getScannedCode(data);
+            mLogger.info("saw scannedCode " + scannedCode);
+
+            NetworkParameters params =
+                mWalletService == null ? null : mWalletService.getParams();
+
+            try {
+				BitcoinURI uri = new BitcoinURI(params, scannedCode);
+                Address addr = uri.getAddress();
+                BigInteger amt = uri.getAmount();
+
+                EditText addrEditText =
+                    (EditText) findViewById(R.id.to_address);
+                addrEditText.setText(addr.toString(), 
+                                     TextView.BufferType.EDITABLE);
+
+                if (amt != null) {
+                    double amtval = amt.doubleValue() / 1e8;
+                    String amtstr = String.format("%f", amtval);
+                    mBTCAmountEditText.setText(amtstr,
+                                               TextView.BufferType.EDITABLE);
+                }
+			} catch (BitcoinURIParseException ex) {
+                mLogger.warn("URI parse failed: " + ex.toString());
+			}
         }
     }
 
