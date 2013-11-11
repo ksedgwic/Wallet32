@@ -216,7 +216,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void receiveBitcoin(View view) {
-        // Do something in response to button
+        Intent intent = new Intent(this, ReceiveBitcoinActivity.class);
+        startActivity(intent);
     }
 
     public void exitApp(View view) {

@@ -20,31 +20,49 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-	android:theme="@style/Theme.AppCompat.Light" android:debuggable="true">
+	android:theme="@style/Theme.AppCompat.Light" android:debuggable="true"
+	>
 
         <service
             android:name=".WalletService"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/service_name" >
+            android:label="@string/service_name"
+	    >
         </service>
 
         <activity
             android:name="com.bonsai.androidelectrum.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+	    >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"
+			/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"
+			  />
             </intent-filter>
         </activity>
 
         <activity
             android:name="com.bonsai.androidelectrum.SendBitcoinActivity"
             android:label="@string/title_activity_send_bitcoin"
-            android:parentActivityName="com.bonsai.androidelectrum.MainActivity" >
+            android:parentActivityName="com.bonsai.androidelectrum.MainActivity"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.bonsai.androidelectrum.MainActivity" />
+                android:value="com.bonsai.androidelectrum.MainActivity"
+		/>
+        </activity>
+
+        <activity
+            android:name="com.bonsai.androidelectrum.ReceiveBitcoinActivity"
+            android:label="@string/title_activity_receive_bitcoin"
+            android:parentActivityName="com.bonsai.androidelectrum.MainActivity"
+	    >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bonsai.androidelectrum.MainActivity"
+		/>
         </activity>
 
 	<activity
@@ -53,7 +71,8 @@
             android:stateNotNeeded="true"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+	    >
 	</activity>
 
     </application>
