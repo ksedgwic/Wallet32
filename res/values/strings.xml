@@ -53,6 +53,7 @@
     <string name="receive_bitcoin">Receive Bitcoin</string>
 
     <string name="title_activity_view_address">View Address</string>
+    <string name="view_clipboard_copy">Address copied to clipboard</string>
     <string name="button_copy">Copy Address</string>
     <string name="button_dismiss">Dismiss</string>
 

@@ -27,11 +27,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.text.ClipboardManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ViewAddressActivity extends ActionBarActivity {
 
@@ -44,6 +46,11 @@ public class ViewAddressActivity extends ActionBarActivity {
     private WalletService	mWalletService;
 
     private double mFiatPerBTC = 0.0;
+    private double mAmount = 0.0;
+
+    private String mURI;
+
+	private ClipboardManager mClipboardManager;
 
 	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
 
@@ -54,6 +61,7 @@ public class ViewAddressActivity extends ActionBarActivity {
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
                 updateWalletStatus(); // calls updateBalances() ...
+                updateRate();
             }
 
             public void onServiceDisconnected(ComponentName className) {
@@ -69,30 +77,37 @@ public class ViewAddressActivity extends ActionBarActivity {
         mLBM = LocalBroadcastManager.getInstance(this);
         mRes = getResources();
 
+		mClipboardManager =
+            (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_view_address);
 
         Intent intent = getIntent();
         String address = intent.getExtras().getString("address");
-        double amount = intent.getExtras().getDouble("amount");
+        mAmount = intent.getExtras().getDouble("amount");
 
         BigInteger amt =
-            amount == 0.0 ? null : BigInteger.valueOf((int) (amount * 1e8));
+            mAmount == 0.0 ? null : BigInteger.valueOf((int) (mAmount * 1e8));
 
-        String uristr =
-            BitcoinURI.convertToBitcoinURI(address, amt, null, null);
+        mURI = BitcoinURI.convertToBitcoinURI(address, amt, null, null);
 
-        mLogger.info("uri=" + uristr);
+        mLogger.info("uri=" + mURI);
 
         final int size =
             (int) (256 * getResources().getDisplayMetrics().density);
 
-        Bitmap bm = createBitmap(uristr, size);
+        Bitmap bm = createBitmap(mURI, size);
         if (bm != null) {
             ImageView iv = (ImageView) findViewById(R.id.address_qr_view);
             iv.setImageBitmap(bm);
         }
+
+        TextView idtv = (TextView) findViewById(R.id.address);
+        idtv.setText(address);
+
+        updateAmount();
 
         mLogger.info("ViewAddressActivity created");
 	}
@@ -169,6 +184,19 @@ public class ViewAddressActivity extends ActionBarActivity {
         if (mWalletService != null) {
             mFiatPerBTC = mWalletService.getRate();
         }
+        updateAmount();
+    }
+
+    private void updateAmount() {
+        // Is the amount set?
+        if (mAmount == 0.0)
+            return;
+
+        String amtstr = String.format("Amount: %.04f BTC = %.02f USD",
+                                      mAmount, mAmount * mFiatPerBTC);
+        TextView amttv = (TextView) findViewById(R.id.amount);
+        amttv.setText(amtstr);
+        
     }
 
     private Bitmap createBitmap(String content, final int size) {
@@ -215,7 +243,10 @@ public class ViewAddressActivity extends ActionBarActivity {
     }
 
     public void copyAddress(View view) {
-        // FIXME - Implement this.
+		mClipboardManager.setText(mURI);
+		Toast.makeText(this,
+                       R.string.view_clipboard_copy,
+                       Toast.LENGTH_SHORT).show();
         finish();
     }
 
