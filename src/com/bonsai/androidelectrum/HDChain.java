@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -27,6 +28,8 @@ public class HDChain {
     private String				mChainName;
 
     private ArrayList<HDAddress>	mAddrs;
+
+    private int					mMarginSize = 4;
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
@@ -139,5 +142,40 @@ public class HDChain {
         obj.put("addrs", addrsList);
 
         return obj;
+    }
+
+    private int marginSize() {
+        int count = 0;
+        ListIterator li = mAddrs.listIterator(mAddrs.size());
+        while (li.hasPrevious()) {
+            HDAddress hda = (HDAddress) li.previous();
+            if (!hda.isUnused())
+                return count;
+            ++count;
+        }
+        return count;
+    }
+
+    public void ensureMargins(Wallet wallet) {
+        // How many unused addresses do we have at the end of the chain?
+        int numUnused = marginSize();
+
+        // Do we have an ample margin?
+        if (numUnused < mMarginSize) {
+
+            // How many addresses do we need to add?
+            int numAdd = mMarginSize - numUnused;
+
+            mLogger.info(String.format("%s expanding margin, adding %d addrs",
+                                       mChainKey.getPath(), numAdd));
+
+            // Add the addresses ...
+            int newSize = mAddrs.size() + numAdd;
+            for (int ii = mAddrs.size(); ii < newSize; ++ii) {
+                HDAddress hda = new HDAddress(mParams, mChainKey, ii);
+                mAddrs.add(hda);
+                hda.addKey(wallet);
+            }
+        }
     }
 }

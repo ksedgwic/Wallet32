@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +104,17 @@ public class HDAddress {
 
     public void addKey(Wallet wallet) {
 
-        // Set the creation time to Tue Oct 15 11:18:03 PDT 2013
+        // NOTE - we can do much better here.  There are two cases:
+        //
+        // 1) When we are creating a new key for the first time the
+        //    current time is the right value.
+        //
+        // 2) If we are scanning to restore a wallet from seed then
+        //    we need to search from the earliest possible wallet
+        //    existence time.
+        //
+        // For now, set the creation time to Tue Oct 15 11:18:03 PDT 2013
+        //
         mECKey.setCreationTimeSeconds(1381861127);
 
         wallet.addKey(mECKey);
@@ -129,8 +140,8 @@ public class HDAddress {
         ++mNumTrans;
         mBalance = mBalance.add(value);
 
-        mLogger.info(mAddrKey.getPath() + " matched output of " +
-                     value.toString());
+        mLogger.debug(mAddrKey.getPath() + " matched output of " +
+                      value.toString());
     }
 
     public void applyInput(byte[] pubkey, BigInteger value) {
@@ -141,8 +152,8 @@ public class HDAddress {
         ++mNumTrans;
         mBalance = mBalance.subtract(value);
 
-        mLogger.info(mAddrKey.getPath() + " matched input of " +
-                     value.toString());
+        mLogger.debug(mAddrKey.getPath() + " matched input of " +
+                      value.toString());
     }
 
     public void clearBalance() {

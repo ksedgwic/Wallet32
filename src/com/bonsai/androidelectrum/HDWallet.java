@@ -249,4 +249,10 @@ public class HDWallet {
 
         return obj;
     }
+
+    // Ensure that there are enough spare addresses on all chains.
+    public void ensureMargins(Wallet wallet) {
+        for (HDAccount acct : mAccounts)
+            acct.ensureMargins(wallet);
+    }
 }

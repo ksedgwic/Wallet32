@@ -81,6 +81,11 @@ public class WalletService extends Service
                 Iterable<WalletTransaction> iwt =
                     mKit.wallet().getWalletTransactions();
                 mHDWallet.applyAllTransactions(iwt);
+
+                // Check to make sure we have sufficient margins.
+                mHDWallet.ensureMargins(mKit.wallet());
+
+                // Persist the new state.
                 mHDWallet.persist();
 
                 Intent intent = new Intent("wallet-state-changed");
@@ -115,16 +120,26 @@ public class WalletService extends Service
 
             mLogger.info("creating new wallet app kit");
 
-            mKit =
-                new MyWalletAppKit(mParams,
-                                   mContext.getFilesDir(),
-                                   filePrefix,
-                                   mDownloadListener)
+            mKit = new MyWalletAppKit(mParams,
+                                      mContext.getFilesDir(),
+                                      filePrefix,
+                                      mDownloadListener)
                 {
                     @Override
                     protected void onSetupCompleted() {
                         mLogger.info("adding keys");
+
+                        // Add all the existing keys, they'll be
+                        // ignored if they are already in the
+                        // WalletAppKit.
+                        //
                         mHDWallet.addAllKeys(wallet());
+
+                        // Do we have enough margin on all our chains?
+                        // Add keys to chains which don't have enough
+                        // unused addresses at the end.
+                        //
+                        mHDWallet.ensureMargins(wallet());
                     }
                 };
 
@@ -147,6 +162,11 @@ public class WalletService extends Service
             Iterable<WalletTransaction> iwt =
                 mKit.wallet().getWalletTransactions();
             mHDWallet.applyAllTransactions(iwt);
+
+            // Check the margins again, since transactions may have arrived.
+            mHDWallet.ensureMargins(mKit.wallet());
+
+            // Persist the new state.
             mHDWallet.persist();
 
             // Listen for future wallet changes.

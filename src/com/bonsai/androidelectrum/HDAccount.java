@@ -186,4 +186,9 @@ public class HDAccount {
 
         return obj;
     }
+
+    public void ensureMargins(Wallet wallet) {
+        mReceiveChain.ensureMargins(wallet);
+        mChangeChain.ensureMargins(wallet);
+    }
 }
