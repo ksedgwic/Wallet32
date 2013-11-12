@@ -120,6 +120,10 @@ public class HDAccount {
         mChangeChain.logBalance();
     }
 
+    public Address nextReceiveAddress() {
+        return mReceiveChain.nextUnusedAddress();
+    }
+
     public Address nextChangeAddress() {
         return mChangeChain.nextUnusedAddress();
     }

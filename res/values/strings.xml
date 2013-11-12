@@ -48,8 +48,13 @@
     <string name="receive_error_ok">Ok</string>
     <string name="receive_error_nowallet">The wallet isn\'t ready</string>
     <string name="receive_error_noaccount">No account selected</string>
+    <string name="receive_error_badamount">Amount to receive is malformed</string>
 
     <string name="receive_bitcoin">Receive Bitcoin</string>
+
+    <string name="title_activity_view_address">View Address</string>
+    <string name="button_copy">Copy Address</string>
+    <string name="button_dismiss">Dismiss</string>
 
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>

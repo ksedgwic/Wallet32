@@ -188,6 +188,12 @@ public class HDWallet {
                                      acct.balance().doubleValue() / 1e8));
     }
 
+    public Address nextReceiveAddress(int acctnum) {
+        // Which account are we using for this receive?
+        HDAccount acct = mAccounts.get(acctnum);
+        return acct.nextReceiveAddress();
+    }
+
     public void sendAccountCoins(Wallet wallet,
                                  int acctnum,
                                  Address dest,

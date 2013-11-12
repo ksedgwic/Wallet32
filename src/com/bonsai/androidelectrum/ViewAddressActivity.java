@@ -1,6 +1,18 @@
 package com.bonsai.androidelectrum;
 
-import java.util.List;
+import java.math.BigInteger;
+import java.util.Hashtable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.bitcoin.uri.BitcoinURI;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -9,29 +21,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
-import android.graphics.Typeface;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class MainActivity extends ActionBarActivity {
+public class ViewAddressActivity extends ActionBarActivity {
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(MainActivity.class);
+        LoggerFactory.getLogger(ViewAddressActivity.class);
 
     private LocalBroadcastManager mLBM;
     private Resources mRes;
@@ -39,6 +44,8 @@ public class MainActivity extends ActionBarActivity {
     private WalletService	mWalletService;
 
     private double mFiatPerBTC = 0.0;
+
+	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
 
     private ServiceConnection mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className,
@@ -64,9 +71,30 @@ public class MainActivity extends ActionBarActivity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_view_address);
 
-        mLogger.info("MainActivity created");
+        Intent intent = getIntent();
+        String address = intent.getExtras().getString("address");
+        double amount = intent.getExtras().getDouble("amount");
+
+        BigInteger amt =
+            amount == 0.0 ? null : BigInteger.valueOf((int) (amount * 1e8));
+
+        String uristr =
+            BitcoinURI.convertToBitcoinURI(address, amt, null, null);
+
+        mLogger.info("uri=" + uristr);
+
+        final int size =
+            (int) (256 * getResources().getDisplayMetrics().density);
+
+        Bitmap bm = createBitmap(uristr, size);
+        if (bm != null) {
+            ImageView iv = (ImageView) findViewById(R.id.address_qr_view);
+            iv.setImageBitmap(bm);
+        }
+
+        mLogger.info("ViewAddressActivity created");
 	}
 
     @Override
@@ -80,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
         mLBM.registerReceiver(mRateChangedReceiver,
                               new IntentFilter("rate-changed"));
 
-        mLogger.info("MainActivity resumed");
+        mLogger.info("ViewAddressActivity resumed");
     }
 
     @Override
@@ -91,8 +119,7 @@ public class MainActivity extends ActionBarActivity {
         mLBM.unregisterReceiver(mWalletStateChangedReceiver);
         mLBM.unregisterReceiver(mRateChangedReceiver);
 
-
-        mLogger.info("MainActivity paused");
+        mLogger.info("ViewAddressActivity paused");
     }
 
 	@Override
@@ -136,74 +163,50 @@ public class MainActivity extends ActionBarActivity {
             TextView tv = (TextView) findViewById(R.id.network_status);
             tv.setText(state);
         }
-        updateBalances();
     }
 
     private void updateRate() {
         if (mWalletService != null) {
             mFiatPerBTC = mWalletService.getRate();
-            updateBalances();
         }
     }
-    private void addBalanceHeader(TableLayout table) {
-        TableRow row =
-            (TableRow) LayoutInflater.from(this)
-            .inflate(R.layout.balance_table_header, table, false);
-        table.addView(row);
-    }
 
-    private void addBalanceRow(TableLayout table,
-                               String acct,
-                               double btc,
-                               double fiat,
-                               boolean isTotal) {
-        TableRow row =
-            (TableRow) LayoutInflater.from(this)
-            .inflate(R.layout.balance_table_row, table, false);
+    private Bitmap createBitmap(String content, final int size) {
+        final Hashtable<EncodeHintType, Object> hints =
+            new Hashtable<EncodeHintType, Object>();
+        hints.put(EncodeHintType.MARGIN, 0);
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+        BitMatrix result;
+		try {
+			result = sQRCodeWriter.encode(content,
+                                          BarcodeFormat.QR_CODE,
+                                          size,
+                                          size,
+                                          hints);
+		} catch (WriterException ex) {
+            mLogger.warn("qr encoder failed: " + ex.toString());
+            return null;
+		}
 
-        TextView tv0 = (TextView) row.findViewById(R.id.row_label);
-        tv0.setText(acct);
-        if (isTotal)
-            tv0.setTypeface(tv0.getTypeface(), Typeface.BOLD);
+        final int width = result.getWidth();
+        final int height = result.getHeight();
+        final int[] pixels = new int[width * height];
 
-        TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.05f", btc));
-        if (isTotal)
-            tv1.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-
-        TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.03f", fiat));
-        if (isTotal)
-            tv2.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-
-        table.addView(row);
-    }
-
-    private void updateBalances() {
-        if (mWalletService == null)
-            return;
-
-        TableLayout table = (TableLayout) findViewById(R.id.balance_table);
-
-        // Clear any existing table content.
-        table.removeAllViews();
-
-        addBalanceHeader(table);
-
-        double sumbtc = 0.0;
-        List<Balance> balances = mWalletService.getBalances();
-        if (balances != null) {
-            for (Balance bal : balances) {
-                sumbtc += bal.balance;
-                addBalanceRow(table,
-                              bal.accountName,
-                              bal.balance,
-                              bal.balance * mFiatPerBTC,
-                              false);
+        for (int y = 0; y < height; y++)
+        {
+            final int offset = y * width;
+            for (int x = 0; x < width; x++)
+            {
+                pixels[offset + x] =
+                    result.get(x, y) ? Color.BLACK : Color.TRANSPARENT;
             }
         }
 
-        addBalanceRow(table, "Total", sumbtc, sumbtc * mFiatPerBTC, true);
+        final Bitmap bitmap =
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        return bitmap;
     }
 
     protected void openSettings()
@@ -211,20 +214,12 @@ public class MainActivity extends ActionBarActivity {
         // FIXME - Implement this.
     }
 
-    public void sendBitcoin(View view) {
-        Intent intent = new Intent(this, SendBitcoinActivity.class);
-        startActivity(intent);
-    }
-
-    public void receiveBitcoin(View view) {
-        Intent intent = new Intent(this, ReceiveBitcoinActivity.class);
-        startActivity(intent);
-    }
-
-    public void exitApp(View view) {
-        mLogger.info("Application Exiting");
-        stopService(new Intent(this, WalletService.class));
+    public void copyAddress(View view) {
+        // FIXME - Implement this.
         finish();
-        System.exit(0);
+    }
+
+    public void dismissView(View view) {
+        finish();
     }
 }

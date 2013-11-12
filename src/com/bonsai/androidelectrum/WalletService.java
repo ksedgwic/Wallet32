@@ -253,6 +253,10 @@ public class WalletService extends Service
         return balances;
     }
 
+    public Address nextReceiveAddress(int acctnum){
+        return mHDWallet.nextReceiveAddress(acctnum);
+    }
+
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
                                      double amount,

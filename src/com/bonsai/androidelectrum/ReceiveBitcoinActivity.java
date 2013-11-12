@@ -6,6 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -386,6 +388,27 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
             return;
         }
 
-        // FIXME - implement the receive action here.
+        Address addr = mWalletService.nextReceiveAddress(mCheckedToId);
+        String addrstr = addr.toString();
+
+        // Was the amount specified?
+        EditText amountEditText = (EditText) findViewById(R.id.amount_btc);
+        String amountString = amountEditText.getText().toString();
+        double amount = 0.0;
+        if (amountString.length() != 0) {
+            try {
+                amount = Double.parseDouble(amountString);
+            } catch (NumberFormatException ex) {
+                showErrorDialog(mRes
+                                .getString(R.string.receive_error_badamount));
+                return;
+            }
+        }
+
+        // Dispatch to the address viewer.
+        Intent intent = new Intent(this, ViewAddressActivity.class);
+        intent.putExtra("address", addrstr);
+        intent.putExtra("amount", amount);
+        startActivity(intent);
     }
 }
