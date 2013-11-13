@@ -5,10 +5,10 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bonsai</groupId>
-  <artifactId>android-electrum</artifactId>
+  <artifactId>wallet32</artifactId>
   <packaging>apk</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Android Electrum</name>
+  <name>Wallet32</name>
   
   <dependencies>
     <dependency>

@@ -1,4 +1,4 @@
-package com.bonsai.androidelectrum;
+package com.bonsai.wallet32;
 
 import android.annotation.SuppressLint;
 import com.google.bitcoin.core.*;

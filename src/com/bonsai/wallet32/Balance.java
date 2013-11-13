@@ -1,4 +1,4 @@
-package com.bonsai.androidelectrum;
+package com.bonsai.wallet32;
 
 public class Balance {
     public final int accountId;

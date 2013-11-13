@@ -5,11 +5,11 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/uber-bitcoinj-0.10.1.jar"/>
-	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/slf4j-android-1.6.1-RC1.jar"/>
-	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/jackson-core-2.2.3.jar"/>
-	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/jackson-databind-2.2.3.jar"/>
-	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/AndroidElectrum/libs/jackson-annotations-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/Wallet32/libs/uber-bitcoinj-0.10.1.jar"/>
+	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/Wallet32/libs/slf4j-android-1.6.1-RC1.jar"/>
+	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/Wallet32/libs/jackson-core-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/Wallet32/libs/jackson-databind-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/Wallet32/libs/jackson-annotations-2.2.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CaptureActivity"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

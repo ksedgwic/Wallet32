@@ -1,11 +1,11 @@
-AndroidElectrum
+Wallet32
 ===============
 
 ### Setup
 
 Clone the project source from github:
 
-    git clone git@github.com:ksedgwic/AndroidElectrum.git
+    git clone git@github.com:ksedgwic/Wallet32.git
 
 Import the project into Eclipse:
 

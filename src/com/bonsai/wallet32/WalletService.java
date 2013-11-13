@@ -1,4 +1,4 @@
-package com.bonsai.androidelectrum;
+package com.bonsai.wallet32;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -103,7 +103,7 @@ public class WalletService extends Service
 
             mParams = MainNetParams.get();
 
-            String filePrefix = "android-electrum";
+            String filePrefix = "wallet32";
 
             // Try to restore existing wallet.
             mHDWallet = HDWallet.restore(mParams,

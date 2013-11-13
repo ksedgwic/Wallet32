@@ -1,4 +1,4 @@
-package com.bonsai.androidelectrum;
+package com.bonsai.wallet32;
 
 import java.io.BufferedReader;
 import java.io.IOException;
