@@ -1,10 +1,12 @@
 package com.bonsai.androidelectrum;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.core.Address;
 
@@ -93,6 +95,18 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
 
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
+
+        // FIXME - Remove this
+        try {
+			MnemonicSentence ms = new MnemonicSentence(this);
+            List<String> words =
+                ms.encode(Hex.decode("e5fc62d20e0e5d9b2756e8d4d91cbb80"));
+            for (String word : words)
+                mLogger.info(word);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         mLogger.info("ReceiveBitcoinActivity created");
     }
