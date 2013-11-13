@@ -1,5 +1,6 @@
 package com.bonsai.androidelectrum;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.LinkedList;
@@ -116,6 +117,19 @@ public class WalletService extends Service
                                          mContext.getFilesDir(),
                                          filePrefix,
                                          seed);
+            }
+
+            // FIXME - Remove this
+            try {
+                MnemonicSentence ms = new MnemonicSentence(mContext);
+                List<String> words =
+                    ms.encode(Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2"));
+                for (String word : words)
+                    mLogger.info(word);
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
 
             mLogger.info("creating new wallet app kit");

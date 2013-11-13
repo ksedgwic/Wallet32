@@ -96,18 +96,6 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
 
-        // FIXME - Remove this
-        try {
-			MnemonicSentence ms = new MnemonicSentence(this);
-            List<String> words =
-                ms.encode(Hex.decode("e5fc62d20e0e5d9b2756e8d4d91cbb80"));
-            for (String word : words)
-                mLogger.info(word);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
         mLogger.info("ReceiveBitcoinActivity created");
     }
 
