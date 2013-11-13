@@ -17,6 +17,10 @@ package com.bonsai.wallet32;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,19 +33,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -81,10 +79,14 @@ public class MainActivity extends ActionBarActivity {
 
 		setContentView(R.layout.activity_main);
 
+        // Start the WalletService.
+        startService(new Intent(this, WalletService.class));
+
         mLogger.info("MainActivity created");
 	}
 
-    @Override
+    @SuppressLint("InlinedApi")
+	@Override
     protected void onResume() {
         super.onResume();
         bindService(new Intent(this, WalletService.class), mConnection,

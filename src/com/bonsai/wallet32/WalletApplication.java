@@ -30,7 +30,10 @@ public class WalletApplication extends Application {
 	{
         mLogger = LoggerFactory.getLogger(WalletApplication.class);
 
-        startService(new Intent(this, WalletService.class));
+        // We don't start the WalletService until we've made it
+        // through the Lobby to an existing wallet ...
+        //
+        // // startService(new Intent(this, WalletService.class));
 
         super.onCreate();
 
