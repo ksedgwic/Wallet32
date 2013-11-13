@@ -17,11 +17,11 @@ import org.spongycastle.crypto.params.KeyParameter;
 
 import android.content.Context;
 
-public class MnemonicSentence {
+public class MnemonicCoder {
 
     private ArrayList<String>	mWordList;
 
-    MnemonicSentence(Context context) throws IOException {
+    MnemonicCoder(Context context) throws IOException {
         // Initialize the words array.
         InputStream wis = context.getAssets().open("wordlist/english.txt");
         BufferedReader br =

@@ -121,9 +121,9 @@ public class WalletService extends Service
 
             // FIXME - Remove this
             try {
-                MnemonicSentence ms = new MnemonicSentence(mContext);
+                MnemonicCoder mc = new MnemonicCoder(mContext);
                 List<String> words =
-                    ms.encode(Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2"));
+                    mc.encode(Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2"));
                 for (String word : words)
                     mLogger.info(word);
 
