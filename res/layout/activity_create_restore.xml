@@ -8,7 +8,7 @@
     android:paddingTop="24dp"
     android:paddingBottom="16dp"
     android:gravity="center"
-    tools:context=".CreateRestoreActivity" >
+    tools:context=".CreateRestoreActivity"
     >
 
     <!-- Rigid Spacer -->

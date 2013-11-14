@@ -127,7 +127,7 @@ public class WalletService extends Service
 
             if (mHDWallet == null) {
 
-                mLogger.critical("WalletService started with bad HDWallet");
+                mLogger.error("WalletService started with bad HDWallet");
                 System.exit(0);
 
                 /*
