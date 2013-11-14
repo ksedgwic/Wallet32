@@ -33,10 +33,10 @@
             android:label="@string/title_activity_lobby" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.bonsai.wallet32.MainActivity"
             android:label="@string/app_name" >
@@ -72,6 +72,10 @@
             android:stateNotNeeded="true"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
+        <activity
+            android:name="com.bonsai.wallet32.CreateRestoreActivity"
+            android:label="@string/title_activity_create_restore" >
         </activity>
     </application>
 

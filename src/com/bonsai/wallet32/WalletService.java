@@ -126,12 +126,18 @@ public class WalletService extends Service
                                          filePrefix);
 
             if (mHDWallet == null) {
+
+                mLogger.critical("WalletService started with bad HDWallet");
+                System.exit(0);
+
+                /*
                 // Create a new wallet from scratch.
                 byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
                 mHDWallet = new HDWallet(mParams,
                                          mContext.getFilesDir(),
                                          filePrefix,
                                          seed);
+                */
             }
 
             // FIXME - Remove this

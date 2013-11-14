@@ -50,19 +50,19 @@ public class LobbyActivity extends Activity {
             // Spin up the WalletService.
             startService(new Intent(this, WalletService.class));
 
-            // Make the MainActivity the base of the task stack.
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-
-            // Prevent the user from coming back here.
-            finish();
 
         } else {
 
             mLogger.info("No existing wallet");
 
-            // FIXME - add the create/recover screen.
+            Intent intent = new Intent(this, CreateRestoreActivity.class);
+            startActivity(intent);
         }
+
+        // Prevent the user from coming back here.
+        finish();
 	}
 
 	@Override

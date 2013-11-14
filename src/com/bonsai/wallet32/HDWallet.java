@@ -128,9 +128,8 @@ public class HDWallet {
 
         // Add some accounts.
         mAccounts = new ArrayList<HDAccount>();
-        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account0", 0));
-        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account1", 1));
-        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account2", 2));
+        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account 0", 0));
+        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account 1", 1));
     }
 
     public void addAllKeys(Wallet wallet) {

@@ -86,8 +86,8 @@ public class HDAccount {
         mLogger.info("created HDAccount " + mAccountName + ": " +
                      mAccountKey.getPath());
 
-        mReceiveChain = new HDChain(mParams, mAccountKey, true, "Receive", 8);
-        mChangeChain = new HDChain(mParams, mAccountKey, false, "Change", 8);
+        mReceiveChain = new HDChain(mParams, mAccountKey, true, "Receive", 0);
+        mChangeChain = new HDChain(mParams, mAccountKey, false, "Change", 0);
     }
 
     public void addAllKeys(Wallet wallet) {

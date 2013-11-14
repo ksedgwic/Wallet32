@@ -44,7 +44,7 @@ public class HDChain {
 
     private ArrayList<HDAddress>	mAddrs;
 
-    private int					mMarginSize = 4;
+    private int					mMarginSize = 6;
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
