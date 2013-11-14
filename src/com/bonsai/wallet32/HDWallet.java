@@ -115,7 +115,8 @@ public class HDWallet {
     public HDWallet(NetworkParameters params,
                     File directory,
                     String filePrefix,
-                    byte[] seed) {
+                    byte[] seed,
+                    int numAccounts) {
         
         mParams = params;
         mDirectory = directory;
@@ -128,8 +129,10 @@ public class HDWallet {
 
         // Add some accounts.
         mAccounts = new ArrayList<HDAccount>();
-        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account 0", 0));
-        mAccounts.add(new HDAccount(mParams, mMasterKey, "Account 1", 1));
+        for (int ii = 0; ii < numAccounts; ++ii) {
+            String acctName = String.format("Account %d", ii);
+            mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ii));
+        }
     }
 
     public void addAllKeys(Wallet wallet) {

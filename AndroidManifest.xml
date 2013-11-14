@@ -77,6 +77,10 @@
             android:name="com.bonsai.wallet32.CreateRestoreActivity"
             android:label="@string/title_activity_create_restore" >
         </activity>
+        <activity
+            android:name="com.bonsai.wallet32.RestoreWalletActivity"
+            android:label="@string/title_activity_restore_wallet" >
+        </activity>
     </application>
 
 </manifest>

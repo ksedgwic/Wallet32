@@ -15,10 +15,9 @@
 
 package com.bonsai.wallet32;
 
-import java.security.SecureRandom;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.params.MainNetParams;
@@ -28,38 +27,46 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
-public class CreateRestoreActivity extends Activity {
+public class RestoreWalletActivity extends Activity {
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(CreateRestoreActivity.class);
+        LoggerFactory.getLogger(RestoreWalletActivity.class);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create_restore);
+		setContentView(R.layout.activity_restore_wallet);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.create_restore, menu);
+		getMenuInflater().inflate(R.menu.restore_wallet, menu);
 		return true;
 	}
 
-    public void createWallet(View view) {
-        mLogger.info("create wallet");
+    public void restoreWallet(View view) {
+        mLogger.info("restore wallet");
 
         NetworkParameters params = MainNetParams.get();
 
         String filePrefix = "wallet32";
 
-        // Generate a new seed.
-        SecureRandom random = new SecureRandom();
-        byte seed[] = new byte[16];
-        random.nextBytes(seed);
+        EditText et = (EditText) findViewById(R.id.seed);
+        String seedstr = et.getText().toString();
+        byte[] seed = Hex.decode(seedstr);
 
-        int numAccounts = 2;
+        if (seed.length != 16) {
+            Toast.makeText(this,
+                           R.string.restore_badseed,
+                           Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int numAccounts = 3;
 
         // Setup a wallet with the seed.
         HDWallet hdwallet = new HDWallet(params,
@@ -73,16 +80,6 @@ public class CreateRestoreActivity extends Activity {
         startService(new Intent(this, WalletService.class));
 
         Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-
-        // Prevent the user from coming back here.
-        finish();
-    }
-
-    public void restoreWallet(View view) {
-        mLogger.info("restore wallet");
-
-        Intent intent = new Intent(this, RestoreWalletActivity.class);
         startActivity(intent);
 
         // Prevent the user from coming back here.

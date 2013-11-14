@@ -3,4 +3,6 @@
 
 * Add notification bar icon when WalletService is running.
 
+* Factor wallet file prefix into single location.
+
 * Make SendBitcoinActivity address field accept URI format (prefill amount).
