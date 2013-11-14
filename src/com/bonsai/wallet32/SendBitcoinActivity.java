@@ -132,7 +132,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
         // Set the default fee value.
         double defaultFee = WalletService.getDefaultFee();
-        String defaultFeeString = String.format("%05f", defaultFee);
+        String defaultFeeString = String.format("%.5f", defaultFee);
         mBTCFeeEditText.setText(defaultFeeString);
 
         mLogger.info("SendBitcoinActivity created");
