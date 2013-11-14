@@ -22,13 +22,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.bitcoin.core.Address;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.uri.BitcoinURI;
-import com.google.bitcoin.uri.BitcoinURIParseException;
-
-import eu.livotov.zxscan.ZXScanHelper;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -41,9 +34,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
@@ -62,6 +53,16 @@ import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.WrongNetworkException;
+import com.google.bitcoin.uri.BitcoinURI;
+import com.google.bitcoin.uri.BitcoinURIParseException;
+
+import eu.livotov.zxscan.ZXScanHelper;
 
 public class SendBitcoinActivity extends ActionBarActivity {
 
@@ -99,7 +100,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
 
     };
 
-    @SuppressLint("HandlerLeak")
+    @SuppressLint({ "HandlerLeak", "DefaultLocale" })
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -132,13 +133,13 @@ public class SendBitcoinActivity extends ActionBarActivity {
         // Set the default fee value.
         double defaultFee = WalletService.getDefaultFee();
         String defaultFeeString = String.format("%05f", defaultFee);
-        EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
-        feeEditText.setText(defaultFeeString);
+        mBTCFeeEditText.setText(defaultFeeString);
 
         mLogger.info("SendBitcoinActivity created");
     }
 
-    @Override
+    @SuppressLint("InlinedApi")
+	@Override
     protected void onResume() {
         super.onResume();
         bindService(new Intent(this, WalletService.class), mConnection,
@@ -460,11 +461,11 @@ public class SendBitcoinActivity extends ActionBarActivity {
         table.removeAllViews();
         mAccountIds = new ArrayList<Integer>();
 
-        double sumbtc = 0.0;
+        // double sumbtc = 0.0;
         List<Balance> balances = mWalletService.getBalances();
         if (balances != null) {
             for (Balance bal : balances) {
-                sumbtc += bal.balance;
+                // sumbtc += bal.balance;
                 addAccountRow(table,
                               bal.accountId,
                               bal.accountName,
@@ -513,7 +514,8 @@ public class SendBitcoinActivity extends ActionBarActivity {
         }
     }
 
-    protected void onActivityResult(final int requestCode,
+    @SuppressLint("DefaultLocale")
+	protected void onActivityResult(final int requestCode,
                                     final int resultCode,
                                     final Intent data)
     {
@@ -525,6 +527,7 @@ public class SendBitcoinActivity extends ActionBarActivity {
             NetworkParameters params =
                 mWalletService == null ? null : mWalletService.getParams();
 
+            // Is the scanned code a bitcoin URI?
             try {
 				BitcoinURI uri = new BitcoinURI(params, scannedCode);
                 Address addr = uri.getAddress();
@@ -542,7 +545,25 @@ public class SendBitcoinActivity extends ActionBarActivity {
                                                TextView.BufferType.EDITABLE);
                 }
 			} catch (BitcoinURIParseException ex) {
-                mLogger.warn("URI parse failed: " + ex.toString());
+
+                // Is it just a plain address?
+                try {
+                    Address addr = new Address(params, scannedCode);
+
+                    EditText addrEditText =
+                        (EditText) findViewById(R.id.to_address);
+                    addrEditText.setText(addr.toString(), 
+                                         TextView.BufferType.EDITABLE);
+
+                } catch (WrongNetworkException ex2) {
+                    String msg = mRes.getString(R.string.send_error_wrongnw);
+                    mLogger.warn(msg);
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                } catch (AddressFormatException ex2) {
+                    String msg = mRes.getString(R.string.send_error_badqr);
+                    mLogger.warn(msg);
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                }
 			}
         }
     }
