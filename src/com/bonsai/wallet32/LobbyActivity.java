@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
@@ -43,13 +44,23 @@ public class LobbyActivity extends Activity {
         String path = filePrefix + ".hdwallet";	// FIXME - Also in WalletService
         File walletFile = new File(dir, path);
         if (walletFile.exists()) {
-            // We've got an existing wallet.
+
             mLogger.info("Existing wallet found");
+
+            // Spin up the WalletService.
+            startService(new Intent(this, WalletService.class));
+
+            // Make the MainActivity the base of the task stack.
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+
+            // Prevent the user from coming back here.
+            finish();
+
         } else {
-            // No wallet, create or recover ...
+
             mLogger.info("No existing wallet");
+
             // FIXME - add the create/recover screen.
         }
 	}

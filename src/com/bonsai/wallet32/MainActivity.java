@@ -59,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
                 mWalletService =
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
+                updateRate();
                 updateWalletStatus(); // calls updateBalances() ...
             }
 
@@ -78,9 +79,6 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-
-        // Start the WalletService.
-        startService(new Intent(this, WalletService.class));
 
         mLogger.info("MainActivity created");
 	}
