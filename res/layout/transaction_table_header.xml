@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+	android:id="@+id/header_date"
+	android:text="@string/transaction_header_date"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_marginLeft="10dp"
+	android:layout_marginRight="10dp"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:textStyle="bold"
+	android:gravity="center"
+	/>
+  
+    <TextView
+	android:id="@+id/header_addr"
+	android:text="@string/transaction_header_addr"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_marginLeft="10dp"
+	android:layout_marginRight="10dp"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:textStyle="bold"
+	android:gravity="center"
+	/>
+  
+    <TextView
+	android:id="@+id/header_btc"
+	android:text="@string/transaction_header_btc"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_marginLeft="10dp"
+	android:layout_marginRight="10dp"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:textStyle="bold"
+	android:gravity="center"
+	/>
+
+</TableRow>

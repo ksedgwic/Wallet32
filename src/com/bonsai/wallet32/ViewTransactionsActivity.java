@@ -15,12 +15,11 @@
 
 package com.bonsai.wallet32;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.annotation.SuppressLint;
+import com.google.bitcoin.core.WalletTransaction;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,7 +27,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -36,15 +34,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity {
+public class ViewTransactionsActivity extends ActionBarActivity {
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(MainActivity.class);
+        LoggerFactory.getLogger(ViewTransactionsActivity.class);
 
     private LocalBroadcastManager mLBM;
     private Resources mRes;
@@ -59,8 +56,8 @@ public class MainActivity extends ActionBarActivity {
                 mWalletService =
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
+                updateWalletStatus(); // Calls updateTransactions();
                 updateRate();
-                updateWalletStatus(); // calls updateBalances() ...
             }
 
             public void onServiceDisconnected(ComponentName className) {
@@ -78,13 +75,16 @@ public class MainActivity extends ActionBarActivity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_view_transactions);
 
-        mLogger.info("MainActivity created");
+        // Do we want an account filter?
+        // Intent intent = getIntent();
+        // int accountId = intent.getExtras().getInteger("accountId");
+
+        mLogger.info("ViewTransactionsActivity created");
 	}
 
-    @SuppressLint("InlinedApi")
-	@Override
+    @Override
     protected void onResume() {
         super.onResume();
         bindService(new Intent(this, WalletService.class), mConnection,
@@ -95,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
         mLBM.registerReceiver(mRateChangedReceiver,
                               new IntentFilter("rate-changed"));
 
-        mLogger.info("MainActivity resumed");
+        mLogger.info("ViewTransactionsActivity resumed");
     }
 
     @Override
@@ -106,8 +106,7 @@ public class MainActivity extends ActionBarActivity {
         mLBM.unregisterReceiver(mWalletStateChangedReceiver);
         mLBM.unregisterReceiver(mRateChangedReceiver);
 
-
-        mLogger.info("MainActivity paused");
+        mLogger.info("ViewTransactionsActivity paused");
     }
 
 	@Override
@@ -127,6 +126,11 @@ public class MainActivity extends ActionBarActivity {
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void openSettings()
+    {
+        // FIXME - Implement this.
     }
 
     private BroadcastReceiver mWalletStateChangedReceiver =
@@ -151,62 +155,39 @@ public class MainActivity extends ActionBarActivity {
             TextView tv = (TextView) findViewById(R.id.network_status);
             tv.setText(state);
         }
-        updateBalances();
+        updateTransactions();
     }
 
     private void updateRate() {
         if (mWalletService != null) {
             mFiatPerBTC = mWalletService.getRate();
-            updateBalances();
         }
+        updateTransactions();
     }
 
-    private void addBalanceHeader(TableLayout table) {
+    private void addTransactionHeader(TableLayout table) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
-            .inflate(R.layout.balance_table_header, table, false);
+            .inflate(R.layout.transaction_table_header, table, false);
         table.addView(row);
     }
 
-    private void addBalanceRow(TableLayout table,
-                               String acct,
-                               double btc,
-                               double fiat,
-                               boolean isTotal) {
-        TableRow row =
-            (TableRow) LayoutInflater.from(this)
-            .inflate(R.layout.balance_table_row, table, false);
-
-        TextView tv0 = (TextView) row.findViewById(R.id.row_label);
-        tv0.setText(acct);
-        if (isTotal)
-            tv0.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-
-        TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.05f", btc));
-        if (isTotal)
-            tv1.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-
-        TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.03f", fiat));
-        if (isTotal)
-            tv2.setTypeface(tv0.getTypeface(), Typeface.BOLD);
-
-        table.addView(row);
-    }
-
-    private void updateBalances() {
+    private void updateTransactions() {
         if (mWalletService == null)
             return;
 
-        TableLayout table = (TableLayout) findViewById(R.id.balance_table);
+        TableLayout table = (TableLayout) findViewById(R.id.transaction_table);
 
         // Clear any existing table content.
         table.removeAllViews();
 
-        addBalanceHeader(table);
+        addTransactionHeader(table);
 
-        double sumbtc = 0.0;
+        Iterable<WalletTransaction> txit = mWalletService.getTransactions();
+        for (WalletTransaction wtx : txit) {
+        }
+
+        /*
         List<Balance> balances = mWalletService.getBalances();
         if (balances != null) {
             for (Balance bal : balances) {
@@ -218,34 +199,7 @@ public class MainActivity extends ActionBarActivity {
                               false);
             }
         }
-
         addBalanceRow(table, "Total", sumbtc, sumbtc * mFiatPerBTC, true);
-    }
-
-    protected void openSettings()
-    {
-        // FIXME - Implement this.
-    }
-
-    public void sendBitcoin(View view) {
-        Intent intent = new Intent(this, SendBitcoinActivity.class);
-        startActivity(intent);
-    }
-
-    public void receiveBitcoin(View view) {
-        Intent intent = new Intent(this, ReceiveBitcoinActivity.class);
-        startActivity(intent);
-    }
-
-    public void viewTransactions(View view) {
-        Intent intent = new Intent(this, ViewTransactionsActivity.class);
-        startActivity(intent);
-    }
-
-    public void exitApp(View view) {
-        mLogger.info("Application Exiting");
-        stopService(new Intent(this, WalletService.class));
-        finish();
-        System.exit(0);
+        */
     }
 }

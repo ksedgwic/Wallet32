@@ -20,6 +20,7 @@
     <string name="balance_header_fiat">USD</string>
     <string name="button_send">Send Bitcoin</string>
     <string name="button_receive">Receive Bitcoin</string>
+    <string name="button_transactions">View Transactions</string>
     <string name="button_exit">Exit Application</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
@@ -53,6 +54,10 @@
     <string name="receive_error_noaccount">No account selected</string>
     <string name="receive_error_badamount">Amount to receive is malformed</string>
     <string name="receive_bitcoin">Receive Bitcoin</string>
+    <string name="title_activity_view_transactions">View Transactions</string>
+    <string name="transaction_header_date">Date</string>
+    <string name="transaction_header_addr">Address</string>
+    <string name="transaction_header_btc">BTC</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="view_clipboard_copy">Address copied to clipboard</string>
     <string name="button_copy">Copy Address</string>

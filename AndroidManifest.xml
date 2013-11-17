@@ -58,6 +58,14 @@
                 android:value="com.bonsai.wallet32.MainActivity" />
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.ViewTransactionsActivity"
+            android:label="@string/title_activity_view_transactions"
+            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bonsai.wallet32.MainActivity" />
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.ViewAddressActivity"
             android:label="@string/title_activity_view_address"
             android:parentActivityName="com.bonsai.wallet32.MainActivity" >

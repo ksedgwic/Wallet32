@@ -308,6 +308,10 @@ public class WalletService extends Service
         return balances;
     }
 
+    public Iterable<WalletTransaction> getTransactions() {
+        return mKit.wallet().getWalletTransactions();
+    }
+
     public Address nextReceiveAddress(int acctnum){
         return mHDWallet.nextReceiveAddress(acctnum);
     }

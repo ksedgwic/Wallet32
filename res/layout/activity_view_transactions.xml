@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
+    tools:context=".ViewTransactionsActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -12,7 +12,7 @@
     >
 
     <TableLayout
-	android:id="@+id/balance_table"
+	android:id="@+id/transaction_table"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	/>
@@ -22,44 +22,6 @@
 	android:layout_width="fill_parent"
 	android:layout_height="0dp"
 	android:layout_weight="1"
-	/>
-
-    <Button
-	android:id="@+id/send"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_send"
-	android:onClick="sendBitcoin"
-	/>
-
-    <Button
-	android:id="@+id/receive"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_receive"
-	android:onClick="receiveBitcoin"
-	/>
-
-    <Button
-	android:id="@+id/transactions"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_transactions"
-	android:onClick="viewTransactions"
-	/>
-
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="10dp"
-	/>
-
-    <Button
-	android:id="@+id/exit"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_exit"
-	android:onClick="exitApp"
 	/>
 
     <!-- Rigid Spacer -->
