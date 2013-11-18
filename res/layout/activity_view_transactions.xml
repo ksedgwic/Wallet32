@@ -11,11 +11,27 @@
     android:gravity="center"
     >
 
-    <TableLayout
-	android:id="@+id/transaction_table"
+    <HorizontalScrollView
+	android:id="@+id/scroll_horiz_id"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	/>
+	>
+
+        <ScrollView
+	    android:id="@+id/scroll_id"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    >
+
+  	    <TableLayout
+		android:id="@+id/transaction_table"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		/>
+
+	</ScrollView>
+    
+    </HorizontalScrollView>
     
     <!-- Stretchy Spacer -->
     <View

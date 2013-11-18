@@ -172,6 +172,16 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         table.addView(row);
     }
 
+    private void addTransactionRow(TableLayout table, WalletTransaction wtx) {
+        TableRow row =
+            (TableRow) LayoutInflater.from(this)
+            .inflate(R.layout.transaction_table_row, table, false);
+
+        // FIXME - modify values here.
+
+        table.addView(row);
+    }
+
     private void updateTransactions() {
         if (mWalletService == null)
             return;
@@ -184,22 +194,7 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         addTransactionHeader(table);
 
         Iterable<WalletTransaction> txit = mWalletService.getTransactions();
-        for (WalletTransaction wtx : txit) {
-        }
-
-        /*
-        List<Balance> balances = mWalletService.getBalances();
-        if (balances != null) {
-            for (Balance bal : balances) {
-                sumbtc += bal.balance;
-                addBalanceRow(table,
-                              bal.accountName,
-                              bal.balance,
-                              bal.balance * mFiatPerBTC,
-                              false);
-            }
-        }
-        addBalanceRow(table, "Total", sumbtc, sumbtc * mFiatPerBTC, true);
-        */
+        for (WalletTransaction wtx : txit)
+            addTransactionRow(table, wtx);
     }
 }

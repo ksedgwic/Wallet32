@@ -58,6 +58,9 @@
     <string name="transaction_header_date">Date</string>
     <string name="transaction_header_addr">Address</string>
     <string name="transaction_header_btc">BTC</string>
+    <string name="transaction_header_fiat">USD</string>
+    <string name="transaction_header_balance_btc">BTC</string>
+    <string name="transaction_header_balance_fiat">USD</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="view_clipboard_copy">Address copied to clipboard</string>
     <string name="button_copy">Copy Address</string>
