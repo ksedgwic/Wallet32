@@ -233,10 +233,14 @@ public class WalletService extends Service
         mContext = getApplicationContext();
         mRes = mContext.getResources();
 
-        BitStampRateUpdater bsru =
-            new BitStampRateUpdater(getApplicationContext());
-        bsru.start();
-        mRateUpdater = bsru;
+        // BitStampRateUpdater bsru =
+        //     new BitStampRateUpdater(getApplicationContext());
+        // bsru.start();
+        // mRateUpdater = bsru;
+        MtGoxRateUpdater mgru =
+            new MtGoxRateUpdater(getApplicationContext());
+        mgru.start();
+        mRateUpdater = mgru;
     }
 
     @Override
