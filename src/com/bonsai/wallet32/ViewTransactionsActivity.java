@@ -15,9 +15,16 @@
 
 package com.bonsai.wallet32;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.WalletTransaction;
 
 import android.content.BroadcastReceiver;
@@ -172,12 +179,40 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         table.addView(row);
     }
 
-    private void addTransactionRow(TableLayout table, WalletTransaction wtx) {
+    private void addTransactionRow(TableLayout table,
+                                   String datestr,
+                                   String btcstr,
+                                   String fiatstr,
+                                   String btcbalstr,
+                                   String fiatbalstr) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transaction_table_row, table, false);
 
-        // FIXME - modify values here.
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_date);
+            tv.setText(datestr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_btc);
+            tv.setText(btcstr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_fiat);
+            tv.setText(fiatstr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_balance_btc);
+            tv.setText(btcbalstr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_balance_fiat);
+            tv.setText(fiatbalstr);
+        }
 
         table.addView(row);
     }
@@ -193,8 +228,49 @@ public class ViewTransactionsActivity extends ActionBarActivity {
 
         addTransactionHeader(table);
 
+        SimpleDateFormat dateFormater =
+            new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+
+        // Read all the transactions and sort by date.
         Iterable<WalletTransaction> txit = mWalletService.getTransactions();
+        ArrayList<WalletTransaction> txs = new ArrayList<WalletTransaction>();
         for (WalletTransaction wtx : txit)
-            addTransactionRow(table, wtx);
+            txs.add(wtx);
+        // Sort in reverse time order (most recent first).
+        Collections.sort(txs, new Comparator<WalletTransaction>() {
+                public int compare(WalletTransaction wt0,
+                                   WalletTransaction wt1) {
+                    Date dt0 = wt0.getTransaction().getUpdateTime();
+                    Date dt1 = wt1.getTransaction().getUpdateTime();
+                    return -dt0.compareTo(dt1);
+                }
+            });
+
+        int acctnum = -1;	// All accounts.
+
+        double btcbal = mWalletService.balanceForAccount(acctnum);
+        
+        for (WalletTransaction wtx : txs) {
+            Transaction tx = wtx.getTransaction();
+
+            String datestr = dateFormater.format(tx.getUpdateTime());
+
+            double btc = mWalletService.amountForAccount(wtx, acctnum);
+            String btcstr = String.format("%.5f", btc);
+
+            double fiat = btc * mFiatPerBTC;
+            String fiatstr = String.format("%.2f", fiat);
+
+            String btcbalstr = String.format("%.5f", btcbal);
+
+            double fiatbal = btcbal * mFiatPerBTC;
+            String fiatbalstr = String.format("%.2f", fiatbal);
+
+            addTransactionRow(table, datestr, btcstr, fiatstr,
+                              btcbalstr, fiatbalstr);
+
+            // We're working backward in time ...
+            btcbal -= btc;
+        }
     }
 }

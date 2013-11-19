@@ -344,6 +344,14 @@ public class WalletService extends Service
         }
     }
 
+    public double amountForAccount(WalletTransaction wtx, int acctnum) {
+        return mHDWallet.amountForAccount(wtx, acctnum);
+    }
+
+    public double balanceForAccount(int acctnum) {
+        return mHDWallet.balanceForAccount(acctnum);
+    }
+
     private void setState(State newstate) {
         mState = newstate;
         sendStateChanged();

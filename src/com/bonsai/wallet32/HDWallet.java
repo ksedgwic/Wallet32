@@ -198,6 +198,83 @@ public class HDWallet {
             acct.logBalance();
     }
 
+    public double balanceForAccount(int acctnum) {
+        // Which accounts are we considering?  (-1 means all)
+        if (acctnum != -1) {
+            return mAccounts.get(acctnum).balance().doubleValue() / 1e8;
+        } else {
+            BigInteger sum = BigInteger.ZERO;
+            for (HDAccount hda : mAccounts)
+                sum = sum.add(hda.balance());
+            return sum.doubleValue() / 1e8;
+        }
+    }
+
+    public double amountForAccount(WalletTransaction wtx, int acctnum) {
+
+        BigInteger credits = BigInteger.ZERO;
+        BigInteger debits = BigInteger.ZERO;
+
+        // Which accounts are we considering?  (-1 means all)
+        ArrayList<HDAccount> accts = new ArrayList<HDAccount>();
+        if (acctnum != -1) {
+            accts.add(mAccounts.get(acctnum));
+        } else {
+            for (HDAccount hda : mAccounts)
+                accts.add(hda);
+        }
+        
+        Transaction tx = wtx.getTransaction();
+
+        // Consider credits.
+        List<TransactionOutput> lto = tx.getOutputs();
+        for (TransactionOutput to : lto) {
+            BigInteger value = to.getValue();
+            try {
+                byte[] pubkey = null;
+                byte[] pubkeyhash = null;
+                Script script = to.getScriptPubKey();
+                if (script.isSentToRawPubKey())
+                    pubkey = script.getPubKey();
+                else
+                    pubkeyhash = script.getPubKeyHash();
+                for (HDAccount hda : accts) {
+                    if (hda.hasPubKey(pubkey, pubkeyhash))
+                        credits = credits.add(value);
+                }
+            } catch (ScriptException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        // Traverse the HDAccounts with all inputs.
+        List<TransactionInput> lti = tx.getInputs();
+        for (TransactionInput ti : lti) {
+            // Get the connected TransactionOutput to see value.
+            TransactionOutput cto = ti.getConnectedOutput();
+            if (cto == null) {
+                // It appears we land here when processing transactions
+                // where we handled the output above.
+                //
+                // mLogger.warn("couldn't find connected output for input");
+                continue;
+            }
+            BigInteger value = cto.getValue();
+            try {
+                byte[] pubkey = ti.getScriptSig().getPubKey();
+                for (HDAccount hda : accts)
+                    if (hda.hasPubKey(pubkey, null))
+                        debits = debits.add(value);
+            } catch (ScriptException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return credits.subtract(debits).doubleValue() / 1e8;
+    }
+
     public void getBalances(List<Balance> balances) {
         for (HDAccount acct : mAccounts)
             balances.add(new Balance(acct.getId(),

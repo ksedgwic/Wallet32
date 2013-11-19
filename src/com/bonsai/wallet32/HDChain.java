@@ -137,7 +137,7 @@ public class HDChain {
         return null;	// FIXME - bogus.
     }
 
-    public boolean isInChain(byte[] pubkey, byte[] pubkeyhash) {
+    public boolean hasPubKey(byte[] pubkey, byte[] pubkeyhash) {
         for (HDAddress hda : mAddrs) {
             if (hda.isMatch(pubkey, pubkeyhash))
                 return true;

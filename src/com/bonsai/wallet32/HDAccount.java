@@ -112,6 +112,13 @@ public class HDAccount {
         mChangeChain.clearBalance();
     }
 
+    public boolean hasPubKey(byte[] pubkey, byte[] pubkeyhash) {
+        if (mReceiveChain.hasPubKey(pubkey, pubkeyhash))
+            return true;
+
+        return mChangeChain.hasPubKey(pubkey, pubkeyhash);
+    }
+
     public String getName() {
         return mAccountName;
     }
@@ -172,9 +179,9 @@ public class HDAccount {
                     else
                         pubkeyhash = script.getPubKeyHash();
 
-                    if (mReceiveChain.isInChain(pubkey, pubkeyhash))
+                    if (mReceiveChain.hasPubKey(pubkey, pubkeyhash))
                         filtered.add(to);
-                    else if (mChangeChain.isInChain(pubkey, pubkeyhash))
+                    else if (mChangeChain.hasPubKey(pubkey, pubkeyhash))
                         filtered.add(to);
                     else
                         // Not in this account ...

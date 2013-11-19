@@ -1,4 +1,12 @@
 
+* Add account filtering to transactions view.
+
+* Add confidence to transactions view.
+
+* Setting for rate updater selection.
+
+* Non-USD fiat support.
+
 * Font selections for tables.
 
 * Factor all common stuff into BaseActivity.
