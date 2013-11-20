@@ -63,6 +63,8 @@ public class ViewTransactionsActivity extends ActionBarActivity {
 
     private double mFiatPerBTC = 0.0;
 
+    private int mAccountNum = -1;
+
     private ServiceConnection mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className,
                                            IBinder binder) {
@@ -101,7 +103,8 @@ public class ViewTransactionsActivity extends ActionBarActivity {
 				public void onItemSelected(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
                     int index = arg0.getSelectedItemPosition();
-                    mLogger.info(String.format("selected item %d", index));
+                    mAccountNum = index - 1;
+                    updateTransactions();
 				}
 
 				@Override
@@ -275,21 +278,19 @@ public class ViewTransactionsActivity extends ActionBarActivity {
                 }
             });
 
-        int acctnum = -1;	// All accounts.
-
-        double btcbal = mWalletService.balanceForAccount(acctnum);
+        double btcbal = mWalletService.balanceForAccount(mAccountNum);
         
         for (WalletTransaction wtx : txs) {
             Transaction tx = wtx.getTransaction();
 
             String datestr = dateFormater.format(tx.getUpdateTime());
 
-            double btc = mWalletService.amountForAccount(wtx, acctnum);
-            String btcstr = String.format("%.5f", btc);
-
-            String btcbalstr = String.format("%.5f", btcbal);
-
-            addTransactionRow(table, datestr, btcstr, btcbalstr);
+            double btc = mWalletService.amountForAccount(wtx, mAccountNum);
+            if (btc != 0.0) {
+                String btcstr = String.format("%.5f", btc);
+                String btcbalstr = String.format("%.5f", btcbal);
+                addTransactionRow(table, datestr, btcstr, btcbalstr);
+            }
 
             // We're working backward in time ...
             btcbal -= btc;
