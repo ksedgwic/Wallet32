@@ -223,9 +223,7 @@ public class ViewTransactionsActivity extends ActionBarActivity {
     private void addTransactionRow(TableLayout table,
                                    String datestr,
                                    String btcstr,
-                                   String fiatstr,
-                                   String btcbalstr,
-                                   String fiatbalstr) {
+                                   String btcbalstr) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transaction_table_row, table, false);
@@ -241,18 +239,8 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         }
 
         {
-            TextView tv = (TextView) row.findViewById(R.id.row_fiat);
-            tv.setText(fiatstr);
-        }
-
-        {
             TextView tv = (TextView) row.findViewById(R.id.row_balance_btc);
             tv.setText(btcbalstr);
-        }
-
-        {
-            TextView tv = (TextView) row.findViewById(R.id.row_balance_fiat);
-            tv.setText(fiatbalstr);
         }
 
         table.addView(row);
@@ -299,16 +287,9 @@ public class ViewTransactionsActivity extends ActionBarActivity {
             double btc = mWalletService.amountForAccount(wtx, acctnum);
             String btcstr = String.format("%.5f", btc);
 
-            double fiat = btc * mFiatPerBTC;
-            String fiatstr = String.format("%.2f", fiat);
-
             String btcbalstr = String.format("%.5f", btcbal);
 
-            double fiatbal = btcbal * mFiatPerBTC;
-            String fiatbalstr = String.format("%.2f", fiatbal);
-
-            addTransactionRow(table, datestr, btcstr, fiatstr,
-                              btcbalstr, fiatbalstr);
+            addTransactionRow(table, datestr, btcstr, btcbalstr);
 
             // We're working backward in time ...
             btcbal -= btc;

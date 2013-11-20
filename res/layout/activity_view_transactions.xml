@@ -40,35 +40,22 @@
 	android:layout_height="10dp"
 	/>
 
-    <HorizontalScrollView
-	android:id="@+id/scroll_horiz_id"
+    <ScrollView
+	android:id="@+id/scroll_id"
 	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	android:fillViewport="true"
 	>
 
-        <ScrollView
-	    android:id="@+id/scroll_id"
+        <TableLayout
+	    android:id="@+id/transaction_table"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    >
+	    />
 
-  	    <TableLayout
-		android:id="@+id/transaction_table"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		/>
-
-	</ScrollView>
+    </ScrollView>
     
-    </HorizontalScrollView>
-    
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
     <!-- Rigid Spacer -->
     <View
 	android:layout_width="fill_parent"
