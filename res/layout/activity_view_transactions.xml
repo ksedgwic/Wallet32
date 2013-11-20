@@ -11,6 +11,35 @@
     android:gravity="center"
     >
 
+    <LinearLayout
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	>
+
+        <TextView
+	    android:id="@+id/account_label"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/transaction_account_label"
+	    android:textAppearance="@android:style/TextAppearance.Medium"
+	    android:textStyle="bold"
+	    />
+
+	<Spinner
+            android:id="@+id/account_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	    />
+
+    </LinearLayout>
+
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="10dp"
+	/>
+
     <HorizontalScrollView
 	android:id="@+id/scroll_horiz_id"
 	android:layout_width="wrap_content"

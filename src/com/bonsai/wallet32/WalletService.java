@@ -303,6 +303,12 @@ public class WalletService extends Service
         return dmtf.doubleValue() / 1e8;
     }
 
+    public List<HDAccount> getAccounts() {
+        if (mHDWallet == null)
+            return null;
+        return mHDWallet.getAccounts();
+    }
+
     public List<Balance> getBalances() {
         if (mHDWallet == null)
             return null;

@@ -55,6 +55,7 @@
     <string name="receive_error_badamount">Amount to receive is malformed</string>
     <string name="receive_bitcoin">Receive Bitcoin</string>
     <string name="title_activity_view_transactions">View Transactions</string>
+    <string name="transaction_account_label">Account:</string>
     <string name="transaction_header_date">Date</string>
     <string name="transaction_header_addr">Address</string>
     <string name="transaction_header_btc">BTC</string>

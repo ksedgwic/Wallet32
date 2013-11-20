@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -63,6 +69,7 @@ public class ViewTransactionsActivity extends ActionBarActivity {
                 mWalletService =
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
+                updateAccountSpinner();
                 updateWalletStatus(); // Calls updateTransactions();
                 updateRate();
             }
@@ -87,6 +94,22 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         // Do we want an account filter?
         // Intent intent = getIntent();
         // int accountId = intent.getExtras().getInteger("accountId");
+
+        Spinner spinner = (Spinner) findViewById(R.id.account_spinner);
+        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+                    int index = arg0.getSelectedItemPosition();
+                    mLogger.info(String.format("selected item %d", index));
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+            });
 
         mLogger.info("ViewTransactionsActivity created");
 	}
@@ -155,6 +178,24 @@ public class ViewTransactionsActivity extends ActionBarActivity {
                 updateRate();
             }
         };
+
+    private void updateAccountSpinner() {
+        if (mWalletService != null) {
+            List<String> list = new ArrayList<String>();
+            list.add("All Accounts");
+            List<HDAccount> accts = mWalletService.getAccounts();
+            for (HDAccount acct : accts)
+                list.add(acct.getName());
+            Spinner spinner = (Spinner) findViewById(R.id.account_spinner);
+            ArrayAdapter<String> dataAdapter =
+                new ArrayAdapter<String>(this,
+                                         android.R.layout.simple_spinner_item,
+                                         list);
+            dataAdapter.setDropDownViewResource
+                (android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(dataAdapter);
+        }
+    }
 
     private void updateWalletStatus() {
         if (mWalletService != null) {

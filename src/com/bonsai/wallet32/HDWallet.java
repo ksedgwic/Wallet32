@@ -135,6 +135,10 @@ public class HDWallet {
         }
     }
 
+    public List<HDAccount> getAccounts() {
+        return mAccounts;
+    }
+
     public void addAllKeys(Wallet wallet) {
         for (HDAccount acct : mAccounts)
             acct.addAllKeys(wallet);
