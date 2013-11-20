@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.WalletTransaction;
 
 import android.content.BroadcastReceiver;
@@ -213,7 +215,8 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         if (mWalletService != null) {
             mFiatPerBTC = mWalletService.getRate();
         }
-        updateTransactions();
+        // We don't currently map to fiat in this view ...
+        // updateTransactions();
     }
 
     private void addTransactionHeader(TableLayout table) {
@@ -226,7 +229,8 @@ public class ViewTransactionsActivity extends ActionBarActivity {
     private void addTransactionRow(TableLayout table,
                                    String datestr,
                                    String btcstr,
-                                   String btcbalstr) {
+                                   String btcbalstr,
+                                   String confstr) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transaction_table_row, table, false);
@@ -244,6 +248,11 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         {
             TextView tv = (TextView) row.findViewById(R.id.row_balance_btc);
             tv.setText(btcbalstr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_confidence);
+            tv.setText(confstr);
         }
 
         table.addView(row);
@@ -283,13 +292,26 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         for (WalletTransaction wtx : txs) {
             Transaction tx = wtx.getTransaction();
 
-            String datestr = dateFormater.format(tx.getUpdateTime());
-
             double btc = mWalletService.amountForAccount(wtx, mAccountNum);
             if (btc != 0.0) {
+                String datestr = dateFormater.format(tx.getUpdateTime());
                 String btcstr = String.format("%.5f", btc);
                 String btcbalstr = String.format("%.5f", btcbal);
-                addTransactionRow(table, datestr, btcstr, btcbalstr);
+
+                String confstr;
+                TransactionConfidence conf = tx.getConfidence();
+                ConfidenceType ct = conf.getConfidenceType();
+                switch (ct) {
+                case UNKNOWN: confstr = "U"; break;
+                case BUILDING:
+                    confstr = String.format("%d", conf.getDepthInBlocks());
+                    break;
+                case PENDING: confstr = "P"; break;
+                case DEAD: confstr = "D"; break;
+                default: confstr = "?"; break;
+                }
+
+                addTransactionRow(table, datestr, btcstr, btcbalstr, confstr);
             }
 
             // We're working backward in time ...
