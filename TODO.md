@@ -1,4 +1,6 @@
 
+* Add syncing progress screen between lobby and main. Also use on rescan.
+
 * Auto logout of service after idle for N minutes.
 
 * Audio/Vibration notification of wallet changes.

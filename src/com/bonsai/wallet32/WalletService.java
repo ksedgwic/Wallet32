@@ -15,6 +15,7 @@
 
 package com.bonsai.wallet32;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
@@ -83,6 +84,8 @@ public class WalletService extends Service
 
     private RateUpdater			mRateUpdater;
 
+    private static final String mFilePrefix = "wallet32";
+
     private DownloadListener mDownloadListener =
         new DownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date) {
@@ -123,12 +126,10 @@ public class WalletService extends Service
 
             mParams = MainNetParams.get();
 
-            String filePrefix = "wallet32";
-
             // Try to restore existing wallet.
             mHDWallet = HDWallet.restore(mParams,
                                          mContext.getFilesDir(),
-                                         filePrefix);
+                                         mFilePrefix);
 
             if (mHDWallet == null) {
 
@@ -162,7 +163,7 @@ public class WalletService extends Service
 
             mKit = new MyWalletAppKit(mParams,
                                       mContext.getFilesDir(),
-                                      filePrefix,
+                                      mFilePrefix,
                                       mDownloadListener)
                 {
                     @Override
@@ -272,6 +273,14 @@ public class WalletService extends Service
                 sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
             setFiatRateSource(fiatRateSource);
         }
+        else if (key.equals(SettingsActivity.KEY_RESCAN_BLOCKCHAIN)) {
+            SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+            String rescan =
+                sharedPref.getString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "");
+            if (rescan.equals("RESCAN"))
+                rescanBlockchain();
+        }
     }
 
     private void setFiatRateSource(String src) {
@@ -295,6 +304,54 @@ public class WalletService extends Service
         }
 
         mRateUpdater.startUpdater();
+    }
+
+    private void rescanBlockchain(){
+        mLogger.info("RESCAN!");
+
+        // Make sure we are in a good state for this.
+        if (mState != State.READY) {
+            mLogger.warn("can't rescan until the wallet is ready");
+            return;
+        }
+
+        // Remove our wallet event listener.
+        mKit.wallet().removeEventListener(mWalletListener);
+
+        // Persist and remove our HDWallet.
+        //
+        // NOTE - It's best not to clear the balances here.  When the
+        // transactions are filling in on the transactions screen it's
+        // disturbing to see negative historical balances.  They'll
+        // get completely refigured when the sync is done anyway ...
+        //
+        mHDWallet.persist();
+        mHDWallet = null;
+
+        mLogger.info("resetting wallet state");
+        mKit.wallet().clearTransactions(0); 
+        mKit.wallet().setLastBlockSeenHeight(-1); // magic value 
+        mKit.wallet().setLastBlockSeenHash(null); 
+
+        mLogger.info("shutting kit down");
+        try {
+			mKit.shutDown();
+            mKit = null;
+		} catch (Exception ex) {
+            mLogger.error("kit shutdown failed: " + ex.toString());
+            return;
+		}
+
+        mLogger.info("removing spvchain file");
+        File chainFile =
+            new File(mContext.getFilesDir(), mFilePrefix + ".spvchain");
+        if (!chainFile.delete())
+            mLogger.error("delete of spvchain file failed");
+
+        mLogger.info("restarting wallet");
+        setState(State.SETUP);
+        mTask = new SetupWalletTask();
+        mTask.execute();
     }
 
     public State getState() {
@@ -330,11 +387,11 @@ public class WalletService extends Service
     }
 
     public double getRate() {
-        return mRateUpdater.getRate();
+        return mRateUpdater == null ? 0.0 : mRateUpdater.getRate();
     }
 
     public String getCode() {
-        return mRateUpdater.getCode();
+        return mRateUpdater == null ? "???" : mRateUpdater.getCode();
     }
 
     static public double getDefaultFee() {
@@ -358,10 +415,16 @@ public class WalletService extends Service
     }
 
     public Iterable<WalletTransaction> getTransactions() {
+        if (mHDWallet == null)
+            return null;
+
         return mKit.wallet().getWalletTransactions();
     }
 
     public Address nextReceiveAddress(int acctnum){
+        if (mHDWallet == null)
+            return null;
+
         return mHDWallet.nextReceiveAddress(acctnum);
     }
 
@@ -369,6 +432,9 @@ public class WalletService extends Service
                                      String address,
                                      double amount,
                                      double fee) throws RuntimeException {
+        if (mHDWallet == null)
+            return;
+
         try {
             Address dest = new Address(mParams, address);
             BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));

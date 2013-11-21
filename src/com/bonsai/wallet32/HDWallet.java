@@ -144,10 +144,15 @@ public class HDWallet {
             acct.addAllKeys(wallet);
     }
 
-    public void applyAllTransactions(Iterable<WalletTransaction> iwt) {
-        // Clear the balance and tx counters.
+    public void clearBalances() {
+        // Clears the balance and tx counters.
         for (HDAccount acct : mAccounts)
             acct.clearBalance();
+    }
+
+    public void applyAllTransactions(Iterable<WalletTransaction> iwt) {
+        // Clear the balance and tx counters.
+        clearBalances();
 
         for (WalletTransaction wtx : iwt) {
             // WalletTransaction.Pool pool = wtx.getPool();

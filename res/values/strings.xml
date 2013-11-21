@@ -89,4 +89,17 @@
       <item>BITSTAMPUSD</item>
     </string-array>
 
+    <string name="pref_rescan_blockchain">Rescan Blockchain</string>
+    <string name="pref_rescan_blockchain_default">Cancel</string>
+
+    <string-array name="pref_rescan_blockchain_entries">
+      <item>Rescan Blockchain Now (EXPENSIVE!)</item>
+      <item>Cancel</item>
+    </string-array>
+
+    <string-array name="pref_rescan_blockchain_values">
+      <item>RESCAN</item>
+      <item>CANCEL</item>
+    </string-array>
+
 </resources>

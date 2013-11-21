@@ -21,6 +21,7 @@ import android.preference.PreferenceActivity;
 public class SettingsActivity extends PreferenceActivity {
 
     public static final String KEY_FIAT_RATE_SOURCE = "pref_fiatRateSource";
+    public static final String KEY_RESCAN_BLOCKCHAIN = "pref_rescanBlockchain";
 
     @SuppressWarnings("deprecation")
 	@Override
