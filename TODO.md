@@ -1,7 +1,7 @@
 
-* Add account filtering to transactions view.
+* Auto logout of service after idle for N minutes.
 
-* Add confidence to transactions view.
+* Audio/Vibration notification of wallet changes.
 
 * Setting for rate updater selection.
 

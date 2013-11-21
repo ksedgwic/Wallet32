@@ -37,20 +37,35 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class BitStampRateUpdater extends Thread implements RateUpdater {
 
-    private Logger mLogger;
+    private static Logger mLogger =
+        LoggerFactory.getLogger(BitStampRateUpdater.class);
 
     private double mRate = 0.0;
     private String mCode = "USD";
     private LocalBroadcastManager mLBM;
 
+    private boolean mRunning = false;
+
     public BitStampRateUpdater(Context context) {
-        mLogger = LoggerFactory.getLogger(BitStampRateUpdater.class);
         mLBM = LocalBroadcastManager.getInstance(context);
+    }
+
+    public void startUpdater() {
+        mRunning = true;
+        this.start();
+    }
+
+    public void stopUpdater() {
+        mRunning = false;
+        // If we join here we block the GUI thread whilst the service
+        // thread is in a pause sleep.  Just let the old updater hang
+        // around until the thread finishes ...
     }
 
     @Override
     public void run() {
-        while (true) {
+        mLogger.info("run loop starting");
+        while (mRunning) {
             double rate = fetchLatestRate();
 
             // Did the rate change?
@@ -68,6 +83,7 @@ public class BitStampRateUpdater extends Thread implements RateUpdater {
                 e.printStackTrace();
             }
         }
+        mLogger.info("run loop finished");
     }
 
     protected final String url = "https://www.bitstamp.net/api/ticker/";

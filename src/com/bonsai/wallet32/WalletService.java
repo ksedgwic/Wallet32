@@ -24,10 +24,14 @@ import java.util.List;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 
@@ -52,7 +56,8 @@ import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
 
 public class WalletService extends Service
-{
+    implements OnSharedPreferenceChangeListener {
+
     public enum State {
         SETUP,
         START,
@@ -233,14 +238,14 @@ public class WalletService extends Service
         mContext = getApplicationContext();
         mRes = mContext.getResources();
 
-        // BitStampRateUpdater bsru =
-        //     new BitStampRateUpdater(getApplicationContext());
-        // bsru.start();
-        // mRateUpdater = bsru;
-        MtGoxRateUpdater mgru =
-            new MtGoxRateUpdater(getApplicationContext());
-        mgru.start();
-        mRateUpdater = mgru;
+        SharedPreferences sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        String fiatRateSource =
+            sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
+        setFiatRateSource(fiatRateSource);
+
+        // Register for future preference changes.
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -256,6 +261,40 @@ public class WalletService extends Service
 
     @Override
     public void onDestroy() {
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                          String key) {
+        if (key.equals(SettingsActivity.KEY_FIAT_RATE_SOURCE)) {
+            SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+            String fiatRateSource =
+                sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
+            setFiatRateSource(fiatRateSource);
+        }
+    }
+
+    private void setFiatRateSource(String src) {
+
+        if (mRateUpdater != null) {
+            mRateUpdater.stopUpdater();
+            mRateUpdater = null;
+        }
+
+        if (src.equals("MTGOXUSD")) {
+            mLogger.info("Switching to MtGox USD");
+            mRateUpdater = new MtGoxRateUpdater(getApplicationContext());
+        }
+        else if (src.equals("BITSTAMPUSD")) {
+            mLogger.info("Switching to BitStamp USD");
+            mRateUpdater = new BitStampRateUpdater(getApplicationContext());
+        }
+        else {
+            mLogger.warn("Unknown fiat rate source " + src);
+            return;
+        }
+
+        mRateUpdater.startUpdater();
     }
 
     public State getState() {

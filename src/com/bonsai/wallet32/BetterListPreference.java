@@ -15,14 +15,23 @@
 
 package com.bonsai.wallet32;
 
-public interface RateUpdater {
+import android.content.Context;
+import android.preference.ListPreference;
+import android.util.AttributeSet;
 
-    public void startUpdater();
+public class BetterListPreference extends ListPreference  {
 
-    public void stopUpdater();
+    public BetterListPreference(Context context) {
+        super(context);
+    }
 
-    public double getRate();
+    public BetterListPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-    public String getCode();
-
+    @Override
+    public void setValue(String value) {
+        super.setValue(value);
+        setSummary(getEntry());
+    }
 }

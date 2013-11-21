@@ -20,10 +20,10 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.os.Bundle;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 
 public class LobbyActivity extends Activity {
@@ -37,6 +37,9 @@ public class LobbyActivity extends Activity {
 		setContentView(R.layout.activity_lobby);
 
         mLogger.info("Lobby starting");
+
+        // If this is the first time set preferences to default values.
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Is there an existing wallet?
         File dir = getApplicationContext().getFilesDir();

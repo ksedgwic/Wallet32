@@ -304,7 +304,8 @@ public class ViewTransactionsActivity extends ActionBarActivity {
                 switch (ct) {
                 case UNKNOWN: confstr = "U"; break;
                 case BUILDING:
-                    confstr = String.format("%d", conf.getDepthInBlocks());
+                    int depth = conf.getDepthInBlocks();
+                    confstr = depth > 100 ? "100+" : String.format("%d", depth);
                     break;
                 case PENDING: confstr = "P"; break;
                 case DEAD: confstr = "D"; break;

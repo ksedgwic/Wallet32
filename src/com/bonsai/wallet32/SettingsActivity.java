@@ -15,14 +15,17 @@
 
 package com.bonsai.wallet32;
 
-public interface RateUpdater {
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
 
-    public void startUpdater();
+public class SettingsActivity extends PreferenceActivity {
 
-    public void stopUpdater();
+    public static final String KEY_FIAT_RATE_SOURCE = "pref_fiatRateSource";
 
-    public double getRate();
-
-    public String getCode();
-
+    @SuppressWarnings("deprecation")
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.preferences);
+    }
 }

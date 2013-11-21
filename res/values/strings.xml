@@ -75,4 +75,18 @@
     <string name="network_status_error">Network Error</string>
     <string name="network_status_unknown">Network Status Unknown</string>
 
+    <string name="title_activity_settings">Wallet32 Settings</string>
+    <string name="pref_fiat_rate_source">Fiat Rate Source</string>
+    <string name="pref_fiat_rate_sources_default">BitStamp USD</string>
+
+    <string-array name="pref_fiat_rate_sources_entries">
+      <item>MtGox USD</item>
+      <item>BitStamp USD</item>
+    </string-array>
+
+    <string-array name="pref_fiat_rate_sources_values">
+      <item>MTGOXUSD</item>
+      <item>BITSTAMPUSD</item>
+    </string-array>
+
 </resources>

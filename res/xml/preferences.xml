@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <com.bonsai.wallet32.BetterListPreference
+        android:key="pref_fiatRateSource"
+        android:title="@string/pref_fiat_rate_source"
+        android:dialogTitle="@string/pref_fiat_rate_source"
+        android:entries="@array/pref_fiat_rate_sources_entries"
+        android:entryValues="@array/pref_fiat_rate_sources_values"
+        android:defaultValue="@string/pref_fiat_rate_sources_default"
+	/>
+
+</PreferenceScreen>
