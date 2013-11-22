@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -40,6 +41,13 @@ public class LobbyActivity extends Activity {
 
         // If this is the first time set preferences to default values.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+        // Always set the rescan value to CANCEL.
+        SharedPreferences settings =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
+        editor.commit();
 
         // Is there an existing wallet?
         File dir = getApplicationContext().getFilesDir();

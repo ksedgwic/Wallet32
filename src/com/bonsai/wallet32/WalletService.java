@@ -213,6 +213,13 @@ public class WalletService extends Service
             // Listen for future wallet changes.
             mKit.wallet().addEventListener(mWalletListener);
 
+            // Reset the rescan pref to cancel so we can use again.
+            SharedPreferences settings =
+                PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
+            editor.commit();
+
             setState(State.READY);
 
 			return null;

@@ -77,7 +77,7 @@
 
     <string name="title_activity_settings">Wallet32 Settings</string>
     <string name="pref_fiat_rate_source">Fiat Rate Source</string>
-    <string name="pref_fiat_rate_sources_default">BitStamp USD</string>
+    <string name="pref_fiat_rate_sources_default">BITSTAMPUSD</string>
 
     <string-array name="pref_fiat_rate_sources_entries">
       <item>MtGox USD</item>
@@ -90,7 +90,7 @@
     </string-array>
 
     <string name="pref_rescan_blockchain">Rescan Blockchain</string>
-    <string name="pref_rescan_blockchain_default">Cancel</string>
+    <string name="pref_rescan_blockchain_default">CANCEL</string>
 
     <string-array name="pref_rescan_blockchain_entries">
       <item>Rescan Blockchain Now (EXPENSIVE!)</item>
