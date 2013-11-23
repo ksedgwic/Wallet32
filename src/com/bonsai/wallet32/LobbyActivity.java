@@ -58,10 +58,7 @@ public class LobbyActivity extends Activity {
 
             mLogger.info("Existing wallet found");
 
-            // Spin up the WalletService.
-            startService(new Intent(this, WalletService.class));
-
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, PasscodeActivity.class);
             startActivity(intent);
 
         } else {

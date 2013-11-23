@@ -38,6 +38,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.PasscodeActivity"
+            android:label="@string/title_activity_passcode" >
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.MainActivity"
             android:label="@string/app_name" >
         </activity>
