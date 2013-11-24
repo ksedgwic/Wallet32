@@ -48,10 +48,18 @@
 	android:onClick="viewTransactions"
 	/>
 
+    <Button
+	android:id="@+id/seed"
+	android:layout_width="180dp"
+	android:layout_height="wrap_content"
+	android:text="@string/button_seed"
+	android:onClick="viewSeed"
+	/>
+
     <!-- Rigid Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="10dp"
+	android:layout_height="20dp"
 	/>
 
     <Button

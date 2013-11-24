@@ -243,6 +243,11 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void viewSeed(View view) {
+        Intent intent = new Intent(this, ViewSeedActivity.class);
+        startActivity(intent);
+    }
+
     public void exitApp(View view) {
         mLogger.info("Application Exiting");
         stopService(new Intent(this, WalletService.class));

@@ -42,6 +42,7 @@
     <string name="button_send">Send Bitcoin</string>
     <string name="button_receive">Receive Bitcoin</string>
     <string name="button_transactions">View Transactions</string>
+    <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
