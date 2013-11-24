@@ -131,25 +131,20 @@ public class PasscodeActivity extends ActionBarActivity {
         }
 
         // Update the textview.
-        TextView pctv = (TextView) findViewById(R.id.passcode);
-        String pcstr = pctv.getText().toString();
-        String pcstr2 = pcstr + val;
-        pctv.setText(pcstr2);
+        setPasscode(getPasscode() + val);
     }
 
     public void deleteDigit(View view) {
-        TextView pctv = (TextView) findViewById(R.id.passcode);
-        String pcstr = pctv.getText().toString();
+        String pcstr = getPasscode();
         int len = pcstr.length();
         if (len == 0)
             return;		// Nothing to do here.
         else
-            pctv.setText(pcstr.substring(0, len - 1));	// Strip last.
+            setPasscode(pcstr.substring(0, len - 1));	// Strip last.
     }
 
     public void clearPasscode(View view) {
-        TextView pctv = (TextView) findViewById(R.id.passcode);
-        pctv.setText("");	// Clear the string.
+        setPasscode("");	// Clear the string.
     }
 
     public void submitPasscode(View view) {
@@ -163,11 +158,10 @@ public class PasscodeActivity extends ActionBarActivity {
     // We're creating a passcode and it's been entered once.
     private void confirmPasscode() {
         // Fetch the first version of the passcode.
-        TextView pctv = (TextView) findViewById(R.id.passcode);
-        mPasscode = pctv.getText().toString();
+        mPasscode = getPasscode();
 
-        // Clear the passcode.
-        pctv.setText("");	// Clear the string.
+        // Clear the passcode field.
+        setPasscode("");	// Clear the string.
 
         // Ask the user to confirm it.
         TextView msgtv = (TextView) findViewById(R.id.message);
@@ -179,8 +173,7 @@ public class PasscodeActivity extends ActionBarActivity {
     // We're creating a passcode and it's been entered a second time.
     private void checkPasscode() {
         // Fetch the second version of the passcode.
-        TextView pctv = (TextView) findViewById(R.id.passcode);
-        String passcode = pctv.getText().toString();
+        String passcode = getPasscode();
 
         // Do they match?
         if (passcode.equals(mPasscode)) {
@@ -206,7 +199,7 @@ public class PasscodeActivity extends ActionBarActivity {
             showErrorDialog(mRes.getString(R.string.passcode_mismatch));
 
             // Clear the passcode.
-            pctv.setText("");	// Clear the string.
+            setPasscode("");	// Clear the string.
 
             // Ask the user to create again.
             TextView msgtv = (TextView) findViewById(R.id.message);
@@ -230,6 +223,27 @@ public class PasscodeActivity extends ActionBarActivity {
 
         // And we're done with this activity.
         finish();
+    }
+
+    // Retrieve the passcode, strip decorations.
+    private String getPasscode() {
+        TextView pctv = (TextView) findViewById(R.id.passcode);
+        String val = pctv.getText().toString();
+        return val.replaceAll("-", "");		// Strip '-' chars.
+    }
+
+    // Set the passcode, add decorations.
+    private void setPasscode(String val) {
+        StringBuilder bldr = new StringBuilder();
+        int len = val.length();
+        for (int ii = 0; ii < len; ii += 4) {
+            if (ii != 0)
+                bldr.append("-");
+            int end = (ii + 4 > len) ? len : ii + 4;
+            bldr.append(val.substring(ii, end));
+        }
+        TextView pctv = (TextView) findViewById(R.id.passcode);
+        pctv.setText(bldr.toString());
     }
 
     public static class ErrorDialogFragment extends DialogFragment {
