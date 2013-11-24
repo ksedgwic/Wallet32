@@ -29,6 +29,9 @@ import java.util.List;
 import org.spongycastle.crypto.engines.RijndaelEngine;
 import org.spongycastle.crypto.params.KeyParameter;
 
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.VerificationException;
+
 import android.content.Context;
 
 public class MnemonicCoder {
@@ -47,11 +50,11 @@ public class MnemonicCoder {
         br.close();
     }
 
-    public List<String> encode(byte[] seed) throws RuntimeException {
+    public List<String> encode(byte[] seed) throws IllegalArgumentException {
         int len = seed.length * 8;
         
         if (len != 128 && len != 192 && len != 256)
-            throw new RuntimeException("seed not 128, 192 or 256 bits");
+            throw new IllegalArgumentException("seed not 128, 192 or 256 bits");
 
         byte[] data = stretch(len, seed);
 
@@ -83,11 +86,15 @@ public class MnemonicCoder {
         return words;
     }
 
-    public byte[] decode(List<String> words) throws RuntimeException {
+    public byte[] decode(List<String> words)
+        throws AddressFormatException,
+               IllegalArgumentException,
+               VerificationException {
         int nwords = words.size();
 
         if (nwords != 12 && nwords != 18 && nwords != 24)
-            throw new RuntimeException("Mnemonic code not 12, 18 or 24 words");
+            throw new AddressFormatException
+                ("Mnemonic code not 12, 18 or 24 words");
 
         int len = nwords * 11;
 
@@ -96,7 +103,7 @@ public class MnemonicCoder {
         for (String word : words) {
             int ndx = Collections.binarySearch(mWordList, word);
             if (ndx < 0)
-                throw new RuntimeException("\"" + word + "\" invalid");
+                throw new IllegalArgumentException(word);
             for (int jj = 0; jj < 11; ++jj)
                 ee[(kk * 11) + jj] = (ndx & (1 << (10 - jj))) != 0;
             ++kk;
@@ -116,7 +123,7 @@ public class MnemonicCoder {
         boolean[] ncc = checksum(bb);
 
         if (!Arrays.equals(ncc, cc))
-            throw new RuntimeException("checksum error");
+            throw new VerificationException("checksum error");
 
         byte[] data = new byte[bblen / 8];
         for (int ii = 0; ii < data.length; ++ii)
@@ -129,7 +136,7 @@ public class MnemonicCoder {
         return seed;
     }
 
-    private byte[] stretch(int len, byte[] data) throws RuntimeException {
+    private byte[] stretch(int len, byte[] data) {
         byte[] mnemonic = {'m', 'n', 'e', 'm', 'o', 'n', 'i', 'c'};
         byte[] key;
         try {
@@ -146,7 +153,7 @@ public class MnemonicCoder {
         return buffer;
     }
 
-    private byte[] unstretch(int len, byte[] data) throws RuntimeException {
+    private byte[] unstretch(int len, byte[] data) {
         byte[] mnemonic = {'m', 'n', 'e', 'm', 'o', 'n', 'i', 'c'};
         byte[] key;
         try {
