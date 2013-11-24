@@ -15,28 +15,42 @@
 
 package com.bonsai.wallet32;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.params.MainNetParams;
-
-import android.os.Bundle;
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-public class RestoreWalletActivity extends Activity {
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.VerificationException;
+import com.google.bitcoin.params.MainNetParams;
+
+public class RestoreWalletActivity extends ActionBarActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(RestoreWalletActivity.class);
 
+    private Resources			mRes;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        mRes = getApplicationContext().getResources();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restore_wallet);
 	}
@@ -55,14 +69,68 @@ public class RestoreWalletActivity extends Activity {
 
         String filePrefix = "wallet32";
 
-        EditText et = (EditText) findViewById(R.id.seed);
-        String seedstr = et.getText().toString();
-        byte[] seed = Hex.decode(seedstr);
+        EditText hextxt = (EditText) findViewById(R.id.seed);
+        EditText mnemonictxt = (EditText) findViewById(R.id.mnemonic);
 
-        if (seed.length != 16) {
-            Toast.makeText(this,
-                           R.string.restore_badseed,
-                           Toast.LENGTH_SHORT).show();
+        String hexseedstr = hextxt.getText().toString();
+        String mnemonicstr = mnemonictxt.getText().toString();
+
+        // Did the user specify *both* hex seed and mnemonic?
+        if (hexseedstr.length() > 0 && mnemonicstr.length() > 0) {
+            showErrorDialog(mRes.getString(R.string.restore_bothbad));
+            return;
+        }
+
+        byte[] seed;
+
+        // Did we have a hex seed?
+        if (hexseedstr.length() > 0) {
+            try {
+                seed = Hex.decode(hexseedstr);
+            } catch (Exception ex) {
+                showErrorDialog(mRes.getString(R.string.restore_badhexvalue));
+                return;
+            }
+            if (seed.length != 16) {
+                showErrorDialog(mRes.getString(R.string.restore_badhexlength));
+                return;
+            }
+        }
+
+        // How about a mnemonic string?
+        else if (mnemonicstr.length() > 0) {
+            MnemonicCoder coder;
+			try {
+				coder = new MnemonicCoder(this);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+            List<String> words =
+                new ArrayList<String>(Arrays.asList
+                                      (mnemonicstr.trim().split("\\s+")));
+            try {
+                seed = coder.decode(words);
+            }
+            catch (AddressFormatException ex) {
+                showErrorDialog(mRes.getString(R.string.restore_badlength));
+                return;
+            }
+            catch (IllegalArgumentException ex) {
+                String msg = mRes.getString(R.string.restore_badword,
+                                            ex.getMessage());
+                showErrorDialog(msg);
+                return;
+            }
+            catch (VerificationException ex) {
+                showErrorDialog(mRes.getString(R.string.restore_badchecksum));
+                return;
+            }
+        }
+
+        // Hmm, nothing specified?
+        else {
+            showErrorDialog(mRes.getString(R.string.restore_noseed));
             return;
         }
 
@@ -84,5 +152,33 @@ public class RestoreWalletActivity extends Activity {
 
         // Prevent the user from coming back here.
         finish();
+    }
+
+    public static class ErrorDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+            String msg = getArguments().getString("msg");
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            builder
+                .setMessage(msg)
+                .setPositiveButton(R.string.send_error_ok,
+                                   new DialogInterface.OnClickListener() {
+                                       public void onClick(DialogInterface di,
+                                                           int id) {
+                                           // Do we need to do anything?
+                                       }
+                                   });
+            return builder.create();
+        }
+    }
+
+    private void showErrorDialog(String msg) {
+        DialogFragment df = new ErrorDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("msg", msg);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "error");
     }
 }
