@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.AbstractIdleService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
@@ -56,16 +57,20 @@ public class MyWalletAppKit extends AbstractIdleService {
     private final File directory;
     private volatile File vWalletFile;
 
+    private final InputStream chkpntis;
+
     private boolean useAutoSave = true;
     private PeerAddress[] peerAddresses;
 
     public MyWalletAppKit(NetworkParameters params,
                           File directory,
                           String filePrefix,
+                          InputStream chkpntis,
                           DownloadListener listener) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);
+        this.chkpntis = chkpntis;
         this.listener = listener;
     }
 
@@ -121,17 +126,12 @@ public class MyWalletAppKit extends AbstractIdleService {
             File chainFile = new File(directory, filePrefix + ".spvchain");
             vWalletFile = new File(directory, filePrefix + ".wallet");
             boolean shouldReplayWallet = vWalletFile.exists() && !chainFile.exists();
-            vStore = new SPVBlockStore(params, chainFile);
-            vChain = new BlockChain(params, vStore);
-            vPeerGroup = new PeerGroup(params, vChain);
-            // Set up peer addresses or discovery first, so if wallet extensions try to broadcast a transaction
-            // before we're actually connected the broadcast waits for an appropriate number of connections.
-            if (peerAddresses != null) {
-                for (PeerAddress addr : peerAddresses) vPeerGroup.addAddress(addr);
-                peerAddresses = null;
-            } else {
-                vPeerGroup.addPeerDiscovery(new DnsDiscovery(params));
-            }
+            boolean chainExistedAlready = chainFile.exists();
+
+            // I reordered the following blocks so we could determine the earliest
+            // key time from the wallet for the checkpoint processing. -- ken@bonsai.com
+
+            // ----------------------------------------------------------------
             if (vWalletFile.exists()) {
                 walletStream = new FileInputStream(vWalletFile);
                 vWallet = new Wallet(params);
@@ -144,6 +144,24 @@ public class MyWalletAppKit extends AbstractIdleService {
                 addWalletExtensions();
             }
             if (useAutoSave) vWallet.autosaveToFile(vWalletFile, 1, TimeUnit.SECONDS, null);
+            // ----------------------------------------------------------------
+
+            // ----------------------------------------------------------------
+            vStore = new SPVBlockStore(params, chainFile);
+            if (!chainExistedAlready && chkpntis != null)
+                CheckpointManager.checkpoint(params, chkpntis, vStore, vWallet.getEarliestKeyCreationTime());
+            vChain = new BlockChain(params, vStore);
+            vPeerGroup = new PeerGroup(params, vChain);
+            // Set up peer addresses or discovery first, so if wallet extensions try to broadcast a transaction
+            // before we're actually connected the broadcast waits for an appropriate number of connections.
+            if (peerAddresses != null) {
+                for (PeerAddress addr : peerAddresses) vPeerGroup.addAddress(addr);
+                peerAddresses = null;
+            } else {
+                vPeerGroup.addPeerDiscovery(new DnsDiscovery(params));
+            }
+            // ----------------------------------------------------------------
+
             vChain.addWallet(vWallet);
             vPeerGroup.addWallet(vWallet);
             onSetupCompleted();

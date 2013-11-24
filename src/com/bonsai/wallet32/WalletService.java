@@ -17,6 +17,7 @@ package com.bonsai.wallet32;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.LinkedList;
@@ -150,9 +151,17 @@ public class WalletService extends Service
 
             mLogger.info("creating new wallet app kit");
 
+            InputStream chkpntis;
+			try {
+				chkpntis = getAssets().open("checkpoints");
+			} catch (IOException e) {
+                chkpntis = null;
+			}
+
             mKit = new MyWalletAppKit(mParams,
                                       mContext.getFilesDir(),
                                       mFilePrefix,
+                                      chkpntis,
                                       mDownloadListener)
                 {
                     @Override
