@@ -32,6 +32,9 @@
     <string name="passcode_0">0</string>
     <string name="passcode_del">Del</string>
     <string name="passcode_clr">Clr</string>
+    <string name="title_activity_view_seed">Wallet Seed</string>
+    <string name="seed_directions">Backup your seed securely!</string>
+    <string name="seed_done">Done</string>
     <string name="title_activity_main">Wallet32</string>
     <string name="balance_header_acct">Account</string>
     <string name="balance_header_btc">BTC</string>

@@ -59,6 +59,9 @@ import com.google.bitcoin.params.RegTestParams;
 public class WalletService extends Service
     implements OnSharedPreferenceChangeListener {
 
+    private static Logger mLogger =
+        LoggerFactory.getLogger(WalletService.class);
+
     public enum State {
         SETUP,
         START,
@@ -67,7 +70,6 @@ public class WalletService extends Service
         ERROR
     }
 
-    private Logger mLogger;
     private LocalBroadcastManager mLBM;
 
     private final IBinder mBinder = new WalletServiceBinder();
@@ -144,19 +146,6 @@ public class WalletService extends Service
                                          filePrefix,
                                          seed);
                 */
-            }
-
-            // FIXME - Remove this
-            try {
-                MnemonicCoder mc = new MnemonicCoder(mContext);
-                List<String> words =
-                    mc.encode(Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2"));
-                for (String word : words)
-                    mLogger.info(word);
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
 
             mLogger.info("creating new wallet app kit");
@@ -238,7 +227,6 @@ public class WalletService extends Service
     @Override
     public void onCreate()
     {
-        mLogger = LoggerFactory.getLogger(WalletService.class);
         mLBM = LocalBroadcastManager.getInstance(this);
 
         mLogger.info("WalletService created");
@@ -288,6 +276,10 @@ public class WalletService extends Service
             if (rescan.equals("RESCAN"))
                 rescanBlockchain();
         }
+    }
+
+    public byte[] getSeed() {
+        return mHDWallet == null ? null : mHDWallet.getSeed();
     }
 
     private void setFiatRateSource(String src) {

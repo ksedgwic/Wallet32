@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,8 +55,9 @@ public class HDWallet {
     private final NetworkParameters	mParams;
     private final File				mDirectory;
     private final String			mFilePrefix;
-    private final byte[]			mSeed;
     private final DeterministicKey	mMasterKey;
+
+    private final byte[]			mSeed;
 
     private ArrayList<HDAccount>	mAccounts;
 
@@ -133,6 +135,10 @@ public class HDWallet {
             String acctName = String.format("Account %d", ii);
             mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ii));
         }
+    }
+
+    public byte[] getSeed() {
+        return mSeed;
     }
 
     public List<HDAccount> getAccounts() {

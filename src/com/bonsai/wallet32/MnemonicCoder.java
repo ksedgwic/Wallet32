@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -138,11 +137,13 @@ public class MnemonicCoder {
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);		// Can't happen.
         }
+        byte[] buffer = new byte[data.length];
+        System.arraycopy(data, 0, buffer, 0, data.length);
         RijndaelEngine cipher = new RijndaelEngine(len);
         cipher.init(true, new KeyParameter(key));
         for (int ii = 0; ii < 10000; ++ii)
-            cipher.processBlock(data, 0, data, 0);
-        return data;
+            cipher.processBlock(buffer, 0, buffer, 0);
+        return buffer;
     }
 
     private byte[] unstretch(int len, byte[] data) throws RuntimeException {
@@ -153,11 +154,13 @@ public class MnemonicCoder {
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);		// Can't happen.
         }
+        byte[] buffer = new byte[data.length];
+        System.arraycopy(data, 0, buffer, 0, data.length);
         RijndaelEngine cipher = new RijndaelEngine(len);
         cipher.init(false, new KeyParameter(key));
         for (int ii = 0; ii < 10000; ++ii)
-            cipher.processBlock(data, 0, data, 0);
-        return data;
+            cipher.processBlock(buffer, 0, buffer, 0);
+        return buffer;
     }
 
     private boolean[] checksum(boolean[] bits) {

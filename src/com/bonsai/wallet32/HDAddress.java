@@ -36,7 +36,8 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 
 public class HDAddress {
 
-    private Logger mLogger;
+    private static Logger mLogger = 
+        LoggerFactory.getLogger(HDAddress.class);
 
     private NetworkParameters	mParams;
     private int					mAddrNum;
@@ -54,8 +55,6 @@ public class HDAddress {
                      DeterministicKey chainKey,
                      JsonNode addrNode)
         throws RuntimeException {
-
-        mLogger = LoggerFactory.getLogger(HDAddress.class);
 
         mParams = params;
 
@@ -90,8 +89,6 @@ public class HDAddress {
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,
                      int addrnum) {
-
-        mLogger = LoggerFactory.getLogger(HDAddress.class);
 
         mParams = params;
         mAddrNum = addrnum;

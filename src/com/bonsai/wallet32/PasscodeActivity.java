@@ -195,7 +195,7 @@ public class PasscodeActivity extends ActionBarActivity {
             // Spin up the WalletService.
             startService(new Intent(this, WalletService.class));
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, ViewSeedActivity.class);
             startActivity(intent);
 
             // And we're done here ...

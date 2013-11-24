@@ -35,7 +35,8 @@ import com.google.bitcoin.crypto.HDKeyDerivation;
 
 public class HDChain {
 
-    private Logger mLogger;
+    private static Logger mLogger =
+        LoggerFactory.getLogger(HDChain.class);
 
     private NetworkParameters	mParams;
     private DeterministicKey	mChainKey;
@@ -50,8 +51,6 @@ public class HDChain {
                    DeterministicKey accountKey,
                    JsonNode chainNode)
         throws RuntimeException {
-
-        mLogger = LoggerFactory.getLogger(HDChain.class);
 
         mParams = params;
 
@@ -78,8 +77,6 @@ public class HDChain {
                    boolean isReceive,
                    String chainName,
                    int numAddrs) {
-
-        mLogger = LoggerFactory.getLogger(HDChain.class);
 
         mParams = params;
         mIsReceive = isReceive;

@@ -38,7 +38,8 @@ import com.google.bitcoin.script.Script;
 
 public class HDAccount {
 
-    private Logger mLogger;
+    private static Logger mLogger =
+        LoggerFactory.getLogger(HDAccount.class);
 
     private NetworkParameters	mParams;
     private DeterministicKey	mAccountKey;
@@ -52,8 +53,6 @@ public class HDAccount {
                      DeterministicKey masterKey,
                      JsonNode acctNode)
         throws RuntimeException {
-
-        mLogger = LoggerFactory.getLogger(HDAccount.class);
 
         mParams = params;
 
@@ -75,8 +74,6 @@ public class HDAccount {
                      DeterministicKey masterKey,
                      String accountName,
                      int acctnum) {
-
-        mLogger = LoggerFactory.getLogger(HDAccount.class);
 
         mParams = params;
         mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, acctnum);

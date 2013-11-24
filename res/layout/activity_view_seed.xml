@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ViewSeedActivity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp"
+    android:gravity="center"
+    >
+
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="20dp"
+	/>
+
+    <TextView
+	android:id="@+id/directions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seed_directions"
+	android:textAppearance="@android:style/TextAppearance.Medium"
+	/>
+
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="40dp"
+	/>
+
+    <TextView
+	android:id="@+id/seed_hex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Medium"
+	android:textIsSelectable="true"
+	/>
+
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="40dp"
+	/>
+
+    <TextView
+	android:id="@+id/seed_mnemonic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+	android:layout_gravity="center"
+	android:textAppearance="@android:style/TextAppearance.Medium"
+	android:typeface="monospace"
+	android:textIsSelectable="true"
+	/>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
+    <Button
+	android:id="@+id/done"
+	android:layout_width="180dp"
+	android:layout_height="wrap_content"
+	android:text="@string/seed_done"
+	android:onClick="seedDone"
+	/>
+
+    <!-- Rigid Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="20dp"
+	/>
+
+    <TextView
+	android:id="@+id/network_status"
+	android:text="@string/network_status_unknown"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	/>
+
+</LinearLayout>
