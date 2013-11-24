@@ -66,6 +66,9 @@ import eu.livotov.zxscan.ZXScanHelper;
 
 public class SendBitcoinActivity extends ActionBarActivity {
 
+    private static Logger mLogger =
+        LoggerFactory.getLogger(SendBitcoinActivity.class);
+
     protected EditText mBTCAmountEditText;
     protected EditText mFiatAmountEditText;
 
@@ -77,7 +80,6 @@ public class SendBitcoinActivity extends ActionBarActivity {
     protected boolean mUserSetAmountFiat;
     protected boolean mUserSetFeeFiat;
 
-    private Logger mLogger;
     private Resources mRes;
     private LocalBroadcastManager mLBM;
 
@@ -104,7 +106,6 @@ public class SendBitcoinActivity extends ActionBarActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 
-        mLogger = LoggerFactory.getLogger(MainActivity.class);
         mRes = getResources();
         mLBM = LocalBroadcastManager.getInstance(getApplicationContext());
 

@@ -59,6 +59,9 @@ public class LobbyActivity extends Activity {
             mLogger.info("Existing wallet found");
 
             Intent intent = new Intent(this, PasscodeActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("createPasscode", false);
+            intent.putExtras(bundle);
             startActivity(intent);
 
         } else {

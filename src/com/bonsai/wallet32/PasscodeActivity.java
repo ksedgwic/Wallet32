@@ -19,8 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,10 +37,41 @@ public class PasscodeActivity extends ActionBarActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(PasscodeActivity.class);
 
+    private enum State {
+        PASSCODE_CREATE,
+        PASSCODE_CONFIRM,
+        PASSCODE_ENTER
+    }
+
+    private Resources mRes;
+
+    private State	mState;
+    private String	mPasscode;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_passcode);
+
+        mRes = getResources();
+
+        Bundle bundle = getIntent().getExtras();
+        boolean createPasscode = bundle.getBoolean("createPasscode");
+        mState = createPasscode ? State.PASSCODE_CREATE : State.PASSCODE_ENTER;
+
+        TextView msgtv = (TextView) findViewById(R.id.message);
+        switch (mState) {
+        case PASSCODE_CREATE:
+            msgtv.setText(R.string.passcode_create);
+            break;
+        case PASSCODE_CONFIRM:
+            msgtv.setText(R.string.passcode_confirm);
+            break;
+        case PASSCODE_ENTER:
+            msgtv.setText(R.string.passcode_enter);
+            break;
+        }
+
         mLogger.info("PasscodeActivity created");
 	}
 
@@ -117,6 +153,74 @@ public class PasscodeActivity extends ActionBarActivity {
     }
 
     public void submitPasscode(View view) {
+        switch (mState) {
+        case PASSCODE_CREATE:	confirmPasscode();		break;
+        case PASSCODE_CONFIRM:	checkPasscode();		break;
+        case PASSCODE_ENTER:	validatePasscode();		break;
+        }
+    }
+
+    // We're creating a passcode and it's been entered once.
+    private void confirmPasscode() {
+        // Fetch the first version of the passcode.
+        TextView pctv = (TextView) findViewById(R.id.passcode);
+        mPasscode = pctv.getText().toString();
+
+        // Clear the passcode.
+        pctv.setText("");	// Clear the string.
+
+        // Ask the user to confirm it.
+        TextView msgtv = (TextView) findViewById(R.id.message);
+        msgtv.setText(R.string.passcode_confirm);
+
+        mState = State.PASSCODE_CONFIRM;
+    }
+
+    // We're creating a passcode and it's been entered a second time.
+    private void checkPasscode() {
+        // Fetch the second version of the passcode.
+        TextView pctv = (TextView) findViewById(R.id.passcode);
+        String passcode = pctv.getText().toString();
+
+        // Do they match?
+        if (passcode.equals(mPasscode)) {
+            // Matched!  Store the passcode in the application context.
+            WalletApplication wallapp =
+                (WalletApplication) getApplicationContext();
+            wallapp.mPasscode = passcode;
+
+            // Create the wallet.
+            WalletUtil.createWallet(getApplicationContext());
+
+            // Spin up the WalletService.
+            startService(new Intent(this, WalletService.class));
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+
+            // And we're done here ...
+            finish();
+        } else {
+            // Didn't match, try again ...
+
+            showErrorDialog(mRes.getString(R.string.passcode_mismatch));
+
+            // Clear the passcode.
+            pctv.setText("");	// Clear the string.
+
+            // Ask the user to create again.
+            TextView msgtv = (TextView) findViewById(R.id.message);
+            msgtv.setText(R.string.passcode_create);
+
+            mState = State.PASSCODE_CREATE;
+        }
+    }
+
+    // We're opening a wallet and the passcode has been entered.
+    private void validatePasscode() {
+
+        // FIXME - need to validate the passcode!
+
         // Spin up the WalletService.
         startService(new Intent(this, WalletService.class));
 
@@ -126,5 +230,33 @@ public class PasscodeActivity extends ActionBarActivity {
 
         // And we're done with this activity.
         finish();
+    }
+
+    public static class ErrorDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+            String msg = getArguments().getString("msg");
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            builder
+                .setMessage(msg)
+                .setPositiveButton(R.string.send_error_ok,
+                                   new DialogInterface.OnClickListener() {
+                                       public void onClick(DialogInterface di,
+                                                           int id) {
+                                           // Do we need to do anything?
+                                       }
+                                   });
+            return builder.create();
+        }
+    }
+
+    private void showErrorDialog(String msg) {
+        DialogFragment df = new ErrorDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("msg", msg);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "error");
     }
 }

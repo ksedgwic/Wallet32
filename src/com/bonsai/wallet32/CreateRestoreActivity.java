@@ -15,17 +15,12 @@
 
 package com.bonsai.wallet32;
 
-import java.security.SecureRandom;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.params.MainNetParams;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
@@ -50,32 +45,13 @@ public class CreateRestoreActivity extends Activity {
     public void createWallet(View view) {
         mLogger.info("create wallet");
 
-        NetworkParameters params = MainNetParams.get();
-
-        String filePrefix = "wallet32";
-
-        // Generate a new seed.
-        SecureRandom random = new SecureRandom();
-        byte seed[] = new byte[16];
-        random.nextBytes(seed);
-
-        int numAccounts = 2;
-
-        // Setup a wallet with the seed.
-        HDWallet hdwallet = new HDWallet(params,
-                                         getApplicationContext().getFilesDir(),
-                                         filePrefix,
-                                         seed,
-                                         numAccounts);
-        hdwallet.persist();
-
-        // Spin up the WalletService.
-        startService(new Intent(this, WalletService.class));
-
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, PasscodeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("createPasscode", true);
+        intent.putExtras(bundle);
         startActivity(intent);
 
-        // Prevent the user from coming back here.
+        // We're done here ...
         finish();
     }
 

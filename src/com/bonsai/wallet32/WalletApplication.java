@@ -23,13 +23,14 @@ import android.content.Intent;
 
 public class WalletApplication extends Application {
 
-    protected Logger mLogger;
+    private static Logger mLogger =
+        LoggerFactory.getLogger(WalletApplication.class);
+
+    public String		mPasscode;
 
 	@Override
 	public void onCreate()
 	{
-        mLogger = LoggerFactory.getLogger(WalletApplication.class);
-
         // Apply PRNGFixes.
         PRNGFixes.apply();
 
