@@ -180,29 +180,12 @@ public class PasscodeActivity extends ActionBarActivity {
 
         // Do they match?
         if (passcode.equals(mPasscode)) {
+            
+            // They matched ... setup async
+            new SetupPasscodeTask().execute(passcode);
+        }
 
-            WalletUtil.setPasscode(getApplicationContext(), passcode);
-
-            // Are we going on to create or restore?
-            if (mRestoreWallet) {
-                Intent intent = new Intent(this, RestoreWalletActivity.class);
-                startActivity(intent);
-            }
-            else {
-                // Create the wallet.
-                WalletUtil.createWallet(getApplicationContext());
-
-                // Spin up the WalletService.
-                startService(new Intent(this, WalletService.class));
-
-                Intent intent = new Intent(this, ViewSeedActivity.class);
-                startActivity(intent);
-            }
-
-            // And we're done here ...
-            finish();
-
-        } else {
+        else {
             // Didn't match, try again ...
 
             showErrorDialog(mRes.getString(R.string.passcode_mismatch));
@@ -216,6 +199,28 @@ public class PasscodeActivity extends ActionBarActivity {
 
             mState = State.PASSCODE_CREATE;
         }
+    }
+
+    private void setupComplete() {
+
+        // Are we going on to create or restore?
+        if (mRestoreWallet) {
+            Intent intent = new Intent(this, RestoreWalletActivity.class);
+            startActivity(intent);
+        }
+        else {
+            // Create the wallet.
+            WalletUtil.createWallet(getApplicationContext());
+
+            // Spin up the WalletService.
+            startService(new Intent(this, WalletService.class));
+
+            Intent intent = new Intent(this, ViewSeedActivity.class);
+            startActivity(intent);
+        }
+
+        // And we're done here ...
+        finish();
     }
 
     // We're opening a wallet and the passcode has been entered.
@@ -305,12 +310,35 @@ public class PasscodeActivity extends ActionBarActivity {
         return df;
     }
 
+    private class SetupPasscodeTask extends AsyncTask<String, Void, Void> {
+        DialogFragment df;
+
+        @Override
+        protected void onPreExecute() {
+            df = showErrorDialog(mRes.getString(R.string.passcode_waitsetup));
+        }
+
+		protected Void doInBackground(String... arg0)
+        {
+            String passcode = arg0[0];
+            // This takes a while (scrypt) ...
+            WalletUtil.setPasscode(getApplicationContext(), passcode);
+			return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            df.dismiss();
+            setupComplete();
+        }
+    }
+
     private class ValidatePasscodeTask extends AsyncTask<String, Void, Boolean> {
         DialogFragment df;
 
         @Override
         protected void onPreExecute() {
-            df = showErrorDialog(mRes.getString(R.string.passcode_wait));
+            df = showErrorDialog(mRes.getString(R.string.passcode_waitvalidate));
         }
 
 		protected Boolean doInBackground(String... arg0)
