@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -223,8 +224,12 @@ public class PasscodeActivity extends ActionBarActivity {
         // Fetch the first version of the passcode.
         String passcode = getPasscode();
 
-        if (!WalletUtil.passcodeValid(getApplicationContext(), passcode))
-        {
+        new ValidatePasscodeTask().execute(passcode);
+    }
+
+    private void validateComplete(boolean isValid) {
+
+        if (!isValid) {
             showErrorDialog(mRes.getString(R.string.passcode_invalid));
 
             // Clear the passcode.
@@ -291,11 +296,34 @@ public class PasscodeActivity extends ActionBarActivity {
         }
     }
 
-    private void showErrorDialog(String msg) {
+    private DialogFragment showErrorDialog(String msg) {
         DialogFragment df = new ErrorDialogFragment();
         Bundle args = new Bundle();
         args.putString("msg", msg);
         df.setArguments(args);
         df.show(getSupportFragmentManager(), "error");
+        return df;
+    }
+
+    private class ValidatePasscodeTask extends AsyncTask<String, Void, Boolean> {
+        DialogFragment df;
+
+        @Override
+        protected void onPreExecute() {
+            df = showErrorDialog(mRes.getString(R.string.passcode_wait));
+        }
+
+		protected Boolean doInBackground(String... arg0)
+        {
+            String passcode = arg0[0];
+            // This takes a while (scrypt) ...
+            return WalletUtil.passcodeValid(getApplicationContext(), passcode);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            df.dismiss();
+            validateComplete(result.booleanValue());
+        }
     }
 }

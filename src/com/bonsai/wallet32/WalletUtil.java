@@ -118,7 +118,7 @@ public class WalletUtil {
     }
 
     public static void writeSalt(Context context, byte[] salt) {
-        mLogger.info("writing salt " + Hex.encode(salt));
+        mLogger.info("writing salt " + new String(Hex.encode(salt)));
         File saltFile = new File(context.getFilesDir(), "salt");
         FileOutputStream saltStream;
 		try {
@@ -140,7 +140,7 @@ public class WalletUtil {
 			dis = new DataInputStream(new FileInputStream(saltFile));
 			dis.readFully(salt);
 			dis.close();
-            mLogger.info("read salt " + Hex.encode(salt));
+            mLogger.info("read salt " + new String(Hex.encode(salt)));
             return salt;
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();

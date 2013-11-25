@@ -125,8 +125,7 @@ public class WalletService extends Service
             }
         };
 
-    private class SetupWalletTask extends AsyncTask<Void, Void, Void>
-    {
+    private class SetupWalletTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... arg0)
         {

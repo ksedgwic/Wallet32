@@ -28,6 +28,7 @@
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
+    <string name="passcode_wait">Please wait while your passcode is validated</string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
     <string name="passcode_2">2</string>
