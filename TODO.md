@@ -1,9 +1,7 @@
 
-* Use passcode to encrypt wallet data.
+* Add transaction label support.
 
 * Move view seed from main to settings.
-
-* Add checkpoint support.
 
 * Notify user when rescan required.
 
@@ -35,6 +33,8 @@
 * Account View Activity
 
 * Tune logging ... SECURITY!
+
+* Add file logging.
 
 * Create "adjust" dialog when amount > avail.
 
