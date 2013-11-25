@@ -134,12 +134,16 @@ public class RestoreWalletActivity extends ActionBarActivity {
             return;
         }
 
+        WalletApplication wallapp = (WalletApplication) getApplicationContext();
+
         int numAccounts = 3;
 
-        // Setup a wallet with the seed.
+        // Setup a wallet with the restore seed.
         HDWallet hdwallet = new HDWallet(params,
                                          getApplicationContext().getFilesDir(),
                                          filePrefix,
+                                         wallapp.mKeyCrypter,
+                                         wallapp.mAesKey,
                                          seed,
                                          numAccounts);
         hdwallet.persist();

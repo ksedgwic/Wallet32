@@ -48,6 +48,7 @@ public class CreateRestoreActivity extends Activity {
         Intent intent = new Intent(this, PasscodeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean("createPasscode", true);
+        bundle.putBoolean("restoreWallet", false);
         intent.putExtras(bundle);
         startActivity(intent);
 
@@ -58,7 +59,11 @@ public class CreateRestoreActivity extends Activity {
     public void restoreWallet(View view) {
         mLogger.info("restore wallet");
 
-        Intent intent = new Intent(this, RestoreWalletActivity.class);
+        Intent intent = new Intent(this, PasscodeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("createPasscode", true);
+        bundle.putBoolean("restoreWallet", true);
+        intent.putExtras(bundle);
         startActivity(intent);
 
         // Prevent the user from coming back here.

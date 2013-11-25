@@ -39,6 +39,8 @@ import android.text.format.DateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.encoders.Hex;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,6 +56,7 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.core.WrongNetworkException;
+import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.params.RegTestParams;
 
@@ -83,6 +86,8 @@ public class WalletService extends Service
     private Resources			mRes;
     private int					mPercentDone = 0;
 
+    private KeyCrypter			mKeyCrypter;
+    private KeyParameter		mAesKey;
     private HDWallet			mHDWallet = null;
 
     private RateUpdater			mRateUpdater;
@@ -125,28 +130,28 @@ public class WalletService extends Service
 		@Override
 		protected Void doInBackground(Void... arg0)
         {
+            WalletApplication wallapp = (WalletApplication) mContext;
+
             mLogger.info("getting network parameters");
 
             mParams = MainNetParams.get();
 
             // Try to restore existing wallet.
-            mHDWallet = HDWallet.restore(mParams,
-                                         mContext.getFilesDir(),
-                                         mFilePrefix);
+            mHDWallet = null;
+            try {
+				mHDWallet = HDWallet.restore(mParams,
+				                             mContext.getFilesDir(),
+				                             mFilePrefix, mKeyCrypter, mAesKey);
+			} catch (InvalidCipherTextException ex) {
+                mLogger.error("wallet restore failed: " + ex.toString());
+			} catch (IOException ex) {
+                mLogger.error("wallet restore failed: " + ex.toString());
+			}
 
             if (mHDWallet == null) {
 
                 mLogger.error("WalletService started with bad HDWallet");
                 System.exit(0);
-
-                /*
-                // Create a new wallet from scratch.
-                byte[] seed = Hex.decode("4a34f8fe74f81723ab07ff1d73af91e2");
-                mHDWallet = new HDWallet(mParams,
-                                         mContext.getFilesDir(),
-                                         filePrefix,
-                                         seed);
-                */
             }
 
             mLogger.info("creating new wallet app kit");
@@ -162,6 +167,7 @@ public class WalletService extends Service
                                       mContext.getFilesDir(),
                                       mFilePrefix,
                                       chkpntis,
+                                      wallapp.mKeyCrypter,
                                       mDownloadListener)
                 {
                     @Override
@@ -256,6 +262,11 @@ public class WalletService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        WalletApplication wallapp = (WalletApplication) getApplicationContext();
+
+        mKeyCrypter = wallapp.mKeyCrypter;
+        mAesKey = wallapp.mAesKey;
+
         mTask = new SetupWalletTask();
         mTask.execute();
 
@@ -442,6 +453,8 @@ public class WalletService extends Service
                                      double fee) throws RuntimeException {
         if (mHDWallet == null)
             return;
+
+        WalletApplication wallapp = (WalletApplication) mContext;
 
         try {
             Address dest = new Address(mParams, address);

@@ -17,16 +17,20 @@ package com.bonsai.wallet32;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
-import android.content.Intent;
+
+import com.google.bitcoin.crypto.KeyCrypter;
 
 public class WalletApplication extends Application {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(WalletApplication.class);
 
-    public String		mPasscode;
+    public String			mPasscode;
+    public KeyCrypter		mKeyCrypter;
+    public KeyParameter		mAesKey;
 
 	@Override
 	public void onCreate()

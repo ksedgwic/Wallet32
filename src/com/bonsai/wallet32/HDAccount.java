@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
@@ -34,6 +35,7 @@ import com.google.bitcoin.core.Wallet.CoinSelector;
 import com.google.bitcoin.core.Wallet.DefaultCoinSelector;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.script.Script;
 
 public class HDAccount {
@@ -87,9 +89,11 @@ public class HDAccount {
         mChangeChain = new HDChain(mParams, mAccountKey, false, "Change", 0);
     }
 
-    public void addAllKeys(Wallet wallet) {
-        mReceiveChain.addAllKeys(wallet);
-        mChangeChain.addAllKeys(wallet);
+    public void addAllKeys(Wallet wallet,
+                           KeyCrypter keyCrypter,
+                           KeyParameter aesKey) {
+        mReceiveChain.addAllKeys(wallet, keyCrypter, aesKey);
+        mChangeChain.addAllKeys(wallet, keyCrypter, aesKey);
     }
 
     public void applyOutput(byte[] pubkey,
@@ -206,8 +210,10 @@ public class HDAccount {
         return obj;
     }
 
-    public void ensureMargins(Wallet wallet) {
-        mReceiveChain.ensureMargins(wallet);
-        mChangeChain.ensureMargins(wallet);
+    public void ensureMargins(Wallet wallet,
+                              KeyCrypter keyCrypter,
+                              KeyParameter aesKey) {
+        mReceiveChain.ensureMargins(wallet, keyCrypter, aesKey);
+        mChangeChain.ensureMargins(wallet, keyCrypter, aesKey);
     }
 }

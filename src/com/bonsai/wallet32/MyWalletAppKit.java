@@ -17,6 +17,7 @@ package com.bonsai.wallet32;
 
 import android.annotation.SuppressLint;
 import com.google.bitcoin.core.*;
+import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.discovery.DnsDiscovery;
 import com.google.bitcoin.store.BlockStoreException;
 import com.google.bitcoin.store.SPVBlockStore;
@@ -58,6 +59,7 @@ public class MyWalletAppKit extends AbstractIdleService {
     private volatile File vWalletFile;
 
     private final InputStream chkpntis;
+    private final KeyCrypter keyCrypter;
 
     private boolean useAutoSave = true;
     private PeerAddress[] peerAddresses;
@@ -66,11 +68,13 @@ public class MyWalletAppKit extends AbstractIdleService {
                           File directory,
                           String filePrefix,
                           InputStream chkpntis,
+                          KeyCrypter keyCypter,
                           DownloadListener listener) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);
         this.chkpntis = chkpntis;
+        this.keyCrypter = keyCypter;
         this.listener = listener;
     }
 
@@ -134,13 +138,14 @@ public class MyWalletAppKit extends AbstractIdleService {
             // ----------------------------------------------------------------
             if (vWalletFile.exists()) {
                 walletStream = new FileInputStream(vWalletFile);
+                // Can't specify keyCypter here cause it gets deserialized ...
                 vWallet = new Wallet(params);
                 addWalletExtensions(); // All extensions must be present before we deserialize
                 new WalletProtobufSerializer().readWallet(WalletProtobufSerializer.parseToProto(walletStream), vWallet);
                 if (shouldReplayWallet)
                     vWallet.clearTransactions(0);
             } else {
-                vWallet = new Wallet(params);
+                vWallet = new Wallet(params, keyCrypter);
                 addWalletExtensions();
             }
             if (useAutoSave) vWallet.autosaveToFile(vWalletFile, 1, TimeUnit.SECONDS, null);

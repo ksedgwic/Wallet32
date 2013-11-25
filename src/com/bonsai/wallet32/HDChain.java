@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
@@ -32,6 +33,7 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.KeyCrypter;
 
 public class HDChain {
 
@@ -92,9 +94,11 @@ public class HDChain {
             mAddrs.add(new HDAddress(mParams, mChainKey, ii));
     }
 
-    public void addAllKeys(Wallet wallet) {
+    public void addAllKeys(Wallet wallet,
+                           KeyCrypter keyCrypter,
+                           KeyParameter aesKey) {
         for (HDAddress hda : mAddrs)
-            hda.addKey(wallet);
+            hda.addKey(wallet, keyCrypter, aesKey);
     }
 
     public void applyOutput(byte[] pubkey,
@@ -168,7 +172,9 @@ public class HDChain {
         return count;
     }
 
-    public void ensureMargins(Wallet wallet) {
+    public void ensureMargins(Wallet wallet,
+                              KeyCrypter keyCrypter,
+                              KeyParameter aesKey) {
         // How many unused addresses do we have at the end of the chain?
         int numUnused = marginSize();
 
@@ -186,7 +192,7 @@ public class HDChain {
             for (int ii = mAddrs.size(); ii < newSize; ++ii) {
                 HDAddress hda = new HDAddress(mParams, mChainKey, ii);
                 mAddrs.add(hda);
-                hda.addKey(wallet);
+                hda.addKey(wallet, keyCrypter, aesKey);
             }
         }
     }

@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.params.KeyParameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
@@ -33,6 +34,7 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.KeyCrypter;
 
 public class HDAddress {
 
@@ -114,7 +116,9 @@ public class HDAddress {
                      mECKey.getPrivateKeyEncoded(mParams).toString());
     }
 
-    public void addKey(Wallet wallet) {
+    public void addKey(Wallet wallet,
+                       KeyCrypter keyCrypter,
+                       KeyParameter aesKey) {
 
         // NOTE - we can do much better here.  There are two cases:
         //
@@ -128,8 +132,7 @@ public class HDAddress {
         // For now, set the creation time to Tue Oct 15 11:18:03 PDT 2013
         //
         mECKey.setCreationTimeSeconds(1381861127);
-
-        wallet.addKey(mECKey);
+        wallet.addKey(mECKey.encrypt(keyCrypter, aesKey));
     }
 
     public boolean isMatch(byte[] pubkey, byte[] pubkeyhash) {

@@ -15,9 +15,13 @@
 
 package com.bonsai.wallet32;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,7 +30,14 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
+import org.spongycastle.crypto.BufferedBlockCipher;
+import org.spongycastle.crypto.DataLengthException;
+import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.engines.AESFastEngine;
+import org.spongycastle.crypto.modes.CBCBlockCipher;
+import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.crypto.params.ParametersWithIV;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,15 +57,22 @@ import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.KeyCrypter;
+import com.google.bitcoin.crypto.KeyCrypterScrypt;
 import com.google.bitcoin.script.Script;
 
 public class HDWallet {
 
     private static Logger mLogger = LoggerFactory.getLogger(HDWallet.class);
 
+    private static final transient SecureRandom secureRandom = new SecureRandom();
+
     private final NetworkParameters	mParams;
     private final File				mDirectory;
     private final String			mFilePrefix;
+    private final KeyCrypter		mKeyCrypter;
+    private final KeyParameter		mAesKey;
+
     private final DeterministicKey	mMasterKey;
 
     private final byte[]			mSeed;
@@ -68,33 +86,92 @@ public class HDWallet {
     // Create an HDWallet from persisted file data.
     public static HDWallet restore(NetworkParameters params,
                                    File directory,
-                                   String filePrefix) {
+                                   String filePrefix,
+                                   KeyCrypter keyCrypter,
+                                   KeyParameter aesKey) throws InvalidCipherTextException, IOException {
+
+        JsonNode node = deserialize(directory, filePrefix,
+                                    keyCrypter, aesKey);
+
+        return new HDWallet(params, directory, filePrefix,
+                            keyCrypter, aesKey, node);
+    }
+
+    // Deserialize the wallet data.
+    public static JsonNode deserialize(File directory,
+                                       String filePrefix,
+                                       KeyCrypter keyCrypter,
+                                       KeyParameter aesKey) throws IOException, InvalidCipherTextException {
 
         String path = persistPath(filePrefix);
         mLogger.info("restoring HDWallet from " + path);
         try {
+            File file = new File(directory, path);
+            int len = (int) file.length();
+
+            // Open persisted file.
+            DataInputStream dis =
+                new DataInputStream(new FileInputStream(file));
+
+            // Read IV from file.
+            byte[] iv = new byte[KeyCrypterScrypt.BLOCK_LENGTH];
+			dis.readFully(iv);
+
+            // Read the ciphertext from the file.
+            byte[] cipherBytes = new byte[len - iv.length];
+            dis.readFully(cipherBytes);
+            dis.close();
+
+            // Decrypt the ciphertext.
+            ParametersWithIV keyWithIv =
+                new ParametersWithIV(new KeyParameter(aesKey.getKey()), iv);
+            BufferedBlockCipher cipher =
+                new PaddedBufferedBlockCipher
+                (new CBCBlockCipher(new AESFastEngine()));
+            cipher.init(false, keyWithIv);
+            int minimumSize = cipher.getOutputSize(cipherBytes.length);
+            byte[] outputBuffer = new byte[minimumSize];
+            int length1 = cipher.processBytes(cipherBytes,
+                                              0, cipherBytes.length,
+                                              outputBuffer, 0);
+            int length2 = cipher.doFinal(outputBuffer, length1);
+            int actualLength = length1 + length2;
+            byte[] decryptedBytes = new byte[actualLength];
+            System.arraycopy(outputBuffer, 0, decryptedBytes, 0, actualLength);
+            
+            // Parse the decryptedBytes.
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(new File(directory, path));
-            return new HDWallet(params, directory, filePrefix, node);
+            JsonNode node = mapper.readTree(decryptedBytes);
+            return node;
+
         } catch (JsonProcessingException ex) {
             mLogger.warn("trouble parsing JSON: " + ex.toString());
+            throw ex;
         } catch (IOException ex) {
             mLogger.warn("trouble reading " + path + ": " + ex.toString());
+            throw ex;
         } catch (RuntimeException ex) {
             mLogger.warn("trouble restoring wallet: " + ex.toString());
-        }
-        return null;
+            throw ex;
+        } catch (InvalidCipherTextException ex) {
+            mLogger.warn("wallet decrypt failed: " + ex.toString());
+            throw ex;
+		}
     }
 
     public HDWallet(NetworkParameters params,
                     File directory,
                     String filePrefix,
+                    KeyCrypter keyCrypter,
+                    KeyParameter aesKey,
                     JsonNode walletNode)
         throws RuntimeException {
 
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
+        mKeyCrypter = keyCrypter;
+        mAesKey = aesKey;
 
         try {
 			mSeed = Base58.decode(walletNode.path("seed").textValue());
@@ -117,12 +194,16 @@ public class HDWallet {
     public HDWallet(NetworkParameters params,
                     File directory,
                     String filePrefix,
+                    KeyCrypter keyCrypter,
+                    KeyParameter aesKey,
                     byte[] seed,
                     int numAccounts) {
         
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
+        mKeyCrypter = keyCrypter;
+        mAesKey = aesKey;
         mSeed = seed;
 
         mMasterKey = HDKeyDerivation.createMasterPrivateKey(seed);
@@ -147,7 +228,7 @@ public class HDWallet {
 
     public void addAllKeys(Wallet wallet) {
         for (HDAccount acct : mAccounts)
-            acct.addAllKeys(wallet);
+            acct.addAllKeys(wallet, mKeyCrypter, mAesKey);
     }
 
     public void clearBalances() {
@@ -317,6 +398,7 @@ public class HDWallet {
         req.feePerKb = BigInteger.ZERO;
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector();
+        req.aesKey = mAesKey;
 
         SendResult result = wallet.sendCoins(req);
         if (result == null)
@@ -327,22 +409,56 @@ public class HDWallet {
         String path = persistPath(mFilePrefix);
         String tmpPath = path + ".tmp";
         try {
+            // Serialize into a byte array.
             ObjectMapper mapper = new ObjectMapper();
             Object obj = dumps();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            byte[] plainBytes = mapper.writeValueAsBytes(obj);
+
+            // Generate an IV.
+            byte[] iv = new byte[KeyCrypterScrypt.BLOCK_LENGTH];
+            secureRandom.nextBytes(iv);
+
+            // Encrypt the serialized data.
+            ParametersWithIV keyWithIv = new ParametersWithIV(mAesKey, iv);
+            BufferedBlockCipher cipher =
+                new PaddedBufferedBlockCipher
+                (new CBCBlockCipher(new AESFastEngine()));
+            cipher.init(true, keyWithIv);
+            byte[] encryptedBytes =
+                new byte[cipher.getOutputSize(plainBytes.length)];
+            int length = cipher.processBytes(plainBytes, 0, plainBytes.length,
+                                             encryptedBytes, 0);
+            cipher.doFinal(encryptedBytes, length);
+
+            // Ready a tmp file.
             File tmpFile = new File(mDirectory, tmpPath);
             if (tmpFile.exists())
                 tmpFile.delete();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            mapper.writeValue(tmpFile, obj);
+
+            // Write the IV followed by the data.
+			FileOutputStream ostrm = new FileOutputStream(tmpFile);
+			ostrm.write(iv);
+            ostrm.write(encryptedBytes);
+			ostrm.close();
+
+            // Swap the tmp file into place.
             File newFile = new File(mDirectory, path);
             if (!tmpFile.renameTo(newFile))
                 mLogger.warn("failed to rename to " + newFile);
             else
                 mLogger.info("persisted to " + path);
+
         } catch (JsonProcessingException ex) {
             mLogger.warn("failed generating JSON: " + ex.toString());
         } catch (IOException ex) {
             mLogger.warn("failed to write to " + tmpPath + ": " + ex.toString());
+		} catch (DataLengthException ex) {
+            mLogger.warn("encryption failed: " + ex.toString());
+		} catch (IllegalStateException ex) {
+            mLogger.warn("encryption failed: " + ex.toString());
+		} catch (InvalidCipherTextException ex) {
+            mLogger.warn("encryption failed: " + ex.toString());
 		}
     }
 
@@ -362,6 +478,6 @@ public class HDWallet {
     // Ensure that there are enough spare addresses on all chains.
     public void ensureMargins(Wallet wallet) {
         for (HDAccount acct : mAccounts)
-            acct.ensureMargins(wallet);
+            acct.ensureMargins(wallet, mKeyCrypter, mAesKey);
     }
 }

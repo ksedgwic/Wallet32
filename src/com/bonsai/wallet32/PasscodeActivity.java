@@ -46,6 +46,7 @@ public class PasscodeActivity extends ActionBarActivity {
     private Resources mRes;
 
     private State	mState;
+    private boolean	mRestoreWallet;
     private String	mPasscode;
 
 	@Override
@@ -58,6 +59,7 @@ public class PasscodeActivity extends ActionBarActivity {
         Bundle bundle = getIntent().getExtras();
         boolean createPasscode = bundle.getBoolean("createPasscode");
         mState = createPasscode ? State.PASSCODE_CREATE : State.PASSCODE_ENTER;
+        mRestoreWallet = bundle.getBoolean("restoreWallet");
 
         TextView msgtv = (TextView) findViewById(R.id.message);
         switch (mState) {
@@ -177,22 +179,28 @@ public class PasscodeActivity extends ActionBarActivity {
 
         // Do they match?
         if (passcode.equals(mPasscode)) {
-            // Matched!  Store the passcode in the application context.
-            WalletApplication wallapp =
-                (WalletApplication) getApplicationContext();
-            wallapp.mPasscode = passcode;
 
-            // Create the wallet.
-            WalletUtil.createWallet(getApplicationContext());
+            WalletUtil.setPasscode(getApplicationContext(), passcode);
 
-            // Spin up the WalletService.
-            startService(new Intent(this, WalletService.class));
+            // Are we going on to create or restore?
+            if (mRestoreWallet) {
+                Intent intent = new Intent(this, RestoreWalletActivity.class);
+                startActivity(intent);
+            }
+            else {
+                // Create the wallet.
+                WalletUtil.createWallet(getApplicationContext());
 
-            Intent intent = new Intent(this, ViewSeedActivity.class);
-            startActivity(intent);
+                // Spin up the WalletService.
+                startService(new Intent(this, WalletService.class));
+
+                Intent intent = new Intent(this, ViewSeedActivity.class);
+                startActivity(intent);
+            }
 
             // And we're done here ...
             finish();
+
         } else {
             // Didn't match, try again ...
 
@@ -212,17 +220,34 @@ public class PasscodeActivity extends ActionBarActivity {
     // We're opening a wallet and the passcode has been entered.
     private void validatePasscode() {
 
-        // FIXME - need to validate the passcode!
+        // Fetch the first version of the passcode.
+        String passcode = getPasscode();
 
-        // Spin up the WalletService.
-        startService(new Intent(this, WalletService.class));
+        if (!WalletUtil.passcodeValid(getApplicationContext(), passcode))
+        {
+            showErrorDialog(mRes.getString(R.string.passcode_invalid));
 
-        // Off to the main activity.
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+            // Clear the passcode.
+            setPasscode("");	// Clear the string.
 
-        // And we're done with this activity.
-        finish();
+            // Ask the user to create again.
+            TextView msgtv = (TextView) findViewById(R.id.message);
+            msgtv.setText(R.string.passcode_enter);
+
+            mState = State.PASSCODE_ENTER;
+        }
+
+        else {
+            // Spin up the WalletService.
+            startService(new Intent(this, WalletService.class));
+
+            // Off to the main activity.
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+
+            // And we're done with this activity.
+            finish();
+        }
     }
 
     // Retrieve the passcode, strip decorations.
