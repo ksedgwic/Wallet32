@@ -2,6 +2,8 @@
 Needed
 ----------------------------------------------------------------
 
+* Icon!
+
 * Electrum compatibility.
 
 * Add change passcode.
