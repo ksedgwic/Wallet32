@@ -1,4 +1,4 @@
-![Wallet32](raw.github.com/ksedgwic/Wallet32/master/walrus-256.png)
+![Wallet32](walrus-256.png)
 
 Wallet32
 ===============
