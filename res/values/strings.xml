@@ -46,6 +46,7 @@
     <string name="title_activity_view_seed">Wallet Seed</string>
     <string name="seed_directions">Backup your seed securely!</string>
     <string name="seed_done">Done</string>
+    <string name="base_error_ok">Ok</string>
     <string name="title_activity_main">Wallet32</string>
     <string name="balance_header_acct">Account</string>
     <string name="balance_header_btc">BTC</string>
@@ -67,7 +68,6 @@
     <string name="fee_btc_hint">0.00000</string>
     <string name="fee_fiat_hint">0.000</string>
     <string name="send_bitcoin">Send Bitcoin</string>
-    <string name="send_error_ok">Ok</string>
     <string name="send_error_nowallet">The wallet isn\'t ready</string>
     <string name="send_error_noaccount">No account selected</string>
     <string name="send_error_noaddr">Missing to address</string>
@@ -82,7 +82,6 @@
     <string name="receive_amount_label">Receive Amount: (optional)</string>
     <string name="amount_btc_hint">0.0000</string>
     <string name="amount_fiat_hint">0.00</string>
-    <string name="receive_error_ok">Ok</string>
     <string name="receive_error_nowallet">The wallet isn\'t ready</string>
     <string name="receive_error_noaccount">No account selected</string>
     <string name="receive_error_badamount">Amount to receive is malformed</string>

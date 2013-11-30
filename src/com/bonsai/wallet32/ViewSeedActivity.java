@@ -22,58 +22,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-public class ViewSeedActivity extends ActionBarActivity {
+public class ViewSeedActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewSeedActivity.class);
-
-    private LocalBroadcastManager mLBM;
-    // private Resources mRes;
-
-    private WalletService	mWalletService;
 
     private MnemonicCoder	mCoder;
 
     private boolean			mSeedFetched;
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-            public void onServiceConnected(ComponentName className,
-                                           IBinder binder) {
-                mWalletService =
-                    ((WalletService.WalletServiceBinder) binder).getService();
-                mLogger.info("WalletService bound");
-                updateWalletStatus();
-                updateSeed();
-            }
-
-            public void onServiceDisconnected(ComponentName className) {
-                mWalletService = null;
-                mLogger.info("WalletService unbound");
-            }
-
-    };
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-        mLBM = LocalBroadcastManager.getInstance(this);
-        // mRes = getResources();
 
         try {
 			mCoder = new MnemonicCoder(this);
@@ -91,70 +55,8 @@ public class ViewSeedActivity extends ActionBarActivity {
         mLogger.info("ViewSeedActivity created");
 	}
 
-    @SuppressLint("InlinedApi")
 	@Override
-    protected void onResume() {
-        super.onResume();
-        bindService(new Intent(this, WalletService.class), mConnection,
-                    Context.BIND_ADJUST_WITH_ACTIVITY);
-
-        mLBM.registerReceiver(mWalletStateChangedReceiver,
-                              new IntentFilter("wallet-state-changed"));
-
-        mLogger.info("ViewSeedActivity resumed");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindService(mConnection);
-
-        mLBM.unregisterReceiver(mWalletStateChangedReceiver);
-
-        mLogger.info("ViewSeedActivity paused");
-    }
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main_actions, menu);
-        return super.onCreateOptionsMenu(menu);
-	}
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-        case R.id.action_settings:
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    protected void openSettings()
-    {
-        // FIXME - Implement this.
-    }
-
-    private BroadcastReceiver mWalletStateChangedReceiver =
-        new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateWalletStatus();
-            }
-        };
-
-    private void updateWalletStatus() {
-        if (mWalletService == null)
-            return;
-
-        String state = mWalletService.getStateString();
-        TextView tv = (TextView) findViewById(R.id.network_status);
-        tv.setText(state);
-
+    protected void onWalletStateChanged() {
         updateSeed();
     }
 

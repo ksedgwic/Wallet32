@@ -15,38 +15,17 @@
 
 package com.bonsai.wallet32;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 
-import com.google.bitcoin.core.Address;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NavUtils;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -56,7 +35,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class ReceiveBitcoinActivity extends ActionBarActivity {
+import com.google.bitcoin.core.Address;
+
+public class ReceiveBitcoinActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(ReceiveBitcoinActivity.class);
@@ -64,43 +45,13 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
     protected EditText mBTCAmountEditText;
     protected EditText mFiatAmountEditText;
 
-    protected double mFiatPerBTC;
-
     protected boolean mUserSetAmountFiat;
-
-    private Resources mRes;
-    private LocalBroadcastManager mLBM;
-
-    private WalletService	mWalletService;
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-            public void onServiceConnected(ComponentName className,
-                                           IBinder binder) {
-                mWalletService =
-                    ((WalletService.WalletServiceBinder) binder).getService();
-                mLogger.info("WalletService bound");
-                updateWalletStatus();
-                updateRate();
-            }
-
-            public void onServiceDisconnected(ComponentName className) {
-                mWalletService = null;
-                mLogger.info("WalletService unbound");
-            }
-
-    };
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 
-        mRes = getResources();
-        mLBM = LocalBroadcastManager.getInstance(getApplicationContext());
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_bitcoin);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mFiatPerBTC = 0.0;
 
         // Start off presuming the user set the BTC amount.
         mUserSetAmountFiat = false;
@@ -114,64 +65,16 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
         mLogger.info("ReceiveBitcoinActivity created");
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bindService(new Intent(this, WalletService.class), mConnection,
-                    Context.BIND_ADJUST_WITH_ACTIVITY);
-
-        mLBM.registerReceiver(mWalletStateChangedReceiver,
-                              new IntentFilter("wallet-state-changed"));
-        mLBM.registerReceiver(mRateChangedReceiver,
-                              new IntentFilter("rate-changed"));
-
-        mLogger.info("ReceiveBitcoinActivity resumed");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindService(mConnection);
-
-        mLBM.unregisterReceiver(mWalletStateChangedReceiver);
-        mLBM.unregisterReceiver(mRateChangedReceiver);
-
-        mLogger.info("ReceiveBitcoinActivity paused");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.receive_bitcoin_actions, menu);
-        return super.onCreateOptionsMenu(menu);
+	@Override
+    protected void onWalletStateChanged() {
+        updateAccounts();
     }
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-    private BroadcastReceiver mWalletStateChangedReceiver =
-        new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateWalletStatus();
-            }
-        };
-
-    private BroadcastReceiver mRateChangedReceiver =
-        new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateRate();
-            }
-        };
+    protected void onRateChanged() {
+        updateAccounts();
+        updateAmountFields();
+    }
 
     // NOTE - This code implements a pair of "cross updating" fields.
     // If the user changes the BTC amount the fiat field is constantly
@@ -333,11 +236,11 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
         table.removeAllViews();
         mAccountIds = new ArrayList<Integer>();
 
-        double sumbtc = 0.0;
+        // double sumbtc = 0.0;
         List<Balance> balances = mWalletService.getBalances();
         if (balances != null) {
             for (Balance bal : balances) {
-                sumbtc += bal.balance;
+                // sumbtc += bal.balance;
                 addAccountRow(table,
                               bal.accountId,
                               bal.accountName,
@@ -346,51 +249,6 @@ public class ReceiveBitcoinActivity extends ActionBarActivity {
                 mAccountIds.add(bal.accountId);
             }
         }
-    }
-
-    private void updateWalletStatus() {
-        if (mWalletService != null) {
-            String state = mWalletService.getStateString();
-            TextView tv = (TextView) findViewById(R.id.network_status);
-            tv.setText(state);
-        }
-        updateAccounts();
-    }
-
-    private void updateRate() {
-        if (mWalletService != null) {
-            mFiatPerBTC = mWalletService.getRate();
-            updateAmountFields();
-            updateAccounts();
-        }
-    }
-
-    public static class ErrorDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            super.onCreateDialog(savedInstanceState);
-            String msg = getArguments().getString("msg");
-            AlertDialog.Builder builder =
-                new AlertDialog.Builder(getActivity());
-            builder
-                .setMessage(msg)
-                .setPositiveButton(R.string.receive_error_ok,
-                                   new DialogInterface.OnClickListener() {
-                                       public void onClick(DialogInterface di,
-                                                           int id) {
-                                           // Do we need to do anything?
-                                       }
-                                   });
-            return builder.create();
-        }
-    }
-
-    private void showErrorDialog(String msg) {
-        DialogFragment df = new ErrorDialogFragment();
-        Bundle args = new Bundle();
-        args.putString("msg", msg);
-        df.setArguments(args);
-        df.show(getSupportFragmentManager(), "error");
     }
 
     public void receiveBitcoin(View view) {

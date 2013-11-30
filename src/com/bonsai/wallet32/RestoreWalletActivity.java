@@ -167,7 +167,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                 new AlertDialog.Builder(getActivity());
             builder
                 .setMessage(msg)
-                .setPositiveButton(R.string.send_error_ok,
+                .setPositiveButton(R.string.base_error_ok,
                                    new DialogInterface.OnClickListener() {
                                        public void onClick(DialogInterface di,
                                                            int id) {

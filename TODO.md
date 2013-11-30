@@ -10,8 +10,6 @@ Needed
 
 * Embelish messages and directions.
 
-* Make status more prominent (color?)
-
 * Account View Activity
 
 * Tune logging ... SECURITY!
@@ -45,6 +43,10 @@ Recover Wallet
 Next
 ----------------------------------------------------------------
 
+* Tune for small screens.
+
+* Tune for slow platforms.
+
 * Make passcode creation estimate of brute-force difficulty.
 
 * Add coindesk index rate updater.
@@ -60,8 +62,6 @@ Next
 * Non-USD fiat support.
 
 * Font selections for tables.
-
-* Factor all common stuff into BaseActivity.
 
 * Sweep Activity.
 

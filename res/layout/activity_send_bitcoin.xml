@@ -3,12 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".SendBitcoinActivity"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:gravity="center"
-    android:paddingTop="24dp"
-    android:paddingBottom="16dp"
+    android:padding="16dp"
     >
 
     <TableLayout
@@ -307,7 +306,11 @@
     <TextView
 	android:id="@+id/network_status"
 	android:text="@string/network_status_unknown"
-	android:layout_width="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Medium"
+	android:padding="10dp"
+	android:background="#f08080"
+	android:gravity="center"
+	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	/>
 

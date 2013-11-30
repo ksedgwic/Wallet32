@@ -25,25 +25,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.bitcoin.core.Transaction;
-import com.google.bitcoin.core.TransactionConfidence;
-import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.WalletTransaction;
-
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.res.Resources;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -53,43 +37,20 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class ViewTransactionsActivity extends ActionBarActivity {
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
+import com.google.bitcoin.core.WalletTransaction;
+
+public class ViewTransactionsActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewTransactionsActivity.class);
 
-    private LocalBroadcastManager mLBM;
-    private Resources mRes;
-
-    private WalletService	mWalletService;
-
-    private double mFiatPerBTC = 0.0;
-
     private int mAccountNum = -1;
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-            public void onServiceConnected(ComponentName className,
-                                           IBinder binder) {
-                mWalletService =
-                    ((WalletService.WalletServiceBinder) binder).getService();
-                mLogger.info("WalletService bound");
-                updateAccountSpinner();
-                updateWalletStatus(); // Calls updateTransactions();
-                updateRate();
-            }
-
-            public void onServiceDisconnected(ComponentName className) {
-                mWalletService = null;
-                mLogger.info("WalletService unbound");
-            }
-
-    };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-        mLBM = LocalBroadcastManager.getInstance(this);
-        mRes = getResources();
 
 		super.onCreate(savedInstanceState);
 
@@ -119,70 +80,11 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         mLogger.info("ViewTransactionsActivity created");
 	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        bindService(new Intent(this, WalletService.class), mConnection,
-                    Context.BIND_ADJUST_WITH_ACTIVITY);
-
-        mLBM.registerReceiver(mWalletStateChangedReceiver,
-                              new IntentFilter("wallet-state-changed"));
-        mLBM.registerReceiver(mRateChangedReceiver,
-                              new IntentFilter("rate-changed"));
-
-        mLogger.info("ViewTransactionsActivity resumed");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unbindService(mConnection);
-
-        mLBM.unregisterReceiver(mWalletStateChangedReceiver);
-        mLBM.unregisterReceiver(mRateChangedReceiver);
-
-        mLogger.info("ViewTransactionsActivity paused");
-    }
-
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main_actions, menu);
-        return super.onCreateOptionsMenu(menu);
-	}
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-        case R.id.action_settings:
-            openSettings();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
+    protected void onWalletStateChanged() {
+        updateAccountSpinner();
+        updateTransactions();
     }
-
-    protected void openSettings()
-    {
-        // FIXME - Implement this.
-    }
-
-    private BroadcastReceiver mWalletStateChangedReceiver =
-        new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateWalletStatus();
-            }
-        };
-
-    private BroadcastReceiver mRateChangedReceiver =
-        new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateRate();
-            }
-        };
 
     private void updateAccountSpinner() {
         if (mWalletService != null) {
@@ -200,23 +102,6 @@ public class ViewTransactionsActivity extends ActionBarActivity {
                 (android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(dataAdapter);
         }
-    }
-
-    private void updateWalletStatus() {
-        if (mWalletService != null) {
-            String state = mWalletService.getStateString();
-            TextView tv = (TextView) findViewById(R.id.network_status);
-            tv.setText(state);
-        }
-        updateTransactions();
-    }
-
-    private void updateRate() {
-        if (mWalletService != null) {
-            mFiatPerBTC = mWalletService.getRate();
-        }
-        // We don't currently map to fiat in this view ...
-        // updateTransactions();
     }
 
     private void addTransactionHeader(TableLayout table) {
@@ -258,7 +143,7 @@ public class ViewTransactionsActivity extends ActionBarActivity {
         table.addView(row);
     }
 
-    private void updateTransactions() {
+	private void updateTransactions() {
         if (mWalletService == null)
             return;
 
