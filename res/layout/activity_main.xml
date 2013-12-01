@@ -10,6 +10,13 @@
     android:padding="16dp"
     >
 
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
     <TableLayout
 	android:id="@+id/balance_table"
 	android:layout_width="wrap_content"
@@ -20,7 +27,7 @@
     <View
 	android:layout_width="fill_parent"
 	android:layout_height="0dp"
-	android:layout_weight="1"
+	android:layout_weight="4"
 	/>
 
     <Button
@@ -55,10 +62,11 @@
 	android:onClick="viewSeed"
 	/>
 
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="20dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
     <Button
@@ -69,10 +77,11 @@
 	android:onClick="exitApp"
 	/>
 
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="10dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
     <TextView

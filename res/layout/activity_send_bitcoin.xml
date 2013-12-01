@@ -10,317 +10,297 @@
     android:padding="16dp"
     >
 
-  <ScrollView
-      android:id="@+id/scroll_id"
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent"
-      android:layout_weight="1"
-      android:fillViewport="true"
-      >
-
-    <LinearLayout
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:gravity="center"
-	>
-
-      <TableLayout
-    	  android:id="@+id/send_body"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-    	  android:gravity="center"
-    	  >
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-    	  <TextView
-    	      android:id="@+id/from_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/send_from_label"
-    	      android:textAppearance="@android:style/TextAppearance.Small"
-    	      android:textStyle="bold"
-    	      android:layout_span="7"
-    	      />
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-      	  <TableLayout
-    	      android:id="@+id/from_choices"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:gravity="left"
-    	      android:layout_span="7"
-    	      />
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-    	  <LinearLayout
-    	      android:layout_width="fill_parent"
-    	      android:layout_height="fill_parent"
-    	      android:orientation="horizontal"
-    	      android:layout_span="7"
-    	      >
-
-      	    <TextView
-    		android:id="@+id/to_label"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:text="@string/send_to_label"
-    		android:textAppearance="@android:style/TextAppearance.Small"
-    		android:textStyle="bold"
-    		/>
-
-    	    <!-- Stretchy Horizontal Spacer -->
-    	    <View
-    		android:layout_width="0dp"
-    		android:layout_height="fill_parent"
-    		android:layout_weight="1"
-    		/>
-
-    	    <Button
-    		android:id="@+id/qr"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
-    		android:text="@string/send_to_qr"
-    		android:onClick="scanQR"
-    		android:textAppearance="@android:style/TextAppearance.Small"
-    		android:minHeight="0dp"
-    		android:minWidth="0dp"
-    		/>
-
-    	  </LinearLayout>
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-    	  <EditText
-    	      android:id="@+id/to_address"
-    	      android:inputType="text"
-    	      android:singleLine="true"
-    	      android:layout_width="600dp"
-    	      android:layout_height="wrap_content"
-    	      android:textSize="14dp"
-    	      android:gravity="left"
-    	      android:hint="@string/send_to_hint"
-    	      android:layout_span="7"
-    	      />
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-    	  <TextView
-    	      android:id="@+id/amount_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/send_amount_label"
-    	      android:textAppearance="@android:style/TextAppearance.Small"
-    	      android:textStyle="bold"
-    	      android:layout_span="7"
-    	      />
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-	  <!-- Stretchy Horizontal Spacer -->
-	  <View
-	      android:layout_width="0dp"
-	      android:layout_height="fill_parent"
-	      android:layout_weight="1"
-	      />
-
-          <EditText
-    	      android:id="@+id/amount_btc"
-    	      android:inputType="numberDecimal"
-    	      android:singleLine="true"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:minWidth="60dp"
-    	      android:maxWidth="120dp"
-    	      android:gravity="right"
-    	      android:hint="@string/amount_btc_hint"
-    	      />
-
-    	  <TextView
-    	      android:id="@+id/amount_btc_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/btc_label"
-    	      />
-
-    	  <TextView
-    	      android:id="@+id/amount_eq_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:layout_marginLeft="6dp"
-    	      android:layout_marginRight="6dp"
-    	      android:text="@string/eq_label"
-    	      />
-
-    	  <EditText
-    	      android:id="@+id/amount_fiat"
-    	      android:inputType="numberDecimal"
-    	      android:singleLine="true"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:minWidth="45dp"
-    	      android:maxWidth="120dp"
-    	      android:gravity="right"
-    	      android:hint="@string/amount_fiat_hint"
-    	      />
-
-    	  <TextView
-    	      android:id="@+id/amount_fiat_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/fiat_label"
-    	      />
-
-	  <!-- Stretchy Horizontal Spacer -->
-	  <View
-	      android:layout_width="0dp"
-	      android:layout_height="fill_parent"
-	      android:layout_weight="1"
-	      />
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-    	  <TextView
-    	      android:id="@+id/fee_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/send_fee_label"
-    	      android:textAppearance="@android:style/TextAppearance.Small"
-    	      android:textStyle="bold"
-    	      android:layout_span="7"
-    	      />
-
-    	</TableRow>
-
-        <TableRow
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    >
-
-	  <!-- Stretchy Horizontal Spacer -->
-	  <View
-	      android:layout_width="0dp"
-	      android:layout_height="fill_parent"
-	      android:layout_weight="1"
-	      />
-
-          <EditText
-    	      android:id="@+id/fee_btc"
-    	      android:inputType="numberDecimal"
-    	      android:singleLine="true"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:minWidth="60dp"
-    	      android:maxWidth="120dp"
-    	      android:gravity="right"
-    	      android:hint="@string/fee_btc_hint"
-    	      />
-
-    	  <TextView
-    	      android:id="@+id/fee_btc_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/btc_label"
-    	      />
-
-    	  <TextView
-    	      android:id="@+id/fee_eq_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:layout_marginLeft="6dp"
-    	      android:layout_marginRight="6dp"
-    	      android:text="@string/eq_label"
-    	      />
-
-    	  <EditText
-    	      android:id="@+id/fee_fiat"
-    	      android:inputType="numberDecimal"
-    	      android:singleLine="true"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:minWidth="45dp"
-    	      android:maxWidth="120dp"
-    	      android:gravity="right"
-    	      android:hint="@string/fee_fiat_hint"
-    	      />
-
-    	  <TextView
-    	      android:id="@+id/fee_fiat_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/fiat_label"
-    	      />
-
-	  <!-- Stretchy Horizontal Spacer -->
-	  <View
-	      android:layout_width="0dp"
-	      android:layout_height="fill_parent"
-	      android:layout_weight="1"
-	      />
-
-    	</TableRow>
-
-      </TableLayout>
-
-      <!-- Stretchy Spacer -->
-      <View
-    	  android:layout_width="fill_parent"
-    	  android:layout_height="fill_parent"
-    	  android:layout_weight="1"
-    	  />
-
-      <Button
-    	  android:id="@+id/send"
-    	  android:layout_width="180dp"
-    	  android:layout_height="wrap_content"
-    	  android:text="@string/send_bitcoin"
-    	  android:onClick="sendBitcoin"
-          />
-
-    </LinearLayout>
-
-  </ScrollView>
-
-  <!-- Rigid Spacer -->
+  <!-- Stretchy Spacer -->
   <View
       android:layout_width="fill_parent"
-      android:layout_height="10dp"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="left"
+      >
+
+    <TextView
+    	android:id="@+id/from_label"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/send_from_label"
+    	android:textAppearance="@android:style/TextAppearance.Small"
+    	android:textStyle="bold"
+    	/>
+
+    <TableLayout
+    	android:id="@+id/from_choices"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:gravity="left"
+    	/>
+
+  </LinearLayout>
+
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      >
+
+    <TextView
+    	android:id="@+id/to_label"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/send_to_label"
+    	android:textAppearance="@android:style/TextAppearance.Small"
+    	android:textStyle="bold"
+    	/>
+
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+    	android:layout_width="0dp"
+    	android:layout_height="fill_parent"
+    	android:layout_weight="1"
+    	/>
+
+    <Button
+    	android:id="@+id/qr"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/send_to_qr"
+    	android:onClick="scanQR"
+    	android:textAppearance="@android:style/TextAppearance.Small"
+    	android:minHeight="0dp"
+    	android:minWidth="0dp"
+    	/>
+
+  </LinearLayout>
+
+  <EditText
+      android:id="@+id/to_address"
+      android:inputType="text"
+      android:singleLine="true"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textSize="14dp"
+      android:gravity="left"
+      android:hint="@string/send_to_hint"
+      />
+
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <TableLayout
+      android:id="@+id/send_amounts"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      >
+
+    <TableRow
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+    	  android:id="@+id/amount_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/send_amount_label"
+    	  android:textAppearance="@android:style/TextAppearance.Small"
+    	  android:textStyle="bold"
+    	  android:layout_span="7"
+    	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	>
+
+      <!-- Stretchy Horizontal Spacer -->
+      <View
+	  android:layout_width="0dp"
+	  android:layout_height="fill_parent"
+	  android:layout_weight="1"
+	  />
+
+      <EditText
+    	  android:id="@+id/amount_btc"
+    	  android:inputType="numberDecimal"
+    	  android:singleLine="true"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:minWidth="60dp"
+    	  android:maxWidth="120dp"
+    	  android:gravity="right"
+    	  android:hint="@string/amount_btc_hint"
+    	  />
+
+      <TextView
+    	  android:id="@+id/amount_btc_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/btc_label"
+    	  />
+
+      <TextView
+    	  android:id="@+id/amount_eq_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:layout_marginLeft="6dp"
+    	  android:layout_marginRight="6dp"
+    	  android:text="@string/eq_label"
+    	  />
+
+      <EditText
+    	  android:id="@+id/amount_fiat"
+    	  android:inputType="numberDecimal"
+    	  android:singleLine="true"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:minWidth="45dp"
+    	  android:maxWidth="120dp"
+    	  android:gravity="right"
+    	  android:hint="@string/amount_fiat_hint"
+    	  />
+
+      <TextView
+    	  android:id="@+id/amount_fiat_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/fiat_label"
+    	  />
+
+      <!-- Stretchy Horizontal Spacer -->
+      <View
+	  android:layout_width="0dp"
+	  android:layout_height="fill_parent"
+	  android:layout_weight="1"
+	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+    	  android:id="@+id/fee_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/send_fee_label"
+    	  android:textAppearance="@android:style/TextAppearance.Small"
+    	  android:textStyle="bold"
+    	  android:layout_span="7"
+    	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	>
+
+      <!-- Stretchy Horizontal Spacer -->
+      <View
+	  android:layout_width="0dp"
+	  android:layout_height="fill_parent"
+	  android:layout_weight="1"
+	  />
+
+      <EditText
+    	  android:id="@+id/fee_btc"
+    	  android:inputType="numberDecimal"
+    	  android:singleLine="true"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:minWidth="60dp"
+    	  android:maxWidth="120dp"
+    	  android:gravity="right"
+    	  android:hint="@string/fee_btc_hint"
+    	  />
+
+      <TextView
+    	  android:id="@+id/fee_btc_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/btc_label"
+    	  />
+
+      <TextView
+    	  android:id="@+id/fee_eq_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:layout_marginLeft="6dp"
+    	  android:layout_marginRight="6dp"
+    	  android:text="@string/eq_label"
+    	  />
+
+      <EditText
+    	  android:id="@+id/fee_fiat"
+    	  android:inputType="numberDecimal"
+    	  android:singleLine="true"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:minWidth="45dp"
+    	  android:maxWidth="120dp"
+    	  android:gravity="right"
+    	  android:hint="@string/fee_fiat_hint"
+    	  />
+
+      <TextView
+    	  android:id="@+id/fee_fiat_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/fiat_label"
+    	  />
+
+      <!-- Stretchy Horizontal Spacer -->
+      <View
+	  android:layout_width="0dp"
+	  android:layout_height="fill_parent"
+	  android:layout_weight="1"
+	  />
+
+    </TableRow>
+
+  </TableLayout>
+
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <Button
+      android:id="@+id/send"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/send_bitcoin"
+      android:onClick="sendBitcoin"
+      />
+
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
       />
 
   <TextView

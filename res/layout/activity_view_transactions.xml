@@ -41,15 +41,15 @@
 
     <ScrollView
 	android:id="@+id/scroll_id"
-	android:layout_width="wrap_content"
-	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
 	android:layout_weight="1"
 	android:fillViewport="true"
 	>
 
         <TableLayout
 	    android:id="@+id/transaction_table"
-	    android:layout_width="wrap_content"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    />
 

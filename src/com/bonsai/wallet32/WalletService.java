@@ -484,6 +484,7 @@ public class WalletService extends Service
     }
 
     private void setState(State newstate) {
+        mLogger.info("setState " + getStateString());
         mState = newstate;
         sendStateChanged();
     }

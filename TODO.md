@@ -2,9 +2,7 @@
 Needed
 ----------------------------------------------------------------
 
-* Remove "OK" from passcode dialogs.
-
-* Better passcode message
+* View Transactions too quickly crashes the client.
 
 * View Transactions Account Filter "slipping" back to "All Accounts".
 

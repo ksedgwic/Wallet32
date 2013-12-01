@@ -71,6 +71,13 @@
 	android:onClick="copyAddress"
 	/>
 
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
     <Button
 	android:id="@+id/dismiss"
 	android:layout_width="180dp"
