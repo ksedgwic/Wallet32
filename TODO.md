@@ -1,12 +1,18 @@
 
-Needed
+Bugs
 ----------------------------------------------------------------
 
-* Add an About screen from Settings.
+* On HTC, "back" from Main activity and then resume crashes ...
 
 * View Transactions too quickly crashes the client.
 
 * View Transactions Account Filter "slipping" back to "All Accounts".
+
+
+Needed
+----------------------------------------------------------------
+
+* Add an About screen from Settings.
 
 * Electrum compatibility.
 
