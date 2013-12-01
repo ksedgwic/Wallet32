@@ -7,6 +7,7 @@
 
     <TextView
 	android:id="@+id/header_label"
+	android:text="@string/balance_header_acct"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:layout_marginLeft="10dp"

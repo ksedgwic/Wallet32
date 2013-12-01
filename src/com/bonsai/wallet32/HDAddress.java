@@ -171,6 +171,22 @@ public class HDAddress {
                       value.toString());
     }
 
+    public String getPath() {
+        return mAddrKey.getPath();
+    }
+
+    public double getBalance() {
+        return mBalance.doubleValue() / 1e8;
+    }
+    
+    public String getAddressString() {
+        return mAddress.toString();
+    }
+
+    public int numTrans() {
+        return mNumTrans;
+    }
+
     public void clearBalance() {
         mNumTrans = 0;
         mBalance = BigInteger.ZERO;

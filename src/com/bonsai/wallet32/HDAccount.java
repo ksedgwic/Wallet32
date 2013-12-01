@@ -132,6 +132,14 @@ public class HDAccount {
         return mAccountId;
     }
 
+    public HDChain getReceiveChain() {
+        return mReceiveChain;
+    }
+
+    public HDChain getChangeChain() {
+        return mChangeChain;
+    }
+
     public BigInteger balance() {
         BigInteger balance = BigInteger.ZERO;
         balance = balance.add(mReceiveChain.balance());

@@ -94,6 +94,10 @@ public class HDChain {
             mAddrs.add(new HDAddress(mParams, mChainKey, ii));
     }
 
+    public List<HDAddress> getAddresses() {
+        return mAddrs;
+    }
+
     public void addAllKeys(Wallet wallet,
                            KeyCrypter keyCrypter,
                            KeyParameter aesKey) {
@@ -104,23 +108,23 @@ public class HDChain {
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
                             BigInteger value) {
-        for (HDAddress hda: mAddrs)
+        for (HDAddress hda : mAddrs)
             hda.applyOutput(pubkey, pubkeyhash, value);
     }
 
     public void applyInput(byte[] pubkey, BigInteger value) {
-        for (HDAddress hda: mAddrs)
+        for (HDAddress hda : mAddrs)
             hda.applyInput(pubkey, value);
     }
 
     public void clearBalance() {
-        for (HDAddress hda: mAddrs)
+        for (HDAddress hda : mAddrs)
             hda.clearBalance();
     }
 
     public BigInteger balance() {
         BigInteger balance = BigInteger.ZERO;
-        for (HDAddress hda: mAddrs)
+        for (HDAddress hda : mAddrs)
             balance = balance.add(hda.balance());
         return balance;
     }

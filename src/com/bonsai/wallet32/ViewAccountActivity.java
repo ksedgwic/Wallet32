@@ -15,6 +15,8 @@
 
 package com.bonsai.wallet32;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +24,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 public class ViewAccountActivity extends BaseWalletActivity {
 
@@ -99,46 +105,40 @@ public class ViewAccountActivity extends BaseWalletActivity {
     }
 
     private void updateChains() {
+        updateChain(R.id.receive_table, mAccount.getReceiveChain());
+        updateChain(R.id.change_table, mAccount.getChangeChain());
     }
 
-    /*
-    private void updateAccountSpinner() {
-        if (mWalletService != null) {
-            List<String> list = new ArrayList<String>();
-            list.add("All Accounts");
-            List<HDAccount> accts = mWalletService.getAccounts();
-            for (HDAccount acct : accts)
-                list.add(acct.getName());
-            Spinner spinner = (Spinner) findViewById(R.id.account_spinner);
-            ArrayAdapter<String> dataAdapter =
-                new ArrayAdapter<String>(this,
-                                         android.R.layout.simple_spinner_item,
-                                         list);
-            dataAdapter.setDropDownViewResource
-                (android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(dataAdapter);
-        }
-    }
-
-    private void addTransactionHeader(TableLayout table) {
+    private void addAddressHeader(TableLayout table) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
-            .inflate(R.layout.transaction_table_header, table, false);
+            .inflate(R.layout.address_table_header, table, false);
         table.addView(row);
     }
 
-    private void addTransactionRow(TableLayout table,
-                                   String datestr,
+    private void addAddressRow(TableLayout table,
+                                   String path,
+                                   String addr,
+                                   String ntrans,
                                    String btcstr,
-                                   String btcbalstr,
-                                   String confstr) {
+                                   String fiatstr) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
-            .inflate(R.layout.transaction_table_row, table, false);
+            .inflate(R.layout.address_table_row, table, false);
 
         {
-            TextView tv = (TextView) row.findViewById(R.id.row_date);
-            tv.setText(datestr);
+            TextView tv = (TextView) row.findViewById(R.id.row_path);
+            tv.setText(path);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_addr);
+            tv.setText(addr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_ntrans);
+            tv.setText(ntrans);
         }
 
         {
@@ -147,78 +147,36 @@ public class ViewAccountActivity extends BaseWalletActivity {
         }
 
         {
-            TextView tv = (TextView) row.findViewById(R.id.row_balance_btc);
-            tv.setText(btcbalstr);
-        }
-
-        {
-            TextView tv = (TextView) row.findViewById(R.id.row_confidence);
-            tv.setText(confstr);
+            TextView tv = (TextView) row.findViewById(R.id.row_fiat);
+            tv.setText(fiatstr);
         }
 
         table.addView(row);
     }
 
-    private void updateTransactions() {
+    private void updateChain(int tableId, HDChain chain) {
         if (mWalletService == null)
             return;
 
-        TableLayout table = (TableLayout) findViewById(R.id.transaction_table);
+        TableLayout table = (TableLayout) findViewById(tableId);
 
         // Clear any existing table content.
         table.removeAllViews();
 
-        addTransactionHeader(table);
+        addAddressHeader(table);
 
-        SimpleDateFormat dateFormater =
-            new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-
-        // Read all the transactions and sort by date.
-        Iterable<WalletTransaction> txit = mWalletService.getTransactions();
-        ArrayList<WalletTransaction> txs = new ArrayList<WalletTransaction>();
-        for (WalletTransaction wtx : txit)
-            txs.add(wtx);
-        // Sort in reverse time order (most recent first).
-        Collections.sort(txs, new Comparator<WalletTransaction>() {
-                public int compare(WalletTransaction wt0,
-                                   WalletTransaction wt1) {
-                    Date dt0 = wt0.getTransaction().getUpdateTime();
-                    Date dt1 = wt1.getTransaction().getUpdateTime();
-                    return -dt0.compareTo(dt1);
-                }
-            });
-
-        double btcbal = mWalletService.balanceForAccount(mAccountNum);
-        
-        for (WalletTransaction wtx : txs) {
-            Transaction tx = wtx.getTransaction();
-
-            double btc = mWalletService.amountForAccount(wtx, mAccountNum);
-            if (btc != 0.0) {
-                String datestr = dateFormater.format(tx.getUpdateTime());
-                String btcstr = String.format("%.5f", btc);
-                String btcbalstr = String.format("%.5f", btcbal);
-
-                String confstr;
-                TransactionConfidence conf = tx.getConfidence();
-                ConfidenceType ct = conf.getConfidenceType();
-                switch (ct) {
-                case UNKNOWN: confstr = "U"; break;
-                case BUILDING:
-                    int depth = conf.getDepthInBlocks();
-                    confstr = depth > 100 ? "100+" : String.format("%d", depth);
-                    break;
-                case PENDING: confstr = "P"; break;
-                case DEAD: confstr = "D"; break;
-                default: confstr = "?"; break;
-                }
-
-                addTransactionRow(table, datestr, btcstr, btcbalstr, confstr);
-            }
-
-            // We're working backward in time ...
-            btcbal -= btc;
+        // Read all of the addresses.  Presume order is correct ...
+        List<HDAddress> addrs = chain.getAddresses();
+        for (HDAddress addr : addrs) {
+            String path = addr.getPath();
+            String addrstr =
+                String.format("%s...",
+                              addr.getAddressString().substring(0, 8));
+            String ntrans = String.format("%d", addr.numTrans());
+            String bal = String.format("%.05f", addr.getBalance());
+            String fiat =
+                String.format("%.02f", addr.getBalance() * mFiatPerBTC);
+            addAddressRow(table, path, addrstr, ntrans, bal, fiat);
         }
     }
-    */
 }

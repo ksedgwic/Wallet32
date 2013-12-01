@@ -17,13 +17,6 @@
       android:gravity="center"
       >
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
     <LinearLayout
 	android:orientation="horizontal"
 	android:layout_width="fill_parent"
@@ -70,12 +63,64 @@
 	android:layout_weight="1"
 	/>
 
+    <TextView
+    	android:id="@+id/receive_label"
+    	android:text="@string/account_receive_label"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textStyle="bold"
+	android:layout_gravity="left"
+	android:textAppearance="@android:style/TextAppearance.Small"
+    	/>
+    
+    <ScrollView
+	android:id="@+id/receive_scroll_id"
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="10"
+	android:fillViewport="true"
+	>
+
+      <TableLayout
+	  android:id="@+id/receive_table"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  />
+
+    </ScrollView>
+
     <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
 	android:layout_height="0dp"
-	android:layout_weight="10"
+	android:layout_weight="1"
 	/>
+
+    <TextView
+    	android:id="@+id/change_label"
+    	android:text="@string/account_change_label"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textStyle="bold"
+	android:layout_gravity="left"
+	android:textAppearance="@android:style/TextAppearance.Small"
+    	/>
+    
+    <ScrollView
+	android:id="@+id/change_scroll_id"
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="10"
+	android:fillViewport="true"
+	>
+
+      <TableLayout
+	  android:id="@+id/change_table"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  />
+
+    </ScrollView>
 
     <!-- Stretchy Spacer -->
     <View

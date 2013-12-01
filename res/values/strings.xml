@@ -60,6 +60,13 @@
     <string name="account_name_label">Account Name:</string>
     <string name="account_name_hint">Account Name</string>
     <string name="account_name_submit">Submit</string>
+    <string name="account_receive_label">Receiving Addresses</string>
+    <string name="account_change_label">Change Addresses</string>
+    <string name="address_header_path">Path</string>
+    <string name="address_header_addr">Address</string>
+    <string name="address_header_ntrans">T</string>
+    <string name="address_header_btc">BTC</string>
+    <string name="address_header_fiat">USD</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
     <string name="send_to_label">Send To:</string>

@@ -52,6 +52,7 @@
         <activity
             android:name="com.bonsai.wallet32.ViewAccountActivity"
             android:label="@string/title_activity_view_account"
+	    android:windowSoftInputMode="stateHidden"
             android:parentActivityName="com.bonsai.wallet32.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -60,6 +61,7 @@
         <activity
             android:name="com.bonsai.wallet32.SendBitcoinActivity"
             android:label="@string/title_activity_send_bitcoin"
+	    android:windowSoftInputMode="stateHidden"
             android:parentActivityName="com.bonsai.wallet32.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -68,6 +70,7 @@
         <activity
             android:name="com.bonsai.wallet32.ReceiveBitcoinActivity"
             android:label="@string/title_activity_receive_bitcoin"
+	    android:windowSoftInputMode="stateHidden"
             android:parentActivityName="com.bonsai.wallet32.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
