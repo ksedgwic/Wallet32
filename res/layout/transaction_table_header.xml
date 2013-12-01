@@ -5,28 +5,45 @@
     android:layout_height="wrap_content"
     >
 
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="0dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/header_date"
 	android:text="@string/transaction_header_date"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:textStyle="bold"
 	android:gravity="center"
 	/>
   
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/header_btc"
 	android:text="@string/transaction_header_btc"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:textStyle="bold"
 	android:gravity="center"
+	/>
+
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
 	/>
 
     <TextView
@@ -34,11 +51,16 @@
 	android:text="@string/transaction_header_balance_btc"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:textStyle="bold"
 	android:gravity="center"
+	/>
+
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
 	/>
 
     <TextView
@@ -46,11 +68,16 @@
 	android:text="@string/transaction_header_confidence"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:textStyle="bold"
 	android:gravity="center"
+	/>
+
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="0dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
 	/>
 
 </TableRow>

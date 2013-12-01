@@ -75,7 +75,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
         mLogger.info("uri=" + mURI);
 
         final int size =
-            (int) (256 * getResources().getDisplayMetrics().density);
+            (int) (240 * getResources().getDisplayMetrics().density);
 
         Bitmap bm = createBitmap(mURI, size);
         if (bm != null) {

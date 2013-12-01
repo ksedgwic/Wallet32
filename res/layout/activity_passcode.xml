@@ -11,10 +11,11 @@
     android:gravity="center"
     >
 
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="10dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
     <TextView
@@ -26,10 +27,11 @@
 	android:textStyle="bold"
 	/>
 
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="10dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
     <TextView
@@ -40,10 +42,11 @@
 	android:textStyle="bold"
 	/>
 
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="10dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
     <TableLayout
@@ -200,10 +203,11 @@
 
 	</TableRow>
     
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="40dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
     <Button

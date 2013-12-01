@@ -168,17 +168,17 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         switch (mWalletService.getState()) {
         case SETUP:
         case ERROR:
-            colorspec = "#f0a0a0";	// Red
+            colorspec = "#f08080";	// Red
             break;
         case START:
         case SYNCING:
-            colorspec = "#f0f0a0";	// Yellow
+            colorspec = "#f0f080";	// Yellow
             break;
         case READY:
-            colorspec = "#a0f0a0";	// Green
+            colorspec = "#80f080";	// Green
             break;
         default:
-            colorspec = "#a0a0a0";	// Gray
+            colorspec = "#808080";	// Gray
             break;
         }
         tv.setBackgroundColor(Color.parseColor(colorspec));

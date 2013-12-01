@@ -12,6 +12,8 @@
 	android:layout_height="wrap_content"
 	android:layout_marginRight="10dp"
 	android:gravity="center_vertical|left"
+	android:minHeight="0dp"
+	android:minWidth="0dp"
 	/>
 
     <TextView

@@ -5,48 +5,75 @@
     android:layout_height="wrap_content"
     >
 
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="0dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/row_date"
 	android:text="2013-11-17 11:11:11"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="left"
 	/>
   
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/row_btc"
 	android:text="0.0000"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="right"
 	/>
   
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/row_balance_btc"
 	android:text="000.0000"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="right"
 	/>
   
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
     <TextView
 	android:id="@+id/row_confidence"
 	android:text="X"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="right"
 	/>
   
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="0dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
 </TableRow>

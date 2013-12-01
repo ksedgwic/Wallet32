@@ -10,308 +10,328 @@
     android:padding="16dp"
     >
 
-    <TableLayout
-	android:id="@+id/send_body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+  <ScrollView
+      android:id="@+id/scroll_id"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      android:fillViewport="true"
+      >
+
+    <LinearLayout
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
 	android:gravity="center"
 	>
 
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
-
-	    <TextView
-		android:id="@+id/from_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/send_from_label"
-		android:textAppearance="@android:style/TextAppearance.Medium"
-		android:textStyle="bold"
-		android:layout_span="7"
-		/>
-
-	</TableRow>
+      <TableLayout
+    	  android:id="@+id/send_body"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+    	  android:gravity="center"
+    	  >
 
         <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
 
-	    <TableLayout
-		android:id="@+id/from_choices"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:gravity="left"
-		android:layout_span="7"
-		/>
+    	  <TextView
+    	      android:id="@+id/from_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/send_from_label"
+    	      android:textAppearance="@android:style/TextAppearance.Small"
+    	      android:textStyle="bold"
+    	      android:layout_span="7"
+    	      />
 
-	</TableRow>
+    	</TableRow>
 
         <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:paddingTop="30dp"
-	    >
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
 
-	  <LinearLayout
-	      android:layout_width="fill_parent"
+      	  <TableLayout
+    	      android:id="@+id/from_choices"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:gravity="left"
+    	      android:layout_span="7"
+    	      />
+
+    	</TableRow>
+
+        <TableRow
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
+
+    	  <LinearLayout
+    	      android:layout_width="fill_parent"
+    	      android:layout_height="fill_parent"
+    	      android:orientation="horizontal"
+    	      android:layout_span="7"
+    	      >
+
+      	    <TextView
+    		android:id="@+id/to_label"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/send_to_label"
+    		android:textAppearance="@android:style/TextAppearance.Small"
+    		android:textStyle="bold"
+    		/>
+
+    	    <!-- Stretchy Horizontal Spacer -->
+    	    <View
+    		android:layout_width="0dp"
+    		android:layout_height="fill_parent"
+    		android:layout_weight="1"
+    		/>
+
+    	    <Button
+    		android:id="@+id/qr"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/send_to_qr"
+    		android:onClick="scanQR"
+    		android:textAppearance="@android:style/TextAppearance.Small"
+    		android:minHeight="0dp"
+    		android:minWidth="0dp"
+    		/>
+
+    	  </LinearLayout>
+
+    	</TableRow>
+
+        <TableRow
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
+
+    	  <EditText
+    	      android:id="@+id/to_address"
+    	      android:inputType="text"
+    	      android:singleLine="true"
+    	      android:layout_width="600dp"
+    	      android:layout_height="wrap_content"
+    	      android:textSize="14dp"
+    	      android:gravity="left"
+    	      android:hint="@string/send_to_hint"
+    	      android:layout_span="7"
+    	      />
+
+    	</TableRow>
+
+        <TableRow
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
+
+    	  <TextView
+    	      android:id="@+id/amount_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/send_amount_label"
+    	      android:textAppearance="@android:style/TextAppearance.Small"
+    	      android:textStyle="bold"
+    	      android:layout_span="7"
+    	      />
+
+    	</TableRow>
+
+        <TableRow
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
+
+	  <!-- Stretchy Horizontal Spacer -->
+	  <View
+	      android:layout_width="0dp"
 	      android:layout_height="fill_parent"
-	      android:orientation="horizontal"
-	      android:layout_span="7"
-	      >
+	      android:layout_weight="1"
+	      />
 
-  	      <TextView
-		  android:id="@+id/to_label"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:text="@string/send_to_label"
-		  android:textAppearance="@android:style/TextAppearance.Medium"
-		  android:textStyle="bold"
-		  />
+          <EditText
+    	      android:id="@+id/amount_btc"
+    	      android:inputType="numberDecimal"
+    	      android:singleLine="true"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:minWidth="60dp"
+    	      android:maxWidth="120dp"
+    	      android:gravity="right"
+    	      android:hint="@string/amount_btc_hint"
+    	      />
 
-	      <!-- Stretchy Spacer -->
-	      <View
-		  android:layout_width="fill_parent"
-		  android:layout_height="fill_parent"
-		  android:layout_weight="1"
-		  />
+    	  <TextView
+    	      android:id="@+id/amount_btc_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/btc_label"
+    	      />
 
-	      <Button
-		  android:id="@+id/qr"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:text="@string/send_to_qr"
-		  android:onClick="scanQR"
-		  android:textAppearance="@android:style/TextAppearance.Small"
-		  android:minHeight="0dp"
-		  android:minWidth="0dp"
-		  />
+    	  <TextView
+    	      android:id="@+id/amount_eq_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:layout_marginLeft="6dp"
+    	      android:layout_marginRight="6dp"
+    	      android:text="@string/eq_label"
+    	      />
 
-	  </LinearLayout>
+    	  <EditText
+    	      android:id="@+id/amount_fiat"
+    	      android:inputType="numberDecimal"
+    	      android:singleLine="true"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:minWidth="45dp"
+    	      android:maxWidth="120dp"
+    	      android:gravity="right"
+    	      android:hint="@string/amount_fiat_hint"
+    	      />
 
-	</TableRow>
+    	  <TextView
+    	      android:id="@+id/amount_fiat_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/fiat_label"
+    	      />
 
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+	  <!-- Stretchy Horizontal Spacer -->
+	  <View
+	      android:layout_width="0dp"
+	      android:layout_height="fill_parent"
+	      android:layout_weight="1"
+	      />
 
-	    <EditText
-		android:id="@+id/to_address"
-		android:inputType="text"
-		android:singleLine="true"
-		android:layout_width="800dp"
-		android:layout_height="wrap_content"
-		android:textSize="14dp"
-		android:gravity="left"
-		android:hint="@string/send_to_hint"
-		android:layout_span="7"
-		/>
-
-	</TableRow>
-
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:paddingTop="30dp"
-	    >
-
-	    <TextView
-		android:id="@+id/amount_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/send_amount_label"
-		android:textAppearance="@android:style/TextAppearance.Medium"
-		android:textStyle="bold"
-		android:layout_span="7"
-		/>
-
-	</TableRow>
+    	</TableRow>
 
         <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
 
-	    <!-- Spacer -->
-	    <View
-		android:layout_width="40dp"
-		android:layout_height="fill_parent"
-		/>
+    	  <TextView
+    	      android:id="@+id/fee_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/send_fee_label"
+    	      android:textAppearance="@android:style/TextAppearance.Small"
+    	      android:textStyle="bold"
+    	      android:layout_span="7"
+    	      />
 
-            <EditText
-		android:id="@+id/amount_btc"
-		android:inputType="numberDecimal"
-		android:singleLine="true"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:minWidth="60dp"
-		android:maxWidth="120dp"
-		android:gravity="right"
-		android:hint="@string/amount_btc_hint"
-		/>
-
-	    <TextView
-		android:id="@+id/amount_btc_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/btc_label"
-		/>
-
-	    <TextView
-		android:id="@+id/amount_eq_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="6dp"
-		android:layout_marginRight="6dp"
-		android:text="@string/eq_label"
-		/>
-
-	    <EditText
-		android:id="@+id/amount_fiat"
-		android:inputType="numberDecimal"
-		android:singleLine="true"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:minWidth="45dp"
-		android:maxWidth="120dp"
-		android:gravity="right"
-		android:hint="@string/amount_fiat_hint"
-		/>
-
-	    <TextView
-		android:id="@+id/amount_fiat_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/fiat_label"
-		/>
-
-	    <!-- Spacer -->
-	    <View
-		android:layout_width="40dp"
-		android:layout_height="fill_parent"
-		/>
-
-	</TableRow>
+    	</TableRow>
 
         <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:paddingTop="30dp"
-	    >
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    >
 
-	    <TextView
-		android:id="@+id/fee_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/send_fee_label"
-		android:textAppearance="@android:style/TextAppearance.Medium"
-		android:textStyle="bold"
-		android:layout_span="7"
-		/>
+	  <!-- Stretchy Horizontal Spacer -->
+	  <View
+	      android:layout_width="0dp"
+	      android:layout_height="fill_parent"
+	      android:layout_weight="1"
+	      />
 
-	</TableRow>
+          <EditText
+    	      android:id="@+id/fee_btc"
+    	      android:inputType="numberDecimal"
+    	      android:singleLine="true"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:minWidth="60dp"
+    	      android:maxWidth="120dp"
+    	      android:gravity="right"
+    	      android:hint="@string/fee_btc_hint"
+    	      />
 
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+    	  <TextView
+    	      android:id="@+id/fee_btc_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/btc_label"
+    	      />
 
-	    <!-- Spacer -->
-	    <View
-		android:layout_width="40dp"
-		android:layout_height="fill_parent"
-		/>
+    	  <TextView
+    	      android:id="@+id/fee_eq_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:layout_marginLeft="6dp"
+    	      android:layout_marginRight="6dp"
+    	      android:text="@string/eq_label"
+    	      />
 
-            <EditText
-		android:id="@+id/fee_btc"
-		android:inputType="numberDecimal"
-		android:singleLine="true"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:minWidth="60dp"
-		android:maxWidth="120dp"
-		android:gravity="right"
-		android:hint="@string/fee_btc_hint"
-		/>
+    	  <EditText
+    	      android:id="@+id/fee_fiat"
+    	      android:inputType="numberDecimal"
+    	      android:singleLine="true"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:minWidth="45dp"
+    	      android:maxWidth="120dp"
+    	      android:gravity="right"
+    	      android:hint="@string/fee_fiat_hint"
+    	      />
 
-	    <TextView
-		android:id="@+id/fee_btc_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/btc_label"
-		/>
+    	  <TextView
+    	      android:id="@+id/fee_fiat_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/fiat_label"
+    	      />
 
-	    <TextView
-		android:id="@+id/fee_eq_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="6dp"
-		android:layout_marginRight="6dp"
-		android:text="@string/eq_label"
-		/>
+	  <!-- Stretchy Horizontal Spacer -->
+	  <View
+	      android:layout_width="0dp"
+	      android:layout_height="fill_parent"
+	      android:layout_weight="1"
+	      />
 
-	    <EditText
-		android:id="@+id/fee_fiat"
-		android:inputType="numberDecimal"
-		android:singleLine="true"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:minWidth="45dp"
-		android:maxWidth="120dp"
-		android:gravity="right"
-		android:hint="@string/fee_fiat_hint"
-		/>
+    	</TableRow>
 
-	    <TextView
-		android:id="@+id/fee_fiat_label"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/fiat_label"
-		/>
+      </TableLayout>
 
-	    <!-- Spacer -->
-	    <View
-		android:layout_width="40dp"
-		android:layout_height="fill_parent"
-		/>
+      <!-- Stretchy Spacer -->
+      <View
+    	  android:layout_width="fill_parent"
+    	  android:layout_height="fill_parent"
+    	  android:layout_weight="1"
+    	  />
 
-	</TableRow>
+      <Button
+    	  android:id="@+id/send"
+    	  android:layout_width="180dp"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/send_bitcoin"
+    	  android:onClick="sendBitcoin"
+          />
 
-    </TableLayout>
+    </LinearLayout>
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  </ScrollView>
 
-    <Button
-	android:id="@+id/send"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/send_bitcoin"
-	android:onClick="sendBitcoin"
-	/>
+  <!-- Rigid Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="10dp"
+      />
 
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="10dp"
-	/>
-
-    <TextView
-	android:id="@+id/network_status"
-	android:text="@string/network_status_unknown"
-	android:textAppearance="@android:style/TextAppearance.Medium"
-	android:padding="10dp"
-	android:background="#f08080"
-	android:gravity="center"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	/>
+  <TextView
+      android:id="@+id/network_status"
+      android:text="@string/network_status_unknown"
+      android:textAppearance="@android:style/TextAppearance.Medium"
+      android:padding="10dp"
+      android:background="#f08080"
+      android:gravity="center"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      />
 
 </LinearLayout>

@@ -27,7 +27,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/receive_to_label"
-		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:textAppearance="@android:style/TextAppearance.Small"
 		android:textStyle="bold"
 		android:layout_span="7"
 		/>
@@ -60,7 +60,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/receive_amount_label"
-		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:textAppearance="@android:style/TextAppearance.Small"
 		android:textStyle="bold"
 		android:layout_span="7"
 		/>
@@ -72,10 +72,11 @@
 	    android:layout_height="wrap_content"
 	    >
 
-	    <!-- Spacer -->
+	    <!-- Stretchy Horizontal Spacer -->
 	    <View
-		android:layout_width="40dp"
+		android:layout_width="0dp"
 		android:layout_height="fill_parent"
+		android:layout_weight="1"
 		/>
 
             <EditText
@@ -125,10 +126,11 @@
 		android:text="@string/fiat_label"
 		/>
 
-	    <!-- Spacer -->
+	    <!-- Stretchy Horizontal Spacer -->
 	    <View
-		android:layout_width="40dp"
+		android:layout_width="0dp"
 		android:layout_height="fill_parent"
+		android:layout_weight="1"
 		/>
 
 	</TableRow>

@@ -28,8 +28,8 @@
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
-    <string name="passcode_waitvalidate">Please wait while your passcode is validated</string>
-    <string name="passcode_waitsetup">Please wait while your wallet is setup</string>
+    <string name="passcode_waitvalidate">Please wait while your wallet is decrypted ...</string>
+    <string name="passcode_waitsetup">Please wait while your wallet is setup ...</string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
     <string name="passcode_2">2</string>
@@ -89,10 +89,9 @@
     <string name="title_activity_view_transactions">View Transactions</string>
     <string name="transaction_account_label">Account:</string>
     <string name="transaction_header_date">Date</string>
-    <string name="transaction_header_addr">Address</string>
     <string name="transaction_header_btc">BTC</string>
-    <string name="transaction_header_balance_btc">Balance</string>
-    <string name="transaction_header_confidence">Conf</string>
+    <string name="transaction_header_balance_btc">Bal</string>
+    <string name="transaction_header_confidence">Cnf</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="view_clipboard_copy">Address copied to clipboard</string>
     <string name="button_copy">Copy Address</string>

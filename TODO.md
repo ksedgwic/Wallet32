@@ -2,7 +2,11 @@
 Needed
 ----------------------------------------------------------------
 
-* Icon!
+* Remove "OK" from passcode dialogs.
+
+* Better passcode message
+
+* View Transactions Account Filter "slipping" back to "All Accounts".
 
 * Electrum compatibility.
 
@@ -27,6 +31,8 @@ Needed
 * Add notification bar icon when WalletService is running.
 
 * BIP-0039 update.
+
+* Figure out reasonable minimum fee calculation.
 
 
 Recover Wallet

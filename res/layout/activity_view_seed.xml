@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/seed_directions"
-	android:textAppearance="@android:style/TextAppearance.Medium"
+	android:textAppearance="@android:style/TextAppearance.Small"
 	/>
 
     <!-- Rigid Spacer -->
@@ -34,7 +34,7 @@
 	android:id="@+id/seed_hex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Medium"
+	android:textAppearance="@android:style/TextAppearance.Small"
 	android:textIsSelectable="true"
 	/>
 
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 	android:layout_gravity="center"
-	android:textAppearance="@android:style/TextAppearance.Medium"
+	android:textAppearance="@android:style/TextAppearance.Small"
 	android:typeface="monospace"
 	android:textIsSelectable="true"
 	/>
