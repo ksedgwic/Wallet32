@@ -8,6 +8,10 @@ Bugs
 
 * View Transactions Account Filter "slipping" back to "All Accounts".
 
+* On relaunch of runninc wallet need to skip passcode and service spinup.
+
+* Need to handle precision of BTC values much better then 4 fixed places.
+
 
 Needed
 ----------------------------------------------------------------
@@ -34,8 +38,6 @@ Needed
 
 * Make Send balances the available amount.
 
-* Add notification bar icon when WalletService is running.
-
 * BIP-0039 update.
 
 * Figure out reasonable minimum fee calculation.
@@ -56,8 +58,6 @@ Recover Wallet
 
 Next
 ----------------------------------------------------------------
-
-* Tune for small screens.
 
 * Tune for slow platforms.
 

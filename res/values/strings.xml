@@ -133,4 +133,7 @@
       <item>CANCEL</item>
     </string-array>
 
+    <string name="wallet_service_started">Wallet32 Service Running</string>
+    <string name="wallet_service_label">Wallet32</string>
+
 </resources>

@@ -23,6 +23,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -74,7 +77,10 @@ public class WalletService extends Service
         ERROR
     }
 
-    private LocalBroadcastManager mLBM;
+    private int NOTIFICATION = R.string.wallet_service_started;
+
+    private NotificationManager		mNM;
+    private LocalBroadcastManager	mLBM;
 
     private final IBinder mBinder = new WalletServiceBinder();
 
@@ -241,6 +247,7 @@ public class WalletService extends Service
     @Override
     public void onCreate()
     {
+        mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mLBM = LocalBroadcastManager.getInstance(this);
 
         mLogger.info("WalletService created");
@@ -271,11 +278,17 @@ public class WalletService extends Service
 
         mLogger.info("WalletService started");
 
+        showNotification();
+
         return Service.START_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        // FIXME - Where does this go?  Anywhere?
+        // stopForeground(true);
+
+        mNM.cancel(NOTIFICATION);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -295,6 +308,30 @@ public class WalletService extends Service
             if (rescan.equals("RESCAN"))
                 rescanBlockchain();
         }
+    }
+
+    // Show a notification while this service is running.
+    //
+    private void showNotification() {
+        // In this sample, we'll use the same text for the ticker and the expanded notification
+        CharSequence text = getText(R.string.wallet_service_started);
+
+        Notification note = new Notification(R.drawable.ic_stat_notify,
+                                             text, System.currentTimeMillis());
+
+        Intent intent = new Intent(this, MainActivity.class);
+    
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+      
+        // Set the info for the views that show in the notification panel.
+        note.setLatestEventInfo(this, getText(R.string.wallet_service_label),
+                                text, contentIntent);
+
+        note.flags |= Notification.FLAG_NO_CLEAR;
+
+        startForeground(NOTIFICATION, note);
     }
 
     public byte[] getSeed() {
