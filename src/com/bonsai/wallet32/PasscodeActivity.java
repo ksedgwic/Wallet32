@@ -281,32 +281,45 @@ public class PasscodeActivity extends ActionBarActivity {
         pctv.setText(bldr.toString());
     }
 
-    public static class ErrorDialogFragment extends DialogFragment {
+    public static class MyDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             super.onCreateDialog(savedInstanceState);
             String msg = getArguments().getString("msg");
+            boolean hasOK = getArguments().getBoolean("hasOK");
             AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
-            builder
-                .setMessage(msg)
-                .setPositiveButton(R.string.base_error_ok,
-                                   new DialogInterface.OnClickListener() {
-                                       public void onClick(DialogInterface di,
-                                                           int id) {
-                                           // Do we need to do anything?
-                                       }
-                                   });
+            builder.setMessage(msg);
+            if (hasOK) {
+                builder.setPositiveButton(R.string.base_error_ok,
+                                          new DialogInterface.OnClickListener() {
+                                              public void onClick(DialogInterface di,
+                                                                  int id) {
+                                                  // Do we need to do anything?
+                                              }
+                                          });
+            }
             return builder.create();
         }
     }
 
-    private DialogFragment showErrorDialog(String msg) {
-        DialogFragment df = new ErrorDialogFragment();
+    protected DialogFragment showErrorDialog(String msg) {
+        DialogFragment df = new MyDialogFragment();
         Bundle args = new Bundle();
         args.putString("msg", msg);
+        args.putBoolean("hasOK", true);
         df.setArguments(args);
         df.show(getSupportFragmentManager(), "error");
+        return df;
+    }
+
+    protected DialogFragment showModalDialog(String msg) {
+        DialogFragment df = new MyDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("msg", msg);
+        args.putBoolean("hasOK", false);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "note");
         return df;
     }
 
@@ -315,7 +328,7 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
-            df = showErrorDialog(mRes.getString(R.string.passcode_waitsetup));
+            df = showModalDialog(mRes.getString(R.string.passcode_waitsetup));
         }
 
 		protected Void doInBackground(String... arg0)
@@ -338,7 +351,7 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
-            df = showErrorDialog(mRes.getString(R.string.passcode_waitvalidate));
+            df = showModalDialog(mRes.getString(R.string.passcode_waitvalidate));
         }
 
 		protected Boolean doInBackground(String... arg0)
