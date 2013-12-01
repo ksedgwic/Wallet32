@@ -30,16 +30,13 @@
 	android:layout_height="wrap_content"
 	android:text="@string/receive_to_label"
 	android:textAppearance="@android:style/TextAppearance.Small"
-	android:textStyle="bold"
-	android:layout_span="7"
-	/>
+	android:textStyle="bold"/>
 
     <TableLayout
 	android:id="@+id/to_choices"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:gravity="left"
-	android:layout_span="7"
 	/>
 
   </LinearLayout>
@@ -85,7 +82,8 @@
 	  android:inputType="numberDecimal"
 	  android:singleLine="true"
 	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
+	  android:layout_height="40dp"
+	  android:textSize="14sp"
 	  android:minWidth="60dp"
 	  android:maxWidth="120dp"
 	  android:gravity="right"
@@ -113,7 +111,8 @@
 	  android:inputType="numberDecimal"
 	  android:singleLine="true"
 	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
+	  android:layout_height="40dp"
+	  android:textSize="14sp"
 	  android:minWidth="45dp"
 	  android:maxWidth="120dp"
 	  android:gravity="right"

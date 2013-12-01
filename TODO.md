@@ -2,6 +2,8 @@
 Needed
 ----------------------------------------------------------------
 
+* Add an About screen from Settings.
+
 * View Transactions too quickly crashes the client.
 
 * View Transactions Account Filter "slipping" back to "All Accounts".
