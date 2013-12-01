@@ -57,6 +57,7 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
                 mWalletService =
                     ((WalletService.WalletServiceBinder) binder).getService();
                 mLogger.info("WalletService bound");
+                onWalletServiceBound();
                 updateRate();
                 updateWalletStatus();
             }
@@ -64,6 +65,7 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
             public void onServiceDisconnected(ComponentName className) {
                 mWalletService = null;
                 mLogger.info("WalletService unbound");
+                onWalletServiceUnbound();
             }
 
     };
@@ -230,6 +232,12 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         df.setArguments(args);
         df.show(getSupportFragmentManager(), "note");
         return df;
+    }
+
+    protected void onWalletServiceBound() {
+    }
+
+    protected void onWalletServiceUnbound() {
     }
 
     protected void onWalletStateChanged() {

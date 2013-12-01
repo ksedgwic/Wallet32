@@ -334,6 +334,10 @@ public class WalletService extends Service
         startForeground(NOTIFICATION, note);
     }
 
+    public void persist() {
+        mHDWallet.persist();
+    }
+
     public byte[] getSeed() {
         return mHDWallet == null ? null : mHDWallet.getSeed();
     }
@@ -459,6 +463,12 @@ public class WalletService extends Service
             return null;
         return mHDWallet.getAccounts();
     }
+
+    public HDAccount getAccount(int accountId) {
+        if (mHDWallet == null)
+            return null;
+        return mHDWallet.getAccount(accountId);
+    }        
 
     public List<Balance> getBalances() {
         if (mHDWallet == null)

@@ -57,6 +57,10 @@ public class ViewSeedActivity extends BaseWalletActivity {
 
 	@Override
     protected void onWalletStateChanged() {
+        // FIXME - Is the seed always set when the WalletService is
+        // bound?  If so we can use onWalletServiceBound and lose the
+        // stupid mSeedFetched flag ...
+        //
         updateSeed();
     }
 
@@ -85,7 +89,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
             if (ii != 0)
                 builder.append("\n");
 
-            builder.append(String.format("%-8s %-8s %-8s",
+            builder.append(String.format("%-9s %-9s %-9s",
                                          words.get(ii),
                                          words.get(ii+1),
                                          words.get(ii+2)));

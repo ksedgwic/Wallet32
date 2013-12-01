@@ -57,6 +57,9 @@
     <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
     <string name="title_activity_view_account">ViewAccount</string>
+    <string name="account_name_label">Account Name:</string>
+    <string name="account_name_hint">Account Name</string>
+    <string name="account_name_submit">Submit</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
     <string name="send_to_label">Send To:</string>

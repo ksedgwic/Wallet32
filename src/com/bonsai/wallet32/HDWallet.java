@@ -226,6 +226,10 @@ public class HDWallet {
         return mAccounts;
     }
 
+    public HDAccount getAccount(int accountId) {
+        return mAccounts.get(accountId);
+    }
+
     public void addAllKeys(Wallet wallet) {
         for (HDAccount acct : mAccounts)
             acct.addAllKeys(wallet, mKeyCrypter, mAesKey);

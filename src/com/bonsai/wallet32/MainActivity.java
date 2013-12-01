@@ -63,6 +63,7 @@ public class MainActivity extends BaseWalletActivity {
     }
 
     private void addBalanceRow(TableLayout table,
+                               int accountId,
                                String acct,
                                double btc,
                                double fiat) {
@@ -71,6 +72,7 @@ public class MainActivity extends BaseWalletActivity {
             .inflate(R.layout.balance_table_row, table, false);
 
         Button tv0 = (Button) row.findViewById(R.id.row_label);
+        tv0.setId(accountId);
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
@@ -119,6 +121,7 @@ public class MainActivity extends BaseWalletActivity {
             for (Balance bal : balances) {
                 sumbtc += bal.balance;
                 addBalanceRow(table,
+                              bal.accountId,
                               bal.accountName,
                               bal.balance,
                               bal.balance * mFiatPerBTC);
@@ -129,7 +132,11 @@ public class MainActivity extends BaseWalletActivity {
     }
 
     public void viewAccount(View view) {
+        int accountId = view.getId();
         Intent intent = new Intent(this, ViewAccountActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("accountId", accountId);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

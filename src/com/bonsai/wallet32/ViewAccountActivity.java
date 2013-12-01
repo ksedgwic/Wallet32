@@ -18,14 +18,41 @@ package com.bonsai.wallet32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class ViewAccountActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewAccountActivity.class);
 
-    private int mAccountNum = -1;
+    private int mAccountId = -1;
+    private HDAccount mAccount = null;
+
+    private EditText mAccountNameEditText;
+    private Button mAccountNameSubmitButton;
+
+    private final TextWatcher mAccountNameWatcher = new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+			}
+
+			@Override
+            public void afterTextChanged(Editable ss) {
+                mAccountNameSubmitButton.setEnabled(true);
+            }
+        };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +61,41 @@ public class ViewAccountActivity extends BaseWalletActivity {
 
 		setContentView(R.layout.activity_view_account);
 
-        // Do we want an account filter?
-        // Intent intent = getIntent();
-        // int accountId = intent.getExtras().getInteger("accountId");
+        Intent intent = getIntent();
+        mAccountId = intent.getExtras().getInt("accountId");
+
+        mAccountNameEditText = (EditText) findViewById(R.id.account_name);
+        mAccountNameSubmitButton =
+            (Button) findViewById(R.id.submit_account_name);
+
+        // Listen for changes to the account name.
+        mAccountNameEditText.addTextChangedListener(mAccountNameWatcher);
 
         mLogger.info("ViewAccountActivity created");
 	}
 
 	@Override
+    protected void onWalletServiceBound() {
+        // Update our HDAccount.
+        mAccount = mWalletService.getAccount(mAccountId);
+
+        // Update the account name field.
+        mAccountNameEditText.setText(mAccount.getName());
+        mAccountNameSubmitButton.setEnabled(false);
+    }
+
+	@Override
     protected void onWalletStateChanged() {
         updateChains();
+    }
+
+    public void submitAccountName(View view) {
+        String name = mAccountNameEditText.getText().toString();
+        mLogger.info(String.format("Changing name of account %d to %s",
+                                   mAccountId, name));
+        mAccount.setName(name);
+        mWalletService.persist();
+        mAccountNameSubmitButton.setEnabled(false);
     }
 
     private void updateChains() {

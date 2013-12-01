@@ -124,6 +124,10 @@ public class HDAccount {
         return mAccountName;
     }
 
+    public void setName(String name) {
+        mAccountName = name;
+    }
+
     public int getId() {
         return mAccountId;
     }
