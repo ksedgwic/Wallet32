@@ -8,7 +8,7 @@ Bugs
 
 * View Transactions Account Filter "slipping" back to "All Accounts".
 
-* On relaunch of runninc wallet need to skip passcode and service spinup.
+* On relaunch of running wallet need to skip passcode and service spinup.
 
 * Need to handle precision of BTC values much better then 4 fixed places.
 
@@ -58,6 +58,8 @@ Recover Wallet
 
 Next
 ----------------------------------------------------------------
+
+* mBTC Support
 
 * Tune for slow platforms.
 

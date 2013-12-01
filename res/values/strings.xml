@@ -28,8 +28,8 @@
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
-    <string name="passcode_waitvalidate">Please wait while your wallet is decrypted ...</string>
-    <string name="passcode_waitsetup">Please wait while your wallet is setup ...</string>
+    <string name="passcode_waitvalidate">Your wallet is being decrypted ...</string>
+    <string name="passcode_waitsetup">Your wallet is being setup ...</string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
     <string name="passcode_2">2</string>
@@ -56,6 +56,7 @@
     <string name="button_transactions">View Transactions</string>
     <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
+    <string name="title_activity_view_account">ViewAccount</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
     <string name="send_to_label">Send To:</string>

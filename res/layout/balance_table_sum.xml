@@ -6,38 +6,39 @@
     >
 
     <TextView
-	android:id="@+id/header_label"
+	android:id="@+id/row_label"
+	android:text="Sample Account"
 	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
+	android:layout_height="36dp"
 	android:layout_marginLeft="10dp"
 	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="center_vertical|left"
 	android:textStyle="bold"
-	android:gravity="left"
 	/>
   
     <TextView
-	android:id="@+id/header_btc"
-	android:text="@string/balance_header_btc"
+	android:id="@+id/row_btc"
+	android:text="0.000000"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:layout_marginLeft="10dp"
 	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="right"
 	android:textStyle="bold"
-	android:gravity="center"
 	/>
   
     <TextView
-	android:id="@+id/header_fiat"
-	android:text="@string/balance_header_fiat"
+	android:id="@+id/row_fiat"
+	android:text="0.00"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:layout_marginLeft="10dp"
 	android:layout_marginRight="10dp"
 	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="right"
 	android:textStyle="bold"
-	android:gravity="center"
 	/>
 
 </TableRow>

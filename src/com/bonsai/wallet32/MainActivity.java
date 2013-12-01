@@ -25,6 +25,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -64,26 +65,39 @@ public class MainActivity extends BaseWalletActivity {
     private void addBalanceRow(TableLayout table,
                                String acct,
                                double btc,
-                               double fiat,
-                               boolean isTotal) {
+                               double fiat) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.balance_table_row, table, false);
 
-        TextView tv0 = (TextView) row.findViewById(R.id.row_label);
+        Button tv0 = (Button) row.findViewById(R.id.row_label);
         tv0.setText(acct);
-        if (isTotal)
-            tv0.setTypeface(tv0.getTypeface(), Typeface.BOLD);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
         tv1.setText(String.format("%.05f", btc));
-        if (isTotal)
-            tv1.setTypeface(tv0.getTypeface(), Typeface.BOLD);
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.03f", fiat));
-        if (isTotal)
-            tv2.setTypeface(tv0.getTypeface(), Typeface.BOLD);
+
+        table.addView(row);
+    }
+
+    private void addBalanceSum(TableLayout table,
+                               String acct,
+                               double btc,
+                               double fiat) {
+        TableRow row =
+            (TableRow) LayoutInflater.from(this)
+            .inflate(R.layout.balance_table_sum, table, false);
+
+        TextView tv0 = (TextView) row.findViewById(R.id.row_label);
+        tv0.setText(acct);
+
+        TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
+        tv1.setText(String.format("%.05f", btc));
+
+        TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
+        tv2.setText(String.format("%.03f", fiat));
 
         table.addView(row);
     }
@@ -107,12 +121,16 @@ public class MainActivity extends BaseWalletActivity {
                 addBalanceRow(table,
                               bal.accountName,
                               bal.balance,
-                              bal.balance * mFiatPerBTC,
-                              false);
+                              bal.balance * mFiatPerBTC);
             }
         }
 
-        addBalanceRow(table, "Total", sumbtc, sumbtc * mFiatPerBTC, true);
+        addBalanceSum(table, "Total", sumbtc, sumbtc * mFiatPerBTC);
+    }
+
+    public void viewAccount(View view) {
+        Intent intent = new Intent(this, ViewAccountActivity.class);
+        startActivity(intent);
     }
 
     public void sendBitcoin(View view) {

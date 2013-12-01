@@ -50,6 +50,14 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.ViewAccountActivity"
+            android:label="@string/title_activity_view_account"
+            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bonsai.wallet32.MainActivity" />
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.SendBitcoinActivity"
             android:label="@string/title_activity_send_bitcoin"
             android:parentActivityName="com.bonsai.wallet32.MainActivity" >
