@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +43,16 @@ public class MainActivity extends BaseWalletActivity {
 
         mLogger.info("MainActivity created");
 	}
+
+	@Override
+    protected void onWalletServiceBound() {
+        // If the WalletService isn't ready yet send the user
+        // to the SyncProgressActivity until it is.
+        if (mWalletService.getState() != WalletService.State.READY) {
+            Intent intent = new Intent(this, SyncProgressActivity.class);
+            startActivity(intent);
+        }
+    }
 
 	@Override
     protected void onWalletStateChanged() {

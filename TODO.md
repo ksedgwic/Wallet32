@@ -17,6 +17,9 @@ Bugs
 * I don't think the Home "Up" feature is working from the ViewSeed page,
   at least on initial create.
 
+* The rescan interface sucks:
+> 1. The preferences GUI is lousy; nothing happens after you pick it.
+> 2. We seem to go to some places and then end up on a dead MainActivity.
 
 Needed
 ----------------------------------------------------------------
@@ -29,8 +32,6 @@ Needed
 * Electrum compatibility.
 
 * Add change passcode.
-
-* Add syncing progress screen between lobby and main. Also use on rescan.
 
 * Embelish messages and directions.
 
