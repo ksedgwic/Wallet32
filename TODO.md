@@ -12,11 +12,15 @@ Bugs
 
 * Need to handle precision of BTC values much better then 4 fixed places.
 
+* Make View Wallet Seed consistent in initial and later contexts:
+> 1. Add Action Bar metadata.
+> 2. Remove "Done" button.
+> 3. Add "trampoline" arg to MainActivity intent on initial entry.
+
+* Disable Settings actions on everything prior to MainActivity.
 
 Needed
 ----------------------------------------------------------------
-
-* Inhibit the keyboard on Send Bitcoin and View Account entry.
 
 * Add an About screen from Settings.
 
@@ -27,8 +31,6 @@ Needed
 * Add syncing progress screen between lobby and main. Also use on rescan.
 
 * Embelish messages and directions.
-
-* Account View Activity
 
 * Tune logging ... SECURITY!
 
@@ -44,11 +46,6 @@ Needed
 
 * Figure out reasonable minimum fee calculation.
 
-* Make View Wallet Seed consistent in initial and later contexts:
-> 1. Add Action Bar metadata.
-> 2. Remove "Done" button.
-> 3. Add "trampoline" arg to MainActivity intent on initial entry.
-
 
 Recover Wallet
 ----------------------------------------------------------------
@@ -61,6 +58,7 @@ Recover Wallet
 * Make recover auto-rescan when needed.
 
 * Notify user when rescan required.
+
 
 Next
 ----------------------------------------------------------------

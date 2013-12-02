@@ -42,6 +42,19 @@ public class MainActivity extends BaseWalletActivity {
 
 		setContentView(R.layout.activity_main);
 
+        // Is this entry from a create?
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            if (bundle.getBoolean("showSeed", false)) {
+                // Yes, we should go straight to the seed view
+                // so the user can back up their new seed ...
+                intent = new Intent(this, ViewSeedActivity.class);
+                startActivity(intent);
+                return;
+            }
+        }
+
         mLogger.info("MainActivity created");
 	}
 

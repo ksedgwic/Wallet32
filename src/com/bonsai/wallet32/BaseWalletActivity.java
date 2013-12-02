@@ -129,11 +129,6 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         }
     }
 
-    protected void openSettings()
-    {
-        // FIXME - Implement this.
-    }
-
     private BroadcastReceiver mWalletStateChangedReceiver =
         new BroadcastReceiver() {
             @Override
