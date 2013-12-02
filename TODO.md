@@ -12,15 +12,17 @@ Bugs
 
 * Need to handle precision of BTC values much better then 4 fixed places.
 
-* Make View Wallet Seed consistent in initial and later contexts:
-> 1. Add Action Bar metadata.
-> 2. Remove "Done" button.
-> 3. Add "trampoline" arg to MainActivity intent on initial entry.
-
 * Disable Settings actions on everything prior to MainActivity.
+
+* I don't think the Home "Up" feature is working from the ViewSeed page,
+  at least on initial create.
+
 
 Needed
 ----------------------------------------------------------------
+
+* View Seed needs to be "pre-main" when started from create wallet
+  and BaseWalletActivity when called from main.
 
 * Add an About screen from Settings.
 

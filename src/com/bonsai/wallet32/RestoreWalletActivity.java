@@ -151,7 +151,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
         // Spin up the WalletService.
         startService(new Intent(this, WalletService.class));
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SyncProgressActivity.class);
         startActivity(intent);
 
         // Prevent the user from coming back here.

@@ -215,10 +215,7 @@ public class PasscodeActivity extends ActionBarActivity {
             // Spin up the WalletService.
             startService(new Intent(this, WalletService.class));
 
-            Intent intent = new Intent(this, MainActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("showSeed", true);
-            intent.putExtras(bundle);
+            Intent intent = new Intent(this, ViewSeedActivity.class);
             startActivity(intent);
         }
 
@@ -255,7 +252,7 @@ public class PasscodeActivity extends ActionBarActivity {
             startService(new Intent(this, WalletService.class));
 
             // Off to the main activity.
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, SyncProgressActivity.class);
             startActivity(intent);
 
             // And we're done with this activity.

@@ -90,7 +90,9 @@ public class WalletService extends Service
     private SetupWalletTask		mTask;
     private Context				mContext;
     private Resources			mRes;
-    private int					mPercentDone = 0;
+    private double				mPercentDone = 0.0;
+    private int					mBlocksToGo;
+    private Date				mScanDate;
 
     private KeyCrypter			mKeyCrypter;
     private KeyParameter		mAesKey;
@@ -104,8 +106,10 @@ public class WalletService extends Service
         new DownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date) {
                 mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO", (int) pct, blocksToGo));
-                if (mPercentDone != (int) pct) {
-                    mPercentDone = (int) pct;
+                mBlocksToGo = blocksToGo;
+                mScanDate = date;
+                if (mPercentDone != pct) {
+                    mPercentDone = pct;
                     setState(State.SYNCING);
                 }
             }
@@ -417,6 +421,18 @@ public class WalletService extends Service
         return mState;
     }
 
+    public double getPercentDone() {
+        return mPercentDone;
+    }
+
+    public int getBlocksToGo() {
+        return mBlocksToGo;
+    }
+
+    public Date getScanDate() {
+        return mScanDate;
+    }
+
     public String getStateString() {
         switch (mState) {
         case SETUP:
@@ -425,7 +441,7 @@ public class WalletService extends Service
             return mRes.getString(R.string.network_status_start);
         case SYNCING:
             return mRes.getString(R.string.network_status_sync,
-                                        mPercentDone);
+                                  (int) mPercentDone);
         case READY:
             return mRes.getString(R.string.network_status_ready);
         case ERROR:
