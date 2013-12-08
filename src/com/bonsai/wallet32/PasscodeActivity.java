@@ -252,7 +252,7 @@ public class PasscodeActivity extends ActionBarActivity {
             startService(new Intent(this, WalletService.class));
 
             // Off to the main activity.
-            Intent intent = new Intent(this, SyncProgressActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
 
             // And we're done with this activity.

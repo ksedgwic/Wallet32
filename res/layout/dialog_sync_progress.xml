@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SyncProgressDialog"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    >
+
+  <TextView
+      android:id="@+id/title_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/sync_title"
+      android:gravity="center"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      android:textStyle="bold"
+      />
+
+  <!-- Rigid Vertical Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="10dp"
+      />
+
+  <ProgressBar
+      android:id="@+id/progress_bar"
+      style="@android:style/Widget.ProgressBar.Horizontal"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      />
+
+  <!-- Rigid Vertical Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="10dp"
+      />
+
+  <TableLayout
+      android:id="@+id/sync_table"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      >
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+    	  android:id="@+id/percent_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/sync_percent_label"
+	  android:gravity="right"
+    	  android:textStyle="bold"
+    	  />
+
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="10dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+    	  android:id="@+id/percent"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+    	  android:id="@+id/blocks_left_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/sync_blocks_left_label"
+	  android:gravity="right"
+    	  android:textStyle="bold"
+    	  />
+
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="10dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+    	  android:id="@+id/blocks_left"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+    	  android:id="@+id/scan_date_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/sync_scan_date_label"
+	  android:gravity="right"
+    	  android:textStyle="bold"
+    	  />
+
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="10dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+    	  android:id="@+id/scan_date"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  />
+
+    </TableRow>
+
+  </TableLayout>
+
+  <!-- Rigid Vertical Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="10dp"
+      />
+
+</LinearLayout>

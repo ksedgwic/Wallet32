@@ -99,7 +99,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
     }
 
     public void seedDone(View view) {
-        Intent intent = new Intent(this, SyncProgressActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();	// All done here ...
     }

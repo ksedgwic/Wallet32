@@ -15,16 +15,23 @@
 
 package com.bonsai.wallet32;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -33,6 +40,12 @@ public class MainActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(MainActivity.class);
+
+    private View mDialogView = null;
+    private DialogFragment mSyncProgressDialog = null;
+
+    private static SimpleDateFormat mDateFormatter =
+        new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +59,100 @@ public class MainActivity extends BaseWalletActivity {
 
 	@Override
     protected void onWalletServiceBound() {
-        // If the WalletService isn't ready yet send the user
-        // to the SyncProgressActivity until it is.
+        // If the WalletService isn't ready yet put up the sync progress dialog.
         if (mWalletService.getState() != WalletService.State.READY) {
-            Intent intent = new Intent(this, SyncProgressActivity.class);
-            startActivity(intent);
+            showSyncProgressDialog();
         }
+
+        // In case the WalletService is already READY ...
+        onWalletStateChanged();
     }
 
 	@Override
     protected void onWalletStateChanged() {
+        if (mWalletService == null)
+            return;
+
+        if (mWalletService.getState() == WalletService.State.SYNCING) {
+            int pctdone = (int) mWalletService.getPercentDone();
+
+            updateSyncStats(String.format("%d%%", pctdone),
+                            String.format("%d", mWalletService.getBlocksToGo()),
+                            mDateFormatter.format(mWalletService.getScanDate()));
+
+            if (mDialogView != null) {
+                ProgressBar pb =
+                    (ProgressBar) mDialogView.findViewById(R.id.progress_bar);
+                pb.setProgress(pctdone);
+            }
+        }
+
+        else if (mWalletService.getState() == WalletService.State.READY) {
+            if (mSyncProgressDialog != null) {
+                mSyncProgressDialog.dismiss();
+                mSyncProgressDialog = null;
+                mDialogView = null;
+            }
+        }
+
         updateBalances();
     }
 
 	@Override
     protected void onRateChanged() {
         updateBalances();
+    }
+
+    private void doExit() {
+        mLogger.info("Application exiting");
+        stopService(new Intent(this, WalletService.class));
+        finish();
+        System.exit(0);
+    }
+
+    @SuppressLint("ValidFragment")
+	public class SyncProgressDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            mDialogView = inflater.inflate(R.layout.dialog_sync_progress, null);
+            builder.setView(mDialogView)
+                .setNegativeButton(R.string.sync_abort,
+                                   new DialogInterface.OnClickListener() {
+                                       public void onClick(DialogInterface dialog,
+                                                           int id) {
+                                           mLogger.info("Abort sync selected");
+                                           doExit();
+                                       }
+                                   });      
+            return builder.create();
+        }
+    }
+
+    private void showSyncProgressDialog() {
+        DialogFragment df = new SyncProgressDialogFragment();
+        df.setCancelable(false);
+        df.show(getSupportFragmentManager(), "sync_progress_dialog");
+        mSyncProgressDialog = df;
+
+        updateSyncStats("", "", "");
+
+    }
+
+    private void updateSyncStats(String pctstr, String blksstr, String datestr) {
+        if (mDialogView == null)
+            return;
+
+        TextView pcttv = (TextView) mDialogView.findViewById(R.id.percent);
+        pcttv.setText(pctstr);
+
+        TextView blkstv = (TextView) mDialogView.findViewById(R.id.blocks_left);
+        blkstv.setText(blksstr);
+                
+        TextView datetv = (TextView) mDialogView.findViewById(R.id.scan_date);
+        datetv.setText(datestr);
     }
 
     private void addBalanceHeader(TableLayout table) {
@@ -170,9 +261,7 @@ public class MainActivity extends BaseWalletActivity {
     }
 
     public void exitApp(View view) {
-        mLogger.info("Application Exiting");
-        stopService(new Intent(this, WalletService.class));
-        finish();
-        System.exit(0);
+        mLogger.info("Exit selected");
+        doExit();
     }
 }
