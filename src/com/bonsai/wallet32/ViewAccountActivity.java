@@ -20,17 +20,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 public class ViewAccountActivity extends BaseWalletActivity {
 
@@ -40,8 +43,20 @@ public class ViewAccountActivity extends BaseWalletActivity {
     private int mAccountId = -1;
     private HDAccount mAccount = null;
 
+    private ViewSwitcher mAccountNameSwitcher;
+    private TextView mAccountNameTextView;
     private EditText mAccountNameEditText;
     private Button mAccountNameSubmitButton;
+
+    private enum NameEditState {
+        INIT,		// Transient state ...
+        UNSET,		// Button disabled, says Edit, text not editable.
+        SET,		// Button enabled, says "Edit", text not editable.
+        CLEAN,		// Button disabled, says "Submit", text editable.
+        DIRTY		// Button enabled, says "Submit", text editable.
+    }
+
+    private NameEditState	mNameEditState;
 
     private final TextWatcher mAccountNameWatcher = new TextWatcher() {
 			@Override
@@ -56,7 +71,7 @@ public class ViewAccountActivity extends BaseWalletActivity {
 
 			@Override
             public void afterTextChanged(Editable ss) {
-                mAccountNameSubmitButton.setEnabled(true);
+                setNameState(NameEditState.DIRTY);
             }
         };
 
@@ -70,12 +85,19 @@ public class ViewAccountActivity extends BaseWalletActivity {
         Intent intent = getIntent();
         mAccountId = intent.getExtras().getInt("accountId");
 
-        mAccountNameEditText = (EditText) findViewById(R.id.account_name);
+        mAccountNameSwitcher =
+            (ViewSwitcher) findViewById(R.id.account_name_switcher);
+        mAccountNameTextView =
+            (TextView) findViewById(R.id.account_name_textview);
+        mAccountNameEditText =
+            (EditText) findViewById(R.id.account_name_edittext);
         mAccountNameSubmitButton =
             (Button) findViewById(R.id.submit_account_name);
 
-        // Listen for changes to the account name.
         mAccountNameEditText.addTextChangedListener(mAccountNameWatcher);
+
+        mNameEditState = NameEditState.INIT;
+        setNameState(NameEditState.UNSET);
 
         mLogger.info("ViewAccountActivity created");
 	}
@@ -86,8 +108,9 @@ public class ViewAccountActivity extends BaseWalletActivity {
         mAccount = mWalletService.getAccount(mAccountId);
 
         // Update the account name field.
+        mAccountNameTextView.setText(mAccount.getName());
         mAccountNameEditText.setText(mAccount.getName());
-        mAccountNameSubmitButton.setEnabled(false);
+        setNameState(NameEditState.SET);
     }
 
 	@Override
@@ -95,13 +118,70 @@ public class ViewAccountActivity extends BaseWalletActivity {
         updateChains();
     }
 
+    public void setNameState(NameEditState state) {
+        // Bail if there hasn't been a change.
+        if (state == mNameEditState)
+            return;
+
+        String buttonText = "???";
+        switch (state) {
+        case INIT:
+            // Shouldn't get here.
+            break;
+        case UNSET:
+            // Button disabled, says "Edit", text not editable.
+            mAccountNameSubmitButton.setEnabled(false);
+            buttonText = mRes.getString(R.string.account_name_edit);
+            mAccountNameSwitcher.setDisplayedChild(0);
+            break;
+        case SET:
+            // Button enabled, says "Edit", text not editable.
+            mAccountNameSubmitButton.setEnabled(true);
+            buttonText = mRes.getString(R.string.account_name_edit);
+            mAccountNameSwitcher.setDisplayedChild(0);
+            break;
+        case CLEAN:
+            // Button disabled, says "Submit", text editable.
+            mAccountNameSubmitButton.setEnabled(false);
+            buttonText = mRes.getString(R.string.account_name_submit);
+            mAccountNameSwitcher.setDisplayedChild(1);
+            break;
+        case DIRTY:
+            // Button enabled, says "Submit", text editable.
+            mAccountNameSubmitButton.setEnabled(true);
+            buttonText = mRes.getString(R.string.account_name_submit);
+            mAccountNameSwitcher.setDisplayedChild(1);
+            break;
+        }
+        mAccountNameSubmitButton.setText(buttonText);
+        mNameEditState = state;
+    }
+
     public void submitAccountName(View view) {
-        String name = mAccountNameEditText.getText().toString();
-        mLogger.info(String.format("Changing name of account %d to %s",
-                                   mAccountId, name));
-        mAccount.setName(name);
-        mWalletService.persist();
-        mAccountNameSubmitButton.setEnabled(false);
+        switch (mNameEditState) {
+        case SET:
+            // This is an edit action.
+            setNameState(NameEditState.CLEAN);
+            break;
+        case DIRTY:
+            // This is a submit action.
+            String name = mAccountNameEditText.getText().toString();
+            mLogger.info(String.format("Changing name of account %d to %s",
+                                       mAccountId, name));
+            mAccount.setName(name);
+            mWalletService.persist();
+            mAccountNameTextView.setText(name);
+            setNameState(NameEditState.SET);
+            break;
+        }
+
+        // Toggle the keyboard presence ...
+        InputMethodManager inputMethodManager =
+            (InputMethodManager) getSystemService
+            (Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow
+            (mAccountNameEditText.getApplicationWindowToken(),
+             InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void updateChains() {

@@ -28,8 +28,8 @@
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
-    <string name="passcode_waitvalidate">Your wallet is being decrypted ...</string>
-    <string name="passcode_waitsetup">Your wallet is being setup ...</string>
+    <string name="passcode_waitvalidate">Decrypting your wallet ...</string>
+    <string name="passcode_waitsetup">Creating encrypted wallet ...</string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
     <string name="passcode_2">2</string>
@@ -61,8 +61,9 @@
     <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
     <string name="title_activity_view_account">ViewAccount</string>
-    <string name="account_name_label">Account Name:</string>
+    <string name="account_name_label">Account:</string>
     <string name="account_name_hint">Account Name</string>
+    <string name="account_name_edit">Edit</string>
     <string name="account_name_submit">Submit</string>
     <string name="account_receive_label">Receiving Addresses</string>
     <string name="account_change_label">Change Addresses</string>
