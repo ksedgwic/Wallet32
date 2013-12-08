@@ -5,7 +5,7 @@
     <string name="service_name">Wallet Service</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_lobby">Wallet32</string>
-    <string name="lobby_starting">Wallet32 Starting ...</string>
+    <string name="lobby_starting">Wallet32 Starting &#8230;</string>
     <string name="title_activity_create_restore">Create/Restore Wallet</string>
     <string name="create_nowallet">No Wallet Found</string>
     <string name="button_create">Create New Wallet</string>
@@ -28,8 +28,8 @@
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
-    <string name="passcode_waitvalidate">Decrypting your wallet ...</string>
-    <string name="passcode_waitsetup">Creating encrypted wallet ...</string>
+    <string name="passcode_waitvalidate">Decrypting your wallet &#8230;</string>
+    <string name="passcode_waitsetup">Creating encrypted wallet &#8230;</string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
     <string name="passcode_2">2</string>
@@ -46,8 +46,7 @@
     <string name="title_activity_view_seed">Wallet Seed</string>
     <string name="seed_directions">Backup your seed securely!</string>
     <string name="seed_done">Done</string>
-    <string name="base_error_ok">Ok</string>
-    <string name="title_activity_sync_progress">Sync Progress</string>
+    <string name="base_error_ok">OK</string>
     <string name="sync_title">Sync Progress</string>
     <string name="sync_percent_label">Percent Complete</string>
     <string name="sync_blocks_left_label">Blocks Left</string>
@@ -139,7 +138,7 @@
     </string-array>
 
     <string name="pref_rescan_blockchain">Rescan Blockchain</string>
-    <string name="pref_rescan_blockchain_default">CANCEL</string>
+    <string name="pref_rescan_blockchain_default">Cancel</string>
 
     <string-array name="pref_rescan_blockchain_entries">
       <item>Rescan Blockchain Now (EXPENSIVE!)</item>
