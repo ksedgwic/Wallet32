@@ -158,32 +158,6 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         if (mWalletService == null)
             return;
 
-        TextView tv = (TextView) findViewById(R.id.network_status);
-
-        // Set the status background color.
-        String colorspec;
-        switch (mWalletService.getState()) {
-        case SETUP:
-        case ERROR:
-            colorspec = "#f08080";	// Red
-            break;
-        case START:
-        case SYNCING:
-            colorspec = "#f0f080";	// Yellow
-            break;
-        case READY:
-            colorspec = "#80f080";	// Green
-            break;
-        default:
-            colorspec = "#808080";	// Gray
-            break;
-        }
-        tv.setBackgroundColor(Color.parseColor(colorspec));
-
-        // Set the status string.
-        String state = mWalletService.getStateString();
-        tv.setText(state);
-
         onWalletStateChanged();
     }
 

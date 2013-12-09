@@ -91,17 +91,6 @@
 	android:layout_weight="1"
 	/>
 
-    <TextView
-	android:id="@+id/network_status"
-	android:text="@string/network_status_unknown"
-	android:textAppearance="@android:style/TextAppearance.Medium"
-	android:padding="10dp"
-	android:background="#f08080"
-	android:gravity="center"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	/>
-
   </LinearLayout>
 
 </LinearLayout>
