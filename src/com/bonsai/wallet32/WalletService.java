@@ -66,6 +66,8 @@ import com.google.bitcoin.params.RegTestParams;
 public class WalletService extends Service
     implements OnSharedPreferenceChangeListener {
 
+    public static boolean mIsRunning = false;
+
     private static Logger mLogger =
         LoggerFactory.getLogger(WalletService.class);
 
@@ -284,11 +286,15 @@ public class WalletService extends Service
 
         showNotification();
 
+        mIsRunning = true;
+
         return Service.START_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        mIsRunning = false;
+
         // FIXME - Where does this go?  Anywhere?
         // stopForeground(true);
 

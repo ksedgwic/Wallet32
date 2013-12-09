@@ -26,9 +26,6 @@ Needed
 
 * Testnet build.
 
-* Change top of Account View to have non-editable field and "Edit"
-  button.  Button changes to "Submit" when changes started ...
-
 * View Seed needs to be "pre-main" when started from create wallet
   and BaseWalletActivity when called from main.
 

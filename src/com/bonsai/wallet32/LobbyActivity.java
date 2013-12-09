@@ -49,27 +49,37 @@ public class LobbyActivity extends Activity {
         editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
         editor.commit();
 
-        // Is there an existing wallet?
-        File dir = getApplicationContext().getFilesDir();
-        String filePrefix = "wallet32";		// FIXME - Also in WalletService
-        String path = filePrefix + ".hdwallet";	// FIXME - Also in WalletService
-        File walletFile = new File(dir, path);
-        if (walletFile.exists()) {
-
-            mLogger.info("Existing wallet found");
-
-            Intent intent = new Intent(this, PasscodeActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("createPasscode", false);
-            intent.putExtras(bundle);
+        // Is the wallet already open?
+        if (WalletService.mIsRunning) {
+            mLogger.info("Wallet already open");
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
+        }
 
-        } else {
+        else {
+            // Is there an existing wallet?
+            File dir = getApplicationContext().getFilesDir();
+            String filePrefix = "wallet32"; // FIXME - Also in WalletService
+            String path = filePrefix + ".hdwallet";	// FIXME - WalletService
+            File walletFile = new File(dir, path);
+            if (walletFile.exists()) {
 
-            mLogger.info("No existing wallet");
+                mLogger.info("Existing wallet found");
 
-            Intent intent = new Intent(this, CreateRestoreActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(this, PasscodeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("createPasscode", false);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
+            } else {
+
+                mLogger.info("No existing wallet");
+
+                Intent intent = new Intent(this, CreateRestoreActivity.class);
+                startActivity(intent);
+            }
         }
 
         // Prevent the user from coming back here.
