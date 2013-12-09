@@ -132,13 +132,14 @@ public class MainActivity extends BaseWalletActivity {
     }
 
     private void showSyncProgressDialog() {
+        // Do we already have a progress dialog up?
+        if (mSyncProgressDialog != null)
+            return;
+
         DialogFragment df = new SyncProgressDialogFragment();
         df.setCancelable(false);
         df.show(getSupportFragmentManager(), "sync_progress_dialog");
         mSyncProgressDialog = df;
-
-        updateSyncStats("", "", "");
-
     }
 
     private void updateSyncStats(String pctstr, String blksstr, String datestr) {
