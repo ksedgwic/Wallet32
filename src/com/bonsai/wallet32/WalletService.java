@@ -23,6 +23,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.params.KeyParameter;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,24 +40,13 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.format.DateFormat;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spongycastle.crypto.InvalidCipherTextException;
-import org.spongycastle.crypto.params.KeyParameter;
-import org.spongycastle.util.encoders.Hex;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DownloadListener;
-import com.google.bitcoin.core.DumpedPrivateKey;
-import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
@@ -61,7 +55,6 @@ import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.params.MainNetParams;
-import com.google.bitcoin.params.RegTestParams;
 
 public class WalletService extends Service
     implements OnSharedPreferenceChangeListener {
@@ -418,6 +411,11 @@ public class WalletService extends Service
             mLogger.error("delete of spvchain file failed");
 
         mLogger.info("restarting wallet");
+        WalletApplication wallapp = (WalletApplication) getApplicationContext();
+
+        mKeyCrypter = wallapp.mKeyCrypter;
+        mAesKey = wallapp.mAesKey;
+
         setState(State.SETUP);
         mTask = new SetupWalletTask();
         mTask.execute();
@@ -521,8 +519,6 @@ public class WalletService extends Service
                                      double fee) throws RuntimeException {
         if (mHDWallet == null)
             return;
-
-        WalletApplication wallapp = (WalletApplication) mContext;
 
         try {
             Address dest = new Address(mParams, address);
