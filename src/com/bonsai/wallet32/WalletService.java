@@ -130,10 +130,11 @@ public class WalletService extends Service
             }
         };
 
-    private class SetupWalletTask extends AsyncTask<Void, Void, Void> {
+    private class SetupWalletTask extends AsyncTask<Boolean, Void, Void> {
 		@Override
-		protected Void doInBackground(Void... arg0)
+		protected Void doInBackground(Boolean... params)
         {
+			Boolean useCheckpoint = params[0];
             WalletApplication wallapp = (WalletApplication) mContext;
 
             mLogger.info("getting network parameters");
@@ -160,12 +161,17 @@ public class WalletService extends Service
 
             mLogger.info("creating new wallet app kit");
 
-            InputStream chkpntis;
-			try {
-				chkpntis = getAssets().open("checkpoints");
-			} catch (IOException e) {
-                chkpntis = null;
-			}
+            // Checkpointing fails on rescan because the earliest
+            // create time is earlier then the genesis block time.
+            //
+            InputStream chkpntis = null;
+            if (useCheckpoint) {
+                try {
+                    chkpntis = getAssets().open("checkpoints");
+                } catch (IOException e) {
+                    chkpntis = null;
+                }
+            }
 
             mKit = new MyWalletAppKit(mParams,
                                       mContext.getFilesDir(),
@@ -273,7 +279,7 @@ public class WalletService extends Service
         mAesKey = wallapp.mAesKey;
 
         mTask = new SetupWalletTask();
-        mTask.execute();
+        mTask.execute(true);
 
         mLogger.info("WalletService started");
 
@@ -418,7 +424,7 @@ public class WalletService extends Service
 
         setState(State.SETUP);
         mTask = new SetupWalletTask();
-        mTask.execute();
+        mTask.execute(false);
     }
 
     public State getState() {
