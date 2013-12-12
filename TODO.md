@@ -8,18 +8,12 @@ Bugs
 
 * View Transactions Account Filter "slipping" back to "All Accounts".
 
-* On relaunch of running wallet need to skip passcode and service spinup.
-
 * Need to handle precision of BTC values much better then 4 fixed places.
 
 * Disable Settings actions on everything prior to MainActivity.
 
 * I don't think the Home "Up" feature is working from the ViewSeed page,
   at least on initial create.
-
-* The rescan interface sucks:
-> 1. The preferences GUI is lousy; nothing happens after you pick it.
-> 2. We seem to go to some places and then end up on a dead MainActivity.
 
 Needed
 ----------------------------------------------------------------

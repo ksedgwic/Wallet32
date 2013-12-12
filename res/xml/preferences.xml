@@ -12,13 +12,10 @@
         android:defaultValue="@string/pref_fiat_rate_sources_default"
 	/>
 
-    <ListPreference
+    <Preference
         android:key="pref_rescanBlockchain"
-        android:title="@string/pref_rescan_blockchain"
-        android:dialogTitle="@string/pref_rescan_blockchain"
-        android:entries="@array/pref_rescan_blockchain_entries"
-        android:entryValues="@array/pref_rescan_blockchain_values"
-        android:defaultValue="@string/pref_rescan_blockchain_default"
+	android:title="@string/pref_rescan_blockchain"
+        android:summary="@string/pref_rescan_summary"
 	/>
 
 </PreferenceScreen>

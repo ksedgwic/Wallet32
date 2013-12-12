@@ -227,13 +227,6 @@ public class WalletService extends Service
             // Listen for future wallet changes.
             mKit.wallet().addEventListener(mWalletListener);
 
-            // Reset the rescan pref to cancel so we can use again.
-            SharedPreferences settings =
-                PreferenceManager.getDefaultSharedPreferences(mContext);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
-            editor.commit();
-
             setState(State.READY);
 
 			return null;
@@ -309,14 +302,6 @@ public class WalletService extends Service
                 sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
             setFiatRateSource(fiatRateSource);
         }
-        else if (key.equals(SettingsActivity.KEY_RESCAN_BLOCKCHAIN)) {
-            SharedPreferences sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(this);
-            String rescan =
-                sharedPref.getString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "");
-            if (rescan.equals("RESCAN"))
-                rescanBlockchain();
-        }
     }
 
     // Show a notification while this service is running.
@@ -374,7 +359,7 @@ public class WalletService extends Service
         mRateUpdater.startUpdater();
     }
 
-    private void rescanBlockchain(){
+    public void rescanBlockchain(){
         mLogger.info("RESCAN!");
 
         // Make sure we are in a good state for this.

@@ -124,6 +124,10 @@
     <string name="network_status_unknown">Network Status Unknown</string>
 
     <string name="title_activity_settings">Wallet32 Settings</string>
+
+    <string name="settings_confirm_ok">OK</string>
+    <string name="settings_confirm_cancel">Cancel</string>
+
     <string name="pref_fiat_rate_source">Fiat Rate Source</string>
     <string name="pref_fiat_rate_sources_default">BITSTAMPUSD</string>
 
@@ -138,17 +142,11 @@
     </string-array>
 
     <string name="pref_rescan_blockchain">Rescan Blockchain</string>
-    <string name="pref_rescan_blockchain_default">Cancel</string>
-
-    <string-array name="pref_rescan_blockchain_entries">
-      <item>Rescan Blockchain Now (EXPENSIVE!)</item>
-      <item>Cancel</item>
-    </string-array>
-
-    <string-array name="pref_rescan_blockchain_values">
-      <item>RESCAN</item>
-      <item>CANCEL</item>
-    </string-array>
+    <string name="pref_rescan_summary">Rescan Blockchain Now (EXPENSIVE!)</string>
+    <string name="pref_rescan_title">Confirm Rescan</string>
+    <string name="pref_rescan_confirm">Are you sure you want to rescan?</string>
+    <string name="pref_rescan_yes">Rescan</string>
+    <string name="pref_rescan_no">Cancel</string>
 
     <string name="wallet_service_started">Wallet32 Service Running</string>
     <string name="wallet_service_label">Wallet32</string>
