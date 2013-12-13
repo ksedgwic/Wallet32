@@ -10,87 +10,87 @@
     android:padding="16dp"
     >
 
-    <FrameLayout
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
+  <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      >
+
+    <ImageView
+	android:id="@+id/address_qr_view"
+	android:layout_width="240dp"
+	android:layout_height="240dp"
 	android:layout_gravity="center"
-	>
-
-        <ImageView
-	    android:id="@+id/address_qr_view"
-	    android:layout_width="240dp"
-	    android:layout_height="240dp"
-	    android:layout_gravity="center"
-	    android:scaleType="centerInside"
-	    />
-
-    </FrameLayout>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="2"
+	android:scaleType="centerInside"
 	/>
 
-    <TextView
-	android:id="@+id/address"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:textStyle="bold"
-	/>
+  </FrameLayout>
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
 
-    <TextView
-	android:id="@+id/amount"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:textStyle="bold"
-	/>
+  <TextView
+      android:id="@+id/address"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:textStyle="bold"
+      />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="2"
-	/>
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
 
-    <Button
-	android:id="@+id/copy"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_copy"
-	android:onClick="copyAddress"
-	/>
+  <TextView
+      android:id="@+id/amount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:textStyle="bold"
+      />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2"
+      />
 
-    <Button
-	android:id="@+id/dismiss"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_dismiss"
-	android:onClick="dismissView"
-	/>
+  <Button
+      android:id="@+id/copy"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_copy"
+      android:onClick="copyAddress"
+      />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <Button
+      android:id="@+id/dismiss"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_dismiss"
+      android:onClick="dismissView"
+      />
+
+  <!-- Stretchy Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
 
 </LinearLayout>

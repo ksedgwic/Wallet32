@@ -71,13 +71,25 @@ public class SettingsActivity extends PreferenceActivity {
 
         mRes = getResources();
 
-        Preference button = (Preference)
-            findPreference("pref_rescanBlockchain");
-        button.setOnPreferenceClickListener
+        Preference butt0 = (Preference) findPreference("pref_rescanBlockchain");
+        butt0.setOnPreferenceClickListener
             (new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference arg0) {
-                        showConfirmDialog(mRes.getString(R.string.pref_rescan_confirm));
+                        showConfirmDialog(mRes.getString
+                                          (R.string.pref_rescan_confirm));
+                        return true;
+                    }
+                });
+
+        Preference butt1 = (Preference) findPreference("pref_about");
+        butt1.setOnPreferenceClickListener
+            (new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference arg0) {
+                        Intent intent = new Intent(mThis, AboutActivity.class);
+                        startActivity(intent);
+                        finish();	// All done here...
                         return true;
                     }
                 });

@@ -116,6 +116,10 @@
             android:name="com.bonsai.wallet32.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name="com.bonsai.wallet32.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
     </application>
 
 </manifest>

@@ -143,6 +143,8 @@
 
     <string name="pref_rescan_blockchain">Rescan Blockchain</string>
     <string name="pref_rescan_summary">Rescan Blockchain Now (EXPENSIVE!)</string>
+    <string name="pref_about">About Wallet32</string>
+
     <string name="pref_rescan_title">Confirm Rescan</string>
     <string name="pref_rescan_confirm">Are you sure you want to rescan?</string>
     <string name="pref_rescan_yes">Rescan</string>
@@ -151,4 +153,23 @@
     <string name="wallet_service_started">Wallet32 Service Running</string>
     <string name="wallet_service_label">Wallet32</string>
 
+    <string name="title_activity_about">About Wallet32</string>
+    <string name="about_contents"><![CDATA[\n
+Wallet32\n
+\n
+Version: 0.1.0 (12-Dec-2013)\n
+\n
+Source:  https://github.com/ksedgwic/Wallet32\n
+\n
+Author:  Ken Sedgwick <ken@bonsai.com>\n
+\n
+Wallet32 is made possible by:\n
+bitcoinj  https://code.google.com/p/bitcoinj/\n
+zxscanlib https://github.com/LivotovLabs/zxscanlib\n
+\n
+Donate: 1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk\n
+\n
+Copyright (C) 2013 Bonsai Software, Inc.\n
+All rights reserved.
+]]></string>
 </resources>
