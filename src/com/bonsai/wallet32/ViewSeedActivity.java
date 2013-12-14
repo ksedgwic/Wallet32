@@ -16,11 +16,15 @@
 package com.bonsai.wallet32;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
+
+import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.bitcoin.crypto.MnemonicLengthException;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +36,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewSeedActivity.class);
 
-    private MnemonicCoder	mCoder;
+    private MnemonicCode	mCoder;
 
     private boolean			mSeedFetched;
 
@@ -40,10 +44,13 @@ public class ViewSeedActivity extends BaseWalletActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
         try {
-			mCoder = new MnemonicCoder(this);
+            InputStream wis = getApplicationContext()
+                .getAssets().open("wordlist/english.txt");
+            mCoder = new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+            return;
 		}
 
         mSeedFetched = false;
@@ -72,7 +79,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
         if (mSeedFetched)
             return;
 
-        byte[] seed = mWalletService.getSeed();
+        byte[] seed = mWalletService.getWalletSeed();
         if (seed == null)
             return;
 
@@ -84,7 +91,14 @@ public class ViewSeedActivity extends BaseWalletActivity {
         hextv.setText(new String(Hex.encode(seed)));
 
         StringBuilder builder = new StringBuilder();
-        List<String> words = mCoder.encode(seed);
+        List<String> words;
+		try {
+			words = mCoder.toMnemonic(seed);
+		} catch (MnemonicLengthException e) {
+            // Shouldn't happen ...
+			e.printStackTrace();
+            return;
+		}
         for (int ii = 0; ii < words.size(); ii += 3) {
             if (ii != 0)
                 builder.append("\n");

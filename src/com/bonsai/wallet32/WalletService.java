@@ -144,7 +144,8 @@ public class WalletService extends Service
             // Try to restore existing wallet.
             mHDWallet = null;
             try {
-				mHDWallet = HDWallet.restore(mParams,
+				mHDWallet = HDWallet.restore(mContext,
+											 mParams,
 				                             mContext.getFilesDir(),
 				                             mFilePrefix, mKeyCrypter, mAesKey);
 			} catch (InvalidCipherTextException ex) {
@@ -332,8 +333,8 @@ public class WalletService extends Service
         mHDWallet.persist();
     }
 
-    public byte[] getSeed() {
-        return mHDWallet == null ? null : mHDWallet.getSeed();
+    public byte[] getWalletSeed() {
+        return mHDWallet == null ? null : mHDWallet.getWalletSeed();
     }
 
     private void setFiatRateSource(String src) {

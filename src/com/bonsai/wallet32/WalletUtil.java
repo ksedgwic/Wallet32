@@ -80,7 +80,8 @@ public class WalletUtil {
         int numAccounts = 2;
 
         // Setup a wallet with the seed.
-        HDWallet hdwallet = new HDWallet(params,
+        HDWallet hdwallet = new HDWallet(context,
+        								 params,
                                          context.getFilesDir(),
                                          filePrefix,
                                          wallapp.mKeyCrypter,

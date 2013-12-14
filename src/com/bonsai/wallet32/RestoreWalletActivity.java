@@ -16,6 +16,7 @@
 package com.bonsai.wallet32;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +40,10 @@ import android.widget.EditText;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.VerificationException;
+import com.google.bitcoin.crypto.MnemonicChecksumException;
+import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.bitcoin.crypto.MnemonicLengthException;
+import com.google.bitcoin.crypto.MnemonicWordException;
 import com.google.bitcoin.params.MainNetParams;
 
 public class RestoreWalletActivity extends ActionBarActivity {
@@ -99,9 +104,11 @@ public class RestoreWalletActivity extends ActionBarActivity {
 
         // How about a mnemonic string?
         else if (mnemonicstr.length() > 0) {
-            MnemonicCoder coder;
+            MnemonicCode mc;
 			try {
-				coder = new MnemonicCoder(this);
+                InputStream wis = getApplicationContext()
+                    .getAssets().open("wordlist/english.txt");
+				mc = new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
@@ -110,19 +117,20 @@ public class RestoreWalletActivity extends ActionBarActivity {
                 new ArrayList<String>(Arrays.asList
                                       (mnemonicstr.trim().split("\\s+")));
             try {
-                seed = coder.decode(words);
+                mc.check(words);
+                seed = MnemonicCode.toSeed(words, "");
             }
-            catch (AddressFormatException ex) {
+            catch (MnemonicLengthException ex) {
                 showErrorDialog(mRes.getString(R.string.restore_badlength));
                 return;
             }
-            catch (IllegalArgumentException ex) {
+            catch (MnemonicWordException ex) {
                 String msg = mRes.getString(R.string.restore_badword,
                                             ex.getMessage());
                 showErrorDialog(msg);
                 return;
             }
-            catch (VerificationException ex) {
+            catch (MnemonicChecksumException ex) {
                 showErrorDialog(mRes.getString(R.string.restore_badchecksum));
                 return;
             }
@@ -139,7 +147,8 @@ public class RestoreWalletActivity extends ActionBarActivity {
         int numAccounts = 3;
 
         // Setup a wallet with the restore seed.
-        HDWallet hdwallet = new HDWallet(params,
+        HDWallet hdwallet = new HDWallet(getApplicationContext(),
+        							     params,
                                          getApplicationContext().getFilesDir(),
                                          filePrefix,
                                          wallapp.mKeyCrypter,

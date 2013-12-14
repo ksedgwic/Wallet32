@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
+
+import android.content.Context;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,6 +62,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
+import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.script.Script;
 
 public class HDWallet {
@@ -75,7 +79,7 @@ public class HDWallet {
 
     private final DeterministicKey	mMasterKey;
 
-    private final byte[]			mSeed;
+    private final byte[]			mWalletSeed;
 
     private ArrayList<HDAccount>	mAccounts;
 
@@ -84,7 +88,8 @@ public class HDWallet {
     }
 
     // Create an HDWallet from persisted file data.
-    public static HDWallet restore(NetworkParameters params,
+    public static HDWallet restore(Context ctxt,
+    							   NetworkParameters params,
                                    File directory,
                                    String filePrefix,
                                    KeyCrypter keyCrypter,
@@ -93,7 +98,7 @@ public class HDWallet {
         JsonNode node = deserialize(directory, filePrefix,
                                     keyCrypter, aesKey);
 
-        return new HDWallet(params, directory, filePrefix,
+        return new HDWallet(ctxt, params, directory, filePrefix,
                             keyCrypter, aesKey, node);
     }
 
@@ -159,14 +164,13 @@ public class HDWallet {
 		}
     }
 
-    public HDWallet(NetworkParameters params,
+    public HDWallet(Context ctxt,
+                    NetworkParameters params,
                     File directory,
                     String filePrefix,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
-                    JsonNode walletNode)
-        throws RuntimeException {
-
+                    JsonNode walletNode) {
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
@@ -174,12 +178,23 @@ public class HDWallet {
         mAesKey = aesKey;
 
         try {
-			mSeed = Base58.decode(walletNode.path("seed").textValue());
+			mWalletSeed = Base58.decode(walletNode.path("seed").textValue());
 		} catch (AddressFormatException e) {
-            throw new RuntimeException("couldn't decode seed value");
+            throw new RuntimeException("couldn't decode wallet seed");
 		}
 
-        mMasterKey = HDKeyDerivation.createMasterPrivateKey(mSeed);
+        byte[] hdseed;
+        try {
+            InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
+            MnemonicCode mc =
+                new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
+            List<String> wordlist = mc.toMnemonic(mWalletSeed);
+            hdseed = MnemonicCode.toSeed(wordlist, "");
+        } catch (Exception ex) {
+            throw new RuntimeException("trouble decoding seed");
+        }
+
+        mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
 
         mLogger.info("restored HDWallet " + mMasterKey.getPath());
 
@@ -191,22 +206,33 @@ public class HDWallet {
         }
     }
 
-    public HDWallet(NetworkParameters params,
+    public HDWallet(Context ctxt,
+                    NetworkParameters params,
                     File directory,
                     String filePrefix,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
-                    byte[] seed,
+                    byte[] walletSeed,
                     int numAccounts) {
-        
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
-        mSeed = seed;
+        mWalletSeed = walletSeed;
 
-        mMasterKey = HDKeyDerivation.createMasterPrivateKey(seed);
+        byte[] hdseed;
+        try {
+            InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
+            MnemonicCode mc =
+                new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
+            List<String> wordlist = mc.toMnemonic(mWalletSeed);
+            hdseed = MnemonicCode.toSeed(wordlist, "");
+        } catch (Exception ex) {
+            throw new RuntimeException("trouble decoding seed");
+        }
+
+        mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
 
         mLogger.info("created HDWallet " + mMasterKey.getPath());
 
@@ -218,8 +244,8 @@ public class HDWallet {
         }
     }
 
-    public byte[] getSeed() {
-        return mSeed;
+    public byte[] getWalletSeed() {
+        return mWalletSeed;
     }
 
     public List<HDAccount> getAccounts() {
@@ -469,7 +495,7 @@ public class HDWallet {
     public Object dumps() {
         Map<String,Object> obj = new HashMap<String,Object>();
 
-        obj.put("seed", Base58.encode(mSeed));
+        obj.put("seed", Base58.encode(mWalletSeed));
 
         List<Object> acctList = new ArrayList<Object>();
         for (HDAccount acct : mAccounts)

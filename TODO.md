@@ -4,8 +4,6 @@ Bugs
 
 * On HTC, "back" from Main activity and then resume crashes ...
 
-* View Transactions too quickly crashes the client.
-
 * View Transactions Account Filter "slipping" back to "All Accounts".
 
 * Need to handle precision of BTC values much better then 4 fixed places.
@@ -23,8 +21,6 @@ Needed
 * View Seed needs to be "pre-main" when started from create wallet
   and BaseWalletActivity when called from main.
 
-* Add an About screen from Settings.
-
 * Electrum compatibility.
 
 * Add change passcode.
@@ -40,8 +36,6 @@ Needed
 * bitcoinj update.
 
 * Make Send balances the available amount.
-
-* BIP-0039 update.
 
 * Figure out reasonable minimum fee calculation.
 
