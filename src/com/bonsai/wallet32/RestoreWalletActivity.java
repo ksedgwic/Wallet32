@@ -117,8 +117,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                 new ArrayList<String>(Arrays.asList
                                       (mnemonicstr.trim().split("\\s+")));
             try {
-                mc.check(words);
-                seed = MnemonicCode.toSeed(words, "");
+                seed = mc.toEntropy(words);
             }
             catch (MnemonicLengthException ex) {
                 showErrorDialog(mRes.getString(R.string.restore_badlength));

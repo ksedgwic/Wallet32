@@ -109,6 +109,53 @@ public class MnemonicCode {
     }
 
     /**
+     * Convert mnemonic word list to original entropy value.
+     */
+    public byte[] toEntropy(List<String> words) throws MnemonicLengthException, MnemonicWordException, MnemonicChecksumException {
+        if (words.size() % 3 > 0)
+            throw new MnemonicLengthException("Word list size must be multiple of three words.");
+
+        // Look up all the words in the list and construct the
+        // concatenation of the original entropy and the checksum.
+        //
+        int concatLenBits = words.size() * 11;
+        boolean[] concatBits = new boolean[concatLenBits];
+        int wordindex = 0;
+        for (String word : words) {
+            // Find the words index in the wordlist.
+            int ndx = Collections.binarySearch(this.wordList, word);
+            if (ndx < 0)
+                throw new MnemonicWordException("\"" + word + "\" invalid", word);
+
+            // Set the next 11 bits to the value of the index.
+            for (int ii = 0; ii < 11; ++ii)
+                concatBits[(wordindex * 11) + ii] = (ndx & (1 << (10 - ii))) != 0;
+            ++wordindex;
+        }        
+
+        int checksumLengthBits = concatLenBits / 33;
+        int entropyLengthBits = concatLenBits - checksumLengthBits;
+
+        // Extract original entropy as bytes.
+        byte[] entropy = new byte[entropyLengthBits / 8];
+        for (int ii = 0; ii < entropy.length; ++ii)
+            for (int jj = 0; jj < 8; ++jj)
+                if (concatBits[(ii * 8) + jj])
+                    entropy[ii] |= 1 << (7 - jj);
+
+        // Take the digest of the entropy.
+        byte[] hash = Sha256Hash.create(entropy).getBytes();
+        boolean[] hashBits = bytesToBits(hash);
+
+        // Check all the checksum bits.
+        for (int ii = 0; ii < checksumLengthBits; ++ii)
+            if (concatBits[entropyLengthBits + ii] != hashBits[ii])
+                throw new MnemonicChecksumException("checksum error");
+
+        return entropy;
+    }
+
+    /**
      * Convert entropy data to mnemonic word list.
      */
     public List<String> toMnemonic(byte[] entropy) throws MnemonicLengthException {
@@ -155,45 +202,7 @@ public class MnemonicCode {
      * Check to see if a mnemonic word list is valid.
      */
     public void check(List<String> words) throws MnemonicLengthException, MnemonicWordException, MnemonicChecksumException {
-        if (words.size() % 3 > 0)
-            throw new MnemonicLengthException("Word list size must be multiple of three words.");
-
-        // Look up all the words in the list and construct the
-        // concatenation of the original entropy and the checksum.
-        //
-        int concatLenBits = words.size() * 11;
-        boolean[] concatBits = new boolean[concatLenBits];
-        int wordindex = 0;
-        for (String word : words) {
-            // Find the words index in the wordlist.
-            int ndx = Collections.binarySearch(this.wordList, word);
-            if (ndx < 0)
-                throw new MnemonicWordException("\"" + word + "\" invalid", word);
-
-            // Set the next 11 bits to the value of the index.
-            for (int ii = 0; ii < 11; ++ii)
-                concatBits[(wordindex * 11) + ii] = (ndx & (1 << (10 - ii))) != 0;
-            ++wordindex;
-        }        
-
-        int checksumLengthBits = concatLenBits / 33;
-        int entropyLengthBits = concatLenBits - checksumLengthBits;
-
-        // Extract original entropy as bytes.
-        byte[] entropy = new byte[entropyLengthBits / 8];
-        for (int ii = 0; ii < entropy.length; ++ii)
-            for (int jj = 0; jj < 8; ++jj)
-                if (concatBits[(ii * 8) + jj])
-                    entropy[ii] |= 1 << (7 - jj);
-
-        // Take the digest of the entropy.
-        byte[] hash = Sha256Hash.create(entropy).getBytes();
-        boolean[] hashBits = bytesToBits(hash);
-
-        // Check all the checksum bits.
-        for (int ii = 0; ii < checksumLengthBits; ++ii)
-            if (concatBits[entropyLengthBits + ii] != hashBits[ii])
-                throw new MnemonicChecksumException("checksum error");
+        toEntropy(words);
     }
 
     private static boolean[] bytesToBits(byte[] data) {
