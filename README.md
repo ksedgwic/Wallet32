@@ -30,8 +30,8 @@ Source:  https://github.com/ksedgwic/Wallet32
 Author:  Ken Sedgwick <ken@bonsai.com>
 
 Wallet32 is made possible by:
-bitcoinj    https://code.google.com/p/bitcoinj/
-zxscanlib   https://github.com/LivotovLabs/zxscanlib
+* bitcoinj    https://code.google.com/p/bitcoinj/
+* zxscanlib   https://github.com/LivotovLabs/zxscanlib
 
 Donate: 1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk
 
