@@ -2,6 +2,11 @@
 Bugs
 ----------------------------------------------------------------
 
+* Figure out reasonable keyCreationTimes for create, sync-normal and
+  restore.
+
+* (mh) back/up in the action bar doesn't do anything.
+
 * On HTC, "back" from Main activity and then resume crashes ...
 
 * View Transactions Account Filter "slipping" back to "All Accounts".

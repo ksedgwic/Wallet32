@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import com.google.bitcoin.crypto.MnemonicCode;
-import com.google.bitcoin.crypto.MnemonicLengthException;
+import com.google.bitcoin.crypto.MnemonicException;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -94,7 +94,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
         List<String> words;
 		try {
 			words = mCoder.toMnemonic(seed);
-		} catch (MnemonicLengthException e) {
+		} catch (MnemonicException.MnemonicLengthException e) {
             // Shouldn't happen ...
 			e.printStackTrace();
             return;

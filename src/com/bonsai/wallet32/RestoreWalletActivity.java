@@ -40,10 +40,8 @@ import android.widget.EditText;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.VerificationException;
-import com.google.bitcoin.crypto.MnemonicChecksumException;
 import com.google.bitcoin.crypto.MnemonicCode;
-import com.google.bitcoin.crypto.MnemonicLengthException;
-import com.google.bitcoin.crypto.MnemonicWordException;
+import com.google.bitcoin.crypto.MnemonicException;
 import com.google.bitcoin.params.MainNetParams;
 
 public class RestoreWalletActivity extends ActionBarActivity {
@@ -119,17 +117,17 @@ public class RestoreWalletActivity extends ActionBarActivity {
             try {
                 seed = mc.toEntropy(words);
             }
-            catch (MnemonicLengthException ex) {
+            catch (MnemonicException.MnemonicLengthException ex) {
                 showErrorDialog(mRes.getString(R.string.restore_badlength));
                 return;
             }
-            catch (MnemonicWordException ex) {
+            catch (MnemonicException.MnemonicWordException ex) {
                 String msg = mRes.getString(R.string.restore_badword,
                                             ex.getMessage());
                 showErrorDialog(msg);
                 return;
             }
-            catch (MnemonicChecksumException ex) {
+            catch (MnemonicException.MnemonicChecksumException ex) {
                 showErrorDialog(mRes.getString(R.string.restore_badchecksum));
                 return;
             }
