@@ -118,20 +118,18 @@ public class HDAddress {
 
     public void addKey(Wallet wallet,
                        KeyCrypter keyCrypter,
-                       KeyParameter aesKey) {
+                       KeyParameter aesKey,
+                       boolean isRestore) {
 
-        // NOTE - we can do much better here.  There are two cases:
-        //
-        // 1) When we are creating a new key for the first time the
-        //    current time is the right value.
-        //
-        // 2) If we are scanning to restore a wallet from seed then
-        //    we need to search from the earliest possible wallet
-        //    existence time.
-        //
-        // For now, set the creation time to Tue Oct 15 11:18:03 PDT 2013
-        //
-        mECKey.setCreationTimeSeconds(1381861127);
+        if (isRestore) {
+            // If we are restoring this wallet we'll need to scan from the
+            // earliest date that the keys could have been created on.
+            //
+            // For now, set the creation time to Tue Oct 15 11:18:03 PDT
+            // 2013
+            //
+            mECKey.setCreationTimeSeconds(1381861127);
+        }
         wallet.addKey(mECKey.encrypt(keyCrypter, aesKey));
     }
 

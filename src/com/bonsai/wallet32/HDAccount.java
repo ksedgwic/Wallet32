@@ -91,9 +91,10 @@ public class HDAccount {
 
     public void addAllKeys(Wallet wallet,
                            KeyCrypter keyCrypter,
-                           KeyParameter aesKey) {
-        mReceiveChain.addAllKeys(wallet, keyCrypter, aesKey);
-        mChangeChain.addAllKeys(wallet, keyCrypter, aesKey);
+                           KeyParameter aesKey,
+                           boolean isRestore) {
+        mReceiveChain.addAllKeys(wallet, keyCrypter, aesKey, isRestore);
+        mChangeChain.addAllKeys(wallet, keyCrypter, aesKey, isRestore);
     }
 
     public void applyOutput(byte[] pubkey,

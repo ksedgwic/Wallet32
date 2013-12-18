@@ -100,9 +100,10 @@ public class HDChain {
 
     public void addAllKeys(Wallet wallet,
                            KeyCrypter keyCrypter,
-                           KeyParameter aesKey) {
+                           KeyParameter aesKey,
+                           boolean isRestore) {
         for (HDAddress hda : mAddrs)
-            hda.addKey(wallet, keyCrypter, aesKey);
+            hda.addKey(wallet, keyCrypter, aesKey, isRestore);
     }
 
     public void applyOutput(byte[] pubkey,
@@ -196,7 +197,7 @@ public class HDChain {
             for (int ii = mAddrs.size(); ii < newSize; ++ii) {
                 HDAddress hda = new HDAddress(mParams, mChainKey, ii);
                 mAddrs.add(hda);
-                hda.addKey(wallet, keyCrypter, aesKey);
+                hda.addKey(wallet, keyCrypter, aesKey, false);
             }
         }
     }

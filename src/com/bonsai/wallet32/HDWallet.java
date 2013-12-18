@@ -256,9 +256,9 @@ public class HDWallet {
         return mAccounts.get(accountId);
     }
 
-    public void addAllKeys(Wallet wallet) {
+    public void addAllKeys(Wallet wallet, boolean isRestore) {
         for (HDAccount acct : mAccounts)
-            acct.addAllKeys(wallet, mKeyCrypter, mAesKey);
+            acct.addAllKeys(wallet, mKeyCrypter, mAesKey, isRestore);
     }
 
     public void clearBalances() {

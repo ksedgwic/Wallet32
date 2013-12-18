@@ -134,8 +134,11 @@ public class WalletService extends Service
 		@Override
 		protected Void doInBackground(Boolean... params)
         {
-			Boolean useCheckpoint = params[0];
+			final Boolean fullRescan = params[0];
             WalletApplication wallapp = (WalletApplication) mContext;
+
+            mLogger.info("setting up wallet, fullRescan=" +
+                         fullRescan.toString());
 
             mLogger.info("getting network parameters");
 
@@ -166,7 +169,7 @@ public class WalletService extends Service
             // create time is earlier then the genesis block time.
             //
             InputStream chkpntis = null;
-            if (useCheckpoint) {
+            if (!fullRescan) {
                 try {
                     chkpntis = getAssets().open("checkpoints");
                 } catch (IOException e) {
@@ -189,7 +192,7 @@ public class WalletService extends Service
                         // ignored if they are already in the
                         // WalletAppKit.
                         //
-                        mHDWallet.addAllKeys(wallet());
+                        mHDWallet.addAllKeys(wallet(), fullRescan);
 
                         // Do we have enough margin on all our chains?
                         // Add keys to chains which don't have enough
@@ -273,7 +276,7 @@ public class WalletService extends Service
         mAesKey = wallapp.mAesKey;
 
         mTask = new SetupWalletTask();
-        mTask.execute(true);
+        mTask.execute(false);
 
         mLogger.info("WalletService started");
 
@@ -410,7 +413,7 @@ public class WalletService extends Service
 
         setState(State.SETUP);
         mTask = new SetupWalletTask();
-        mTask.execute(false);
+        mTask.execute(true);
     }
 
     public State getState() {
