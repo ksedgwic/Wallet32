@@ -52,6 +52,9 @@ public class MainActivity extends BaseWalletActivity {
 
 		super.onCreate(savedInstanceState);
 
+        // Turn off "up" navigation since we are the top-level.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
 		setContentView(R.layout.activity_main);
 
         mLogger.info("MainActivity created");

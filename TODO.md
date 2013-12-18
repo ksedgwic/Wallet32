@@ -48,9 +48,6 @@ Needed
 Recover Wallet
 ----------------------------------------------------------------
 
-* Add getEarliestKeyCreationTime override in MyWalletAppKit when
-  performing recovery.  Needs to be set much earlier ...
-
 * Make recover check for more accounts.
 
 * Make recover auto-rescan when needed.
