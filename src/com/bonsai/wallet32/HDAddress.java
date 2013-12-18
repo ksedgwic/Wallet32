@@ -84,8 +84,7 @@ public class HDAddress {
         mBalance = addrNode.path("balance").bigIntegerValue();
 
         mLogger.info("created address " + mAddrKey.getPath() + ": " +
-                     mAddress.toString() + " " +
-                     mECKey.getPrivateKeyEncoded(mParams).toString());
+                     mAddress.toString());
     }
 
     public HDAddress(NetworkParameters params,
@@ -112,8 +111,7 @@ public class HDAddress {
         mBalance = BigInteger.ZERO;
 
         mLogger.info("created address " + mAddrKey.getPath() + ": " +
-                     mAddress.toString() + " " +
-                     mECKey.getPrivateKeyEncoded(mParams).toString());
+                     mAddress.toString());
     }
 
     public void addKey(Wallet wallet,

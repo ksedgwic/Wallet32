@@ -83,8 +83,6 @@ public class ViewSeedActivity extends BaseWalletActivity {
         if (seed == null)
             return;
 
-        mLogger.info("saw seed " + new String(Hex.encode(seed)));
-
         mSeedFetched = true;
 
         TextView hextv = (TextView) findViewById(R.id.seed_hex);

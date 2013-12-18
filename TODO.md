@@ -25,8 +25,6 @@ Needed
 
 * Embelish messages and directions.
 
-* Tune logging ... SECURITY!
-
 * Add file logging.
 
 * Send dump feature.
