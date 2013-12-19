@@ -83,7 +83,9 @@ Checklist
 
 Update README.txt version.
 
-Update values/strings.xml version.
+Update res/values/strings.xml version.
+
+Update AndroidManifest.xml
 
 Tag repository.
 
