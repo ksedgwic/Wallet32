@@ -88,6 +88,7 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
     private void updateAccountSpinner() {
         if (mWalletService != null) {
+            mLogger.info("updating account spinner");
             List<String> list = new ArrayList<String>();
             list.add("All Accounts");
             List<HDAccount> accts = mWalletService.getAccounts();
@@ -101,6 +102,7 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             dataAdapter.setDropDownViewResource
                 (android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(dataAdapter);
+            spinner.setSelection(mAccountNum + 1);
         }
     }
 
