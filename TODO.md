@@ -77,3 +77,13 @@ Next
 
 * Make SendBitcoinActivity address field accept URI format (prefill amount).
 
+
+Checklist
+----------------------------------------------------------------
+
+Update README.txt version.
+
+Update values/strings.xml version.
+
+Tag repository.
+
