@@ -12,6 +12,13 @@
         android:defaultValue="@string/pref_fiat_rate_sources_default"
 	/>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_showPasscode"
+        android:summary="@string/pref_show_passcode_summary"
+        android:title="@string/pref_show_passcode"
+	/>
+
     <Preference
         android:key="pref_rescanBlockchain"
 	android:title="@string/pref_rescan_blockchain"

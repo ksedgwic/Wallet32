@@ -23,14 +23,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public class PasscodeActivity extends ActionBarActivity {
@@ -45,10 +49,13 @@ public class PasscodeActivity extends ActionBarActivity {
     }
 
     private Resources mRes;
+    SharedPreferences mPrefs;
 
+    private boolean	mShowPasscode;
     private State	mState;
     private boolean	mRestoreWallet;
     private String	mPasscode;
+    private String	mLastPasscode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +81,26 @@ public class PasscodeActivity extends ActionBarActivity {
             msgtv.setText(R.string.passcode_enter);
             break;
         }
+
+        // Set the state of the show passcode checkbox.
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mShowPasscode = mPrefs.getBoolean("pref_showPasscode", false);
+        CheckBox chkbx = (CheckBox) findViewById(R.id.show_passcode);
+        chkbx.setChecked(mShowPasscode);
+        chkbx.setOnCheckedChangeListener
+            (new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        mShowPasscode = isChecked;
+                        SharedPreferences.Editor editor = mPrefs.edit();
+                        editor.putBoolean("pref_showPasscode", mShowPasscode);
+                        editor.commit();
+                        setPasscode(mPasscode);	// redisplay
+                    }
+                });
+
+        setPasscode("");
 
         mLogger.info("PasscodeActivity created");
 	}
@@ -134,16 +161,15 @@ public class PasscodeActivity extends ActionBarActivity {
         }
 
         // Update the textview.
-        setPasscode(getPasscode() + val);
+        setPasscode(mPasscode + val);
     }
 
     public void deleteDigit(View view) {
-        String pcstr = getPasscode();
-        int len = pcstr.length();
+        int len = mPasscode.length();
         if (len == 0)
             return;		// Nothing to do here.
         else
-            setPasscode(pcstr.substring(0, len - 1));	// Strip last.
+            setPasscode(mPasscode.substring(0, len - 1));	// Strip last.
     }
 
     public void clearPasscode(View view) {
@@ -160,8 +186,8 @@ public class PasscodeActivity extends ActionBarActivity {
 
     // We're creating a passcode and it's been entered once.
     private void confirmPasscode() {
-        // Fetch the first version of the passcode.
-        mPasscode = getPasscode();
+        // Stash the first version of the passcode.
+        mLastPasscode = mPasscode;
 
         // Clear the passcode field.
         setPasscode("");	// Clear the string.
@@ -175,14 +201,10 @@ public class PasscodeActivity extends ActionBarActivity {
 
     // We're creating a passcode and it's been entered a second time.
     private void checkPasscode() {
-        // Fetch the second version of the passcode.
-        String passcode = getPasscode();
-
         // Do they match?
-        if (passcode.equals(mPasscode)) {
-            
+        if (mPasscode.equals(mLastPasscode)) {
             // They matched ... setup async
-            new SetupPasscodeTask().execute(passcode);
+            new SetupPasscodeTask().execute(mPasscode);
         }
 
         else {
@@ -225,11 +247,7 @@ public class PasscodeActivity extends ActionBarActivity {
 
     // We're opening a wallet and the passcode has been entered.
     private void validatePasscode() {
-
-        // Fetch the first version of the passcode.
-        String passcode = getPasscode();
-
-        new ValidatePasscodeTask().execute(passcode);
+        new ValidatePasscodeTask().execute(mPasscode);
     }
 
     private void validateComplete(boolean isValid) {
@@ -260,22 +278,22 @@ public class PasscodeActivity extends ActionBarActivity {
         }
     }
 
-    // Retrieve the passcode, strip decorations.
-    private String getPasscode() {
-        TextView pctv = (TextView) findViewById(R.id.passcode);
-        String val = pctv.getText().toString();
-        return val.replaceAll("-", "");		// Strip '-' chars.
-    }
-
-    // Set the passcode, add decorations.
+    // Set the passcode, add decorations, optionally hide values.
     private void setPasscode(String val) {
+        mPasscode = val;
         StringBuilder bldr = new StringBuilder();
         int len = val.length();
         for (int ii = 0; ii < len; ii += 4) {
             if (ii != 0)
                 bldr.append("-");
             int end = (ii + 4 > len) ? len : ii + 4;
-            bldr.append(val.substring(ii, end));
+            if (mShowPasscode) {
+                bldr.append(val.substring(ii, end));
+            }
+            else {
+                for (int jj = ii; jj < end; ++jj)
+                    bldr.append("*");
+            }
         }
         TextView pctv = (TextView) findViewById(R.id.passcode);
         pctv.setText(bldr.toString());

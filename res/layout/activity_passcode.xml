@@ -47,6 +47,22 @@
 	android:layout_weight="1"
 	/>
 
+    <CheckBox
+	android:id="@+id/show_passcode"
+	android:text="@string/passcode_show"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:textStyle="bold"
+	/>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
     <TableLayout
 	android:id="@+id/balance_table"
 	android:layout_width="wrap_content"

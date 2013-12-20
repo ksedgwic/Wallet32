@@ -2,8 +2,6 @@
 Bugs
 ----------------------------------------------------------------
 
-* View Transactions Account Filter "slipping" back to "All Accounts".
-
 * Need to handle precision of BTC values much better then 4 fixed places.
 
 * Disable Settings actions on everything prior to MainActivity.
@@ -89,3 +87,36 @@ Update AndroidManifest.xml
 
 Tag repository.
 
+----------------------------------------------------------------
+
+http://stackoverflow.com/questions/15770215/ccats-on-ios-appstore-and-encryption
+
+https://www.bis.doc.gov/index.php/policy-guidance/encryption
+
+Is the item 
+publicly available 
+encryption 
+source code? 
+
+Self Classify as 5D002. See 
+License Exception TSU (740.13(e)) 
+for notification requirement 
+
+http://www.apache.org/licenses/exports/
+
+ERN0001
+
+Title	Encryption Registration ERN0001 Accepted with ERN R106015
+Type	Acknowledgement
+Date of Message	 12/19/2013
+Reference Number	 ERN0001
+Content	
+Thank you for submitting the information in Supplement 5 to Part 742.
+Your ERN is R106015.
+
+Based on this submission you are authorized to export or reexport
+encryption products described in Section 740.17(b)(1) of the EAR and
+mass market encryption products described in Section 742.15(b)(1) of
+the EAR.  You are required to submit an annual self-classification
+report (Supplement 8 to Part 742) for these products pursuant to the
+requirements in Section 742.15(c) of the EAR.
