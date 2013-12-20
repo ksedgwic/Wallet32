@@ -79,13 +79,19 @@ Next
 Checklist
 ----------------------------------------------------------------
 
+Update AndroidManifest.xml
+
 Update README.txt version.
 
 Update res/values/strings.xml version.
 
-Update AndroidManifest.xml
-
 Tag repository.
+
+Build Wallet32.apk
+
+Upload to Google Play Developer Console.
+
+Update Recent Changes.
 
 ----------------------------------------------------------------
 

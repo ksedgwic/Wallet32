@@ -8,6 +8,7 @@ wallet.
 
 Features include:
 
+* Multiple logical "accounts" within each wallet.
 * Fresh receive and change addresses are used for each transfer.
 * Wallet only needs to be backed up once, on initial creation.
 * Wallet backup consists of simple list of 12 common words (BIP-0039).
@@ -38,7 +39,7 @@ About Wallet32
 
 Wallet32
 
-Version: 0.1.2 (18-Dec-2013)
+Version: 0.1.3 (19-Dec-2013)
 
 Source:  https://github.com/ksedgwic/Wallet32
 
