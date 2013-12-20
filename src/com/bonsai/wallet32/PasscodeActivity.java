@@ -210,8 +210,8 @@ public class PasscodeActivity extends ActionBarActivity {
         else {
             // Didn't match, try again ...
 
-            showErrorDialog(mRes.getString(R.string.passcode_mismatch));
-
+            showErrorDialog(mRes.getString(R.string.passcode_errortitle),
+                            mRes.getString(R.string.passcode_mismatch));
             // Clear the passcode.
             setPasscode("");	// Clear the string.
 
@@ -253,7 +253,8 @@ public class PasscodeActivity extends ActionBarActivity {
     private void validateComplete(boolean isValid) {
 
         if (!isValid) {
-            showErrorDialog(mRes.getString(R.string.passcode_invalid));
+            showErrorDialog(mRes.getString(R.string.passcode_errortitle),
+                            mRes.getString(R.string.passcode_invalid));
 
             // Clear the passcode.
             setPasscode("");	// Clear the string.
@@ -304,16 +305,18 @@ public class PasscodeActivity extends ActionBarActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             super.onCreateDialog(savedInstanceState);
             String msg = getArguments().getString("msg");
+            String title = getArguments().getString("title");
             boolean hasOK = getArguments().getBoolean("hasOK");
             AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
+            builder.setTitle(title);
             builder.setMessage(msg);
             if (hasOK) {
-                builder.setPositiveButton(R.string.base_error_ok,
-                                          new DialogInterface.OnClickListener() {
-                                              public void onClick(DialogInterface di,
-                                                                  int id) {
-                                                  // Do we need to do anything?
+                builder
+                    .setPositiveButton(R.string.base_error_ok,
+                                       new DialogInterface.OnClickListener() {
+                                           public void onClick(DialogInterface di,
+                                                               int id) {
                                               }
                                           });
             }
@@ -321,9 +324,10 @@ public class PasscodeActivity extends ActionBarActivity {
         }
     }
 
-    protected DialogFragment showErrorDialog(String msg) {
+    protected DialogFragment showErrorDialog(String title, String msg) {
         DialogFragment df = new MyDialogFragment();
         Bundle args = new Bundle();
+        args.putString("title", title);
         args.putString("msg", msg);
         args.putBoolean("hasOK", true);
         df.setArguments(args);
@@ -331,9 +335,10 @@ public class PasscodeActivity extends ActionBarActivity {
         return df;
     }
 
-    protected DialogFragment showModalDialog(String msg) {
+    protected DialogFragment showModalDialog(String title, String msg) {
         DialogFragment df = new MyDialogFragment();
         Bundle args = new Bundle();
+        args.putString("title", title);
         args.putString("msg", msg);
         args.putBoolean("hasOK", false);
         df.setArguments(args);
@@ -346,7 +351,8 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
-            df = showModalDialog(mRes.getString(R.string.passcode_waitsetup));
+            df = showModalDialog(mRes.getString(R.string.passcode_waittitle),
+                                 mRes.getString(R.string.passcode_waitsetup));
         }
 
 		protected Void doInBackground(String... arg0)
@@ -369,7 +375,8 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
-            df = showModalDialog(mRes.getString(R.string.passcode_waitvalidate));
+            df = showModalDialog(mRes.getString(R.string.passcode_waittitle),
+                                 mRes.getString(R.string.passcode_waitvalidate));
         }
 
 		protected Boolean doInBackground(String... arg0)
