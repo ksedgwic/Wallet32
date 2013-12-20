@@ -1,6 +1,6 @@
 ![Wallet32](walrus-256.png)
 
-A Hierarchical Deterministic Bitcoin Wallet
+A BIP-0032 Hierarchical Deterministic Bitcoin Wallet
 ====================================================
 
 This wallet uses BIP-0032 to implement a hierarchical deterministic

@@ -31,6 +31,7 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -127,6 +128,13 @@ public class HDAddress {
             // 2013
             //
             mECKey.setCreationTimeSeconds(1381861127);
+        }
+        else {
+            // This is a new key, set key creation time to now.  If we
+            // are re-instantiating an existing wallet this addKey
+            // will be ignored and this key creation time won't matter.
+            //
+            mECKey.setCreationTimeSeconds(Utils.now().getTime() / 1000);
         }
         wallet.addKey(mECKey.encrypt(keyCrypter, aesKey));
     }
