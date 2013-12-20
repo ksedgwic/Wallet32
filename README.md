@@ -1,5 +1,20 @@
 ![Wallet32](walrus-256.png)
 
+A Hierarchical Deterministic Bitcoin Wallet
+====================================================
+
+This wallet uses BIP-0032 to implement a hierarchical deterministic
+wallet.
+
+Features include:
+
+* Fresh receive and change addresses are used for each transfer.
+* Wallet only needs to be backed up once, on initial creation.
+* Wallet backup consists of simple list of 12 common words (BIP-0039).
+* Same wallet may be securely accessed concurrently from multiple devices.
+* Wallet data is protected by scrypt passcode.
+
+
 Wallet32
 ===============
 
