@@ -87,6 +87,7 @@
 	<EditText
 	    android:id="@+id/amount_btc"
 	    android:inputType="numberDecimal"
+    	    android:digits="0123456789.,"
 	    android:singleLine="true"
 	    android:layout_width="wrap_content"
 	    android:layout_height="40dp"
@@ -116,6 +117,7 @@
 	<EditText
 	    android:id="@+id/amount_fiat"
 	    android:inputType="numberDecimal"
+    	    android:digits="0123456789.,"
 	    android:singleLine="true"
 	    android:layout_width="wrap_content"
 	    android:layout_height="40dp"

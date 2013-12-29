@@ -73,8 +73,6 @@ Next
 
 * Factor wallet file prefix into single location.
 
-* Make SendBitcoinActivity address field accept URI format (prefill amount).
-
 
 Checklist
 ----------------------------------------------------------------

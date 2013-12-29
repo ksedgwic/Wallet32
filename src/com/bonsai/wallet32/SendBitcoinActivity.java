@@ -194,7 +194,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
 
             String bbs;
             try {
-                double ff = Double.parseDouble(ss.toString());
+                double ff = parseNumberWorkaround(ss.toString());
                 double bb;
                 if (mFiatPerBTC == 0.0) {
                     bbs = "";
@@ -220,7 +220,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
 
             String ffs;
             try {
-                double bb = Double.parseDouble(ss.toString());
+                double bb = parseNumberWorkaround(ss.toString());
                 double ff = bb * mFiatPerBTC;
                 ffs = String.format("%.2f", ff);
             } catch (final NumberFormatException ex) {
@@ -296,7 +296,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
 
             String bbs;
             try {
-                double ff = Double.parseDouble(ss.toString());
+                double ff = parseNumberWorkaround(ss.toString());
                 double bb;
                 if (mFiatPerBTC == 0.0) {
                     bbs = "";
@@ -322,7 +322,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
 
             String ffs;
             try {
-                double bb = Double.parseDouble(ss.toString());
+                double bb = parseNumberWorkaround(ss.toString());
                 double ff = bb * mFiatPerBTC;
                 ffs = String.format("%.3f", ff);
             } catch (final NumberFormatException ex) {
@@ -508,7 +508,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
         double amount;
         try {
-            amount = Double.parseDouble(amountString);
+            amount = parseNumberWorkaround(amountString);
         } catch (NumberFormatException ex) {
             showErrorDialog(mRes.getString(R.string.send_error_badamount));
             return;
@@ -523,7 +523,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
         double fee;
         try {
-            fee = Double.parseDouble(feeString);
+            fee = parseNumberWorkaround(feeString);
         } catch (NumberFormatException ex) {
             showErrorDialog(mRes.getString(R.string.send_error_badfee));
             return;
@@ -542,5 +542,14 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             showErrorDialog(ex.getMessage());
             return;
         }
+    }
+
+    private static double parseNumberWorkaround(String numstr)
+        throws NumberFormatException {
+        // Some countries use comma as the decimal separator.
+        // Android's numberDecimal EditText fields don't handle this
+        // correctly (https://code.google.com/p/android/issues/detail?id=2626).
+        // As a workaround we substitute ',' -> '.' manually ...
+        return Double.parseDouble(numstr.toString().replace(',', '.'));
     }
 }

@@ -138,7 +138,7 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
 
             String bbs;
             try {
-                double ff = Double.parseDouble(ss.toString());
+                double ff = parseNumberWorkaround(ss.toString());
                 double bb;
                 if (mFiatPerBTC == 0.0) {
                     bbs = "";
@@ -164,7 +164,7 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
 
             String ffs;
             try {
-                double bb = Double.parseDouble(ss.toString());
+                double bb = parseNumberWorkaround(ss.toString());
                 double ff = bb * mFiatPerBTC;
                 ffs = String.format("%.2f", ff);
             } catch (final NumberFormatException ex) {
@@ -272,7 +272,7 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
         double amount = 0.0;
         if (amountString.length() != 0) {
             try {
-                amount = Double.parseDouble(amountString);
+                amount = parseNumberWorkaround(amountString);
             } catch (NumberFormatException ex) {
                 showErrorDialog(mRes
                                 .getString(R.string.receive_error_badamount));
@@ -285,5 +285,14 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
         intent.putExtra("address", addrstr);
         intent.putExtra("amount", amount);
         startActivity(intent);
+    }
+
+    private static double parseNumberWorkaround(String numstr)
+        throws NumberFormatException {
+        // Some countries use comma as the decimal separator.
+        // Android's numberDecimal EditText fields don't handle this
+        // correctly (https://code.google.com/p/android/issues/detail?id=2626).
+        // As a workaround we substitute ',' -> '.' manually ...
+        return Double.parseDouble(numstr.toString().replace(',', '.'));
     }
 }
