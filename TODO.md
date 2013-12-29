@@ -83,7 +83,7 @@ Update README.txt version.
 
 Update res/values/strings.xml version.
 
-Tag repository, git push --tag
+Commit, tag, git push --tag
 
 Build Wallet32.apk
 
