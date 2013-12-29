@@ -95,8 +95,8 @@
     <string name="send_error_badamount">Amount to send is malformed</string>
     <string name="send_error_nofee">Missing fee to send</string>
     <string name="send_error_badfee">Fee to send is malformed</string>
-    <string name="send_error_badqr">Scanned QR code is not a bitcoin address</string>
-    <string name="send_error_wrongnw">Scanned QR code is for wrong network</string>
+    <string name="send_error_badqr">To address is not a valid bitcoin address</string>
+    <string name="send_error_wrongnw">To address is for wrong network</string>
     <string name="title_activity_receive_bitcoin">Receive Bitcoin</string>
     <string name="receive_to_label">Receive To:</string>
     <string name="receive_amount_label">Receive Amount: (optional)</string>

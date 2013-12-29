@@ -52,6 +52,8 @@ public class SendBitcoinActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(SendBitcoinActivity.class);
 
+    protected EditText mToAddressEditText;
+
     protected EditText mBTCAmountEditText;
     protected EditText mFiatAmountEditText;
 
@@ -72,16 +74,19 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         mUserSetAmountFiat = false;
         mUserSetFeeFiat = false;
 
-        mBTCAmountEditText = (EditText) findViewById(R.id.amount_btc);
-        mFiatAmountEditText = (EditText) findViewById(R.id.amount_fiat);
+        mToAddressEditText = (EditText) findViewById(R.id.to_address);
+        mToAddressEditText.addTextChangedListener(mToAddressWatcher);
 
+        mBTCAmountEditText = (EditText) findViewById(R.id.amount_btc);
         mBTCAmountEditText.addTextChangedListener(mBTCAmountWatcher);
+
+        mFiatAmountEditText = (EditText) findViewById(R.id.amount_fiat);
         mFiatAmountEditText.addTextChangedListener(mFiatAmountWatcher);
 
         mBTCFeeEditText = (EditText) findViewById(R.id.fee_btc);
-        mFiatFeeEditText = (EditText) findViewById(R.id.fee_fiat);
-
         mBTCFeeEditText.addTextChangedListener(mBTCFeeWatcher);
+
+        mFiatFeeEditText = (EditText) findViewById(R.id.fee_fiat);
         mFiatFeeEditText.addTextChangedListener(mFiatFeeWatcher);
 
         // Set the default fee value.
@@ -103,6 +108,28 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         updateFeeFields();
         updateAccounts();
     }
+
+    private final TextWatcher mToAddressWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence ss,
+                                          int start,
+                                          int count,
+                                          int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence ss,
+                                      int start,
+                                      int before,
+                                      int count) {}
+
+			@Override
+            public void afterTextChanged(Editable ss) {
+                String uri = mToAddressEditText.getText().toString();
+                updateToAddress(uri);
+            }
+
+        };
 
     // NOTE - This code implements a pair of "cross updating" fields.
     // If the user changes the BTC amount the fiat field is constantly
@@ -382,6 +409,58 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
     }
 
+    private void updateToAddress(String toval) {
+
+        // Avoid recursion by removing the field listener while
+        // we possibly update the field value.
+        mToAddressEditText.removeTextChangedListener(mToAddressWatcher);
+
+        NetworkParameters params =
+            mWalletService == null ? null : mWalletService.getParams();
+
+        // Is this a bitcoin URI?
+        try {
+            BitcoinURI uri = new BitcoinURI(params, toval);
+            Address addr = uri.getAddress();
+            BigInteger amt = uri.getAmount();
+
+            EditText addrEditText =
+                (EditText) findViewById(R.id.to_address);
+            addrEditText.setText(addr.toString(), 
+                                 TextView.BufferType.EDITABLE);
+
+            if (amt != null) {
+                double amtval = amt.doubleValue() / 1e8;
+                String amtstr = String.format("%f", amtval);
+                mBTCAmountEditText.setText(amtstr,
+                                           TextView.BufferType.EDITABLE);
+            }
+        } catch (BitcoinURIParseException ex) {
+
+            // Is it just a plain address?
+            try {
+                Address addr = new Address(params, toval);
+
+                EditText addrEditText =
+                    (EditText) findViewById(R.id.to_address);
+                addrEditText.setText(addr.toString(), 
+                                     TextView.BufferType.EDITABLE);
+
+            } catch (WrongNetworkException ex2) {
+                String msg = mRes.getString(R.string.send_error_wrongnw);
+                mLogger.warn(msg);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            } catch (AddressFormatException ex2) {
+                String msg = mRes.getString(R.string.send_error_badqr);
+                mLogger.warn(msg);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Restore the field changed listener.
+        mToAddressEditText.addTextChangedListener(mToAddressWatcher);
+    }
+
     @SuppressLint("DefaultLocale")
 	protected void onActivityResult(final int requestCode,
                                     final int resultCode,
@@ -391,48 +470,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         {
             String scannedCode = ZXScanHelper.getScannedCode(data);
             mLogger.info("saw scannedCode " + scannedCode);
-
-            NetworkParameters params =
-                mWalletService == null ? null : mWalletService.getParams();
-
-            // Is the scanned code a bitcoin URI?
-            try {
-				BitcoinURI uri = new BitcoinURI(params, scannedCode);
-                Address addr = uri.getAddress();
-                BigInteger amt = uri.getAmount();
-
-                EditText addrEditText =
-                    (EditText) findViewById(R.id.to_address);
-                addrEditText.setText(addr.toString(), 
-                                     TextView.BufferType.EDITABLE);
-
-                if (amt != null) {
-                    double amtval = amt.doubleValue() / 1e8;
-                    String amtstr = String.format("%f", amtval);
-                    mBTCAmountEditText.setText(amtstr,
-                                               TextView.BufferType.EDITABLE);
-                }
-			} catch (BitcoinURIParseException ex) {
-
-                // Is it just a plain address?
-                try {
-                    Address addr = new Address(params, scannedCode);
-
-                    EditText addrEditText =
-                        (EditText) findViewById(R.id.to_address);
-                    addrEditText.setText(addr.toString(), 
-                                         TextView.BufferType.EDITABLE);
-
-                } catch (WrongNetworkException ex2) {
-                    String msg = mRes.getString(R.string.send_error_wrongnw);
-                    mLogger.warn(msg);
-                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-                } catch (AddressFormatException ex2) {
-                    String msg = mRes.getString(R.string.send_error_badqr);
-                    mLogger.warn(msg);
-                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-                }
-			}
+            updateToAddress(scannedCode);
         }
     }
 
