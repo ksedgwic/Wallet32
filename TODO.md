@@ -85,6 +85,8 @@ Update res/values/strings.xml version.
 
 Commit, tag, git push --tag
 
+Clean project, restart eclipse.
+
 Build Wallet32.apk
 
 Upload to Google Play Developer Console.
