@@ -157,7 +157,8 @@ public class HDAccount {
     }
 
     public void logBalance() {
-        mLogger.info(mAccountName + " balance " + balance().toString());
+        mLogger.info(mAccountName + " balance " + balance().toString() +
+                     ", " + "available " + available().toString());
 
         // Now log any active addresses in this account.
         mReceiveChain.logBalance();

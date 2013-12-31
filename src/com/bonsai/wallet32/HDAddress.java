@@ -178,6 +178,7 @@ public class HDAddress {
 
         ++mNumTrans;
         mBalance = mBalance.subtract(value);
+        mAvailable = mAvailable.subtract(value);
 
         mLogger.debug(mAddrKey.getPath() + " matched input of " +
                       value.toString());

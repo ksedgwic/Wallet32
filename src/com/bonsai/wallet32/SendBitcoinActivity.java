@@ -530,6 +530,9 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
 
         try {
+            mLogger.info(String.format("send from %d, to %s, amount %f, fee %f",
+                                       mCheckedFromId, addrString,
+                                       amount, fee));
             mWalletService.sendCoinsFromAccount(mCheckedFromId,
                                                 addrString,
                                                 amount,

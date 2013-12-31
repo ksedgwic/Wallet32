@@ -274,7 +274,7 @@ public class HDWallet {
         for (WalletTransaction wtx : iwt) {
             // WalletTransaction.Pool pool = wtx.getPool();
             Transaction tx = wtx.getTransaction();
-            boolean avail = wtx.getPool() == WalletTransaction.Pool.UNSPENT;
+            boolean avail = !tx.isPending();
 
             // Traverse the HDAccounts with all outputs.
             List<TransactionOutput> lto = tx.getOutputs();
@@ -444,6 +444,7 @@ public class HDWallet {
         SendRequest req = SendRequest.to(dest, value);
         req.fee = fee;
         req.feePerKb = BigInteger.ZERO;
+        req.ensureMinRequiredFee = false;
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector();
         req.aesKey = mAesKey;
