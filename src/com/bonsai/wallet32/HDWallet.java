@@ -274,6 +274,7 @@ public class HDWallet {
         for (WalletTransaction wtx : iwt) {
             // WalletTransaction.Pool pool = wtx.getPool();
             Transaction tx = wtx.getTransaction();
+            boolean avail = wtx.getPool() == WalletTransaction.Pool.UNSPENT;
 
             // Traverse the HDAccounts with all outputs.
             List<TransactionOutput> lto = tx.getOutputs();
@@ -288,7 +289,7 @@ public class HDWallet {
                     else
                         pubkeyhash = script.getPubKeyHash();
                     for (HDAccount hda : mAccounts)
-                        hda.applyOutput(pubkey, pubkeyhash, value);
+                        hda.applyOutput(pubkey, pubkeyhash, value, avail);
 				} catch (ScriptException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -336,7 +337,23 @@ public class HDWallet {
         }
     }
 
+    public double availableForAccount(int acctnum) {
+        // Which accounts are we considering?  (-1 means all)
+        if (acctnum != -1) {
+            return mAccounts.get(acctnum).available().doubleValue() / 1e8;
+        } else {
+            BigInteger sum = BigInteger.ZERO;
+            for (HDAccount hda : mAccounts)
+                sum = sum.add(hda.available());
+            return sum.doubleValue() / 1e8;
+        }
+    }
+
     public double amountForAccount(WalletTransaction wtx, int acctnum) {
+
+        // This routine is only called from the View Transactions
+        // activity, so it is OK if it uses all balance and not
+        // available balance (since the confirmation count is shown).
 
         BigInteger credits = BigInteger.ZERO;
         BigInteger debits = BigInteger.ZERO;
@@ -405,7 +422,8 @@ public class HDWallet {
         for (HDAccount acct : mAccounts)
             balances.add(new Balance(acct.getId(),
                                      acct.getName(),
-                                     acct.balance().doubleValue() / 1e8));
+                                     acct.balance().doubleValue() / 1e8,
+                                     acct.available().doubleValue() / 1e8));
     }
 
     public Address nextReceiveAddress(int acctnum) {

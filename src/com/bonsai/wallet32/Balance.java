@@ -19,9 +19,11 @@ public class Balance {
     public final int accountId;
     public final String accountName;
     public final double balance;
-    public Balance(int id, String name, double balance) {
+    public final double available;
+    public Balance(int id, String name, double balance, double available) {
         this.accountId = id;
         this.accountName = name;
         this.balance = balance;
+        this.available = available;
     }
 }

@@ -19,7 +19,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +52,7 @@ public class HDAddress {
 
     private int				mNumTrans;
     private BigInteger		mBalance;
+    private BigInteger		mAvailable;		// Available for spending.
 
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,
@@ -80,9 +80,12 @@ public class HDAddress {
         mPubKeyHash = mECKey.getPubKeyHash();
         mAddress = mECKey.toAddress(mParams);
 
-        // Initialize transaction count and balance.
+        // Initialize transaction count and balance.  If we don't have
+        // a persisted available amount, presume it is all available.
         mNumTrans = addrNode.path("numTrans").intValue();
         mBalance = addrNode.path("balance").bigIntegerValue();
+        mAvailable = addrNode.has("available") ?
+            addrNode.path("available").bigIntegerValue() : mBalance;
 
         mLogger.info("created address " + mAddrKey.getPath() + ": " +
                      mAddress.toString());
@@ -110,6 +113,7 @@ public class HDAddress {
         // Initialize transaction count and balance.
         mNumTrans = 0;
         mBalance = BigInteger.ZERO;
+        mAvailable = BigInteger.ZERO;
 
         mLogger.info("created address " + mAddrKey.getPath() + ": " +
                      mAddress.toString());
@@ -150,7 +154,8 @@ public class HDAddress {
 
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
-                            BigInteger value) {
+                            BigInteger value,
+                            boolean avail) {
 
         // Does this output apply to this address?
         if (!isMatch(pubkey, pubkeyhash))
@@ -158,6 +163,9 @@ public class HDAddress {
 
         ++mNumTrans;
         mBalance = mBalance.add(value);
+
+        if (avail)
+            mAvailable = mAvailable.add(value);
 
         mLogger.debug(mAddrKey.getPath() + " matched output of " +
                       value.toString());
@@ -183,6 +191,10 @@ public class HDAddress {
         return mBalance.doubleValue() / 1e8;
     }
     
+    public double getAvailable() {
+        return mAvailable.doubleValue() / 1e8;
+    }
+    
     public String getAddressString() {
         return mAddress.toString();
     }
@@ -194,17 +206,23 @@ public class HDAddress {
     public void clearBalance() {
         mNumTrans = 0;
         mBalance = BigInteger.ZERO;
+        mAvailable = BigInteger.ZERO;
     }
 
     public BigInteger balance() {
         return mBalance;
     }
 
+    public BigInteger available() {
+        return mAvailable;
+    }
+
     public void logBalance() {
         if (mNumTrans > 0) {
             mLogger.info(mAddrKey.getPath() + " " +
                          Integer.toString(mNumTrans) + " " +
-                         mBalance.toString());
+                         mBalance.toString() + " " +
+                         mAvailable.toString());
         }
     }
 
@@ -223,6 +241,7 @@ public class HDAddress {
         obj.put("pubBytes", Base58.encode(mPubBytes));
         obj.put("numTrans", Integer.valueOf(mNumTrans));
         obj.put("balance", mBalance);
+        obj.put("available", mAvailable);
 
         return obj;
     }

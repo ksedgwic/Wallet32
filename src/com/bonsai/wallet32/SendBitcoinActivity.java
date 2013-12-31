@@ -402,8 +402,8 @@ public class SendBitcoinActivity extends BaseWalletActivity {
                 addAccountRow(table,
                               bal.accountId,
                               bal.accountName,
-                              bal.balance,
-                              bal.balance * mFiatPerBTC);
+                              bal.available,
+                              bal.available * mFiatPerBTC);
                 mAccountIds.add(bal.accountId);
             }
         }

@@ -99,9 +99,10 @@ public class HDAccount {
 
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
-                            BigInteger value) {
-        mReceiveChain.applyOutput(pubkey, pubkeyhash, value);
-        mChangeChain.applyOutput(pubkey, pubkeyhash, value);
+                            BigInteger value,
+                            boolean avail) {
+        mReceiveChain.applyOutput(pubkey, pubkeyhash, value, avail);
+        mChangeChain.applyOutput(pubkey, pubkeyhash, value, avail);
     }
 
     public void applyInput(byte[] pubkey, BigInteger value) {
@@ -146,6 +147,13 @@ public class HDAccount {
         balance = balance.add(mReceiveChain.balance());
         balance = balance.add(mChangeChain.balance());
         return balance;
+    }
+
+    public BigInteger available() {
+        BigInteger available = BigInteger.ZERO;
+        available = available.add(mReceiveChain.available());
+        available = available.add(mChangeChain.available());
+        return available;
     }
 
     public void logBalance() {

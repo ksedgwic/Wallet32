@@ -108,9 +108,10 @@ public class HDChain {
 
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
-                            BigInteger value) {
+                            BigInteger value,
+                            boolean avail) {
         for (HDAddress hda : mAddrs)
-            hda.applyOutput(pubkey, pubkeyhash, value);
+            hda.applyOutput(pubkey, pubkeyhash, value, avail);
     }
 
     public void applyInput(byte[] pubkey, BigInteger value) {
@@ -128,6 +129,13 @@ public class HDChain {
         for (HDAddress hda : mAddrs)
             balance = balance.add(hda.balance());
         return balance;
+    }
+
+    public BigInteger available() {
+        BigInteger available = BigInteger.ZERO;
+        for (HDAddress hda : mAddrs)
+            available = available.add(hda.available());
+        return available;
     }
 
     public void logBalance() {
