@@ -12,6 +12,8 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
+* Add add account interface; add numaccounts in restore ...
+
 * Testnet build.
 
 * View Seed needs to be "pre-main" when started from create wallet
@@ -26,12 +28,6 @@ Needed
 * Add file logging.
 
 * Send dump feature.
-
-* bitcoinj update.
-
-* Make Send balances the available amount.
-
-* Figure out reasonable minimum fee calculation.
 
 
 Recover Wallet

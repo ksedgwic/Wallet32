@@ -10,61 +10,118 @@
     >
 
   <LinearLayout
+      android:orientation="vertical"
       android:layout_width="280dp"
       android:layout_height="fill_parent"
-      android:orientation="vertical"
       android:gravity="center"
       >
-
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="20dp"
-	/>
-
-    <TextView
-	android:id="@+id/directions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/seed_directions"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	/>
-
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="40dp"
-	/>
-
-    <TextView
-	android:id="@+id/seed_hex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:textIsSelectable="true"
-	/>
-
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="40dp"
-	/>
-
-    <TextView
-	android:id="@+id/seed_mnemonic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-	android:layout_gravity="center"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:typeface="monospace"
-	android:textIsSelectable="true"
-	/>
 
     <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
 	android:layout_height="0dp"
 	android:layout_weight="1"
+	/>
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:gravity="left"
+	>
+
+      <TextView
+	  android:id="@+id/directions_label"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:text="@string/seed_directions_label"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:textStyle="bold"
+	  />
+
+      <TextView
+	  android:id="@+id/directions"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:text="@string/seed_directions"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  />
+      
+    </LinearLayout>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="2"
+	/>
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:gravity="left"
+	>
+
+      <TextView
+	  android:id="@+id/hex_label"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/seed_hex_label"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:textStyle="bold"
+	  />
+
+      <TextView
+	  android:id="@+id/seed_hex"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:textIsSelectable="true"
+	  />
+
+    </LinearLayout>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:gravity="left"
+	>
+
+      <TextView
+	  android:id="@+id/mnemonic_label"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/seed_mnemonic_label"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:textStyle="bold"
+	  />
+
+      <TextView
+	  android:id="@+id/seed_mnemonic"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+	  android:layout_gravity="center"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:typeface="monospace"
+	  android:textIsSelectable="true"
+	  />
+
+    </LinearLayout>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="5"
 	/>
 
     <Button
@@ -75,10 +132,11 @@
 	android:onClick="seedDone"
 	/>
 
-    <!-- Rigid Spacer -->
+    <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"
-	android:layout_height="20dp"
+	android:layout_height="0dp"
+	android:layout_weight="1"
 	/>
 
   </LinearLayout>

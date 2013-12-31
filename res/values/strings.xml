@@ -47,7 +47,20 @@
     <string name="passcode_del">Del</string>
     <string name="passcode_clr">Clr</string>
     <string name="title_activity_view_seed">Wallet Seed</string>
-    <string name="seed_directions">Backup your seed securely!</string>
+
+    <string name="seed_directions_label">BACKUP YOUR WALLET!</string>
+    <string name="seed_directions"><![CDATA[
+\nWallet32 is a BIP-0032 Hierarchical Deterministic wallet and can
+be restored from a seed value if you lose your device.  You can
+restore the wallet from either the hex code or ordered list of words below.\n
+\nIt\'s critical to keep these seed values safe from prying eyes!  If
+anyone else learns your seed value they can restore your wallet
+elsewhere and take your funds! Store your seed backup in multiple
+safe places that only you have access to.
+    ]]></string>
+
+    <string name="seed_hex_label">Hex Value</string>
+    <string name="seed_mnemonic_label">Ordered Word List</string>
     <string name="seed_done">Done</string>
     <string name="base_error_ok">OK</string>
     <string name="sync_title">Sync Progress</string>
