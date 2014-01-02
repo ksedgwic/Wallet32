@@ -196,15 +196,20 @@ public class ViewAccountActivity extends BaseWalletActivity {
         table.addView(row);
     }
 
-    private void addAddressRow(TableLayout table,
-                                   String path,
-                                   String addr,
-                                   String ntrans,
-                                   String btcstr,
-                                   String fiatstr) {
+    private void addAddressRow(int tableId,
+                               int index,
+                               TableLayout table,
+                               String path,
+                               String addr,
+                               String ntrans,
+                               String btcstr,
+                               String fiatstr) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.address_table_row, table, false);
+
+        row.setTag(tableId);
+        row.setId(index);
 
         {
             TextView tv = (TextView) row.findViewById(R.id.row_path);
@@ -234,6 +239,35 @@ public class ViewAccountActivity extends BaseWalletActivity {
         table.addView(row);
     }
 
+    public void handleRowClick(View view) {
+        int tableId = (Integer) view.getTag();
+        int index = view.getId();
+        viewAddress(tableId, index);
+    }
+
+    public void viewAddress(int tableId, int index) {
+        HDChain chain = null;
+        switch (tableId) {
+        case R.id.receive_table:
+            mLogger.info(String.format("receive row %d clicked", index));
+            chain = mAccount.getReceiveChain();
+            break;
+        case R.id.change_table:
+            mLogger.info(String.format("change row %d clicked", index));
+            chain = mAccount.getChangeChain();
+            break;
+        }
+
+        List<HDAddress> addrs = chain.getAddresses();
+        HDAddress addr = addrs.get(index);
+        String addrstr = addr.getAddressString();
+        
+        // Dispatch to the address viewer.
+        Intent intent = new Intent(this, ViewAddressActivity.class);
+        intent.putExtra("address", addrstr);
+        startActivity(intent);
+    }
+
     private void updateChain(int tableId, HDChain chain) {
         if (mWalletService == null)
             return;
@@ -246,6 +280,7 @@ public class ViewAccountActivity extends BaseWalletActivity {
         addAddressHeader(table);
 
         // Read all of the addresses.  Presume order is correct ...
+        int ndx = 0;
         List<HDAddress> addrs = chain.getAddresses();
         for (HDAddress addr : addrs) {
             String path = addr.getPath();
@@ -256,7 +291,8 @@ public class ViewAccountActivity extends BaseWalletActivity {
             String bal = String.format("%.05f", addr.getBalance());
             String fiat =
                 String.format("%.02f", addr.getBalance() * mFiatPerBTC);
-            addAddressRow(table, path, addrstr, ntrans, bal, fiat);
+            addAddressRow(tableId, ndx++, table, path,
+                          addrstr, ntrans, bal, fiat);
         }
     }
 }

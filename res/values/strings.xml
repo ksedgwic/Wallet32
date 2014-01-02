@@ -77,7 +77,7 @@ safe places that only you have access to.
     <string name="button_transactions">View Transactions</string>
     <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
-    <string name="title_activity_view_account">ViewAccount</string>
+    <string name="title_activity_view_account">View Account</string>
     <string name="account_name_label">Account:</string>
     <string name="account_name_hint">Account Name</string>
     <string name="account_name_edit">Edit</string>
