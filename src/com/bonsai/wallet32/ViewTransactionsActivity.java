@@ -178,6 +178,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         
         for (WalletTransaction wtx : txs) {
             Transaction tx = wtx.getTransaction();
+            TransactionConfidence conf = tx.getConfidence();
+            ConfidenceType ct = conf.getConfidenceType();
 
             double btc = mWalletService.amountForAccount(wtx, mAccountNum);
             if (btc != 0.0) {
@@ -186,8 +188,6 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                 String btcbalstr = String.format("%.5f", btcbal);
 
                 String confstr;
-                TransactionConfidence conf = tx.getConfidence();
-                ConfidenceType ct = conf.getConfidenceType();
                 switch (ct) {
                 case UNKNOWN: confstr = "U"; break;
                 case BUILDING:
@@ -203,7 +203,9 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             }
 
             // We're working backward in time ...
-            btcbal -= btc;
+            // Dead transactions should not affect the balance ...
+            if (ct != ConfidenceType.DEAD)
+                btcbal -= btc;
         }
     }
 }

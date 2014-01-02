@@ -52,6 +52,8 @@ import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
@@ -275,48 +277,54 @@ public class HDWallet {
             // WalletTransaction.Pool pool = wtx.getPool();
             Transaction tx = wtx.getTransaction();
             boolean avail = !tx.isPending();
+            TransactionConfidence conf = tx.getConfidence();
+            ConfidenceType ct = conf.getConfidenceType();
 
-            // Traverse the HDAccounts with all outputs.
-            List<TransactionOutput> lto = tx.getOutputs();
-            for (TransactionOutput to : lto) {
-                BigInteger value = to.getValue();
-				try {
-                    byte[] pubkey = null;
-                    byte[] pubkeyhash = null;
-                    Script script = to.getScriptPubKey();
-                    if (script.isSentToRawPubKey())
-                        pubkey = script.getPubKey();
-                    else
-                        pubkeyhash = script.getPubKeyHash();
-                    for (HDAccount hda : mAccounts)
-                        hda.applyOutput(pubkey, pubkeyhash, value, avail);
-				} catch (ScriptException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
+            // Skip dead transactions.
+            if (ct != ConfidenceType.DEAD) {
 
-            // Traverse the HDAccounts with all inputs.
-            List<TransactionInput> lti = tx.getInputs();
-            for (TransactionInput ti : lti) {
-                // Get the connected TransactionOutput to see value.
-                TransactionOutput cto = ti.getConnectedOutput();
-                if (cto == null) {
-                    // It appears we land here when processing transactions
-                    // where we handled the output above.
-                    //
-                    // mLogger.warn("couldn't find connected output for input");
-                    continue;
+                // Traverse the HDAccounts with all outputs.
+                List<TransactionOutput> lto = tx.getOutputs();
+                for (TransactionOutput to : lto) {
+                    BigInteger value = to.getValue();
+                    try {
+                        byte[] pubkey = null;
+                        byte[] pubkeyhash = null;
+                        Script script = to.getScriptPubKey();
+                        if (script.isSentToRawPubKey())
+                            pubkey = script.getPubKey();
+                        else
+                            pubkeyhash = script.getPubKeyHash();
+                        for (HDAccount hda : mAccounts)
+                            hda.applyOutput(pubkey, pubkeyhash, value, avail);
+                    } catch (ScriptException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
-                BigInteger value = cto.getValue();
-				try {
-                    byte[] pubkey = ti.getScriptSig().getPubKey();
-                    for (HDAccount hda : mAccounts)
-                        hda.applyInput(pubkey, value);
-				} catch (ScriptException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+                // Traverse the HDAccounts with all inputs.
+                List<TransactionInput> lti = tx.getInputs();
+                for (TransactionInput ti : lti) {
+                    // Get the connected TransactionOutput to see value.
+                    TransactionOutput cto = ti.getConnectedOutput();
+                    if (cto == null) {
+                        // It appears we land here when processing transactions
+                        // where we handled the output above.
+                        //
+                        // mLogger.warn("couldn't find connected output for input");
+                        continue;
+                    }
+                    BigInteger value = cto.getValue();
+                    try {
+                        byte[] pubkey = ti.getScriptSig().getPubKey();
+                        for (HDAccount hda : mAccounts)
+                            hda.applyInput(pubkey, value);
+                    } catch (ScriptException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
