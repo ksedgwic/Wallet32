@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
     private double mAmount = 0.0;
 
+    private String mPrivateKey;
+
     private String mURI;
 
 	private ClipboardManager mClipboardManager;
@@ -64,6 +67,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
 		setContentView(R.layout.activity_view_address);
 
         Intent intent = getIntent();
+        mPrivateKey = intent.getExtras().getString("key");
         String address = intent.getExtras().getString("address");
         mAmount = intent.getExtras().getDouble("amount");
 
@@ -85,6 +89,12 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
         TextView idtv = (TextView) findViewById(R.id.address);
         idtv.setText(address);
+
+        // If there is no HDAddress remove the copy key button.
+        if (mPrivateKey == null) {
+            Button keybutt = (Button) findViewById(R.id.copy_key);
+            keybutt.setVisibility(View.GONE);
+        }
 
         updateAmount();
 
@@ -150,6 +160,14 @@ public class ViewAddressActivity extends BaseWalletActivity {
 		mClipboardManager.setText(mURI);
 		Toast.makeText(this,
                        R.string.view_clipboard_copy,
+                       Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    public void copyKey(View view) {
+        mClipboardManager.setText(mPrivateKey);
+		Toast.makeText(this,
+                       R.string.view_clipboard_copy_key,
                        Toast.LENGTH_SHORT).show();
         finish();
     }

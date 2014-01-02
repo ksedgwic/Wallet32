@@ -200,6 +200,10 @@ public class HDAddress {
         return mAddress.toString();
     }
 
+    public String getPrivateKeyString() {
+        return mECKey.getPrivateKeyEncoded(mParams).toString();
+    }
+
     public int numTrans() {
         return mNumTrans;
     }

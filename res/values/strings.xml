@@ -127,7 +127,9 @@ safe places that only you have access to.
     <string name="transaction_header_confidence">Cnf</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="view_clipboard_copy">Address copied to clipboard</string>
+    <string name="view_clipboard_copy_key">Private key copied to clipboard</string>
     <string name="button_copy">Copy Address</string>
+    <string name="button_copy_key">Copy Private Key</string>
     <string name="button_dismiss">Dismiss</string>
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>

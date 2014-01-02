@@ -264,6 +264,7 @@ public class ViewAccountActivity extends BaseWalletActivity {
         
         // Dispatch to the address viewer.
         Intent intent = new Intent(this, ViewAddressActivity.class);
+        intent.putExtra("key", addr.getPrivateKeyString());
         intent.putExtra("address", addrstr);
         startActivity(intent);
     }
