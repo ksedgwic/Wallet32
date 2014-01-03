@@ -20,6 +20,12 @@
 	/>
 
     <Preference
+        android:key="pref_changePasscode"
+	android:title="@string/pref_change_passcode"
+        android:summary="@string/pref_change_passcode_summary"
+	/>
+
+    <Preference
         android:key="pref_rescanBlockchain"
 	android:title="@string/pref_rescan_blockchain"
         android:summary="@string/pref_rescan_summary"

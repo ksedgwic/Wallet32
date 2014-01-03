@@ -48,6 +48,7 @@ public class CreateRestoreActivity extends Activity {
         Intent intent = new Intent(this, PasscodeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean("createPasscode", true);
+        bundle.putBoolean("changePasscode", false);
         bundle.putBoolean("restoreWallet", false);
         intent.putExtras(bundle);
         startActivity(intent);

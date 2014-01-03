@@ -21,12 +21,16 @@ import org.slf4j.LoggerFactory;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -51,11 +55,30 @@ public class PasscodeActivity extends ActionBarActivity {
     private Resources mRes;
     SharedPreferences mPrefs;
 
+    private boolean mChangePasscode;
+
     private boolean	mShowPasscode;
     private State	mState;
     private boolean	mRestoreWallet;
     private String	mPasscode;
     private String	mLastPasscode;
+
+    private WalletService mWalletService;
+
+    protected ServiceConnection mConnection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName className,
+                                           IBinder binder) {
+                mWalletService =
+                    ((WalletService.WalletServiceBinder) binder).getService();
+                mLogger.info("WalletService bound");
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                mWalletService = null;
+                mLogger.info("WalletService unbound");
+            }
+
+    };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +90,7 @@ public class PasscodeActivity extends ActionBarActivity {
         Bundle bundle = getIntent().getExtras();
         boolean createPasscode = bundle.getBoolean("createPasscode");
         mState = createPasscode ? State.PASSCODE_CREATE : State.PASSCODE_ENTER;
+        mChangePasscode = bundle.getBoolean("changePasscode");
         mRestoreWallet = bundle.getBoolean("restoreWallet");
 
         TextView msgtv = (TextView) findViewById(R.id.message);
@@ -109,12 +133,24 @@ public class PasscodeActivity extends ActionBarActivity {
 	@Override
     protected void onResume() {
         super.onResume();
+
+        // NOTE - this passcode activity can happen on initial create
+        // and login and the WalletService will not be started at that
+        // time.  This is ok.
+        //
+        // We need a WalletService binding for the case where we change
+        // the passcode and in this case it will be running ...
+        //
+        bindService(new Intent(this, WalletService.class), mConnection,
+                    Context.BIND_ADJUST_WITH_ACTIVITY);
+
         mLogger.info("PasscodeActivity resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unbindService(mConnection);
         mLogger.info("PasscodeActivity paused");
     }
 
@@ -231,14 +267,18 @@ public class PasscodeActivity extends ActionBarActivity {
             startActivity(intent);
         }
         else {
-            // Create the wallet.
-            WalletUtil.createWallet(getApplicationContext());
+            // If we are changing the passcode the wallet is already
+            // started ...
+            if (!mChangePasscode) {
+                // Create the wallet.
+                WalletUtil.createWallet(getApplicationContext());
 
-            // Spin up the WalletService.
-            startService(new Intent(this, WalletService.class));
+                // Spin up the WalletService.
+                startService(new Intent(this, WalletService.class));
 
-            Intent intent = new Intent(this, ViewSeedActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(this, ViewSeedActivity.class);
+                startActivity(intent);
+            }
         }
 
         // And we're done here ...
@@ -359,7 +399,8 @@ public class PasscodeActivity extends ActionBarActivity {
         {
             String passcode = arg0[0];
             // This takes a while (scrypt) ...
-            WalletUtil.setPasscode(getApplicationContext(), passcode);
+            WalletUtil.setPasscode(getApplicationContext(), mWalletService,
+                                   passcode, mChangePasscode);
 			return null;
         }
 

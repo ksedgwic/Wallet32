@@ -76,8 +76,8 @@ public class HDWallet {
     private final NetworkParameters	mParams;
     private final File				mDirectory;
     private final String			mFilePrefix;
-    private final KeyCrypter		mKeyCrypter;
-    private final KeyParameter		mAesKey;
+    private KeyCrypter				mKeyCrypter;
+    private KeyParameter			mAesKey;
 
     private final DeterministicKey	mMasterKey;
 
@@ -244,6 +244,11 @@ public class HDWallet {
             String acctName = String.format("Account %d", ii);
             mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ii));
         }
+    }
+
+    public void setPersistCrypter(KeyCrypter keyCrypter, KeyParameter aesKey) {
+        mKeyCrypter = keyCrypter;
+        mAesKey = aesKey;
     }
 
     public byte[] getWalletSeed() {

@@ -45,19 +45,35 @@ public class WalletUtil {
 
     private static final String filePrefix = "wallet32";
 
-    public static void setPasscode(Context context, String passcode) {
+    public static void setPasscode(Context context,
+                                   WalletService walletService,
+                                   String passcode,
+                                   boolean isChange) {
 
         WalletApplication wallapp =
             (WalletApplication) context.getApplicationContext();
 
-        // Create salt and write to file.
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] salt = new byte[KeyCrypterScrypt.SALT_LENGTH];
-        secureRandom.nextBytes(salt);
-        writeSalt(context, salt);
+        KeyParameter oldAesKey = wallapp.mAesKey;
+
+        byte[] salt;
+        if (isChange) {
+            // Reuse our salt (better chance of recovering if
+            // we are between passcode values).
+            salt = readSalt(context);
+        } else {
+            // Create salt and write to file.
+            SecureRandom secureRandom = new SecureRandom();
+            salt = new byte[KeyCrypterScrypt.SALT_LENGTH];
+            secureRandom.nextBytes(salt);
+            writeSalt(context, salt);
+        }
 
         KeyCrypter keyCrypter = getKeyCrypter(salt);
         KeyParameter aesKey = keyCrypter.deriveKey(passcode);
+
+        if (isChange) {
+            walletService.changePasscode(oldAesKey, keyCrypter, aesKey);
+        }
 
         // Set up the application context with credentials.
         wallapp.mPasscode = passcode;

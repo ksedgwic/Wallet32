@@ -62,7 +62,7 @@ public class WalletService extends Service
     public static boolean mIsRunning = false;
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(WalletService.class);
+        LoggerFactory.getLogger(Service.class);
 
     public enum State {
         SETUP,
@@ -338,6 +338,21 @@ public class WalletService extends Service
 
     public byte[] getWalletSeed() {
         return mHDWallet == null ? null : mHDWallet.getWalletSeed();
+    }
+
+    public void changePasscode(KeyParameter oldAesKey,
+                               KeyCrypter keyCrypter,
+                               KeyParameter aesKey) {
+
+        // Change the parameters on our HDWallet.
+        mHDWallet.setPersistCrypter(keyCrypter, aesKey);
+        mHDWallet.persist();
+
+        // Decrypt the wallet with the old key.
+        mKit.wallet().decrypt(oldAesKey);
+
+        // Encrypt the wallet using the new key.
+        mKit.wallet().encrypt(keyCrypter, aesKey);
     }
 
     private void setFiatRateSource(String src) {
