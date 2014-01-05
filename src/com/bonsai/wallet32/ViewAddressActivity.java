@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.view.View;
@@ -49,6 +50,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
     private double mAmount = 0.0;
 
     private String mPrivateKey;
+    private String mAddress;
 
     private String mURI;
 
@@ -68,13 +70,13 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
         Intent intent = getIntent();
         mPrivateKey = intent.getExtras().getString("key");
-        String address = intent.getExtras().getString("address");
+        mAddress = intent.getExtras().getString("address");
         mAmount = intent.getExtras().getDouble("amount");
 
         BigInteger amt =
             mAmount == 0.0 ? null : BigInteger.valueOf((int) (mAmount * 1e8));
 
-        mURI = BitcoinURI.convertToBitcoinURI(address, amt, null, null);
+        mURI = BitcoinURI.convertToBitcoinURI(mAddress, amt, null, null);
 
         mLogger.info("uri=" + mURI);
 
@@ -88,12 +90,18 @@ public class ViewAddressActivity extends BaseWalletActivity {
         }
 
         TextView idtv = (TextView) findViewById(R.id.address);
-        idtv.setText(address);
+        idtv.setText(mAddress);
 
-        // If there is no HDAddress remove the copy key button.
+        // When this activity is called from the receive bitcoin
+        // activity we should show a simplified version; remove
+        // some actions.
+        //
         if (mPrivateKey == null) {
             Button keybutt = (Button) findViewById(R.id.copy_key);
             keybutt.setVisibility(View.GONE);
+
+            Button bcibutt = (Button) findViewById(R.id.blockchain);
+            bcibutt.setVisibility(View.GONE);
         }
 
         updateAmount();
@@ -170,6 +178,16 @@ public class ViewAddressActivity extends BaseWalletActivity {
                        R.string.view_clipboard_copy_key,
                        Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    public void viewBlockchain(View view) {
+        String url = "https://blockchain.info/address/" + mAddress;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+
+        // I think it is useful to come back here after going to
+        // blockchain.info, so we don't call finish ...
     }
 
     public void dismissView(View view) {
