@@ -122,3 +122,13 @@ mass market encryption products described in Section 742.15(b)(1) of
 the EAR.  You are required to submit an annual self-classification
 report (Supplement 8 to Part 742) for these products pursuant to the
 requirements in Section 742.15(c) of the EAR.
+
+----------------------------------------------------------------
+
+* Updated bitcoinj to 0.10.3.
+* Eliminated pending amounts from send balance calculation.
+* Improved seed backup instructions.
+* Made addresses clickable in account view activity.
+* Added copy private key action in address view.
+* Added support for proper display of dead transactions.
+* Added change passcode action.
