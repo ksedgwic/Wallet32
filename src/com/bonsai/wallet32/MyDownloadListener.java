@@ -70,7 +70,7 @@ public class MyDownloadListener extends AbstractPeerEventListener {
         double pct = 100.0 - (100.0 * (blocksLeft / (double) originalBlocksLeft));
         long now = System.currentTimeMillis();
         long delta = now - lastUpdateTime;
-        if (delta >= 1000) {
+        if (delta >= 500) {
             progress(pct, blocksLeft, new Date(block.getTimeSeconds() * 1000));
             lastPercent = (int) pct;
             lastUpdateTime = now;

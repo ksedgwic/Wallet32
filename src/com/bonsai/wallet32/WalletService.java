@@ -47,6 +47,7 @@ import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
@@ -530,6 +531,11 @@ public class WalletService extends Service
             return null;
 
         return mKit.wallet().getWalletTransactions();
+    }
+
+    public Transaction getTransaction(String hashstr) {
+        Sha256Hash hash = new Sha256Hash(hashstr);
+        return mKit.wallet().getTransaction(hash);
     }
 
     public Address nextReceiveAddress(int acctnum){

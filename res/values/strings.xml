@@ -127,6 +127,10 @@ safe places that only you have access to.
     <string name="transaction_header_btc">BTC</string>
     <string name="transaction_header_balance_btc">Bal</string>
     <string name="transaction_header_confidence">Cnf</string>
+    <string name="title_activity_view_transaction">View Transaction</string>
+    <string name="transaction_hash_label">Hash</string>
+    <string name="transaction_date_label">Date</string>
+    <string name="transaction_confidence_label">Confidence</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="view_clipboard_copy">Address copied to clipboard</string>
     <string name="view_clipboard_copy_key">Private key copied to clipboard</string>

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,7 +114,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         table.addView(row);
     }
 
-    private void addTransactionRow(TableLayout table,
+    private void addTransactionRow(String hash,
+                                   TableLayout table,
                                    String datestr,
                                    String btcstr,
                                    String btcbalstr,
@@ -121,6 +123,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transaction_table_row, table, false);
+
+        row.setTag(hash);
 
         {
             TextView tv = (TextView) row.findViewById(R.id.row_date);
@@ -183,8 +187,7 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
             double btc = mWalletService.amountForAccount(wtx, mAccountNum);
             if (btc != 0.0) {
-                mLogger.info("tx " + tx.getHashAsString());
-
+                String hash = tx.getHashAsString();
                 String datestr = dateFormater.format(tx.getUpdateTime());
                 String btcstr = String.format("%.5f", btc);
                 String btcbalstr = String.format("%.5f", btcbal);
@@ -201,7 +204,10 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                 default: confstr = "?"; break;
                 }
 
-                addTransactionRow(table, datestr, btcstr, btcbalstr, confstr);
+                mLogger.info("tx " + hash);
+
+                addTransactionRow(hash, table, datestr,
+                                  btcstr, btcbalstr, confstr);
             }
 
             // We're working backward in time ...
@@ -209,5 +215,13 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             if (ct != ConfidenceType.DEAD)
                 btcbal -= btc;
         }
+    }
+
+    public void handleRowClick(View view) {
+        // Dispatch to the transaction viewer.
+        String hash = (String) view.getTag();
+        Intent intent = new Intent(this, ViewTransactionActivity.class);
+        intent.putExtra("hash", hash);
+        startActivity(intent);
     }
 }
