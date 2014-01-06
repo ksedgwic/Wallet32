@@ -12,7 +12,7 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Add add account interface; add numaccounts in restore ...
+* Improve update rate of DownloadListener (progress).
 
 * Testnet build.
 
@@ -20,8 +20,6 @@ Needed
   and BaseWalletActivity when called from main.
 
 * Electrum compatibility.
-
-* Add change passcode.
 
 * Embelish messages and directions.
 
@@ -32,8 +30,6 @@ Needed
 
 Recover Wallet
 ----------------------------------------------------------------
-
-* Make recover check for more accounts.
 
 * Make recover auto-rescan when needed.
 

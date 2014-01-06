@@ -183,6 +183,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
             double btc = mWalletService.amountForAccount(wtx, mAccountNum);
             if (btc != 0.0) {
+                mLogger.info("tx " + tx.getHashAsString());
+
                 String datestr = dateFormater.format(tx.getUpdateTime());
                 String btcstr = String.format("%.5f", btc);
                 String btcbalstr = String.format("%.5f", btcbal);
