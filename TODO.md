@@ -12,8 +12,6 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Improve update rate of DownloadListener (progress).
-
 * Testnet build.
 
 * View Seed needs to be "pre-main" when started from create wallet
