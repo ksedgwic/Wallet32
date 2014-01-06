@@ -542,6 +542,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             finish();
 
         } catch (RuntimeException ex) {
+            mLogger.error(ex.toString());
             showErrorDialog(ex.getMessage());
             return;
         }
