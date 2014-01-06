@@ -53,7 +53,7 @@ public class MyWalletAppKit extends AbstractIdleService {
     private volatile SPVBlockStore vStore;
     private volatile Wallet vWallet;
     private volatile PeerGroup vPeerGroup;
-    private final DownloadListener listener;
+    private final MyDownloadListener listener;
 
     private final File directory;
     private volatile File vWalletFile;
@@ -69,7 +69,7 @@ public class MyWalletAppKit extends AbstractIdleService {
                           String filePrefix,
                           InputStream chkpntis,
                           KeyCrypter keyCypter,
-                          DownloadListener listener) {
+                          MyDownloadListener listener) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);

@@ -46,7 +46,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
-import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
@@ -97,8 +96,8 @@ public class WalletService extends Service
 
     private static final String mFilePrefix = "wallet32";
 
-    private DownloadListener mDownloadListener =
-        new DownloadListener() {
+    private MyDownloadListener mDownloadListener =
+        new MyDownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date) {
                 mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO", (int) pct, blocksToGo));
                 mBlocksToGo = blocksToGo;
