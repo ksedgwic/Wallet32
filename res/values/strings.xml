@@ -15,6 +15,7 @@
     <string name="restore_seed_hint">Hexadecimal Seed</string>
     <string name="restore_mnemonic">Or Enter Wallet Mnemonic:</string>
     <string name="restore_mnemonic_hint">space separated word list</string>
+    <string name="restore_numaccounts">Number of accounts to restore:</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
     <string name="restore_badhexlength">Bad hex seed length</string>
     <string name="restore_bothbad">Both hex seed and mnemonic specified</string>
@@ -22,6 +23,7 @@
     <string name="restore_badlength">Mnemonic word list not 12 words</string>
     <string name="restore_badword">%1$s is not in mnemonic word list</string>
     <string name="restore_badchecksum">Checksum error; corrupted word list</string>
+    <string name="restore_badnumaccts">Bad number of accounts value</string>
     <string name="title_activity_passcode">Enter Passcode</string>
     <string name="passcode_create">Create Passcode</string>
     <string name="passcode_confirm">Confirm Passcode</string>
@@ -130,7 +132,7 @@ safe places that only you have access to.
     <string name="view_clipboard_copy_key">Private key copied to clipboard</string>
     <string name="button_copy">Copy Address</string>
     <string name="button_copy_key">Copy Private Key</string>
-    <string name="button_blockchain">At blockchain.info</string>
+    <string name="button_blockchain">blockchain.info</string>
     <string name="button_dismiss">Dismiss</string>
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>
@@ -165,6 +167,14 @@ safe places that only you have access to.
 
     <string name="pref_change_passcode">Change Passcode</string>
     <string name="pref_change_passcode_summary">Choose a new passcode</string>
+
+    <string name="pref_add_account">Add Account</string>
+    <string name="pref_add_account_summary">Add an account to your wallet</string>
+    <string name="pref_add_account_title">Confirm Add Account</string>
+    <string name="pref_add_account_confirm">Are you sure you want to add an account?</string>
+    <string name="pref_add_account_yes">Add Account</string>
+    <string name="pref_add_account_no">Cancel</string>
+
     <string name="pref_rescan_blockchain">Rescan Blockchain</string>
     <string name="pref_rescan_summary">Rescan Blockchain Now (EXPENSIVE!)</string>
     <string name="pref_about">About Wallet32</string>
@@ -174,8 +184,9 @@ safe places that only you have access to.
     <string name="pref_rescan_yes">Rescan</string>
     <string name="pref_rescan_no">Cancel</string>
 
-    <string name="wallet_service_started">Wallet32 Service Running</string>
     <string name="wallet_service_label">Wallet32</string>
+    <string name="wallet_service_started">Wallet32 Service Started</string>
+    <string name="wallet_service_info">Touch to open wallet</string>
 
     <string name="title_activity_about">About Wallet32</string>
     <string name="about_contents"><![CDATA[\n

@@ -26,6 +26,12 @@
 	/>
 
     <Preference
+        android:key="pref_addAccount"
+	android:title="@string/pref_add_account"
+        android:summary="@string/pref_add_account_summary"
+	/>
+
+    <Preference
         android:key="pref_rescanBlockchain"
 	android:title="@string/pref_rescan_blockchain"
         android:summary="@string/pref_rescan_summary"

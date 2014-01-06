@@ -93,13 +93,35 @@ public class SettingsActivity extends PreferenceActivity {
 
         {
             Preference butt =
+                (Preference) findPreference("pref_addAccount");
+            butt.setOnPreferenceClickListener
+                (new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            showConfirmDialog
+                                (mRes.getString(R.string.pref_add_account_title),
+                                 mRes.getString(R.string.pref_add_account_confirm),
+                                 mRes.getString(R.string.pref_add_account_yes),
+                                 mRes.getString(R.string.pref_add_account_no),
+                                 mAddAccountConfirmed);
+                            return true;
+                        }
+                    });
+        }
+
+        {
+            Preference butt =
                 (Preference) findPreference("pref_rescanBlockchain");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
-                            showConfirmDialog(mRes.getString
-                                              (R.string.pref_rescan_confirm));
+                            showConfirmDialog
+                                (mRes.getString(R.string.pref_rescan_title),
+                                 mRes.getString(R.string.pref_rescan_confirm),
+                                 mRes.getString(R.string.pref_rescan_yes),
+                                 mRes.getString(R.string.pref_rescan_no),
+                                 mRescanConfirmed);
                             return true;
                         }
                     });
@@ -121,6 +143,49 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
+    private DialogInterface.OnClickListener mAddAccountConfirmed = 
+        new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                mLogger.info("add account confirmed");
+                if (mWalletService != null)
+                {
+                    mWalletService.addAccount();
+
+                    // Back to the main activity.
+                    Intent intent =
+                        new Intent(mThis, MainActivity.class);
+                    intent.setFlags
+                        (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+
+                    // All done here...
+                    finish();
+                }
+            }
+        };
+
+    private DialogInterface.OnClickListener mRescanConfirmed = 
+        new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                mLogger.info("rescan confirmed");
+                if (mWalletService != null)
+                {
+                    // Kick off the rescan.
+                    mWalletService.rescanBlockchain();
+
+                    // Back to the main activity for progress.
+                    Intent intent =
+                        new Intent(mThis, MainActivity.class);
+                    intent.setFlags
+                        (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+
+                    // All done here...
+                    finish();
+                }
+            }
+        };
+
 	@Override
     protected void onResume() {
         super.onResume();
@@ -136,43 +201,27 @@ public class SettingsActivity extends PreferenceActivity {
         mLogger.info("SettingsActivity paused");
     }
 
-    public void showConfirmDialog(String msg) {
+    public void showConfirmDialog(String title,
+                                  String msg,
+                                  String yesstr,
+                                  String nostr,
+                                  DialogInterface.OnClickListener listener) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
  
         // set title
-        alertDialogBuilder
-            .setTitle(mRes.getString(R.string.pref_rescan_title));
+        alertDialogBuilder.setTitle(title);
  
         // set dialog message
         alertDialogBuilder
             .setMessage(msg)
             .setCancelable(false)
-            .setPositiveButton(mRes.getString(R.string.pref_rescan_yes),
+            .setPositiveButton(yesstr, listener)
+            .setNegativeButton(nostr,
                                new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-                        if (mWalletService != null)
-                        {
-                            // Kick off the rescan.
-                            mWalletService.rescanBlockchain();
-
-                            // Back to the main activity for progress.
-                            Intent intent =
-                                new Intent(mThis, MainActivity.class);
-                            intent.setFlags
-                                (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                            startActivity(intent);
-
-                            // All done here...
-                            finish();
-                        }
-					}
-                })
-            .setNegativeButton(mRes.getString(R.string.pref_rescan_no),
-                               new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						dialog.cancel();
-					}
-				});
+                                   public void onClick(DialogInterface dialog, int id) {
+                                       dialog.cancel();
+                                   }
+                               });
  
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();

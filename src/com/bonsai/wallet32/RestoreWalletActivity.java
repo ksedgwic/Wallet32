@@ -56,6 +56,9 @@ public class RestoreWalletActivity extends ActionBarActivity {
         mRes = getApplicationContext().getResources();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restore_wallet);
+
+        EditText edittext = (EditText) findViewById(R.id.numaccounts);
+        edittext.setText("2");	// By default restore 2 accounts.
 	}
 
 	@Override
@@ -139,9 +142,19 @@ public class RestoreWalletActivity extends ActionBarActivity {
             return;
         }
 
-        WalletApplication wallapp = (WalletApplication) getApplicationContext();
+        // How many accounts to restore?
+        int numaccts;
+        try {
+            EditText numacctedittxt = (EditText) findViewById(R.id.numaccounts);
+            String numacctsstr = numacctedittxt.getText().toString();
+            numaccts = Integer.parseInt(numacctsstr);
+        }
+        catch (NumberFormatException ex) {
+            showErrorDialog(mRes.getString(R.string.restore_badnumaccts));
+            return;
+        }
 
-        int numAccounts = 3;
+        WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
         // Setup a wallet with the restore seed.
         HDWallet hdwallet = new HDWallet(getApplicationContext(),
@@ -151,7 +164,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
-                                         numAccounts);
+                                         numaccts);
         hdwallet.persist();
 
         // Spin up the WalletService.

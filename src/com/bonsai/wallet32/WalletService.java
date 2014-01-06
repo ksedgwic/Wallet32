@@ -312,10 +312,12 @@ public class WalletService extends Service
     //
     private void showNotification() {
         // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.wallet_service_started);
+        CharSequence started_txt = getText(R.string.wallet_service_started);
+        CharSequence info_txt = getText(R.string.wallet_service_info);
 
         Notification note = new Notification(R.drawable.ic_stat_notify,
-                                             text, System.currentTimeMillis());
+                                             started_txt,
+                                             System.currentTimeMillis());
 
         Intent intent = new Intent(this, MainActivity.class);
     
@@ -325,7 +327,7 @@ public class WalletService extends Service
       
         // Set the info for the views that show in the notification panel.
         note.setLatestEventInfo(this, getText(R.string.wallet_service_label),
-                                text, contentIntent);
+                                info_txt, contentIntent);
 
         note.flags |= Notification.FLAG_NO_CLEAR;
 
@@ -378,7 +380,22 @@ public class WalletService extends Service
         mRateUpdater.startUpdater();
     }
 
-    public void rescanBlockchain(){
+    public void addAccount() {
+        mLogger.info("add account");
+
+        // Make sure we are in a good state for this.
+        if (mState != State.READY) {
+            mLogger.warn("can't add an account until the wallet is ready");
+            return;
+        }
+
+        mHDWallet.addAccount();
+        // Adding all the keys is overkill, but it is simpler for now.
+        mHDWallet.addAllKeys(mKit.wallet(), false);
+        mHDWallet.persist();
+    }
+
+    public void rescanBlockchain() {
         mLogger.info("RESCAN!");
 
         // Make sure we are in a good state for this.

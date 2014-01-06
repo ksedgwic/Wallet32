@@ -263,6 +263,12 @@ public class HDWallet {
         return mAccounts.get(accountId);
     }
 
+    public void addAccount() {
+        int ndx = mAccounts.size();
+        String acctName = String.format("Account %d", ndx);
+        mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ndx));
+    }
+
     public void addAllKeys(Wallet wallet, boolean isRestore) {
         for (HDAccount acct : mAccounts)
             acct.addAllKeys(wallet, mKeyCrypter, mAesKey, isRestore);
