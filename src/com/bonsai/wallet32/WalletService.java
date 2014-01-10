@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +47,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
@@ -192,7 +194,11 @@ public class WalletService extends Service
                         // ignored if they are already in the
                         // WalletAppKit.
                         //
-                        mHDWallet.addAllKeys(wallet(), fullRescan);
+                        ArrayList<ECKey> keys = new ArrayList<ECKey>();
+                        mHDWallet.gatherAllKeys(fullRescan, keys);
+                        mLogger.info(String.format("adding %d keys",
+                                                   keys.size()));
+                        wallet().addKeys(keys);
 
                         // Do we have enough margin on all our chains?
                         // Add keys to chains which don't have enough
@@ -390,8 +396,13 @@ public class WalletService extends Service
         }
 
         mHDWallet.addAccount();
+
         // Adding all the keys is overkill, but it is simpler for now.
-        mHDWallet.addAllKeys(mKit.wallet(), false);
+        ArrayList<ECKey> keys = new ArrayList<ECKey>();
+        mHDWallet.gatherAllKeys(false, keys);
+        mLogger.info(String.format("adding %d keys", keys.size()));
+        mKit.wallet().addKeys(keys);
+
         mHDWallet.persist();
     }
 

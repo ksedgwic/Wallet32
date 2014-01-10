@@ -49,6 +49,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
@@ -269,9 +270,9 @@ public class HDWallet {
         mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ndx));
     }
 
-    public void addAllKeys(Wallet wallet, boolean isRestore) {
+    public void gatherAllKeys(boolean isRestore, List<ECKey> keys) {
         for (HDAccount acct : mAccounts)
-            acct.addAllKeys(wallet, mKeyCrypter, mAesKey, isRestore);
+            acct.gatherAllKeys(mKeyCrypter, mAesKey, isRestore, keys);
     }
 
     public void clearBalances() {

@@ -119,10 +119,8 @@ requirements in Section 742.15(c) of the EAR.
 
 ----------------------------------------------------------------
 
-* Updated bitcoinj to 0.10.3.
-* Eliminated pending amounts from send balance calculation.
-* Improved seed backup instructions.
-* Made addresses clickable in account view activity.
-* Added copy private key action in address view.
-* Added support for proper display of dead transactions.
-* Added change passcode action.
+* Added view address at blockchain.info action to address viewer.
+* Added add account action.
+* Improved sync progress update rate.
+* Added view transaction activity.
+* added view transaction at blockchain.info action.

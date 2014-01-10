@@ -18,6 +18,7 @@ package com.bonsai.wallet32;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -119,10 +120,10 @@ public class HDAddress {
                      mAddress.toString());
     }
 
-    public void addKey(Wallet wallet,
-                       KeyCrypter keyCrypter,
-                       KeyParameter aesKey,
-                       boolean isRestore) {
+    public void gatherKey(KeyCrypter keyCrypter,
+                          KeyParameter aesKey,
+                          boolean isRestore,
+                          List<ECKey> keys) {
 
         if (isRestore) {
             // If we are restoring this wallet we'll need to scan from the
@@ -140,7 +141,7 @@ public class HDAddress {
             //
             mECKey.setCreationTimeSeconds(Utils.now().getTime() / 1000);
         }
-        wallet.addKey(mECKey.encrypt(keyCrypter, aesKey));
+        keys.add(mECKey.encrypt(keyCrypter, aesKey));
     }
 
     public boolean isMatch(byte[] pubkey, byte[] pubkeyhash) {

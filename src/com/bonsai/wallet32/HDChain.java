@@ -29,6 +29,7 @@ import org.spongycastle.crypto.params.KeyParameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
@@ -98,12 +99,12 @@ public class HDChain {
         return mAddrs;
     }
 
-    public void addAllKeys(Wallet wallet,
-                           KeyCrypter keyCrypter,
-                           KeyParameter aesKey,
-                           boolean isRestore) {
+    public void gatherAllKeys(KeyCrypter keyCrypter,
+                              KeyParameter aesKey,
+                              boolean isRestore,
+                              List<ECKey> keys) {
         for (HDAddress hda : mAddrs)
-            hda.addKey(wallet, keyCrypter, aesKey, isRestore);
+            hda.gatherKey(keyCrypter, aesKey, isRestore, keys);
     }
 
     public void applyOutput(byte[] pubkey,
@@ -202,11 +203,14 @@ public class HDChain {
 
             // Add the addresses ...
             int newSize = mAddrs.size() + numAdd;
+            ArrayList<ECKey> keys = new ArrayList<ECKey>();
             for (int ii = mAddrs.size(); ii < newSize; ++ii) {
                 HDAddress hda = new HDAddress(mParams, mChainKey, ii);
                 mAddrs.add(hda);
-                hda.addKey(wallet, keyCrypter, aesKey, false);
+                hda.gatherKey(keyCrypter, aesKey, false, keys);
             }
+            mLogger.info(String.format("adding %d keys", keys.size()));
+            wallet.addKeys(keys);
         }
     }
 }

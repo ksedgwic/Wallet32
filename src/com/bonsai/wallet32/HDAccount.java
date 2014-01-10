@@ -18,6 +18,7 @@ package com.bonsai.wallet32;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.spongycastle.crypto.params.KeyParameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.TransactionOutput;
@@ -89,12 +91,12 @@ public class HDAccount {
         mChangeChain = new HDChain(mParams, mAccountKey, false, "Change", 0);
     }
 
-    public void addAllKeys(Wallet wallet,
-                           KeyCrypter keyCrypter,
-                           KeyParameter aesKey,
-                           boolean isRestore) {
-        mReceiveChain.addAllKeys(wallet, keyCrypter, aesKey, isRestore);
-        mChangeChain.addAllKeys(wallet, keyCrypter, aesKey, isRestore);
+    public void gatherAllKeys(KeyCrypter keyCrypter,
+                              KeyParameter aesKey,
+                              boolean isRestore,
+                              List<ECKey> keys) {
+        mReceiveChain.gatherAllKeys(keyCrypter, aesKey, isRestore, keys);
+        mChangeChain.gatherAllKeys(keyCrypter, aesKey, isRestore, keys);
     }
 
     public void applyOutput(byte[] pubkey,
