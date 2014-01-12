@@ -47,16 +47,17 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
-import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.wallet.WalletTransaction;
 
 public class WalletService extends Service
     implements OnSharedPreferenceChangeListener {
@@ -64,13 +65,14 @@ public class WalletService extends Service
     public static boolean mIsRunning = false;
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(Service.class);
+        LoggerFactory.getLogger(WalletService.class);
 
     public enum State {
         SETUP,
         START,
         SYNCING,
         READY,
+        SHUTDOWN,
         ERROR
     }
 
@@ -132,6 +134,18 @@ public class WalletService extends Service
             }
         };
 
+    public void shutdown() {
+        mLogger.info("shutdown");
+        mState = State.SHUTDOWN;
+        try {
+            if (mKit != null)
+                mKit.shutDown();
+        }
+        catch (Exception ex) {
+            mLogger.error("Trouble during shutdown: " + ex.toString());
+        }
+    }
+    
     private class SetupWalletTask extends AsyncTask<Boolean, Void, Void> {
 		@Override
 		protected Void doInBackground(Boolean... params)
@@ -182,9 +196,7 @@ public class WalletService extends Service
             mKit = new MyWalletAppKit(mParams,
                                       mContext.getFilesDir(),
                                       mFilePrefix,
-                                      chkpntis,
-                                      wallapp.mKeyCrypter,
-                                      mDownloadListener)
+                                      mKeyCrypter)
                 {
                     @Override
                     protected void onSetupCompleted() {
@@ -207,6 +219,9 @@ public class WalletService extends Service
                         mHDWallet.ensureMargins(wallet());
                     }
                 };
+            mKit.setDownloadListener(mDownloadListener);
+            if (chkpntis != null)
+                mKit.setCheckpoints(chkpntis);
 
             setState(State.START);
 
@@ -215,7 +230,13 @@ public class WalletService extends Service
             // Download the block chain and wait until it's done.
             mKit.startAndWait();
 
-            mLogger.info("blockchain setup finished");
+            mLogger.info("blockchain setup finished, state = " + getStateString());
+
+            // Bail if we're being shutdown ...
+            if (mState == State.SHUTDOWN) {
+                mHDWallet.persist();
+                return null;
+            }
 
             BigInteger bal0 = mKit.wallet().getBalance(BalanceType.AVAILABLE);
             BigInteger bal1 = mKit.wallet().getBalance(BalanceType.ESTIMATED);
@@ -295,6 +316,8 @@ public class WalletService extends Service
 
     @Override
     public void onDestroy() {
+        mLogger.info("onDestroy called");
+        
         mIsRunning = false;
 
         // FIXME - Where does this go?  Anywhere?
@@ -486,6 +509,8 @@ public class WalletService extends Service
                                   (int) mPercentDone);
         case READY:
             return mRes.getString(R.string.network_status_ready);
+        case SHUTDOWN:
+            return mRes.getString(R.string.network_status_shutdown);
         case ERROR:
             return mRes.getString(R.string.network_status_error);
         default:
@@ -592,6 +617,9 @@ public class WalletService extends Service
     }
 
     private void setState(State newstate) {
+        // SHUTDOWN is final ...
+        if (mState == State.SHUTDOWN)
+            return;
         mLogger.info("setState " + getStateString());
         mState = newstate;
         sendStateChanged();

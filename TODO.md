@@ -2,6 +2,10 @@
 Bugs
 ----------------------------------------------------------------
 
+* After abort during sync (during create), re-running hangs.
+
+* Pausing Passcode activity while it is "encrypting wallet" crashes.
+
 * Need to handle precision of BTC values much better then 4 fixed places.
 
 * Disable Settings actions on everything prior to MainActivity.
@@ -124,3 +128,45 @@ requirements in Section 742.15(c) of the EAR.
 * Improved sync progress update rate.
 * Added view transaction activity.
 * added view transaction at blockchain.info action.
+
+Kenstigator: yes, that's usually caused by protobufs being code hungry.
+7:24 Kenstigator: do you have any custom proto types there? i'd be surprised if for some reason you hit that but Andreas never did
+7:24 Kenstigator: you can try switching to the lite protobuf runtime, and make sure the protobufs are being optimized for code size
+7:24 Kenstigator: but try asking goonie
+
+----------------------------------------------------------------
+
+Create New Wallet
+
+    Abort during sync, restart.
+
+    Receive 0.0023 to acct0.
+
+    Send 0.001 back to external.
+
+    Add acct2.
+
+    Send 0.001 to acct2.
+
+    Verify margin in each account.
+
+    Logout, re-login.
+
+
+Restore Wallet
+
+    Restore w/ 3 accounts.
+
+    Verify margin in each account.
+
+    Rename acct0, acct1, acct2.
+
+    Send 0.001 from acct2 to external.
+
+    Change passcode.
+
+    Logout, re-login w/ new passcode.
+
+    Verify margin in each account.
+
+    Rescan blockchain.

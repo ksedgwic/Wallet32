@@ -50,6 +50,7 @@ import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.Transaction;
@@ -60,13 +61,13 @@ import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
 import com.google.bitcoin.core.Wallet.SendResult;
-import com.google.bitcoin.core.WalletTransaction;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
 import com.google.bitcoin.crypto.MnemonicCode;
 import com.google.bitcoin.script.Script;
+import com.google.bitcoin.wallet.WalletTransaction;
 
 public class HDWallet {
 
@@ -469,9 +470,11 @@ public class HDWallet {
         req.coinSelector = acct.coinSelector();
         req.aesKey = mAesKey;
 
-        SendResult result = wallet.sendCoins(req);
-        if (result == null)
+		try {
+			wallet.sendCoins(req);
+		} catch (InsufficientMoneyException e) {
             throw new RuntimeException("Not enough BTC in account");
+		}
     }
 
     public void persist() {

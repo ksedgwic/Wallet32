@@ -32,13 +32,13 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
-import com.google.bitcoin.core.Wallet.CoinSelection;
-import com.google.bitcoin.core.Wallet.CoinSelector;
-import com.google.bitcoin.core.Wallet.DefaultCoinSelector;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.script.Script;
+import com.google.bitcoin.wallet.CoinSelection;
+import com.google.bitcoin.wallet.CoinSelector;
+import com.google.bitcoin.wallet.DefaultCoinSelector;
 
 public class HDAccount {
 

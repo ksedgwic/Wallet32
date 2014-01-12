@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="libs/jackson-core-2.2.3.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-databind-2.2.3.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-annotations-2.2.3.jar"/>
+	<classpathentry kind="lib" path="libs/uber-bitcoinj-0.11-SNAPSHOT-fixed.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CaptureActivity"/>
-	<classpathentry kind="lib" path="libs/uber-bitcoinj-0.10.3.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

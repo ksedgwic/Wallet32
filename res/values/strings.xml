@@ -145,6 +145,7 @@ safe places that only you have access to.
     <string name="network_status_start">Network Starting</string>
     <string name="network_status_sync">Network Syncing, %1$d%% Done</string>
     <string name="network_status_ready">Network Ready</string>
+    <string name="network_status_shutdown">Shutting Down</string>
     <string name="network_status_error">Network Error</string>
     <string name="network_status_unknown">Network Status Unknown</string>
 

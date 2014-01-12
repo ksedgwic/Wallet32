@@ -108,8 +108,13 @@ public class MainActivity extends BaseWalletActivity {
 
     private void doExit() {
         mLogger.info("Application exiting");
+        if (mWalletService != null)
+            mWalletService.shutdown();
+        mLogger.info("Stopping WalletService");
         stopService(new Intent(this, WalletService.class));
+        mLogger.info("Finished");
         finish();
+        mLogger.info("Exiting");
         System.exit(0);
     }
 

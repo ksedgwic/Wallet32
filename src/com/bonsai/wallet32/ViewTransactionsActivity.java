@@ -41,7 +41,7 @@ import android.widget.TextView;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
-import com.google.bitcoin.core.WalletTransaction;
+import com.google.bitcoin.wallet.WalletTransaction;
 
 public class ViewTransactionsActivity extends BaseWalletActivity {
 
