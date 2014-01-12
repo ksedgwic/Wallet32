@@ -419,6 +419,7 @@ public class WalletService extends Service
         }
 
         mHDWallet.addAccount();
+        mHDWallet.ensureMargins(mKit.wallet());
 
         // Adding all the keys is overkill, but it is simpler for now.
         ArrayList<ECKey> keys = new ArrayList<ECKey>();
@@ -575,9 +576,6 @@ public class WalletService extends Service
     }
 
     public Address nextReceiveAddress(int acctnum){
-        if (mHDWallet == null)
-            return null;
-
         return mHDWallet.nextReceiveAddress(acctnum);
     }
 

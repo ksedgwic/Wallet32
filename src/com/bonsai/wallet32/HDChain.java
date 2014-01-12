@@ -149,7 +149,7 @@ public class HDChain {
             if (hda.isUnused())
                 return hda.getAddress();
         }
-        return null;	// FIXME - bogus.
+        throw new RuntimeException("no unused address available");
     }
 
     public boolean hasPubKey(byte[] pubkey, byte[] pubkeyhash) {

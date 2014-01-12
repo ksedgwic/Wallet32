@@ -2,7 +2,8 @@
 Bugs
 ----------------------------------------------------------------
 
-* After abort during sync (during create), re-running hangs.
+* Immediately after adding an account getNextReceiveAddress fails.
+  Need checkMargin?
 
 * Pausing Passcode activity while it is "encrypting wallet" crashes.
 
@@ -142,11 +143,13 @@ Create New Wallet
 
     Receive 0.0023 to acct0.
 
-    Send 0.001 back to external.
+    Attempt send to acct2 before cleared (insufficient funds expected).
 
     Add acct2.
 
     Send 0.001 to acct2.
+
+    Send 0.001 from acct0 back to external.
 
     Verify margin in each account.
 
@@ -155,9 +158,11 @@ Create New Wallet
 
 Restore Wallet
 
-    Restore w/ 3 accounts.
+    Restore using word list w/ 3 accounts.
 
     Verify margin in each account.
+
+    Restore again using hex seed.
 
     Rename acct0, acct1, acct2.
 
@@ -169,4 +174,4 @@ Restore Wallet
 
     Verify margin in each account.
 
-    Rescan blockchain.
+Rescan blockchain.

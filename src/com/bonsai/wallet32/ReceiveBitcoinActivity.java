@@ -263,6 +263,8 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
             return;
         }
 
+        mLogger.info(String.format("receiving to account %d", mCheckedToId));
+
         Address addr = mWalletService.nextReceiveAddress(mCheckedToId);
         String addrstr = addr.toString();
 
