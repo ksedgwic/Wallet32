@@ -16,6 +16,7 @@
 package com.bonsai.wallet32;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -79,9 +80,13 @@ public class MainActivity extends BaseWalletActivity {
         if (mWalletService.getState() == WalletService.State.SYNCING) {
             int pctdone = (int) mWalletService.getPercentDone();
 
+            Date cmplDate = new Date(System.currentTimeMillis() +
+                                     mWalletService.getMsecsLeft());
+
             updateSyncStats(String.format("%d%%", pctdone),
                             String.format("%d", mWalletService.getBlocksToGo()),
-                            mDateFormatter.format(mWalletService.getScanDate()));
+                            mDateFormatter.format(mWalletService.getScanDate()),
+                            mDateFormatter.format(cmplDate));
 
             if (mDialogView != null) {
                 ProgressBar pb =
@@ -150,7 +155,8 @@ public class MainActivity extends BaseWalletActivity {
         mSyncProgressDialog = df;
     }
 
-    private void updateSyncStats(String pctstr, String blksstr, String datestr) {
+    private void updateSyncStats(String pctstr, String blksstr,
+                                 String datestr, String cmplstr) {
         if (mDialogView == null)
             return;
 
@@ -162,6 +168,9 @@ public class MainActivity extends BaseWalletActivity {
                 
         TextView datetv = (TextView) mDialogView.findViewById(R.id.scan_date);
         datetv.setText(datestr);
+
+        TextView cmpltv = (TextView) mDialogView.findViewById(R.id.scan_cmpl);
+        cmpltv.setText(cmplstr);
     }
 
     private void addBalanceHeader(TableLayout table) {

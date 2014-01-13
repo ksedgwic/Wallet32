@@ -28,6 +28,7 @@ import com.google.bitcoin.core.Peer;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -36,12 +37,25 @@ import java.util.concurrent.Semaphore;
  * progress method to update a GUI instead.</p>
  */
 public class MyDownloadListener extends AbstractPeerEventListener {
+
+    private class ProgressRecord {
+        public long		mTimestamp;
+        public int		mBlocksLeft;
+        public ProgressRecord(long timestamp, int blocksLeft) {
+            this.mTimestamp = timestamp;
+            this.mBlocksLeft = blocksLeft;
+        }
+    }
+
     private static final Logger log = LoggerFactory.getLogger(MyDownloadListener.class);
     private int originalBlocksLeft = -1;
     private int lastPercent = 0;
     private long lastUpdateTime = 0;
     private Semaphore done = new Semaphore(0);
     private boolean caughtUp = false;
+    private LinkedList<ProgressRecord> progress = new LinkedList<ProgressRecord>();
+
+    private static final long PROGRESS_GRANULARITY = 10 * 1000;
 
     @Override
     public void onChainDownloadStarted(Peer peer, int blocksLeft) {
@@ -67,14 +81,52 @@ public class MyDownloadListener extends AbstractPeerEventListener {
         if (blocksLeft < 0 || originalBlocksLeft <= 0)
             return;
 
-        double pct = 100.0 - (100.0 * (blocksLeft / (double) originalBlocksLeft));
         long now = System.currentTimeMillis();
+
+        long msecsLeft = estimateComplete(now, blocksLeft);
+
+        double pct = 100.0 - (100.0 * (blocksLeft / (double) originalBlocksLeft));
         long delta = now - lastUpdateTime;
         if (delta >= 500) {
-            progress(pct, blocksLeft, new Date(block.getTimeSeconds() * 1000));
+            progress(pct, blocksLeft, new Date(block.getTimeSeconds() * 1000), msecsLeft);
             lastPercent = (int) pct;
             lastUpdateTime = now;
         }
+    }
+
+    private long estimateComplete(long now, int blocksLeft) {
+        // Only record progress every PROGRESS_GRANULARITY msecs.
+        if (progress.size() == 0) {
+            progress.add(new ProgressRecord(now, blocksLeft));
+        } else {
+            ProgressRecord newrec = progress.getLast();
+            if (now - newrec.mTimestamp >= PROGRESS_GRANULARITY)
+                progress.add(new ProgressRecord(now, blocksLeft));
+        }
+
+        // Prune records that are too old.
+        while (progress.size() > 1) {
+            ProgressRecord oldrec = progress.getFirst();
+            long deltaBlocks = oldrec.mBlocksLeft - blocksLeft;
+            if (deltaBlocks < blocksLeft)
+                break;
+            progress.removeFirst();
+        }
+
+        // Look at the oldest record in the queue.
+        ProgressRecord prec = progress.getFirst();
+
+        long deltaTime = now - prec.mTimestamp;
+        int deltaBlocks = prec.mBlocksLeft - blocksLeft;
+
+        // Make sure we have some delta.
+        if (deltaTime == 0 || deltaBlocks == 0)
+            return 0;
+
+        double blocksPerMillisecond = (double) deltaBlocks / (double) deltaTime;
+        double mSecLeft = (double) blocksLeft / blocksPerMillisecond;
+
+        return (long) mSecLeft;
     }
 
     /**
@@ -83,9 +135,12 @@ public class MyDownloadListener extends AbstractPeerEventListener {
      * @param pct  the percentage of chain downloaded, estimated
      * @param date the date of the last block downloaded
      */
-    protected void progress(double pct, int blocksSoFar, Date date) {
-        log.info(String.format("Chain download %d%% done with %d blocks to go, block date %s", (int) pct,
-                blocksSoFar, DateFormat.getDateTimeInstance().format(date)));
+    protected void progress(double pct, int blocksSoFar, Date date, long msecsLeft) {
+        log.info(String.format("Chain download %d%% done with %d blocks to go, block date %s, complete in %d seconds",
+                               (int) pct,
+                               blocksSoFar,
+                               DateFormat.getDateTimeInstance().format(date),
+                               msecsLeft / 1000));
     }
 
     /**

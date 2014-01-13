@@ -128,6 +128,34 @@
 
     </TableRow>
 
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+    	  android:id="@+id/scan_cmpl_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:text="@string/sync_scan_cmpl_label"
+	  android:gravity="right"
+    	  android:textStyle="bold"
+    	  />
+
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="10dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+    	  android:id="@+id/scan_cmpl"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  />
+
+    </TableRow>
+
   </TableLayout>
 
   <!-- Rigid Vertical Spacer -->

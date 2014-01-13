@@ -2,9 +2,6 @@
 Bugs
 ----------------------------------------------------------------
 
-* Immediately after adding an account getNextReceiveAddress fails.
-  Need checkMargin?
-
 * Pausing Passcode activity while it is "encrypting wallet" crashes.
 
 * Need to handle precision of BTC values much better then 4 fixed places.
@@ -162,8 +159,6 @@ Restore Wallet
 
     Verify margin in each account.
 
-    Restore again using hex seed.
-
     Rename acct0, acct1, acct2.
 
     Send 0.001 from acct2 to external.
@@ -172,6 +167,14 @@ Restore Wallet
 
     Logout, re-login w/ new passcode.
 
+    Verify account names.
+
     Verify margin in each account.
 
 Rescan blockchain.
+
+Restore Big Wallet (hex seed this time).
+
+    Confirm margin (likely not good).
+
+    Rescan to fix missing addresses.

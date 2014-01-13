@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -92,6 +93,7 @@ public class WalletService extends Service
     private double				mPercentDone = 0.0;
     private int					mBlocksToGo;
     private Date				mScanDate;
+    private long				mMsecsLeft;
 
     private KeyCrypter			mKeyCrypter;
     private KeyParameter		mAesKey;
@@ -103,10 +105,14 @@ public class WalletService extends Service
 
     private MyDownloadListener mDownloadListener =
         new MyDownloadListener() {
-            protected void progress(double pct, int blocksToGo, Date date) {
-                mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO", (int) pct, blocksToGo));
+            protected void progress(double pct, int blocksToGo, Date date, long msecsLeft) {
+                Date cmplDate = new Date(System.currentTimeMillis() + msecsLeft);
+                mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO, COMPLETE AT %s",
+                                           (int) pct, blocksToGo,
+                                           DateFormat.getDateTimeInstance().format(cmplDate)));
                 mBlocksToGo = blocksToGo;
                 mScanDate = date;
+                mMsecsLeft = msecsLeft;
                 if (mPercentDone != pct) {
                     mPercentDone = pct;
                     setState(State.SYNCING);
@@ -497,6 +503,10 @@ public class WalletService extends Service
 
     public Date getScanDate() {
         return mScanDate;
+    }
+
+    public long getMsecsLeft() {
+        return mMsecsLeft;
     }
 
     public String getStateString() {

@@ -69,6 +69,7 @@ safe places that only you have access to.
     <string name="sync_percent_label">Percent Complete</string>
     <string name="sync_blocks_left_label">Blocks Left</string>
     <string name="sync_scan_date_label">Scan Date</string>
+    <string name="sync_scan_cmpl_label">Complete At</string>
     <string name="sync_abort">Abort and Exit</string>
     <string name="title_activity_main">Wallet32</string>
     <string name="balance_header_acct">Account</string>
