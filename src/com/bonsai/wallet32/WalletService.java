@@ -103,8 +103,8 @@ public class WalletService extends Service
 
     private static final String mFilePrefix = "wallet32";
 
-    private MyDownloadListener mDownloadListener =
-        new MyDownloadListener() {
+    private MyDownloadListener mkDownloadListener() {
+        return new MyDownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date, long msecsLeft) {
                 Date cmplDate = new Date(System.currentTimeMillis() + msecsLeft);
                 mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO, COMPLETE AT %s",
@@ -119,6 +119,7 @@ public class WalletService extends Service
                 }
             }
         };
+    }
 
     private AbstractWalletEventListener mWalletListener =
         new AbstractWalletEventListener() {
@@ -225,7 +226,7 @@ public class WalletService extends Service
                         mHDWallet.ensureMargins(wallet());
                     }
                 };
-            mKit.setDownloadListener(mDownloadListener);
+            mKit.setDownloadListener(mkDownloadListener());
             if (chkpntis != null)
                 mKit.setCheckpoints(chkpntis);
 
