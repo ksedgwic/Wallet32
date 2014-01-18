@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
-import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
 
 import android.content.Intent;
@@ -36,7 +36,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewSeedActivity.class);
 
-    private MnemonicCode	mCoder;
+    private MnemonicCodeX	mCoder;
 
     private boolean			mSeedFetched;
 
@@ -46,7 +46,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
         try {
             InputStream wis = getApplicationContext()
                 .getAssets().open("wordlist/english.txt");
-            mCoder = new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
+            mCoder = new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -65,7 +65,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
-import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
 
@@ -84,6 +84,7 @@ public class HDWallet {
     private final DeterministicKey	mMasterKey;
 
     private final byte[]			mWalletSeed;
+    private final MnemonicCodeX.Version	mBIP39Version;
 
     private ArrayList<HDAccount>	mAccounts;
 
@@ -183,6 +184,26 @@ public class HDWallet {
 
         try {
 			mWalletSeed = Base58.decode(walletNode.path("seed").textValue());
+
+            if (!walletNode.has("bip39_version")) {
+                mBIP39Version = MnemonicCodeX.Version.V0_5;
+                mLogger.info("defaulting BIP39 version to V0_5");
+            } else {
+                String bipverstr = walletNode.path("bip39_version").textValue();
+                if (bipverstr.equals("V0_5")) {
+                    mBIP39Version = MnemonicCodeX.Version.V0_5;
+                    mLogger.info("setting BIP39 version to V0_5");
+                }
+                else if (bipverstr.equals("V0_6")) {
+                    mBIP39Version = MnemonicCodeX.Version.V0_6;
+                    mLogger.info("setting BIP39 version to V0_6");
+                }
+                else
+                {
+                    throw new RuntimeException("unknown BIP39 version: " + bipverstr);
+                }
+            }
+
 		} catch (AddressFormatException e) {
             throw new RuntimeException("couldn't decode wallet seed");
 		}
@@ -190,10 +211,10 @@ public class HDWallet {
         byte[] hdseed;
         try {
             InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
-            MnemonicCode mc =
-                new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
+            MnemonicCodeX mc =
+                new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCode.toSeed(wordlist, "");
+            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -217,21 +238,34 @@ public class HDWallet {
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
                     byte[] walletSeed,
-                    int numAccounts) {
+                    int numAccounts,
+                    MnemonicCodeX.Version bip39Version) {
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
         mWalletSeed = walletSeed;
+        mBIP39Version = bip39Version;
+        
+        switch (mBIP39Version) {
+        case V0_5:
+            mLogger.info("BIP39 version V0_5");
+            break;
+        case V0_6:
+            mLogger.info("BIP39 version V0_6");
+            break;
+        default:
+            throw new RuntimeException("unknown BIP39 version");
+        }
 
         byte[] hdseed;
         try {
             InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
-            MnemonicCode mc =
-                new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
+            MnemonicCodeX mc =
+                new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCode.toSeed(wordlist, "");
+            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -538,6 +572,16 @@ public class HDWallet {
         Map<String,Object> obj = new HashMap<String,Object>();
 
         obj.put("seed", Base58.encode(mWalletSeed));
+        switch (mBIP39Version) {
+        case V0_5:
+            obj.put("bip39_version", "V0_5");
+            break;
+        case V0_6:
+            obj.put("bip39_version", "V0_6");
+            break;
+        default:
+            throw new RuntimeException("unknown BIP39 version");
+        }
 
         List<Object> acctList = new ArrayList<Object>();
         for (HDAccount acct : mAccounts)

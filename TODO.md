@@ -121,11 +121,12 @@ requirements in Section 742.15(c) of the EAR.
 
 ----------------------------------------------------------------
 
-* Added view address at blockchain.info action to address viewer.
-* Added add account action.
-* Improved sync progress update rate.
-* Added view transaction activity.
-* added view transaction at blockchain.info action.
+* Improved initial startup speed.
+* Updated to bitcoinj-0.11-SNAPSHOT.
+* Added sync completion estimate.
+* Fixed missing addresses bug in add-account.
+
+----------------------------------------------------------------
 
 Kenstigator: yes, that's usually caused by protobufs being code hungry.
 7:24 Kenstigator: do you have any custom proto types there? i'd be surprised if for some reason you hit that but Andreas never did

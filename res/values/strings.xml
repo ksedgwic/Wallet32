@@ -16,6 +16,7 @@
     <string name="restore_mnemonic">Or Enter Wallet Mnemonic:</string>
     <string name="restore_mnemonic_hint">space separated word list</string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
+    <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
     <string name="restore_badhexlength">Bad hex seed length</string>
     <string name="restore_bothbad">Both hex seed and mnemonic specified</string>
@@ -69,7 +70,7 @@ safe places that only you have access to.
     <string name="sync_percent_label">Percent Complete</string>
     <string name="sync_blocks_left_label">Blocks Left</string>
     <string name="sync_scan_date_label">Scan Date</string>
-    <string name="sync_scan_cmpl_label">Complete At</string>
+    <string name="sync_scan_cmpl_label">Complete In</string>
     <string name="sync_abort">Abort and Exit</string>
     <string name="title_activity_main">Wallet32</string>
     <string name="balance_header_acct">Account</string>

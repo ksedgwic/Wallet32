@@ -80,13 +80,12 @@ public class MainActivity extends BaseWalletActivity {
         if (mWalletService.getState() == WalletService.State.SYNCING) {
             int pctdone = (int) mWalletService.getPercentDone();
 
-            Date cmplDate = new Date(System.currentTimeMillis() +
-                                     mWalletService.getMsecsLeft());
+            String timeLeft = formatTimeLeft(mWalletService.getMsecsLeft());
 
             updateSyncStats(String.format("%d%%", pctdone),
                             String.format("%d", mWalletService.getBlocksToGo()),
                             mDateFormatter.format(mWalletService.getScanDate()),
-                            mDateFormatter.format(cmplDate));
+                            timeLeft);
 
             if (mDialogView != null) {
                 ProgressBar pb =
@@ -109,6 +108,23 @@ public class MainActivity extends BaseWalletActivity {
 	@Override
     protected void onRateChanged() {
         updateBalances();
+    }
+
+    private String formatTimeLeft(long msec) {
+        final long SECOND = 1000;
+        final long MINUTE = 60 * SECOND;
+        final long HOUR = 60 * MINUTE;
+
+        long hrs = msec / HOUR;
+        long mins = (msec - (hrs * HOUR)) / MINUTE;
+        long secs = (msec - (hrs * HOUR) - (mins * MINUTE)) / SECOND;
+
+        if (msec > HOUR)
+            return String.format("%d:%02d:%02d", hrs, mins, secs);
+        else if (msec > MINUTE)
+            return String.format("%d:%02d", mins, secs);
+        else
+            return String.format("%d", secs);
     }
 
     private void doExit() {

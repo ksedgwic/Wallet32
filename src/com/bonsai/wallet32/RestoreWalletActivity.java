@@ -35,12 +35,13 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.VerificationException;
-import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
 import com.google.bitcoin.params.MainNetParams;
 
@@ -105,11 +106,11 @@ public class RestoreWalletActivity extends ActionBarActivity {
 
         // How about a mnemonic string?
         else if (mnemonicstr.length() > 0) {
-            MnemonicCode mc;
+            MnemonicCodeX mc;
 			try {
                 InputStream wis = getApplicationContext()
                     .getAssets().open("wordlist/english.txt");
-				mc = new MnemonicCode(wis, MnemonicCode.BIP39_ENGLISH_SHA256);
+				mc = new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
@@ -154,6 +155,10 @@ public class RestoreWalletActivity extends ActionBarActivity {
             return;
         }
 
+        CheckBox legacycb = (CheckBox) findViewById(R.id.legacy_bipver);
+        MnemonicCodeX.Version bip39version =
+            legacycb.isChecked() ? MnemonicCodeX.Version.V0_5 : MnemonicCodeX.Version.V0_6;
+
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
         // Setup a wallet with the restore seed.
@@ -164,7 +169,8 @@ public class RestoreWalletActivity extends ActionBarActivity {
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
-                                         numaccts);
+                                         numaccts,
+                                         bip39version);
         hdwallet.persist();
 
         // Spin up the WalletService.

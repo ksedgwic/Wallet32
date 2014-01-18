@@ -35,6 +35,7 @@ import android.content.Context;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
+import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.protobuf.ByteString;
 
@@ -95,6 +96,9 @@ public class WalletUtil {
 
         int numAccounts = 2;
 
+        // New wallets are version V0_6.
+        MnemonicCodeX.Version bip39version = MnemonicCodeX.Version.V0_6;
+
         // Setup a wallet with the seed.
         HDWallet hdwallet = new HDWallet(context,
         								 params,
@@ -103,7 +107,8 @@ public class WalletUtil {
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
-                                         numAccounts);
+                                         numAccounts,
+                                         bip39version);
         hdwallet.persist();
     }
 

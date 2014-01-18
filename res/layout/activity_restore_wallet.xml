@@ -57,7 +57,7 @@
     <View
 	android:layout_width="fill_parent"
 	android:layout_height="0dp"
-	android:layout_weight="8"
+	android:layout_weight="4"
 	/>
 
     <TextView
@@ -82,6 +82,20 @@
 	android:layout_width="fill_parent"
 	android:layout_height="0dp"
 	android:layout_weight="4"
+	/>
+
+    <CheckBox
+        android:id="@+id/legacy_bipver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/restore_legacybipver"
+	/>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="8"
 	/>
 
     <Button
