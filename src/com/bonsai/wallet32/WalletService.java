@@ -57,6 +57,7 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.crypto.KeyCrypter;
+import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.wallet.WalletTransaction;
 
@@ -376,6 +377,10 @@ public class WalletService extends Service
 
     public byte[] getWalletSeed() {
         return mHDWallet == null ? null : mHDWallet.getWalletSeed();
+    }
+
+    public MnemonicCodeX.Version getBIP39Version() {
+        return mHDWallet.getBIP39Version();
     }
 
     public void changePasscode(KeyParameter oldAesKey,

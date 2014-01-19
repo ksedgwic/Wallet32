@@ -108,6 +108,19 @@ public class ViewSeedActivity extends BaseWalletActivity {
         }
         TextView mnetv = (TextView) findViewById(R.id.seed_mnemonic);
         mnetv.setText(builder.toString());
+        
+        TextView bipvertv = (TextView) findViewById(R.id.bip39_version);
+        MnemonicCodeX.Version bipver = mWalletService.getBIP39Version();
+        switch (bipver) {
+        case V0_5:
+            bipvertv.setText(mRes.getString(R.string.seed_bip39_legacy));
+            break;
+        case V0_6:
+            bipvertv.setText(mRes.getString(R.string.seed_bip39_current));
+            break;
+        default:
+            throw new RuntimeException("unknown BIP39 version");
+        }
     }
 
     public void seedDone(View view) {

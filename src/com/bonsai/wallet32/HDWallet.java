@@ -291,6 +291,10 @@ public class HDWallet {
         return mWalletSeed;
     }
 
+    public MnemonicCodeX.Version getBIP39Version() {
+        return mBIP39Version;
+    }
+
     public List<HDAccount> getAccounts() {
         return mAccounts;
     }

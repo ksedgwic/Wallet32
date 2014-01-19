@@ -17,6 +17,7 @@
     <string name="restore_mnemonic_hint">space separated word list</string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
     <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
+    <string name="restore_legacydescr">If your wallet was created prior to version v0.0.8 (19-Jan-2014) you should check this box:</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
     <string name="restore_badhexlength">Bad hex seed length</string>
     <string name="restore_bothbad">Both hex seed and mnemonic specified</string>
@@ -64,6 +65,15 @@ safe places that only you have access to.
 
     <string name="seed_hex_label">Hex Value</string>
     <string name="seed_mnemonic_label">Ordered Word List</string>
+    <string name="seed_bip39_current"><![CDATA[
+\nYour wallet is using the current version of BIP-0039 (v0.6);
+you should not use the legacy setting if you need to recover it.
+    ]]></string>
+    <string name="seed_bip39_legacy"><![CDATA[
+\nYour wallet is using a legacy version of BIP-0039 (v0.5);
+you must use the legacy setting to recover it.
+    ]]></string>
+    
     <string name="seed_done">Done</string>
     <string name="base_error_ok">OK</string>
     <string name="sync_title">Sync Progress</string>
