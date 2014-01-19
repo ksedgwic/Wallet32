@@ -17,7 +17,7 @@
     <string name="restore_mnemonic_hint">space separated word list</string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
     <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
-    <string name="restore_legacydescr">If your wallet was created prior to version v0.0.8 (19-Jan-2014) you should check this box:</string>
+    <string name="restore_legacydescr">If your wallet was created prior to version v0.1.8 (19-Jan-2014) you should check this box:</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
     <string name="restore_badhexlength">Bad hex seed length</string>
     <string name="restore_bothbad">Both hex seed and mnemonic specified</string>
@@ -209,7 +209,7 @@ you must use the legacy setting to recover it.
     <string name="about_contents"><![CDATA[\n
 Wallet32\n
 \n
-Version: 0.1.7 (12-Jan-2014)\n
+Version: 0.1.8 (19-Jan-2014)\n
 \n
 Source:  https://github.com/ksedgwic/Wallet32\n
 \n

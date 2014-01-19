@@ -14,6 +14,8 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
+* Notification on transaction and confirmation events.
+
 * Testnet build.
 
 * View Seed needs to be "pre-main" when started from create wallet
@@ -52,8 +54,6 @@ Next
 * Move view seed from main to settings.
 
 * Auto logout of service after idle for N minutes.
-
-* Audio/Vibration notification of wallet changes.
 
 * Non-USD fiat support.
 
