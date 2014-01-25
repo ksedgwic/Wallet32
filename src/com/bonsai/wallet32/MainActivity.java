@@ -65,7 +65,31 @@ public class MainActivity extends BaseWalletActivity {
     protected void onWalletServiceBound() {
         // If the WalletService isn't ready yet put up the sync progress dialog.
         if (mWalletService.getState() != WalletService.State.READY) {
-            showSyncProgressDialog();
+
+            String details;
+
+            switch(mWalletService.getSyncState()) {
+            case CREATED:
+                details = mRes.getString(R.string.sync_details_created);
+                break;
+            case RESTORE:
+                details = mRes.getString(R.string.sync_details_restore);
+                break;
+            case STARTUP:
+                details = mRes.getString(R.string.sync_details_startup);
+                break;
+            case RESCAN:
+                details = mRes.getString(R.string.sync_details_rescan);
+                break;
+            case RERESCAN:
+                details = mRes.getString(R.string.sync_details_rerescan);
+                break;
+            default:
+                details = "???";	// Shouldn't happen
+                break;
+            }
+
+            showSyncProgressDialog(details);
         }
 
         // In case the WalletService is already READY ...
@@ -120,11 +144,11 @@ public class MainActivity extends BaseWalletActivity {
         long secs = (msec - (hrs * HOUR) - (mins * MINUTE)) / SECOND;
 
         if (msec > HOUR)
-            return String.format("%d:%02d:%02d", hrs, mins, secs);
+            return String.format("%d:%02d:%02d hrs", hrs, mins, secs);
         else if (msec > MINUTE)
-            return String.format("%d:%02d", mins, secs);
+            return String.format("%d:%02d min", mins, secs);
         else
-            return String.format("%d", secs);
+            return String.format("%d sec", secs);
     }
 
     private void doExit() {
@@ -143,10 +167,14 @@ public class MainActivity extends BaseWalletActivity {
 	public class SyncProgressDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String details = getArguments().getString("details");
             AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
             LayoutInflater inflater = getActivity().getLayoutInflater();
             mDialogView = inflater.inflate(R.layout.dialog_sync_progress, null);
+            TextView detailsTextView =
+                (TextView) mDialogView.findViewById(R.id.sync_details);
+            detailsTextView.setText(details);
             builder.setView(mDialogView)
                 .setNegativeButton(R.string.sync_abort,
                                    new DialogInterface.OnClickListener() {
@@ -160,12 +188,15 @@ public class MainActivity extends BaseWalletActivity {
         }
     }
 
-    private void showSyncProgressDialog() {
+    private void showSyncProgressDialog(String details) {
         // Do we already have a progress dialog up?
         if (mSyncProgressDialog != null)
             return;
 
         DialogFragment df = new SyncProgressDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("details", details);
+        df.setArguments(args);
         df.setCancelable(false);
         df.show(getSupportFragmentManager(), "sync_progress_dialog");
         mSyncProgressDialog = df;

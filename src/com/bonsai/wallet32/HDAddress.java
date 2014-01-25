@@ -76,6 +76,9 @@ public class HDAddress {
         
         mECKey = new ECKey(prvBytes, mPubBytes);
 
+        // Set creation time to Wallet32 epoch.
+        mECKey.setCreationTimeSeconds(1381861127);
+
         // Derive public key, public hash and address.
         mPubKey = mECKey.getPubKey();
         mPubKeyHash = mECKey.getPubKeyHash();
@@ -88,7 +91,7 @@ public class HDAddress {
         mAvailable = addrNode.has("available") ?
             addrNode.path("available").bigIntegerValue() : mBalance;
 
-        mLogger.info("created address " + mAddrKey.getPath() + ": " +
+        mLogger.info("read address " + mAddrKey.getPath() + ": " +
                      mAddress.toString());
     }
 
@@ -106,6 +109,10 @@ public class HDAddress {
         mPubBytes = mAddrKey.getPubKeyBytes(); // Expensive, save.
         mECKey = new ECKey(prvBytes, mPubBytes);
 
+        // Set creation time to now.
+        long now = Utils.now().getTime() / 1000;
+        mECKey.setCreationTimeSeconds(now);
+
         // Derive public key, public hash and address.
         mPubKey = mECKey.getPubKey();
         mPubKeyHash = mECKey.getPubKeyHash();
@@ -122,25 +129,9 @@ public class HDAddress {
 
     public void gatherKey(KeyCrypter keyCrypter,
                           KeyParameter aesKey,
-                          boolean isRestore,
+                          long creationTime,
                           List<ECKey> keys) {
-
-        if (isRestore) {
-            // If we are restoring this wallet we'll need to scan from the
-            // earliest date that the keys could have been created on.
-            //
-            // For now, set the creation time to Tue Oct 15 11:18:03 PDT
-            // 2013
-            //
-            mECKey.setCreationTimeSeconds(1381861127);
-        }
-        else {
-            // This is a new key, set key creation time to now.  If we
-            // are re-instantiating an existing wallet this addKey
-            // will be ignored and this key creation time won't matter.
-            //
-            mECKey.setCreationTimeSeconds(Utils.now().getTime() / 1000);
-        }
+        mECKey.setCreationTimeSeconds(creationTime);
         keys.add(mECKey.encrypt(keyCrypter, aesKey));
     }
 

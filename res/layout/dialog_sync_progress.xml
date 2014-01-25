@@ -22,7 +22,19 @@
   <!-- Rigid Vertical Spacer -->
   <View
       android:layout_width="fill_parent"
-      android:layout_height="10dp"
+      android:layout_height="5dp"
+      />
+
+  <TextView
+      android:id="@+id/sync_details"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      />
+
+  <!-- Rigid Vertical Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="16dp"
       />
 
   <ProgressBar
@@ -35,7 +47,7 @@
   <!-- Rigid Vertical Spacer -->
   <View
       android:layout_width="fill_parent"
-      android:layout_height="10dp"
+      android:layout_height="16dp"
       />
 
   <TableLayout
@@ -161,7 +173,7 @@
   <!-- Rigid Vertical Spacer -->
   <View
       android:layout_width="fill_parent"
-      android:layout_height="10dp"
+      android:layout_height="5dp"
       />
 
 </LinearLayout>

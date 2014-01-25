@@ -87,11 +87,14 @@ public class MyWalletAppKit extends AbstractIdleService {
     private String userAgent, version;
     private final KeyCrypter keyCrypter;
 
-    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix, KeyCrypter keyCrypter) {
+    private final long scanTime;
+
+    public MyWalletAppKit(NetworkParameters params, File directory, String filePrefix, KeyCrypter keyCrypter, long scanTime) {
         this.params = checkNotNull(params);
         this.directory = checkNotNull(directory);
         this.filePrefix = checkNotNull(filePrefix);
         this.keyCrypter = checkNotNull(keyCrypter);
+        this.scanTime = scanTime;
     }
 
     /** Will only connect to the given addresses. Cannot be called after startup. */
@@ -197,18 +200,8 @@ public class MyWalletAppKit extends AbstractIdleService {
 
             vStore = new SPVBlockStore(params, chainFile);
             if (!chainFileExists && checkpoints != null) {
-                // Ugly hack! We have to create the wallet once here to learn the earliest key time, and then throw it
-                // away. The reason is that wallet extensions might need access to peergroups/chains/etc so we have to
-                // create the wallet later, but we need to know the time early here before we create the BlockChain
-                // object.
-                long time = Long.MAX_VALUE;
-                if (vWalletFile.exists()) {
-                    Wallet wallet = new Wallet(params);
-                    FileInputStream stream = new FileInputStream(vWalletFile);
-                    new WalletProtobufSerializer().readWallet(WalletProtobufSerializer.parseToProto(stream), wallet);
-                    time = wallet.getEarliestKeyCreationTime();
-                }
-                CheckpointManager.checkpoint(params, checkpoints, vStore, time);
+                mLogger.info(String.format("checkpoint at time %d", scanTime));
+                CheckpointManager.checkpoint(params, checkpoints, vStore, scanTime);
             }
             vChain = new BlockChain(params, vStore);
             vPeerGroup = new PeerGroup(params, vChain);

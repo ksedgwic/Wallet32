@@ -174,7 +174,11 @@ public class RestoreWalletActivity extends ActionBarActivity {
         hdwallet.persist();
 
         // Spin up the WalletService.
-        startService(new Intent(this, WalletService.class));
+        Intent svcintent = new Intent(this, WalletService.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("SyncState", "RESTORE");
+        svcintent.putExtras(bundle);
+        startService(svcintent);
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

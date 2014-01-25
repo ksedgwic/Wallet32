@@ -53,6 +53,14 @@
                 android:value="com.bonsai.wallet32.MainActivity" />
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.RescanActivity"
+            android:label="@string/title_activity_rescan"
+            android:parentActivityName="com.bonsai.wallet32.RescanActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bonsai.wallet32.MainActivity" />
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.ViewAccountActivity"
             android:label="@string/title_activity_view_account"
 	    android:windowSoftInputMode="stateHidden"

@@ -41,6 +41,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -53,6 +54,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WrongNetworkException;
@@ -78,6 +80,14 @@ public class WalletService extends Service
         ERROR
     }
 
+    public enum SyncState {
+        CREATED,		// First scan after creation.
+        RESTORE,		// Scanning to restore.
+        STARTUP,		// Catching up on startup.
+        RESCAN,			// Rescanning blockchain.
+        RERESCAN		// Needed to rescan due to margin.
+    }
+
     private int NOTIFICATION = R.string.wallet_service_started;
 
     private NotificationManager		mNM;
@@ -86,6 +96,7 @@ public class WalletService extends Service
     private final IBinder mBinder = new WalletServiceBinder();
 
     private State				mState;
+    private SyncState			mSyncState;
     private MyWalletAppKit		mKit;
     private NetworkParameters	mParams;
     private SetupWalletTask		mTask;
@@ -154,15 +165,17 @@ public class WalletService extends Service
         }
     }
     
-    private class SetupWalletTask extends AsyncTask<Boolean, Void, Void> {
+    private class SetupWalletTask extends AsyncTask<Long, Void, Void> {
 		@Override
-		protected Void doInBackground(Boolean... params)
+		protected Void doInBackground(Long... params)
         {
-			final Boolean fullRescan = params[0];
+            // scanTime  0 : full rescan
+            // scanTime  t : scan from time t
+            final Long scanTime = params[0];
             WalletApplication wallapp = (WalletApplication) mContext;
 
-            mLogger.info("setting up wallet, fullRescan=" +
-                         fullRescan.toString());
+            mLogger.info("setting up wallet, scanTime=" +
+                         scanTime.toString());
 
             mLogger.info("getting network parameters");
 
@@ -189,11 +202,11 @@ public class WalletService extends Service
 
             mLogger.info("creating new wallet app kit");
 
-            // Checkpointing fails on rescan because the earliest
+            // Checkpointing fails on full rescan because the earliest
             // create time is earlier then the genesis block time.
             //
             InputStream chkpntis = null;
-            if (!fullRescan) {
+            if (scanTime != 0) {
                 try {
                     chkpntis = getAssets().open("checkpoints");
                 } catch (IOException e) {
@@ -204,7 +217,8 @@ public class WalletService extends Service
             mKit = new MyWalletAppKit(mParams,
                                       mContext.getFilesDir(),
                                       mFilePrefix,
-                                      mKeyCrypter)
+                                      mKeyCrypter,
+                                      scanTime)
                 {
                     @Override
                     protected void onSetupCompleted() {
@@ -215,7 +229,7 @@ public class WalletService extends Service
                         // WalletAppKit.
                         //
                         ArrayList<ECKey> keys = new ArrayList<ECKey>();
-                        mHDWallet.gatherAllKeys(fullRescan, keys);
+                        mHDWallet.gatherAllKeys(scanTime, keys);
                         mLogger.info(String.format("adding %d keys",
                                                    keys.size()));
                         wallet().addKeys(keys);
@@ -238,7 +252,8 @@ public class WalletService extends Service
             // Download the block chain and wait until it's done.
             mKit.startAndWait();
 
-            mLogger.info("blockchain setup finished, state = " + getStateString());
+            mLogger.info("blockchain setup finished, state = " +
+                         getStateString());
 
             // Bail if we're being shutdown ...
             if (mState == State.SHUTDOWN) {
@@ -307,11 +322,27 @@ public class WalletService extends Service
     {
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
+        // Establish our SyncState
+        Bundle bundle = intent.getExtras();
+        String syncStateStr = bundle.getString("SyncState");
+        if (syncStateStr == null)
+            syncStateStr = "STARTUP";
+        mSyncState =
+            syncStateStr.equals("CREATED")	? SyncState.CREATED :
+            syncStateStr.equals("RESTORE")	? SyncState.RESTORE :
+            syncStateStr.equals("STARTUP")	? SyncState.STARTUP :
+            syncStateStr.equals("RESCAN")	? SyncState.RESCAN :
+            syncStateStr.equals("RERESCAN")	? SyncState.RERESCAN :
+            SyncState.STARTUP;
+            
         mKeyCrypter = wallapp.mKeyCrypter;
         mAesKey = wallapp.mAesKey;
 
+        // Set any new key's creation time to now.
+        long now = Utils.now().getTime() / 1000;
+
         mTask = new SetupWalletTask();
-        mTask.execute(false);
+        mTask.execute(now);
 
         mLogger.info("WalletService started");
 
@@ -433,23 +464,28 @@ public class WalletService extends Service
         mHDWallet.addAccount();
         mHDWallet.ensureMargins(mKit.wallet());
 
+        // Set the new keys creation time to now.
+        long now = Utils.now().getTime() / 1000;
+
         // Adding all the keys is overkill, but it is simpler for now.
         ArrayList<ECKey> keys = new ArrayList<ECKey>();
-        mHDWallet.gatherAllKeys(false, keys);
+        mHDWallet.gatherAllKeys(now, keys);
         mLogger.info(String.format("adding %d keys", keys.size()));
         mKit.wallet().addKeys(keys);
 
         mHDWallet.persist();
     }
 
-    public void rescanBlockchain() {
-        mLogger.info("RESCAN!");
+    public void rescanBlockchain(long rescanTime) {
+        mLogger.info(String.format("RESCANNING from %d", rescanTime));
 
         // Make sure we are in a good state for this.
         if (mState != State.READY) {
             mLogger.warn("can't rescan until the wallet is ready");
             return;
         }
+
+        setSyncState(SyncState.RESCAN);
 
         // Remove our wallet event listener.
         mKit.wallet().removeEventListener(mWalletListener);
@@ -492,11 +528,19 @@ public class WalletService extends Service
 
         setState(State.SETUP);
         mTask = new SetupWalletTask();
-        mTask.execute(true);
+        mTask.execute(rescanTime);
+    }
+
+    public void setSyncState(SyncState syncState) {
+        mSyncState = syncState;
     }
 
     public State getState() {
         return mState;
+    }
+
+    public SyncState getSyncState() {
+        return mSyncState;
     }
 
     public double getPercentDone() {

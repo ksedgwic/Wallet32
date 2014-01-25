@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -101,10 +102,10 @@ public class HDChain {
 
     public void gatherAllKeys(KeyCrypter keyCrypter,
                               KeyParameter aesKey,
-                              boolean isRestore,
+                              long creationTime,
                               List<ECKey> keys) {
         for (HDAddress hda : mAddrs)
-            hda.gatherKey(keyCrypter, aesKey, isRestore, keys);
+            hda.gatherKey(keyCrypter, aesKey, creationTime, keys);
     }
 
     public void applyOutput(byte[] pubkey,
@@ -201,13 +202,16 @@ public class HDChain {
             mLogger.info(String.format("%s expanding margin, adding %d addrs",
                                        mChainKey.getPath(), numAdd));
 
+            // Set the new keys creation time to now.
+            long now = Utils.now().getTime() / 1000;
+
             // Add the addresses ...
             int newSize = mAddrs.size() + numAdd;
             ArrayList<ECKey> keys = new ArrayList<ECKey>();
             for (int ii = mAddrs.size(); ii < newSize; ++ii) {
                 HDAddress hda = new HDAddress(mParams, mChainKey, ii);
                 mAddrs.add(hda);
-                hda.gatherKey(keyCrypter, aesKey, false, keys);
+                hda.gatherKey(keyCrypter, aesKey, now, keys);
             }
             mLogger.info(String.format("adding %d keys", keys.size()));
             wallet.addKeys(keys);

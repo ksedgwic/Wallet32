@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".RescanActivity"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    >
+
+  <LinearLayout
+      android:layout_width="280dp"
+      android:layout_height="fill_parent"
+      android:orientation="vertical"
+      android:gravity="center"
+      >
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="5"
+	/>
+
+    <RadioGroup
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	>
+
+      <RadioButton
+	  android:id="@+id/full_choice"
+	  android:text="@string/rescan_full"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+          android:onClick="onFullClicked"
+	  android:layout_marginBottom="10dp"
+	  />
+
+      <RadioButton
+	  android:id="@+id/epoch_choice"
+	  android:text="@string/rescan_epoch"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+          android:onClick="onEpochClicked"
+	  />
+
+    </RadioGroup>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="5"
+	/>
+
+    <TextView
+	android:id="@+id/directions"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="@string/rescan_directions"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	/>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="20"
+	/>
+
+    <Button
+	android:id="@+id/rescan"
+	android:layout_width="180dp"
+	android:layout_height="wrap_content"
+	android:text="@string/rescan_rescan"
+	android:onClick="doRescan"
+	/>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
+    <Button
+	android:id="@+id/rescan"
+	android:layout_width="180dp"
+	android:layout_height="wrap_content"
+	android:text="@string/rescan_cancel"
+	android:onClick="doCancel"
+	/>
+
+    <!-- Stretchy Spacer -->
+    <View
+	android:layout_width="fill_parent"
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	/>
+
+  </LinearLayout>
+
+</LinearLayout>

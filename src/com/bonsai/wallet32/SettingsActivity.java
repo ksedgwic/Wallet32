@@ -116,12 +116,12 @@ public class SettingsActivity extends PreferenceActivity {
                 (new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
-                            showConfirmDialog
-                                (mRes.getString(R.string.pref_rescan_title),
-                                 mRes.getString(R.string.pref_rescan_confirm),
-                                 mRes.getString(R.string.pref_rescan_yes),
-                                 mRes.getString(R.string.pref_rescan_no),
-                                 mRescanConfirmed);
+                            Intent intent =
+                                new Intent(mThis, RescanActivity.class);
+                            Bundle bundle = new Bundle();
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();	// All done here...
                             return true;
                         }
                     });
@@ -152,28 +152,6 @@ public class SettingsActivity extends PreferenceActivity {
                     mWalletService.addAccount();
 
                     // Back to the main activity.
-                    Intent intent =
-                        new Intent(mThis, MainActivity.class);
-                    intent.setFlags
-                        (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    startActivity(intent);
-
-                    // All done here...
-                    finish();
-                }
-            }
-        };
-
-    private DialogInterface.OnClickListener mRescanConfirmed = 
-        new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                mLogger.info("rescan confirmed");
-                if (mWalletService != null)
-                {
-                    // Kick off the rescan.
-                    mWalletService.rescanBlockchain();
-
-                    // Back to the main activity for progress.
                     Intent intent =
                         new Intent(mThis, MainActivity.class);
                     intent.setFlags

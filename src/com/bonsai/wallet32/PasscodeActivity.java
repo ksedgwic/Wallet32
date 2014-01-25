@@ -274,7 +274,11 @@ public class PasscodeActivity extends ActionBarActivity {
                 WalletUtil.createWallet(getApplicationContext());
 
                 // Spin up the WalletService.
-                startService(new Intent(this, WalletService.class));
+                Intent svcintent = new Intent(this, WalletService.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("SyncState", "CREATED");
+                svcintent.putExtras(bundle);
+                startService(svcintent);
 
                 Intent intent = new Intent(this, ViewSeedActivity.class);
                 startActivity(intent);
@@ -308,7 +312,11 @@ public class PasscodeActivity extends ActionBarActivity {
 
         else {
             // Spin up the WalletService.
-            startService(new Intent(this, WalletService.class));
+            Intent svcintent = new Intent(this, WalletService.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("SyncState", "STARTUP");
+            svcintent.putExtras(bundle);
+            startService(svcintent);
 
             // Off to the main activity.
             Intent intent = new Intent(this, MainActivity.class);

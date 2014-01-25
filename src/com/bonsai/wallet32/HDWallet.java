@@ -309,9 +309,9 @@ public class HDWallet {
         mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ndx));
     }
 
-    public void gatherAllKeys(boolean isRestore, List<ECKey> keys) {
+    public void gatherAllKeys(long creationTime, List<ECKey> keys) {
         for (HDAccount acct : mAccounts)
-            acct.gatherAllKeys(mKeyCrypter, mAesKey, isRestore, keys);
+            acct.gatherAllKeys(mKeyCrypter, mAesKey, creationTime, keys);
     }
 
     public void clearBalances() {

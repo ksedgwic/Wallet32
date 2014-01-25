@@ -35,8 +35,14 @@
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
     <string name="passcode_waittitle">Please Wait</string>
-    <string name="passcode_waitvalidate">Decrypting your wallet &#8230;</string>
-    <string name="passcode_waitsetup">Creating encrypted wallet &#8230;</string>
+    <string name="passcode_waitvalidate"><![CDATA[
+Your wallet is encrypted with scrypt to keep it safe;
+decrypting it will take a few seconds ...\n
+    ]]></string>
+    <string name="passcode_waitsetup"><![CDATA[
+Your wallet is encrypted with scrypt to keep it safe;
+setting it up will take a few seconds ...\n
+    ]]></string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
     <string name="passcode_2">2</string>
@@ -51,7 +57,6 @@
     <string name="passcode_del">Del</string>
     <string name="passcode_clr">Clr</string>
     <string name="title_activity_view_seed">Wallet Seed</string>
-
     <string name="seed_directions_label">BACKUP YOUR WALLET!</string>
     <string name="seed_directions"><![CDATA[
 \nWallet32 is a BIP-0032 Hierarchical Deterministic wallet and can
@@ -62,7 +67,6 @@ anyone else learns your seed value they can restore your wallet
 elsewhere and take your funds! Store your seed backup in multiple
 safe places that only you have access to.
     ]]></string>
-
     <string name="seed_hex_label">Hex Value</string>
     <string name="seed_mnemonic_label">Ordered Word List</string>
     <string name="seed_bip39_current"><![CDATA[
@@ -73,14 +77,45 @@ you should not use the legacy setting if you need to recover it.
 \nYour wallet is using a legacy version of BIP-0039 (v0.5);
 you must use the legacy setting to recover it.
     ]]></string>
-    
     <string name="seed_done">Done</string>
+    <string name="title_activity_rescan">Rescan Blockchain</string>
+    <string name="rescan_full">Full Rescan (EXPENSIVE!)</string>
+    <string name="rescan_epoch">Rescan from Wallet32 Epoch</string>
+    <string name="rescan_directions"><![CDATA[
+An epoch rescan starts from the date that Wallet32 first became
+available; it\'s almost always what you want.\n
+\nFull rescans are much more expensive and should only be used if
+you need to scan for transactions somehow created prior to
+using Wallet32 ...
+    ]]></string>
+    <string name="rescan_rescan">Rescan</string>
+    <string name="rescan_cancel">Cancel</string>
     <string name="base_error_ok">OK</string>
     <string name="sync_title">Sync Progress</string>
     <string name="sync_percent_label">Percent Complete</string>
     <string name="sync_blocks_left_label">Blocks Left</string>
     <string name="sync_scan_date_label">Scan Date</string>
     <string name="sync_scan_cmpl_label">Complete In</string>
+    <string name="sync_details_created"><![CDATA[
+Your wallet is now syncing with the blockchain for the first time.
+This will take a few minutes; subsequent syncs will be much faster ...
+    ]]></string>
+    <string name="sync_details_restore"><![CDATA[
+We\'re restoring your wallet by scanning the blockchain for
+pre-existing transactions.  This will take a while ...
+    ]]></string>
+    <string name="sync_details_startup"><![CDATA[
+Your wallet is scanning the blockchain for recent transactions ...
+    ]]></string>
+    <string name="sync_details_rescan"><![CDATA[
+Your wallet is performing a rescan of the blockchain; this will
+take a while ...
+    ]]></string>
+    <string name="sync_details_rerescan"><![CDATA[
+Your wallet discovered some new addresses in the previous rescan
+and needs to rescan the blockchain again.  It can take quite a while
+to fully recover all of your addresses ...
+    ]]></string>
     <string name="sync_abort">Abort and Exit</string>
     <string name="title_activity_main">Wallet32</string>
     <string name="balance_header_acct">Account</string>
@@ -192,8 +227,8 @@ you must use the legacy setting to recover it.
     <string name="pref_add_account_yes">Add Account</string>
     <string name="pref_add_account_no">Cancel</string>
 
-    <string name="pref_rescan_blockchain">Rescan Blockchain</string>
-    <string name="pref_rescan_summary">Rescan Blockchain Now (EXPENSIVE!)</string>
+    <string name="pref_rescan_blockchain">Rescan Blockchain ...</string>
+    <string name="pref_rescan_summary">Rescan Blockchain</string>
     <string name="pref_about">About Wallet32</string>
 
     <string name="pref_rescan_title">Confirm Rescan</string>

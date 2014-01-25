@@ -93,10 +93,10 @@ public class HDAccount {
 
     public void gatherAllKeys(KeyCrypter keyCrypter,
                               KeyParameter aesKey,
-                              boolean isRestore,
+                              long creationTime,
                               List<ECKey> keys) {
-        mReceiveChain.gatherAllKeys(keyCrypter, aesKey, isRestore, keys);
-        mChangeChain.gatherAllKeys(keyCrypter, aesKey, isRestore, keys);
+        mReceiveChain.gatherAllKeys(keyCrypter, aesKey, creationTime, keys);
+        mChangeChain.gatherAllKeys(keyCrypter, aesKey, creationTime, keys);
     }
 
     public void applyOutput(byte[] pubkey,
