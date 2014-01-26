@@ -30,14 +30,6 @@ Needed
 * Send dump feature.
 
 
-Recover Wallet
-----------------------------------------------------------------
-
-* Make recover auto-rescan when needed.
-
-* Notify user when rescan required.
-
-
 Next
 ----------------------------------------------------------------
 
