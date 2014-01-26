@@ -44,6 +44,8 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.bitcoin.core.AbstractWalletEventListener;
@@ -117,6 +119,11 @@ public class WalletService extends Service
 
     private RateUpdater			mRateUpdater;
 
+    private BigInteger			mBalanceAvailable;
+    private BigInteger			mBalanceEstimated;
+
+    private volatile int		mEventId = 0;
+
     private static final String mFilePrefix = "wallet32";
 
     private MyDownloadListener mkDownloadListener() {
@@ -141,6 +148,10 @@ public class WalletService extends Service
         new AbstractWalletEventListener() {
             @Override
             public void onWalletChanged(Wallet wallet) {
+                // If our overall available or estimated balances
+                // changed we should send a notification.
+                checkForBalanceChanges();
+                
                 // Compute balances and transaction counts.
                 Iterable<WalletTransaction> iwt =
                     mKit.wallet().getWalletTransactions();
@@ -275,11 +286,11 @@ public class WalletService extends Service
                 return null;
             }
 
-            BigInteger bal0 = mKit.wallet().getBalance(BalanceType.AVAILABLE);
-            BigInteger bal1 = mKit.wallet().getBalance(BalanceType.ESTIMATED);
+            mBalanceAvailable = mKit.wallet().getBalance(BalanceType.AVAILABLE);
+            mBalanceEstimated = mKit.wallet().getBalance(BalanceType.ESTIMATED);
 
-            mLogger.info("avail balance = " + bal0.toString());
-            mLogger.info("estim balance = " + bal1.toString());
+            mLogger.info("avail balance = " + mBalanceAvailable.toString());
+            mLogger.info("estim balance = " + mBalanceEstimated.toString());
 
             // Compute balances and transaction counts.
             Iterable<WalletTransaction> iwt =
@@ -374,7 +385,7 @@ public class WalletService extends Service
 
         mLogger.info("WalletService started");
 
-        showNotification();
+        showStatusNotification();
 
         mIsRunning = true;
 
@@ -406,8 +417,9 @@ public class WalletService extends Service
 
     // Show a notification while this service is running.
     //
-    private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
+    private void showStatusNotification() {
+        // In this sample, we'll use the same text for the ticker and
+        // the expanded notification
         CharSequence started_txt = getText(R.string.wallet_service_started);
         CharSequence info_txt = getText(R.string.wallet_service_info);
 
@@ -417,9 +429,11 @@ public class WalletService extends Service
 
         Intent intent = new Intent(this, MainActivity.class);
     
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP);
     
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent contentIntent =
+            PendingIntent.getActivity(this, 0, intent, 0);
       
         // Set the info for the views that show in the notification panel.
         note.setLatestEventInfo(this, getText(R.string.wallet_service_label),
@@ -428,6 +442,86 @@ public class WalletService extends Service
         note.flags |= Notification.FLAG_NO_CLEAR;
 
         startForeground(NOTIFICATION, note);
+    }
+
+    private void checkForBalanceChanges() {
+        // If our overall available or estimated balances changed we
+        // should send a notification.
+
+        BigInteger newBalanceAvailable =
+            mKit.wallet().getBalance(BalanceType.AVAILABLE);
+        BigInteger newBalanceEstimated =
+            mKit.wallet().getBalance(BalanceType.ESTIMATED);
+
+        if (!newBalanceAvailable.equals(mBalanceAvailable))
+            notifyConfirmation(newBalanceAvailable.subtract(mBalanceAvailable));
+        if (!newBalanceEstimated.equals(mBalanceEstimated))
+            notifyTransaction(newBalanceEstimated.subtract(mBalanceEstimated));
+
+        mBalanceAvailable = newBalanceAvailable;
+        mBalanceEstimated = newBalanceEstimated;
+    }
+    
+    private void notifyTransaction(BigInteger amount) {
+        double amt = amount.doubleValue() / 1e8;
+        if (amt > 0) {
+            showEventNotification
+                (R.drawable.ic_note_bc_green_lt,
+                 mRes.getString(R.string.wallet_service_note_rcvd_title),
+                 mRes.getString(R.string.wallet_service_note_rcvd_msg, amt));
+        } else {
+            showEventNotification
+                (R.drawable.ic_note_bc_red_lt,
+                 mRes.getString(R.string.wallet_service_note_sent_title),
+                 mRes.getString(R.string.wallet_service_note_sent_msg, amt));
+        }
+    }
+
+    private void notifyConfirmation(BigInteger amount) {
+        double amt = amount.doubleValue() / 1e8;
+        if (amt > 0) {
+            showEventNotification
+                (R.drawable.ic_note_bc_green,
+                 mRes.getString(R.string.wallet_service_note_rcnf_title),
+                 mRes.getString(R.string.wallet_service_note_rcnf_msg, amt));
+        } else {
+            showEventNotification
+                (R.drawable.ic_note_bc_red,
+                 mRes.getString(R.string.wallet_service_note_scnf_title),
+                 mRes.getString(R.string.wallet_service_note_scnf_msg, amt));
+        }
+    }
+
+    private void showEventNotification(int icon, String title, String msg) {
+        NotificationCompat.Builder mBuilder =
+            new NotificationCompat.Builder(this)
+            .setSmallIcon(icon)
+            .setContentTitle(title)
+            .setContentText(msg)
+            .setAutoCancel(true)
+            .setDefaults(Notification.DEFAULT_LIGHTS |
+                         Notification.DEFAULT_SOUND |
+                         Notification.DEFAULT_VIBRATE);
+
+        // Creates an explicit intent for an Activity in your app
+        Intent intent = new Intent(this, ViewTransactionsActivity.class);
+
+        // The stack builder object will contain an artificial back
+        // stack for the started Activity.  This ensures that
+        // navigating backward from the Activity leads out of your
+        // application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(ViewTransactionsActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent =
+            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Keep all our event notifications separate (don't replace).
+        int noteId = ++mEventId;
+        mNM.notify(noteId, mBuilder.build());
     }
 
     public void persist() {
