@@ -52,8 +52,7 @@ public class RescanActivity extends BaseWalletActivity {
 
     public void onEpochClicked(View view) {
         mLogger.info("epoch rescan selected");
-        // Tue Oct 15 11:18:03 PDT 2013
-        mScanTime = 1381861127;
+        mScanTime = HDAddress.EPOCH;
     }
 
     public void doRescan(View view) {

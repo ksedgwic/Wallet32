@@ -85,8 +85,12 @@ public class WalletService extends Service
         RESTORE,		// Scanning to restore.
         STARTUP,		// Catching up on startup.
         RESCAN,			// Rescanning blockchain.
-        RERESCAN		// Needed to rescan due to margin.
+        RERESCAN,		// Needed to rescan due to margin.
+        SYNCHRONIZED	// We were synchronized.
     }
+
+    // Rescan if we extend addresses more then this.
+    private static final int MAX_ADDR_EXTEND = 4;
 
     private int NOTIFICATION = R.string.wallet_service_started;
 
@@ -143,13 +147,19 @@ public class WalletService extends Service
                 mHDWallet.applyAllTransactions(iwt);
 
                 // Check to make sure we have sufficient margins.
-                mHDWallet.ensureMargins(mKit.wallet());
+                int numAdded = mHDWallet.ensureMargins(mKit.wallet());
 
                 // Persist the new state.
                 mHDWallet.persist();
 
                 Intent intent = new Intent("wallet-state-changed");
                 mLBM.sendBroadcast(intent);
+
+                if (numAdded > MAX_ADDR_EXTEND) {
+                    mLogger.info(String.format("%d addresses added, rescanning",
+                                               numAdded));
+                    rescanBlockchain(HDAddress.EPOCH);
+                }
             }
         };
 
@@ -165,9 +175,9 @@ public class WalletService extends Service
         }
     }
     
-    private class SetupWalletTask extends AsyncTask<Long, Void, Void> {
+    private class SetupWalletTask extends AsyncTask<Long, Void, Integer> {
 		@Override
-		protected Void doInBackground(Long... params)
+		protected Integer doInBackground(Long... params)
         {
             // scanTime  0 : full rescan
             // scanTime  t : scan from time t
@@ -239,6 +249,10 @@ public class WalletService extends Service
                         // unused addresses at the end.
                         //
                         mHDWallet.ensureMargins(wallet());
+
+                        // We don't need to check for MAX_ADDR_EXTEND
+                        // here because we are about to scan anyway.
+                        // We'll check again after the scan ...
                     }
                 };
             mKit.setDownloadListener(mkDownloadListener());
@@ -273,7 +287,7 @@ public class WalletService extends Service
             mHDWallet.applyAllTransactions(iwt);
 
             // Check the margins again, since transactions may have arrived.
-            mHDWallet.ensureMargins(mKit.wallet());
+            int numAdded = mHDWallet.ensureMargins(mKit.wallet());
 
             // Persist the new state.
             mHDWallet.persist();
@@ -281,10 +295,24 @@ public class WalletService extends Service
             // Listen for future wallet changes.
             mKit.wallet().addEventListener(mWalletListener);
 
-            setState(State.READY);
+            setState(State.READY);	// This may be temporary ...
 
-			return null;
+			return numAdded;
 		}
+
+        @Override
+        protected void onPostExecute(Integer numAdded) {
+            // Do we need another rescan?
+            if (numAdded > MAX_ADDR_EXTEND) {
+                mLogger.info(String.format("rescan extended by %d, rescanning",
+                                           numAdded));
+                rescanBlockchain(HDAddress.EPOCH);
+            }
+            else {
+                mLogger.info("synchronized");
+                setSyncState(SyncState.SYNCHRONIZED);
+            }
+        }
     }
 
     public WalletService() {
@@ -485,7 +513,14 @@ public class WalletService extends Service
             return;
         }
 
-        setSyncState(SyncState.RESCAN);
+        switch (mSyncState) {
+        case SYNCHRONIZED:
+            mSyncState = SyncState.RESCAN;
+            break;
+        default:
+            mSyncState = SyncState.RERESCAN;
+            break;
+        }
 
         // Remove our wallet event listener.
         mKit.wallet().removeEventListener(mWalletListener);

@@ -63,36 +63,6 @@ public class MainActivity extends BaseWalletActivity {
 
 	@Override
     protected void onWalletServiceBound() {
-        // If the WalletService isn't ready yet put up the sync progress dialog.
-        if (mWalletService.getState() != WalletService.State.READY) {
-
-            String details;
-
-            switch(mWalletService.getSyncState()) {
-            case CREATED:
-                details = mRes.getString(R.string.sync_details_created);
-                break;
-            case RESTORE:
-                details = mRes.getString(R.string.sync_details_restore);
-                break;
-            case STARTUP:
-                details = mRes.getString(R.string.sync_details_startup);
-                break;
-            case RESCAN:
-                details = mRes.getString(R.string.sync_details_rescan);
-                break;
-            case RERESCAN:
-                details = mRes.getString(R.string.sync_details_rerescan);
-                break;
-            default:
-                details = "???";	// Shouldn't happen
-                break;
-            }
-
-            showSyncProgressDialog(details);
-        }
-
-        // In case the WalletService is already READY ...
         onWalletStateChanged();
     }
 
@@ -100,6 +70,11 @@ public class MainActivity extends BaseWalletActivity {
     protected void onWalletStateChanged() {
         if (mWalletService == null)
             return;
+
+        // If we aren't ready make sure a sync progress dialog is up.
+        if (mWalletService.getState() != WalletService.State.READY)
+            if (mSyncProgressDialog == null)
+                showSyncProgressDialog();
 
         if (mWalletService.getState() == WalletService.State.SYNCING) {
             int pctdone = (int) mWalletService.getPercentDone();
@@ -188,10 +163,29 @@ public class MainActivity extends BaseWalletActivity {
         }
     }
 
-    private void showSyncProgressDialog(String details) {
-        // Do we already have a progress dialog up?
-        if (mSyncProgressDialog != null)
-            return;
+    private void showSyncProgressDialog() {
+        String details;
+
+        switch(mWalletService.getSyncState()) {
+        case CREATED:
+            details = mRes.getString(R.string.sync_details_created);
+            break;
+        case RESTORE:
+            details = mRes.getString(R.string.sync_details_restore);
+            break;
+        case STARTUP:
+            details = mRes.getString(R.string.sync_details_startup);
+            break;
+        case RESCAN:
+            details = mRes.getString(R.string.sync_details_rescan);
+            break;
+        case RERESCAN:
+            details = mRes.getString(R.string.sync_details_rerescan);
+            break;
+        default:
+            details = "???";	// Shouldn't happen
+            break;
+        }
 
         DialogFragment df = new SyncProgressDialogFragment();
         Bundle args = new Bundle();

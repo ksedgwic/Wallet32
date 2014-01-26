@@ -596,8 +596,14 @@ public class HDWallet {
     }
 
     // Ensure that there are enough spare addresses on all chains.
-    public void ensureMargins(Wallet wallet) {
-        for (HDAccount acct : mAccounts)
-            acct.ensureMargins(wallet, mKeyCrypter, mAesKey);
+    // Returns the most number of addresses added to a chain.
+    public int ensureMargins(Wallet wallet) {
+        int maxAdded = 0;
+        for (HDAccount acct : mAccounts) {
+            int numAdded = acct.ensureMargins(wallet, mKeyCrypter, mAesKey);
+            if (maxAdded < numAdded)
+                maxAdded = numAdded;
+        }
+        return maxAdded;
     }
 }

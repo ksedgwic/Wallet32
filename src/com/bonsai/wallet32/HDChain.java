@@ -49,7 +49,7 @@ public class HDChain {
 
     private ArrayList<HDAddress>	mAddrs;
 
-    private int					mMarginSize = 8;
+    static private final int	DESIRED_MARGIN = 8;
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
@@ -187,17 +187,20 @@ public class HDChain {
         return count;
     }
 
-    public void ensureMargins(Wallet wallet,
-                              KeyCrypter keyCrypter,
-                              KeyParameter aesKey) {
+    // Returns the number of addresses added.
+    public int ensureMargins(Wallet wallet,
+                             KeyCrypter keyCrypter,
+                             KeyParameter aesKey) {
         // How many unused addresses do we have at the end of the chain?
         int numUnused = marginSize();
 
         // Do we have an ample margin?
-        if (numUnused < mMarginSize) {
-
+        if (numUnused > DESIRED_MARGIN) {
+            return 0;
+        }
+        else {
             // How many addresses do we need to add?
-            int numAdd = mMarginSize - numUnused;
+            int numAdd = DESIRED_MARGIN - numUnused;
 
             mLogger.info(String.format("%s expanding margin, adding %d addrs",
                                        mChainKey.getPath(), numAdd));
@@ -215,6 +218,8 @@ public class HDChain {
             }
             mLogger.info(String.format("adding %d keys", keys.size()));
             wallet.addKeys(keys);
+
+            return numAdd;
         }
     }
 }

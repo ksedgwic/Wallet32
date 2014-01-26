@@ -234,10 +234,15 @@ public class HDAccount {
         return obj;
     }
 
-    public void ensureMargins(Wallet wallet,
+    // Returns the largest number of addresses added to a chain.
+    public int ensureMargins(Wallet wallet,
                               KeyCrypter keyCrypter,
                               KeyParameter aesKey) {
-        mReceiveChain.ensureMargins(wallet, keyCrypter, aesKey);
-        mChangeChain.ensureMargins(wallet, keyCrypter, aesKey);
+        int receiveAdded =
+            mReceiveChain.ensureMargins(wallet, keyCrypter, aesKey);
+        int changeAdded =
+            mChangeChain.ensureMargins(wallet, keyCrypter, aesKey);
+
+        return (receiveAdded > changeAdded) ? receiveAdded : changeAdded;
     }
 }

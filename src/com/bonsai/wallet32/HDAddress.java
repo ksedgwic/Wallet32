@@ -39,6 +39,9 @@ import com.google.bitcoin.crypto.KeyCrypter;
 
 public class HDAddress {
 
+    // Tue Oct 15 11:18:03 PDT 2013
+    public static final long EPOCH = 1381861127;
+
     private static Logger mLogger = 
         LoggerFactory.getLogger(HDAddress.class);
 
@@ -77,7 +80,7 @@ public class HDAddress {
         mECKey = new ECKey(prvBytes, mPubBytes);
 
         // Set creation time to Wallet32 epoch.
-        mECKey.setCreationTimeSeconds(1381861127);
+        mECKey.setCreationTimeSeconds(EPOCH);
 
         // Derive public key, public hash and address.
         mPubKey = mECKey.getPubKey();
