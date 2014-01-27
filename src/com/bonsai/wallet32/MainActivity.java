@@ -43,6 +43,8 @@ public class MainActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(MainActivity.class);
 
+    private WalletApplication	mWalletApp;
+
     private View mDialogView = null;
     private DialogFragment mSyncProgressDialog = null;
 
@@ -59,8 +61,31 @@ public class MainActivity extends BaseWalletActivity {
 
 		setContentView(R.layout.activity_main);
 
+        mWalletApp = (WalletApplication) getApplicationContext();
+
         mLogger.info("MainActivity created");
 	}
+
+    @Override
+    protected void onStart() {
+		super.onStart();
+
+        // If the WalletService is already ready and we have
+        // an intent uri we should handle that immediately.
+        if (mWalletService != null &&
+            mWalletService.getState() == WalletService.State.READY)
+        {
+            String intentURI = mWalletApp.getIntentURI();
+            if (intentURI != null) {
+                mWalletApp.setIntentURI(null);	// Clear it ASAP.
+                Intent intent = new Intent(this, SendBitcoinActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("uri", intentURI);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        }
+    }
 
 	@Override
     protected void onWalletServiceBound() {
@@ -99,6 +124,17 @@ public class MainActivity extends BaseWalletActivity {
                 mSyncProgressDialog.dismiss();
                 mSyncProgressDialog = null;
                 mDialogView = null;
+            }
+
+            // Did we have an intent uri? (Sent from another application ...)
+            String intentURI = mWalletApp.getIntentURI();
+            if (intentURI != null) {
+                mWalletApp.setIntentURI(null);	// Clear it ASAP.
+                Intent intent = new Intent(this, SendBitcoinActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("uri", intentURI);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         }
 

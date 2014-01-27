@@ -16,6 +16,7 @@
 package com.bonsai.wallet32;
 
 import java.io.File;
+import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -48,6 +50,24 @@ public class LobbyActivity extends Activity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
         editor.commit();
+
+        WalletApplication wapp = (WalletApplication) getApplicationContext();
+
+        // Were we called with VIEW intent URI (another app wants to send)?
+        {
+            final Intent intent = getIntent();
+            final String action = intent.getAction();
+            final Uri intentUri = intent.getData();
+            final String scheme =
+                intentUri != null ? intentUri.getScheme() : null;
+			if (Intent.ACTION_VIEW.equals(action)
+                && intentUri != null
+                && "bitcoin".equals(scheme))
+            {
+                mLogger.info("saw URI " + intentUri.toString());
+                wapp.setIntentURI(intentUri.toString());
+            }
+        }
 
         // Is the wallet already open?
         if (WalletService.mIsRunning) {

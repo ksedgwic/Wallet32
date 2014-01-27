@@ -70,6 +70,13 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_bitcoin);
 
+        // Was a URI specified?
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String intentURI = null;
+        if (bundle != null && bundle.containsKey("uri"))
+            intentURI = intent.getExtras().getString("uri");
+
         // Start off presuming the user set the BTC amount.
         mUserSetAmountFiat = false;
         mUserSetFeeFiat = false;
@@ -93,6 +100,10 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         double defaultFee = WalletService.getDefaultFee();
         String defaultFeeString = String.format("%.5f", defaultFee);
         mBTCFeeEditText.setText(defaultFeeString);
+
+        // Is there an intent uri (from another application)?
+        if (intentURI != null)
+            updateToAddress(intentURI);
 
         mLogger.info("SendBitcoinActivity created");
     }

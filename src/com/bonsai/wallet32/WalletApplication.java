@@ -32,6 +32,8 @@ public class WalletApplication extends Application {
     public KeyCrypter		mKeyCrypter;
     public KeyParameter		mAesKey;
 
+    public String			mIntentURI = null;
+
 	@Override
 	public void onCreate()
 	{
@@ -41,5 +43,13 @@ public class WalletApplication extends Application {
         super.onCreate();
 
         mLogger.info("WalletApplication created");
+    }
+
+    public void setIntentURI(String uri) {
+        mIntentURI = uri;
+    }
+
+    public String getIntentURI() {
+        return mIntentURI;
     }
 }
