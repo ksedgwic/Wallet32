@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -132,6 +133,12 @@ public class MainActivity extends BaseWalletActivity {
             mWalletService.shutdown();
         mLogger.info("Stopping WalletService");
         stopService(new Intent(this, WalletService.class));
+
+        // Cancel any remaining notifications.
+        NotificationManager nm =
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.cancelAll();
+
         mLogger.info("Finished");
         finish();
         mLogger.info("Exiting");
