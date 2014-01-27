@@ -56,6 +56,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
@@ -122,7 +123,7 @@ public class WalletService extends Service
     private BigInteger			mBalanceAvailable;
     private BigInteger			mBalanceEstimated;
 
-    private volatile int		mEventId = 0;
+    private volatile int		mNoteId = 0;
 
     private static final String mFilePrefix = "wallet32";
 
@@ -147,11 +148,118 @@ public class WalletService extends Service
     private AbstractWalletEventListener mWalletListener =
         new AbstractWalletEventListener() {
             @Override
+			public void onCoinsReceived(Wallet wallet,
+                                        Transaction tx,
+                                        BigInteger prevBalance,
+                                        BigInteger newBalance)
+            {
+                BigInteger amt = newBalance.subtract(prevBalance);
+                final double amount = amt.doubleValue() / 1e8;
+
+                // Change coins will be part of a balance transaction
+                // that is negative in value ... skip them ...
+                if (amount < 0.0)
+                    return;
+
+                // We allocate a new notification id for each receive.
+                // We use it on both the receive and confirm so it
+                // will replace the receive note with the confirm ...
+                final int noteId = ++mNoteId;
+
+                mLogger.info(String.format("showing notification receive %f",
+                                           amount));
+
+                showEventNotification(noteId,
+                                      R.drawable.ic_note_bc_green_lt,
+                                      mRes.getString(R.string.wallet_service_note_rcvd_title),
+                                      mRes.getString(R.string.wallet_service_note_rcvd_msg,
+                                                     amount));
+
+                final TransactionConfidence txconf = tx.getConfidence();
+
+                final TransactionConfidence.Listener listener = 
+                    new TransactionConfidence.Listener() {
+                        @Override
+                        public void onConfidenceChanged(Transaction tx,
+                                                        ChangeReason reason) {
+                            // Wait until it's not pending anymore.
+                            if (tx.isPending())
+                                return;
+                 
+                            mLogger.info(String.format("showing notification confirm receive %f",
+                                                       amount));
+
+                            // Show receive no longer pending.
+                            showEventNotification(noteId,
+                                                  R.drawable.ic_note_bc_green,
+                                                  mRes.getString(R.string.wallet_service_note_rcnf_title),
+                                                  mRes.getString(R.string.wallet_service_note_rcnf_msg,
+                                                                 amount));
+
+                            // We're all done listening ...
+                            txconf.removeEventListener(this);
+                        }
+                    };
+
+                txconf.addEventListener(listener);
+            }
+
+            @Override
+			public void onCoinsSent(Wallet wallet,
+                                    Transaction tx,
+                                    BigInteger prevBalance,
+                                    BigInteger newBalance)
+            {
+                BigInteger amt = prevBalance.subtract(newBalance);
+                final double amount = amt.doubleValue() / 1e8;
+
+                // We allocate a new notification id for each receive.
+                // We use it on both the receive and confirm so it
+                // will replace the receive note with the confirm ...
+                final int noteId = ++mNoteId;
+
+                mLogger.info(String.format("showing notification send %f",
+                                           amount));
+
+                showEventNotification
+                    (noteId,
+                     R.drawable.ic_note_bc_red_lt,
+                     mRes.getString(R.string.wallet_service_note_sent_title),
+                     mRes.getString(R.string.wallet_service_note_sent_msg,
+                                    amount));
+
+                final TransactionConfidence txconf = tx.getConfidence();
+
+                final TransactionConfidence.Listener listener = 
+                    new TransactionConfidence.Listener() {
+                        @Override
+                        public void onConfidenceChanged(Transaction tx,
+                                                        ChangeReason reason) {
+                            // Wait until it's not pending anymore.
+                            if (tx.isPending())
+                                return;
+                 
+                            mLogger.info(String.format("showing notification confirm send %f",
+                                                       amount));
+
+                            // Show no longer pending.
+                            showEventNotification
+                                (noteId,
+                                 R.drawable.ic_note_bc_red,
+                                 mRes.getString(R.string.wallet_service_note_scnf_title),
+                                 mRes.getString(R.string.wallet_service_note_scnf_msg,
+                                                amount));
+
+                            // We're all done listening ...
+                            txconf.removeEventListener(this);
+                        }
+                    };
+
+                txconf.addEventListener(listener);
+            }
+
+            @Override
             public void onWalletChanged(Wallet wallet) {
-                // If our overall available or estimated balances
-                // changed we should send a notification.
-                checkForBalanceChanges();
-                
                 // Compute balances and transaction counts.
                 Iterable<WalletTransaction> iwt =
                     mKit.wallet().getWalletTransactions();
@@ -444,55 +552,10 @@ public class WalletService extends Service
         startForeground(NOTIFICATION, note);
     }
 
-    private void checkForBalanceChanges() {
-        // If our overall available or estimated balances changed we
-        // should send a notification.
-
-        BigInteger newBalanceAvailable =
-            mKit.wallet().getBalance(BalanceType.AVAILABLE);
-        BigInteger newBalanceEstimated =
-            mKit.wallet().getBalance(BalanceType.ESTIMATED);
-
-        if (!newBalanceAvailable.equals(mBalanceAvailable))
-            notifyConfirmation(newBalanceAvailable.subtract(mBalanceAvailable));
-        if (!newBalanceEstimated.equals(mBalanceEstimated))
-            notifyTransaction(newBalanceEstimated.subtract(mBalanceEstimated));
-
-        mBalanceAvailable = newBalanceAvailable;
-        mBalanceEstimated = newBalanceEstimated;
-    }
-    
-    private void notifyTransaction(BigInteger amount) {
-        double amt = amount.doubleValue() / 1e8;
-        if (amt > 0) {
-            showEventNotification
-                (R.drawable.ic_note_bc_green_lt,
-                 mRes.getString(R.string.wallet_service_note_rcvd_title),
-                 mRes.getString(R.string.wallet_service_note_rcvd_msg, amt));
-        } else {
-            showEventNotification
-                (R.drawable.ic_note_bc_red_lt,
-                 mRes.getString(R.string.wallet_service_note_sent_title),
-                 mRes.getString(R.string.wallet_service_note_sent_msg, amt));
-        }
-    }
-
-    private void notifyConfirmation(BigInteger amount) {
-        double amt = amount.doubleValue() / 1e8;
-        if (amt > 0) {
-            showEventNotification
-                (R.drawable.ic_note_bc_green,
-                 mRes.getString(R.string.wallet_service_note_rcnf_title),
-                 mRes.getString(R.string.wallet_service_note_rcnf_msg, amt));
-        } else {
-            showEventNotification
-                (R.drawable.ic_note_bc_red,
-                 mRes.getString(R.string.wallet_service_note_scnf_title),
-                 mRes.getString(R.string.wallet_service_note_scnf_msg, amt));
-        }
-    }
-
-    private void showEventNotification(int icon, String title, String msg) {
+    private void showEventNotification(int noteId,
+                                       int icon,
+                                       String title,
+                                       String msg) {
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(this)
             .setSmallIcon(icon)
@@ -519,8 +582,6 @@ public class WalletService extends Service
             stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
 
-        // Keep all our event notifications separate (don't replace).
-        int noteId = ++mEventId;
         mNM.notify(noteId, mBuilder.build());
     }
 
