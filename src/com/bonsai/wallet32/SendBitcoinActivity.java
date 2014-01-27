@@ -538,7 +538,14 @@ public class SendBitcoinActivity extends BaseWalletActivity {
                                                 amount,
                                                 fee);
 
-            // For now return to main screen on success.
+            // Head to the transaction view for this account ...
+            Intent intent = new Intent(this, ViewTransactionsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("accountId", mCheckedFromId);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            
+            // We're done here ...
             finish();
 
         } catch (RuntimeException ex) {

@@ -48,7 +48,7 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewTransactionsActivity.class);
 
-    private int mAccountNum = -1;
+    private int mAccountNum = -1;    // -1 means all accounts
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +57,11 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
 		setContentView(R.layout.activity_view_transactions);
 
-        // Do we want an account filter?
-        // Intent intent = getIntent();
-        // int accountId = intent.getExtras().getInteger("accountId");
+        // Was an account specified?
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null && bundle.containsKey("accountId"))
+            mAccountNum = intent.getExtras().getInt("accountId");
 
         Spinner spinner = (Spinner) findViewById(R.id.account_spinner);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
