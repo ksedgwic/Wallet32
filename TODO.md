@@ -14,8 +14,6 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Notification on transaction and confirmation events.
-
 * Testnet build.
 
 * View Seed needs to be "pre-main" when started from create wallet

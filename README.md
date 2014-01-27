@@ -39,7 +39,7 @@ About Wallet32
 
 Wallet32
 
-Version: 0.1.9 (25-Jan-2014)
+Version: 0.1.10 (26-Jan-2014)
 
 Source:  https://github.com/ksedgwic/Wallet32
 
@@ -51,4 +51,4 @@ Wallet32 is made possible by:
 
 Donate: 1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk
 
-Copyright (C) 2013 Bonsai Software, Inc.  All rights reserved.
+Copyright (C) 2013-2014 Bonsai Software, Inc.  All rights reserved.
