@@ -62,6 +62,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.TransactionBroadcaster;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutPoint;
@@ -74,6 +75,8 @@ import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 
 public class WalletService extends Service
     implements OnSharedPreferenceChangeListener {
@@ -887,18 +890,10 @@ public class WalletService extends Service
         mLBM.sendBroadcast(intent);
     }
 
-    public void sweepKey(String privstr, double fee,
-                             int accountId, JSONArray outputs) {
+    public void sweepKey(ECKey key, double fee,
+                         int accountId, JSONArray outputs) {
         mLogger.info("sweepKey starting");
 
-        ECKey key;
-		try {
-            key = new DumpedPrivateKey(mParams, privstr).getKey();
-		} catch (AddressFormatException e) {
-            throw new RuntimeException("failed to decode key");
-		}
-
-        mLogger.info("created key " + key.toString());
         mLogger.info("key addr " + key.toAddress(mParams).toString());
 
         Transaction tx = new Transaction(mParams);
@@ -944,10 +939,35 @@ public class WalletService extends Service
         WalletUtil.signTransactionInputs(tx, Transaction.SigHash.ALL, key, scripts);
 
         mLogger.info("tx bytes: " + new String(Hex.encode(tx.bitcoinSerialize())));
-
-        mKit.wallet().commitTx(tx);
-        mKit.peerGroup().broadcastTransaction(tx);
+        // mKit.peerGroup().broadcastTransaction(tx);
+        broadcastTransaction(mKit.peerGroup(), tx);
 
         mLogger.info("sweepKey finished");
+    }
+
+    public void broadcastTransaction(final TransactionBroadcaster broadcaster,
+                                     final Transaction tx) {
+        new Thread() {
+            @Override
+            public void run() {
+                // Handle the future results just for logging.
+                try {
+                    Futures.addCallback(broadcaster.broadcastTransaction(tx),
+                                        new FutureCallback<Transaction>() {
+                        @Override
+                        public void onSuccess(Transaction transaction) {
+                            mLogger.info("Successfully broadcast key rotation tx: {}", transaction);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            mLogger.error("Failed to broadcast key rotation tx", throwable);
+                        }
+                    });
+                } catch (Exception e) {
+                    mLogger.error("Failed to broadcast rekey tx", e);
+                }
+            }
+        }.start();
     }
 }

@@ -435,10 +435,8 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             Address addr = uri.getAddress();
             BigInteger amt = uri.getAmount();
 
-            EditText addrEditText =
-                (EditText) findViewById(R.id.to_address);
-            addrEditText.setText(addr.toString(), 
-                                 TextView.BufferType.EDITABLE);
+            mToAddressEditText.setText(addr.toString(), 
+                                       TextView.BufferType.EDITABLE);
 
             if (amt != null) {
                 double amtval = amt.doubleValue() / 1e8;
@@ -452,10 +450,8 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             try {
                 Address addr = new Address(params, toval);
 
-                EditText addrEditText =
-                    (EditText) findViewById(R.id.to_address);
-                addrEditText.setText(addr.toString(), 
-                                     TextView.BufferType.EDITABLE);
+                mToAddressEditText.setText(addr.toString(), 
+                                           TextView.BufferType.EDITABLE);
 
             } catch (WrongNetworkException ex2) {
                 String msg = mRes.getString(R.string.send_error_wrongnw);
@@ -503,21 +499,19 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
 
         // Fetch the address.
-        EditText addrEditText = (EditText) findViewById(R.id.to_address);
-        String addrString = addrEditText.getText().toString();
+        String addrString = mToAddressEditText.getText().toString();
         if (addrString.length() == 0) {
             showErrorDialog(mRes.getString(R.string.send_error_noaddr));
             return;
         }
 
         // Fetch the amount to send.
-        EditText amountEditText = (EditText) findViewById(R.id.amount_btc);
-        String amountString = amountEditText.getText().toString();
+        double amount = 0.0;
+        String amountString = mBTCAmountEditText.getText().toString();
         if (amountString.length() == 0) {
             showErrorDialog(mRes.getString(R.string.send_error_noamount));
             return;
         }
-        double amount;
         try {
             amount = parseNumberWorkaround(amountString);
         } catch (NumberFormatException ex) {
@@ -526,13 +520,12 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
 
         // Fetch the fee amount.
-        EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
-        String feeString = feeEditText.getText().toString();
+        double fee = 0.0;
+        String feeString = mBTCFeeEditText.getText().toString();
         if (feeString.length() == 0) {
             showErrorDialog(mRes.getString(R.string.send_error_nofee));
             return;
         }
-        double fee;
         try {
             fee = parseNumberWorkaround(feeString);
         } catch (NumberFormatException ex) {

@@ -34,17 +34,27 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.WrongNetworkException;
+import com.google.bitcoin.uri.BitcoinURI;
+import com.google.bitcoin.uri.BitcoinURIParseException;
 
 import eu.livotov.zxscan.ZXScanHelper;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -74,6 +84,9 @@ public class SweepKeyActivity extends BaseWalletActivity {
     private boolean mUserSetFeeFiat;
 
     private JSONArray	mUnspentOutputs;
+
+    private ECKey		mKey = null;
+    private Address		mAddr = null;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -329,9 +342,53 @@ public class SweepKeyActivity extends BaseWalletActivity {
         mBalanceFiatText.setText(ffs, TextView.BufferType.NORMAL);
     }
 
+    public static class MyDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+            String msg = getArguments().getString("msg");
+            String title = getArguments().getString("title");
+            boolean hasOK = getArguments().getBoolean("hasOK");
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            builder.setTitle(title);
+            builder.setMessage(msg);
+            if (hasOK) {
+                builder
+                    .setPositiveButton(R.string.base_error_ok,
+                                       new DialogInterface.OnClickListener() {
+                                           public void onClick(DialogInterface di,
+                                                               int id) {
+                                              }
+                                          });
+            }
+            return builder.create();
+        }
+    }
+
+    protected DialogFragment showModalDialog(String title, String msg) {
+        DialogFragment df = new MyDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putString("msg", msg);
+        args.putBoolean("hasOK", false);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "wait");
+        return df;
+    }
+
     private class FetchUnspentTask extends AsyncTask<String, Void, String> {
 
         String baseUrl = "https://blockchain.info/unspent?active=";
+
+        DialogFragment		mDF = null;
+
+        @Override
+        protected void onPreExecute() {
+            // Show the wait dialog ...
+            mDF = showModalDialog(mRes.getString(R.string.sweep_wait_title),
+                                  mRes.getString(R.string.sweep_wait_fetching));
+        }
 
 		@Override
 		protected String doInBackground(String... params)
@@ -372,13 +429,21 @@ public class SweepKeyActivity extends BaseWalletActivity {
 
         @Override
         protected void onPostExecute(String jsonstr) {
+            mDF.dismiss();
+
             if (jsonstr == null) {
                 showErrorDialog(mRes.getString(R.string.sweep_error_blockchain));
+                mBalanceBTCText.setText("0.0", TextView.BufferType.NORMAL);
+                updateBalance();
+                mUnspentOutputs = null;
                 return;
             }
                 
             else if (jsonstr.contains("No free outputs to spend")) {
                 showErrorDialog(mRes.getString(R.string.sweep_no_unspent));
+                mBalanceBTCText.setText("0.0", TextView.BufferType.NORMAL);
+                updateBalance();
+                mUnspentOutputs = null;
                 return;
             }
                 
@@ -391,13 +456,11 @@ public class SweepKeyActivity extends BaseWalletActivity {
                     balance += output.getLong("value");
                 }
 
-                mLogger.info("key balance %d", balance);
+                mLogger.info(String.format("key balance %d", balance));
                 
                 String ffs = String.format("%.5f", (double) balance / 1e8);
                 mBalanceBTCText.setText(ffs, TextView.BufferType.NORMAL);
                 updateBalance();
-
-                // Stash the JSONArray of outputs.
                 mUnspentOutputs = outputs;
 
                 return;
@@ -413,7 +476,18 @@ public class SweepKeyActivity extends BaseWalletActivity {
         }
     }
 
+    private final Handler mHandleKeyChanged = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                // Fetch unspent outputs from service.
+                FetchUnspentTask task = new FetchUnspentTask();
+                task.execute(mAddr.toString());
+            }
+        };
+
     private void updatePrivateKey(String privstr) {
+
+        // Sets mKey to the private key, null otherwise.
 
         // Avoid recursion by removing the field listener while
         // we possibly update the field value.
@@ -422,27 +496,62 @@ public class SweepKeyActivity extends BaseWalletActivity {
         NetworkParameters params =
             mWalletService == null ? null : mWalletService.getParams();
 
-        ECKey key;
+        mKey = null;
+        mAddr = null;
+
 		try {
-            key = new DumpedPrivateKey(params, privstr).getKey();
+            // If we can decode a private key we're set.
+            mKey = new DumpedPrivateKey(params, privstr).getKey();
 
             mPrivateKeyEditText.setText(privstr, TextView.BufferType.EDITABLE);
 
 		} catch (AddressFormatException e) {
-            String msg = mRes.getString(R.string.sweep_error_badkey);
-            mLogger.warn(msg);
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-            return;
+
+            // Is this a bitcoin URI?
+            try {
+                BitcoinURI uri = new BitcoinURI(params, privstr);
+                mAddr = uri.getAddress();
+
+            } catch (BitcoinURIParseException ex) {
+
+                // Is it just a plain address?
+                try {
+                    mAddr = new Address(params, privstr);
+                } catch (WrongNetworkException ex2) {
+                    String msg = mRes.getString(R.string.sweep_error_wrongnw);
+                    mLogger.warn(msg);
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                } catch (AddressFormatException ex2) {
+                    String msg = mRes.getString(R.string.sweep_error_badqr);
+                    mLogger.warn(msg);
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if (mAddr != null) {
+                mPrivateKeyEditText.setText(privstr,
+                                            TextView.BufferType.EDITABLE);
+
+                String msg = mRes.getString(R.string.sweep_needprivate);
+                mLogger.warn(msg);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            } else {
+                String msg = mRes.getString(R.string.sweep_error_badkey);
+                mLogger.warn(msg);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            }
 		}
 
-        String addr = key.toAddress(params).toString();
+        if (mKey != null)
+            mAddr = mKey.toAddress(params);
 
         // Clear any existing outputs.
         mUnspentOutputs = null;
 
-        // Fetch unspent outputs from service.
-        FetchUnspentTask task = new FetchUnspentTask();
-        task.execute(addr);
+        // Send a message to update the unspent outputs.  Can't do it
+        // directly here because we are in a bad context ...
+        Message msgObj = mHandleKeyChanged.obtainMessage();
+        mHandleKeyChanged.sendMessage(msgObj);
 
         // Restore the field changed listener.
         mPrivateKeyEditText.addTextChangedListener(mPrivateKeyWatcher);
@@ -472,15 +581,8 @@ public class SweepKeyActivity extends BaseWalletActivity {
             return;
         }
 
-        // Which account was selected?
-        if (mAccountId == -1) {
-            showErrorDialog(mRes.getString(R.string.sweep_error_noaccount));
-            return;
-        }
-
         // Fetch the private key.
-        String keyString = mPrivateKeyEditText.getText().toString();
-        if (keyString.length() == 0) {
+        if (mKey == null) {
             showErrorDialog(mRes.getString(R.string.sweep_error_nokey));
             return;
         }
@@ -492,13 +594,13 @@ public class SweepKeyActivity extends BaseWalletActivity {
         }
 
         // Fetch the fee amount.
+        double fee = 0.0;
         EditText feeEditText = (EditText) findViewById(R.id.fee_btc);
         String feeString = feeEditText.getText().toString();
         if (feeString.length() == 0) {
             showErrorDialog(mRes.getString(R.string.sweep_error_nofee));
             return;
         }
-        double fee;
         try {
             fee = parseNumberWorkaround(feeString);
         } catch (NumberFormatException ex) {
@@ -506,8 +608,14 @@ public class SweepKeyActivity extends BaseWalletActivity {
             return;
         }
 
+        // Which account was selected?
+        if (mAccountId == -1) {
+            showErrorDialog(mRes.getString(R.string.sweep_error_noaccount));
+            return;
+        }
+
         // Sweep!
-        mWalletService.sweepKey(keyString, fee, mAccountId, mUnspentOutputs);
+        mWalletService.sweepKey(mKey, fee, mAccountId, mUnspentOutputs);
 
         // Head to the transaction view for this account ...
         Intent intent = new Intent(this, ViewTransactionsActivity.class);
