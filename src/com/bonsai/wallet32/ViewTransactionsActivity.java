@@ -206,7 +206,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                 default: confstr = "?"; break;
                 }
 
-                mLogger.info("tx " + hash);
+                // This is just too noisy ...
+                // mLogger.info("tx " + hash);
 
                 addTransactionRow(hash, table, datestr,
                                   btcstr, btcbalstr, confstr);

@@ -169,3 +169,30 @@ Restore Big Wallet (hex seed this time).
     Confirm margin (likely not good).
 
     Rescan to fix missing addresses.
+
+----------------------------------------------------------------
+
+devrandom
+11:01 something like this:
+11:01         Sha256Hash hash = tx.hashForSignature(inputIndex, redeemScript.getProgram(), Transaction.SigHash.ALL, false);
+11:01         TransactionSignature signature = new TransactionSignature(key.sign(hash), Transaction.SigHash.ALL, false);
+11:02 actually, let me check if it's easier to import the keys
+
+devrandom
+11:03 Kenstigator: yes, it might be easier to import the key, then you can do:
+devrandom
+11:03 tx.signInputs(Transaction.SigHash.ALL, wallet)
+
+Kenstigator: so the inputScripts are available from the unspent too (hex decode, pass to Script)
+
+Kenstigator: the code shouldn't be so hard to figure out - would you
+mind doing a couple of things for me? (1) writing up your experience
+and what you found confusing/hard, so i can write better docs. and (2)
+maybe post your code so we can integrate it into the library
+
+----------------------------------------------------------------
+
+http://brainwallet.org/#tx
+
+https://blockchain.info/pushtx
+https://blockchain.info/decode-tx

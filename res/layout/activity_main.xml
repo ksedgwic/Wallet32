@@ -61,6 +61,14 @@
 	/>
 
     <Button
+	android:id="@+id/sweep"
+	android:layout_width="180dp"
+	android:layout_height="wrap_content"
+	android:text="@string/button_sweep"
+	android:onClick="sweepKey"
+	/>
+
+    <Button
 	android:id="@+id/seed"
 	android:layout_width="180dp"
 	android:layout_height="wrap_content"

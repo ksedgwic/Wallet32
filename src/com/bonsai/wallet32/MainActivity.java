@@ -16,7 +16,6 @@
 package com.bonsai.wallet32;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -354,6 +353,11 @@ public class MainActivity extends BaseWalletActivity {
 
     public void viewTransactions(View view) {
         Intent intent = new Intent(this, ViewTransactionsActivity.class);
+        startActivity(intent);
+    }
+
+    public void sweepKey(View view) {
+        Intent intent = new Intent(this, SweepKeyActivity.class);
         startActivity(intent);
     }
 

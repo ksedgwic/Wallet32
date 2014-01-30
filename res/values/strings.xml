@@ -112,9 +112,9 @@ Your wallet is performing a rescan of the blockchain; this will
 take a while ...
     ]]></string>
     <string name="sync_details_rerescan"><![CDATA[
-Your wallet discovered some new addresses in the previous rescan
-and needs to rescan the blockchain again.  It can take quite a while
-to fully recover all of your addresses ...
+Your wallet discovered some new used chain addresses in the previous
+scan and needs to rescan the blockchain again.  It can take a while
+to fully recover all of your address activity ...
     ]]></string>
     <string name="sync_abort">Abort and Exit</string>
     <string name="title_activity_main">Wallet32</string>
@@ -124,6 +124,7 @@ to fully recover all of your addresses ...
     <string name="button_send">Send Bitcoin</string>
     <string name="button_receive">Receive Bitcoin</string>
     <string name="button_transactions">View Transactions</string>
+    <string name="button_sweep">Sweep Private Key</string>
     <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
     <string name="title_activity_view_account">View Account</string>
@@ -142,7 +143,7 @@ to fully recover all of your addresses ...
     <string name="send_from_label">Send From:</string>
     <string name="send_to_label">Send To:</string>
     <string name="send_to_hint">Bitcoin Address</string>
-    <string name="send_to_qr">QR</string>
+    <string name="send_to_qr">Scan QR Code</string>
     <string name="send_amount_label">Send Amount:</string>
     <string name="amount_btc_hint">0.0000</string>
     <string name="amount_fiat_hint">0.00</string>
@@ -168,6 +169,26 @@ to fully recover all of your addresses ...
     <string name="receive_error_noaccount">No account selected</string>
     <string name="receive_error_badamount">Amount to receive is malformed</string>
     <string name="receive_bitcoin">Receive Bitcoin</string>
+
+    <string name="title_activity_sweep_key">Sweep Private Key</string>
+    <string name="sweep_key_label">Private Key to Sweep:</string>
+    <string name="sweep_qr">Scan QR Code</string>
+    <string name="sweep_key_hint">Private Key</string>
+    <string name="sweep_balance_label">Private Key Balance:</string>
+    <string name="sweep_fee_label">Miner\'s Fee:</string>
+    <string name="sweep_acct_label">Sweep to Account:</string>
+    <string name="sweep_key">Sweep Private Key</string>
+    <string name="sweep_error_badkey">Private key is not a valid bitcoin key</string>
+    <string name="sweep_error_blockchain">There was a problem accessing address history at blockchain.info, try again later.</string>
+    <string name="sweep_error_parse">There was a problem parsing the key\'s history from blockchain.info</string>
+    <string name="sweep_no_unspent">This key has no unspent balance.</string>
+    <string name="sweep_error_nowallet">The wallet isn\'t ready</string>
+    <string name="sweep_error_noaccount">No account selected</string>
+    <string name="sweep_error_nokey">Missing private key</string>
+    <string name="sweep_error_nooutputs">No unspent outputs for key</string>
+    <string name="sweep_error_nofee">Missing fee for sweep</string>
+    <string name="sweep_error_badfee">Sweep fee is malformed</string>
+
     <string name="title_activity_view_transactions">View Transactions</string>
     <string name="transaction_account_label">Account:</string>
     <string name="transaction_header_date">Date</string>

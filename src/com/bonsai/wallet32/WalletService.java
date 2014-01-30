@@ -25,10 +25,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.util.encoders.Hex;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -51,12 +55,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.DownloadListener;
+import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
+import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.Utils;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
@@ -64,6 +72,7 @@ import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
 
 public class WalletService extends Service
@@ -876,5 +885,69 @@ public class WalletService extends Service
     private void sendStateChanged() {
         Intent intent = new Intent("wallet-state-changed");
         mLBM.sendBroadcast(intent);
+    }
+
+    public void sweepKey(String privstr, double fee,
+                             int accountId, JSONArray outputs) {
+        mLogger.info("sweepKey starting");
+
+        ECKey key;
+		try {
+            key = new DumpedPrivateKey(mParams, privstr).getKey();
+		} catch (AddressFormatException e) {
+            throw new RuntimeException("failed to decode key");
+		}
+
+        mLogger.info("created key " + key.toString());
+        mLogger.info("key addr " + key.toAddress(mParams).toString());
+
+        Transaction tx = new Transaction(mParams);
+
+        long balance = 0;
+        ArrayList<Script> scripts = new ArrayList<Script>();
+        try {
+            for (int ii = 0; ii < outputs.length(); ++ii) {
+                JSONObject output;
+				output = outputs.getJSONObject(ii);
+
+                String tx_hash = output.getString("tx_hash");
+                int tx_output_n = output.getInt("tx_output_n");
+                String script = output.getString("script");
+
+                // Reverse byte order, create hash.
+                Sha256Hash hash = new Sha256Hash(WalletUtil.msgHexToBytes(tx_hash));
+            
+                tx.addInput(new TransactionInput
+                            (mParams, tx, new byte[]{},
+                             new TransactionOutPoint(mParams, tx_output_n, hash)));
+
+                scripts.add(new Script(Hex.decode(script)));
+                    
+                balance += output.getLong("value");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RuntimeException("trouble parsing unspent outputs");
+        }
+
+        // Compute balance - fee.
+        long amount = balance - (long)(fee * 1e8);
+        mLogger.info(String.format("sweeping %d", amount));
+
+        // Figure out the destination address.
+        Address to = mHDWallet.nextReceiveAddress(accountId);
+        mLogger.info("sweeping to " + to.toString());
+
+        // Add output.
+        tx.addOutput(BigInteger.valueOf(amount), to);
+
+        WalletUtil.signTransactionInputs(tx, Transaction.SigHash.ALL, key, scripts);
+
+        mLogger.info("tx bytes: " + new String(Hex.encode(tx.bitcoinSerialize())));
+
+        mKit.wallet().commitTx(tx);
+        mKit.peerGroup().broadcastTransaction(tx);
+
+        mLogger.info("sweepKey finished");
     }
 }
