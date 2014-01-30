@@ -280,7 +280,7 @@ Fetching unspent balance for this address from blockchain.info ...\n
     <string name="about_contents"><![CDATA[\n
 Wallet32\n
 \n
-Version: 0.1.10 (26-Jan-2014)\n
+Version: 0.1.11 (30-Jan-2014)\n
 \n
 Source:  https://github.com/ksedgwic/Wallet32\n
 \n

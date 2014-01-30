@@ -67,7 +67,7 @@ Update res/values/strings.xml version.
 
 Commit, tag, git push --tag
 
-Clean project, restart eclipse.
+Clean project
 
 Build Wallet32.apk
 
