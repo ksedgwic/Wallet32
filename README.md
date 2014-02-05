@@ -24,6 +24,7 @@ pre-release version:
 
     https://plus.google.com/u/0/communities/112340435878616981465
 
+Instructions for installing the alpha version are in the first post ...
 
 Wallet32
 ===============
