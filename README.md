@@ -15,6 +15,15 @@ Features include:
 * Same wallet may be securely accessed concurrently from multiple devices.
 * Wallet data is protected by scrypt passcode.
 
+Alpha Test Version
+================
+
+An alpha test version of Wallet32 is available in the google play store.
+You'll need to join the Wallet32 Google+ community to get access to the
+pre-release version:
+
+    https://plus.google.com/u/0/communities/112340435878616981465
+
 
 Wallet32
 ===============
