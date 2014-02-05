@@ -26,7 +26,7 @@ pre-release version:
 
 Instructions for installing the alpha version are in the first post ...
 
-Wallet32
+Building Wallet32
 ===============
 
 ### Setup
