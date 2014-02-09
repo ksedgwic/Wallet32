@@ -17,12 +17,12 @@ Features include:
 
 Alpha Test Version
 ================
+This is [an example](http://example.com/ "Title") inline link.
 
 An alpha test version of Wallet32 is available in the google play store.
-You'll need to join the Wallet32 Google+ community to get access to the
-pre-release version:
-
-    https://plus.google.com/u/0/communities/112340435878616981465
+You'll need to join the
+[Wallet32 Google+ Community](https://plus.google.com/u/0/communities/112340435878616981465) to get access to the
+pre-release version.
 
 Instructions for installing the alpha version are in the first post ...
 
