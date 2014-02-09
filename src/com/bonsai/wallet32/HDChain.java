@@ -23,11 +23,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -53,26 +55,33 @@ public class HDChain {
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
-                   JsonNode chainNode)
+                   JSONObject chainNode)
         throws RuntimeException {
 
-        mParams = params;
+        try {
+            mParams = params;
 
-        mChainName = chainNode.path("name").textValue();
-        mIsReceive = chainNode.path("isReceive").booleanValue();
+            mChainName = chainNode.getString("name");
+            mIsReceive = chainNode.getBoolean("isReceive");
 
-        int chainnum = mIsReceive ? 0 : 1;
+            int chainnum = mIsReceive ? 0 : 1;
 
-        mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
+            mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
 
-        mLogger.info("created HDChain " + mChainName + ": " +
-                     mChainKey.getPath());
+            mLogger.info("created HDChain " + mChainName + ": " +
+                         mChainKey.getPath());
         
-        mAddrs = new ArrayList<HDAddress>();
-        Iterator<JsonNode> it = chainNode.path("addrs").iterator();
-        while (it.hasNext()) {
-            JsonNode addrNode = it.next();
-            mAddrs.add(new HDAddress(mParams, mChainKey, addrNode));
+            mAddrs = new ArrayList<HDAddress>();
+            JSONArray addrobjs = chainNode.getJSONArray("addrs");
+            for (int ii = 0; ii < addrobjs.length(); ++ii) {
+                JSONObject addrNode = addrobjs.getJSONObject(ii);
+                mAddrs.add(new HDAddress(mParams, mChainKey, addrNode));
+            }
+        }
+        catch (JSONException ex) {
+            String msg = "trouble deserializing chain: " + ex.toString();
+            mLogger.error(msg);
+            throw new RuntimeException(msg);
         }
     }
 
@@ -165,7 +174,7 @@ public class HDChain {
         return false;
     }
 
-    public Object dumps() {
+    public Map dumps() {
         Map<String,Object> obj = new HashMap<String,Object>();
 
         obj.put("name", mChainName);

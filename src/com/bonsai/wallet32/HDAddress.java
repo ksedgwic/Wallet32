@@ -21,11 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
@@ -60,42 +61,50 @@ public class HDAddress {
 
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,
-                     JsonNode addrNode)
+                     JSONObject addrNode)
         throws RuntimeException {
 
-        mParams = params;
-
-        mAddrNum = addrNode.path("addrNum").intValue();
-
-        mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
-
-        // Derive ECKey.
-        byte[] prvBytes = mAddrKey.getPrivKeyBytes();
         try {
-            mPubBytes = Base58.decode(addrNode.path("pubBytes").textValue());
-        } catch (AddressFormatException ex) {
-            throw new RuntimeException("failed to decode pubByts");
-        }
+
+            mParams = params;
+
+            mAddrNum = addrNode.getInt("addrNum");
+
+            mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
+
+            // Derive ECKey.
+            byte[] prvBytes = mAddrKey.getPrivKeyBytes();
+            try {
+                mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
+            } catch (AddressFormatException ex) {
+                throw new RuntimeException("failed to decode pubByts");
+            }
         
-        mECKey = new ECKey(prvBytes, mPubBytes);
+            mECKey = new ECKey(prvBytes, mPubBytes);
 
-        // Set creation time to Wallet32 epoch.
-        mECKey.setCreationTimeSeconds(EPOCH);
+            // Set creation time to Wallet32 epoch.
+            mECKey.setCreationTimeSeconds(EPOCH);
 
-        // Derive public key, public hash and address.
-        mPubKey = mECKey.getPubKey();
-        mPubKeyHash = mECKey.getPubKeyHash();
-        mAddress = mECKey.toAddress(mParams);
+            // Derive public key, public hash and address.
+            mPubKey = mECKey.getPubKey();
+            mPubKeyHash = mECKey.getPubKeyHash();
+            mAddress = mECKey.toAddress(mParams);
 
-        // Initialize transaction count and balance.  If we don't have
-        // a persisted available amount, presume it is all available.
-        mNumTrans = addrNode.path("numTrans").intValue();
-        mBalance = addrNode.path("balance").bigIntegerValue();
-        mAvailable = addrNode.has("available") ?
-            addrNode.path("available").bigIntegerValue() : mBalance;
+            // Initialize transaction count and balance.  If we don't have
+            // a persisted available amount, presume it is all available.
+            mNumTrans = addrNode.getInt("numTrans");
+            mBalance = BigInteger.valueOf(addrNode.getLong("balance"));
+            mAvailable = addrNode.has("available") ?
+                BigInteger.valueOf(addrNode.getLong("available")) : mBalance;
 
-        mLogger.info("read address " + mAddrKey.getPath() + ": " +
-                     mAddress.toString());
+            mLogger.info("read address " + mAddrKey.getPath() + ": " +
+                         mAddress.toString());
+        }
+        catch (JSONException ex) {
+            String msg = "trouble deserializing address: " + ex.toString();
+            mLogger.error(msg);
+            throw new RuntimeException(msg);
+        }
     }
 
     public HDAddress(NetworkParameters params,
@@ -242,14 +251,14 @@ public class HDAddress {
         return mAddress.toString().equals(addr.toString());
     }
 
-    public Object dumps() {
+    public Map dumps() {
         Map<String,Object> obj = new HashMap<String,Object>();
 
         obj.put("addrNum", mAddrNum);
         obj.put("pubBytes", Base58.encode(mPubBytes));
         obj.put("numTrans", Integer.valueOf(mNumTrans));
-        obj.put("balance", mBalance);
-        obj.put("available", mAvailable);
+        obj.put("balance", mBalance.longValue());
+        obj.put("available", mAvailable.longValue());
 
         return obj;
     }

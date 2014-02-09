@@ -21,11 +21,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -55,23 +56,33 @@ public class HDAccount {
 
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
-                     JsonNode acctNode)
+                     JSONObject acctNode)
         throws RuntimeException {
 
         mParams = params;
 
-        mAccountName = acctNode.path("name").textValue();
-        mAccountId = acctNode.path("id").intValue();
+        try {
+            mAccountName = acctNode.getString("name");
+            mAccountId = acctNode.getInt("id");
 
-        mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
+            mAccountKey =
+                HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
 
-        mLogger.info("created HDAccount " + mAccountName + ": " +
-                     mAccountKey.getPath());
+            mLogger.info("created HDAccount " + mAccountName + ": " +
+                         mAccountKey.getPath());
 
-        mReceiveChain =
-            new HDChain(mParams, mAccountKey, acctNode.path("receive"));
-        mChangeChain =
-            new HDChain(mParams, mAccountKey, acctNode.path("change"));
+            mReceiveChain =
+                new HDChain(mParams, mAccountKey,
+                            acctNode.getJSONObject("receive"));
+            mChangeChain =
+                new HDChain(mParams, mAccountKey,
+                            acctNode.getJSONObject("change"));
+        }
+        catch (JSONException ex) {
+            String msg = "trouble deserializing account: " + ex.toString();
+            mLogger.error(msg);
+            throw new RuntimeException(msg);
+        }
     }
 
     public HDAccount(NetworkParameters params,
@@ -223,7 +234,7 @@ public class HDAccount {
         }
     }
 
-    public Object dumps() {
+    public Map dumps() {
         Map<String,Object> obj = new HashMap<String,Object>();
 
         obj.put("name", mAccountName);
