@@ -195,6 +195,10 @@ public class HDAddress {
         return mAddress.toString();
     }
 
+    public String getAbbrev() {
+        return mAddress.toString().substring(0, 8) + "...";
+    }
+
     public String getPrivateKeyString() {
         return mECKey.getPrivateKeyEncoded(mParams).toString();
     }
@@ -232,6 +236,10 @@ public class HDAddress {
 
     public Address getAddress() {
         return mAddress;
+    }
+
+    public boolean matchAddress(Address addr) {
+        return mAddress.toString().equals(addr.toString());
     }
 
     public Object dumps() {

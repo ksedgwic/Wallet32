@@ -206,6 +206,15 @@ Fetching unspent balance for this address from blockchain.info ...\n
     <string name="transaction_hash_label">Hash</string>
     <string name="transaction_date_label">Date</string>
     <string name="transaction_confidence_label">Confidence</string>
+    <string name="transaction_inputs_label">Inputs</string>
+    <string name="transaction_outputs_label">Outputs</string>
+    <string name="transaction_fee_label">Miner\'s Fee</string>
+    <string name="transputs_header_account">Account</string>
+    <string name="transputs_header_chain"></string>
+    <string name="transputs_header_path">Path</string>
+    <string name="transputs_header_addr">Address</string>
+    <string name="transputs_header_btc">BTC</string>
+    <string name="transputs_total">Total</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="view_clipboard_copy">Address copied to clipboard</string>
     <string name="view_clipboard_copy_key">Private key copied to clipboard</string>

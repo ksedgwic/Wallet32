@@ -285,9 +285,7 @@ public class ViewAccountActivity extends BaseWalletActivity {
         List<HDAddress> addrs = chain.getAddresses();
         for (HDAddress addr : addrs) {
             String path = addr.getPath();
-            String addrstr =
-                String.format("%s...",
-                              addr.getAddressString().substring(0, 8));
+            String addrstr = addr.getAbbrev();
             String ntrans = String.format("%d", addr.numTrans());
             String bal = String.format("%.05f", addr.getBalance());
             String fiat =

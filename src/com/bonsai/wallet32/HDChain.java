@@ -96,6 +96,10 @@ public class HDChain {
             mAddrs.add(new HDAddress(mParams, mChainKey, ii));
     }
 
+    public boolean isReceive() {
+        return mIsReceive;
+    }
+
     public List<HDAddress> getAddresses() {
         return mAddrs;
     }
@@ -221,5 +225,17 @@ public class HDChain {
 
             return numAdd;
         }
+    }
+
+    // Finds an address (if present) and returns a description
+    // of it's wallet location.
+    public HDAddressDescription findAddress(Address addr) {
+        for (HDAddress hda : mAddrs) {
+            if (hda.matchAddress(addr)) {
+                // Caller will fill in the accountId.
+                return new HDAddressDescription(this, hda);
+            }
+        }
+        return null;
     }
 }

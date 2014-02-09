@@ -841,6 +841,10 @@ public class WalletService extends Service
         return mHDWallet.nextReceiveAddress(acctnum);
     }
 
+    public HDAddressDescription findAddress(Address addr) {
+        return mHDWallet.findAddress(addr);
+    }
+
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
                                      double amount,

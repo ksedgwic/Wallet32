@@ -379,9 +379,10 @@ public class HDWallet {
             }
         }
 
-        // Log balance summary.
-        for (HDAccount acct : mAccounts)
-            acct.logBalance();
+        // This is too noisy
+        // // Log balance summary.
+        // for (HDAccount acct : mAccounts)
+        //     acct.logBalance();
     }
 
     public double balanceForAccount(int acctnum) {
@@ -605,5 +606,17 @@ public class HDWallet {
                 maxAdded = numAdded;
         }
         return maxAdded;
+    }
+
+    // Finds an address (if present) and returns a description
+    // of it's wallet location.
+    public HDAddressDescription findAddress(Address addr) {
+        HDAddressDescription retval = null;
+        for (HDAccount acct : mAccounts) {
+            retval = acct.findAddress(addr);
+            if (retval != null)
+                return retval;
+        }
+        return retval;
     }
 }

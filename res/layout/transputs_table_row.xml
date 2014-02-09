@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:onClick="handleRowClick"
+    >
+
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="0dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <TextView
+	android:id="@+id/row_account"
+	android:text="Account 0"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="left"
+	/>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <TextView
+	android:id="@+id/row_chain"
+	android:text="R"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="left"
+	/>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <TextView
+	android:id="@+id/row_path"
+	android:text="M/0/0/64"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="left"
+	/>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <TextView
+	android:id="@+id/row_addr"
+	android:text="123456789..."
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="left"
+	android:textColor="#00f" 
+	/>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <TextView
+	android:id="@+id/row_btc"
+	android:text="0.0000"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:gravity="right"
+	/>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="0dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+</TableRow>

@@ -245,4 +245,23 @@ public class HDAccount {
 
         return (receiveAdded > changeAdded) ? receiveAdded : changeAdded;
     }
+
+    // Finds an address (if present) and returns a description
+    // of it's wallet location.
+    public HDAddressDescription findAddress(Address addr) {
+        HDAddressDescription retval;
+
+        // Try the receive chain first.
+        retval = mReceiveChain.findAddress(addr);
+
+        // If it wasn't there try the change chain.
+        if (retval == null)
+            retval = mChangeChain.findAddress(addr);
+
+        // If we found this address update the hdAccount.
+        if (retval != null)
+            retval.setHDAccount(this);
+
+        return retval;
+    }
 }

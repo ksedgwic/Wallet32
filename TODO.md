@@ -67,9 +67,13 @@ Update res/values/strings.xml version.
 
 Commit, tag, git push --tag
 
-Clean project
+Clean project.
 
-Build Wallet32.apk
+Smoke test on attached device.
+
+Build Wallet32.apk.
+
+scp ~/Wallet32.apk sl0:htdocs/ken/public/
 
 Upload to Google Play Developer Console.
 
