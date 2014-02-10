@@ -169,6 +169,7 @@ public class HDWallet {
             // Parse the decryptedBytes.
             String jsonstr = new String(decryptedBytes);
 
+            /*
             // THIS CONTAINS THE SEED!
             // Have to break the message into chunks for big messages ...
             String msg = jsonstr;
@@ -178,6 +179,7 @@ public class HDWallet {
                 msg = msg.substring(1024);
             }
             mLogger.error(msg);
+            */
             
             JSONObject node = new JSONObject(jsonstr);
             return node;
