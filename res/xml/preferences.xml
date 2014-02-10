@@ -38,6 +38,12 @@
 	/>
 
     <Preference
+        android:key="pref_sendLogs"
+	android:title="@string/pref_send_logs"
+        android:summary="@string/pref_send_logs_summary"
+	/>
+
+    <Preference
         android:key="pref_about"
 	android:title="@string/pref_about"
 	/>

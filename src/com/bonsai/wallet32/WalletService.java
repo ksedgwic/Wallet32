@@ -614,16 +614,23 @@ public class WalletService extends Service
     public void changePasscode(KeyParameter oldAesKey,
                                KeyCrypter keyCrypter,
                                KeyParameter aesKey) {
+        mLogger.info("changePasscode starting");
 
         // Change the parameters on our HDWallet.
         mHDWallet.setPersistCrypter(keyCrypter, aesKey);
         mHDWallet.persist();
 
+        mLogger.info("persisted HD wallet");
+
         // Decrypt the wallet with the old key.
         mKit.wallet().decrypt(oldAesKey);
 
+        mLogger.info("decrypted base wallet");
+
         // Encrypt the wallet using the new key.
         mKit.wallet().encrypt(keyCrypter, aesKey);
+
+        mLogger.info("reencrypted base wallet");
     }
 
     private void setFiatRateSource(String src) {

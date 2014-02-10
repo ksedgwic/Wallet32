@@ -15,6 +15,14 @@
 
 package com.bonsai.wallet32;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.Preference;
@@ -128,6 +137,20 @@ public class SettingsActivity extends PreferenceActivity {
         }
 
         {
+            Preference butt =
+                (Preference) findPreference("pref_sendLogs");
+            butt.setOnPreferenceClickListener
+                (new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            sendLogs();
+                            finish();
+                            return true;
+                        }
+                    });
+        }
+
+        {
             Preference butt = (Preference) findPreference("pref_about");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
@@ -178,6 +201,76 @@ public class SettingsActivity extends PreferenceActivity {
         unbindService(mConnection);
         mLogger.info("SettingsActivity paused");
     }
+
+    public void sendLogs() {
+		final StringBuilder text = new StringBuilder();
+		final ArrayList<Uri> attachments = new ArrayList<Uri>();
+		final File cacheDir = getCacheDir();
+
+        try
+        {
+            final File logDir = getDir("log", Context.MODE_PRIVATE);
+
+            for (final File logFile : logDir.listFiles())
+            {
+                final String logFileName = logFile.getName();
+                final File file;
+                if (logFileName.endsWith(".log.gz"))
+                    file = File.createTempFile(logFileName.substring(0, logFileName.length() - 6), ".log.gz", cacheDir);
+                else if (logFileName.endsWith(".log"))
+                    file = File.createTempFile(logFileName.substring(0, logFileName.length() - 3), ".log", cacheDir);
+                else
+                    continue;
+
+                final InputStream is = new FileInputStream(logFile);
+                final OutputStream os = new FileOutputStream(file);
+
+                Io.copy(is, os);
+
+                os.close();
+                is.close();
+
+                Io.chmod(file, 0777);
+
+                attachments.add(Uri.fromFile(file));
+            }
+        }
+        catch (final IOException x)
+        {
+            mLogger.info("problem writing attachment", x);
+        }
+
+		startSend(text, attachments);
+	}
+
+	private void startSend(final CharSequence text, final ArrayList<Uri> attachments)
+	{
+		final Intent intent;
+
+		if (attachments.size() == 0)
+		{
+			intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("message/rfc822");
+		}
+		else if (attachments.size() == 1)
+		{
+			intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_STREAM, attachments.get(0));
+		}
+		else
+		{
+			intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+			intent.setType("text/plain");
+			intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachments);
+		}
+
+		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "ken@bonsai.com" });
+        intent.putExtra(Intent.EXTRA_SUBJECT, "wallet32 logs");
+		intent.putExtra(Intent.EXTRA_TEXT, "-- LOGS ATTACHED --");
+
+		startActivity(Intent.createChooser(intent, getString(R.string.send_logs_mail_intent_chooser)));
+	}
 
     public void showConfirmDialog(String title,
                                   String msg,

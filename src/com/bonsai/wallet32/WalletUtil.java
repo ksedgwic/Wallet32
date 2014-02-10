@@ -72,6 +72,8 @@ public class WalletUtil {
 
         KeyParameter oldAesKey = wallapp.mAesKey;
 
+        mLogger.info("setPasscode starting");
+
         byte[] salt;
         if (isChange) {
             // Reuse our salt (better chance of recovering if
@@ -96,6 +98,8 @@ public class WalletUtil {
         wallapp.mPasscode = passcode;
         wallapp.mKeyCrypter = keyCrypter;
         wallapp.mAesKey = aesKey;
+
+        mLogger.info("setPasscode finished");
     }
 
     public static void createWallet(Context context) {

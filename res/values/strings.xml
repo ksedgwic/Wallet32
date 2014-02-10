@@ -266,6 +266,12 @@ Fetching unspent balance for this address from blockchain.info ...\n
 
     <string name="pref_rescan_blockchain">Rescan Blockchain ...</string>
     <string name="pref_rescan_summary">Rescan Blockchain</string>
+
+    <string name="pref_send_logs">Send Logs</string>
+    <string name="pref_send_logs_summary">Send Logs</string>
+
+    <string name="send_logs_mail_intent_chooser">Send Logs with…</string>
+
     <string name="pref_about">About Wallet32</string>
 
     <string name="pref_rescan_title">Confirm Rescan</string>
