@@ -6,9 +6,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="libs/slf4j-android-1.6.1-RC1.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-core-2.2.3.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-databind-2.2.3.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-annotations-2.2.3.jar"/>
 	<classpathentry kind="lib" path="libs/uber-bitcoinj-0.11-SNAPSHOT-fixed.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CaptureActivity"/>
 	<classpathentry kind="output" path="bin/classes"/>
