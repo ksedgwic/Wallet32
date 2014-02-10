@@ -56,32 +56,45 @@ public class HDChain {
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
                    JSONObject chainNode)
-        throws RuntimeException {
+        throws RuntimeException, JSONException {
 
-        try {
-            mParams = params;
+        mParams = params;
 
-            mChainName = chainNode.getString("name");
-            mIsReceive = chainNode.getBoolean("isReceive");
+        mChainName = chainNode.getString("name");
+        mIsReceive = chainNode.getBoolean("isReceive");
 
-            int chainnum = mIsReceive ? 0 : 1;
+        int chainnum = mIsReceive ? 0 : 1;
 
-            mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
+        mChainKey = HDKeyDerivation.deriveChildKey(accountKey, chainnum);
 
-            mLogger.info("created HDChain " + mChainName + ": " +
-                         mChainKey.getPath());
+        mLogger.info("created HDChain " + mChainName + ": " +
+                     mChainKey.getPath());
         
-            mAddrs = new ArrayList<HDAddress>();
-            JSONArray addrobjs = chainNode.getJSONArray("addrs");
-            for (int ii = 0; ii < addrobjs.length(); ++ii) {
-                JSONObject addrNode = addrobjs.getJSONObject(ii);
-                mAddrs.add(new HDAddress(mParams, mChainKey, addrNode));
-            }
+        mAddrs = new ArrayList<HDAddress>();
+        JSONArray addrobjs = chainNode.getJSONArray("addrs");
+        for (int ii = 0; ii < addrobjs.length(); ++ii) {
+            JSONObject addrNode = addrobjs.getJSONObject(ii);
+            mAddrs.add(new HDAddress(mParams, mChainKey, addrNode));
+        }
+    }
+
+    public JSONObject dumps() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("name", mChainName);
+            obj.put("isReceive", mIsReceive);
+
+            JSONArray addrs = new JSONArray();
+            for (HDAddress addr : mAddrs)
+                addrs.put(addr.dumps());
+
+            obj.put("addrs", addrs);
+
+            return obj;
         }
         catch (JSONException ex) {
-            String msg = "trouble deserializing chain: " + ex.toString();
-            mLogger.error(msg);
-            throw new RuntimeException(msg);
+            throw new RuntimeException(ex);	// Shouldn't happen.
         }
     }
 
@@ -172,20 +185,6 @@ public class HDChain {
                 return true;
         }
         return false;
-    }
-
-    public Map dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("name", mChainName);
-        obj.put("isReceive", Boolean.valueOf(mIsReceive));
-
-        List<Object> addrsList = new ArrayList<Object>();
-        for (HDAddress addr : mAddrs)
-            addrsList.add(addr.dumps());
-        obj.put("addrs", addrsList);
-
-        return obj;
     }
 
     private int marginSize() {

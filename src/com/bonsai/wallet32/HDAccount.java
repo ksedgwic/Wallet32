@@ -57,31 +57,40 @@ public class HDAccount {
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
                      JSONObject acctNode)
-        throws RuntimeException {
+        throws RuntimeException, JSONException {
 
         mParams = params;
 
+        mAccountName = acctNode.getString("name");
+        mAccountId = acctNode.getInt("id");
+
+        mAccountKey =
+            HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
+
+        mLogger.info("created HDAccount " + mAccountName + ": " +
+                     mAccountKey.getPath());
+
+        mReceiveChain =
+            new HDChain(mParams, mAccountKey,
+                        acctNode.getJSONObject("receive"));
+        mChangeChain =
+            new HDChain(mParams, mAccountKey,
+                        acctNode.getJSONObject("change"));
+    }
+
+    public JSONObject dumps() {
         try {
-            mAccountName = acctNode.getString("name");
-            mAccountId = acctNode.getInt("id");
+            JSONObject obj = new JSONObject();
 
-            mAccountKey =
-                HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
+            obj.put("name", mAccountName);
+            obj.put("id", mAccountId);
+            obj.put("receive", mReceiveChain.dumps());
+            obj.put("change", mChangeChain.dumps());
 
-            mLogger.info("created HDAccount " + mAccountName + ": " +
-                         mAccountKey.getPath());
-
-            mReceiveChain =
-                new HDChain(mParams, mAccountKey,
-                            acctNode.getJSONObject("receive"));
-            mChangeChain =
-                new HDChain(mParams, mAccountKey,
-                            acctNode.getJSONObject("change"));
+            return obj;
         }
         catch (JSONException ex) {
-            String msg = "trouble deserializing account: " + ex.toString();
-            mLogger.error(msg);
-            throw new RuntimeException(msg);
+            throw new RuntimeException(ex);	// Shouldn't happen.
         }
     }
 
@@ -232,17 +241,6 @@ public class HDAccount {
             // Does all the real work ...
             return mDefaultCoinSelector.select(biTarget, filtered);
         }
-    }
-
-    public Map dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("name", mAccountName);
-        obj.put("id", mAccountId);
-        obj.put("receive", mReceiveChain.dumps());
-        obj.put("change", mChangeChain.dumps());
-
-        return obj;
     }
 
     // Returns the largest number of addresses added to a chain.

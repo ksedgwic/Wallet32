@@ -101,11 +101,26 @@ public class HDWallet {
                                    KeyParameter aesKey)
         throws InvalidCipherTextException, IOException {
 
-        JSONObject node = deserialize(directory, filePrefix,
-                                      keyCrypter, aesKey);
+        try {
+            JSONObject node = deserialize(directory, filePrefix,
+                                          keyCrypter, aesKey);
 
-        return new HDWallet(ctxt, params, directory, filePrefix,
-                            keyCrypter, aesKey, node);
+            return new HDWallet(ctxt, params, directory, filePrefix,
+                                keyCrypter, aesKey, node);
+        }
+        catch (JSONException ex) {
+            String msg = "trouble deserializing wallet: " + ex.toString();
+
+            // Have to break the message into chunks for big messages ...
+            while (msg.length() > 1024) {
+                String chunk = msg.substring(0, 1024);
+                mLogger.error(chunk);
+                msg = msg.substring(1024);
+            }
+            mLogger.error(msg);
+
+            throw new RuntimeException(msg);
+        }
     }
 
     // Deserialize the wallet data.
@@ -113,7 +128,7 @@ public class HDWallet {
                                          String filePrefix,
                                          KeyCrypter keyCrypter,
                                          KeyParameter aesKey)
-        throws IOException, InvalidCipherTextException {
+        throws IOException, InvalidCipherTextException, JSONException {
 
         String path = persistPath(filePrefix);
         mLogger.info("restoring HDWallet from " + path);
@@ -154,6 +169,7 @@ public class HDWallet {
             // Parse the decryptedBytes.
             String jsonstr = new String(decryptedBytes);
 
+            // THIS CONTAINS THE SEED!
             // Have to break the message into chunks for big messages ...
             String msg = jsonstr;
             while (msg.length() > 1024) {
@@ -166,10 +182,6 @@ public class HDWallet {
             JSONObject node = new JSONObject(jsonstr);
             return node;
 
-        } catch (JSONException ex) {
-            String msg = "trouble parsing JSON: " + ex.toString();
-            mLogger.warn(msg);
-            throw new RuntimeException(msg);
         } catch (IOException ex) {
             mLogger.warn("trouble reading " + path + ": " + ex.toString());
             throw ex;
@@ -188,77 +200,91 @@ public class HDWallet {
                     String filePrefix,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
-                    JSONObject walletNode) {
+                    JSONObject walletNode) throws JSONException {
+
+        mParams = params;
+        mDirectory = directory;
+        mFilePrefix = filePrefix;
+        mKeyCrypter = keyCrypter;
+        mAesKey = aesKey;
 
         try {
-            mParams = params;
-            mDirectory = directory;
-            mFilePrefix = filePrefix;
-            mKeyCrypter = keyCrypter;
-            mAesKey = aesKey;
+            mWalletSeed = Base58.decode(walletNode.getString("seed"));
 
-            try {
-                mWalletSeed = Base58.decode(walletNode.getString("seed"));
-
-                if (!walletNode.has("bip39_version")) {
+            if (!walletNode.has("bip39_version")) {
+                mBIP39Version = MnemonicCodeX.Version.V0_5;
+                mLogger.info("defaulting BIP39 version to V0_5");
+            } else {
+                String bipverstr = walletNode.getString("bip39_version");
+                if (bipverstr.equals("V0_5")) {
                     mBIP39Version = MnemonicCodeX.Version.V0_5;
-                    mLogger.info("defaulting BIP39 version to V0_5");
-                } else {
-                    String bipverstr = walletNode.getString("bip39_version");
-                    if (bipverstr.equals("V0_5")) {
-                        mBIP39Version = MnemonicCodeX.Version.V0_5;
-                        mLogger.info("setting BIP39 version to V0_5");
-                    }
-                    else if (bipverstr.equals("V0_6")) {
-                        mBIP39Version = MnemonicCodeX.Version.V0_6;
-                        mLogger.info("setting BIP39 version to V0_6");
-                    }
-                    else
-                    {
-                        throw new RuntimeException
-                            ("unknown BIP39 version: " + bipverstr);
-                    }
+                    mLogger.info("setting BIP39 version to V0_5");
                 }
-
-            } catch (AddressFormatException e) {
-                throw new RuntimeException("couldn't decode wallet seed");
+                else if (bipverstr.equals("V0_6")) {
+                    mBIP39Version = MnemonicCodeX.Version.V0_6;
+                    mLogger.info("setting BIP39 version to V0_6");
+                }
+                else
+                {
+                    throw new RuntimeException
+                        ("unknown BIP39 version: " + bipverstr);
+                }
             }
 
-            byte[] hdseed;
-            try {
-                InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
-                MnemonicCodeX mc =
-                    new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
-                List<String> wordlist = mc.toMnemonic(mWalletSeed);
-                hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
-            } catch (Exception ex) {
-                throw new RuntimeException("trouble decoding seed");
+        } catch (AddressFormatException e) {
+            throw new RuntimeException("couldn't decode wallet seed");
+        }
+
+        byte[] hdseed;
+        try {
+            InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
+            MnemonicCodeX mc =
+                new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
+            List<String> wordlist = mc.toMnemonic(mWalletSeed);
+            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
+        } catch (Exception ex) {
+            throw new RuntimeException("trouble decoding seed");
+        }
+
+        mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
+
+        mLogger.info("restored HDWallet " + mMasterKey.getPath());
+
+        mAccounts = new ArrayList<HDAccount>();
+        JSONArray accounts = walletNode.getJSONArray("accounts");
+        for (int ii = 0; ii < accounts.length(); ++ii) {
+            mLogger.info(String.format("deserializing account %d", ii));
+            JSONObject acctNode = accounts.getJSONObject(ii);
+            mAccounts.add(new HDAccount(mParams, mMasterKey, acctNode));
+        }
+    }
+
+    public JSONObject dumps() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("seed", Base58.encode(mWalletSeed));
+            switch (mBIP39Version) {
+            case V0_5:
+                obj.put("bip39_version", "V0_5");
+                break;
+            case V0_6:
+                obj.put("bip39_version", "V0_6");
+                break;
+            default:
+                throw new RuntimeException("unknown BIP39 version");
             }
 
-            mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
+            JSONArray accts = new JSONArray();
+            for (HDAccount acct : mAccounts)
+                accts.put(acct.dumps());
 
-            mLogger.info("restored HDWallet " + mMasterKey.getPath());
+            obj.put("accounts", accts);
 
-            mAccounts = new ArrayList<HDAccount>();
-            JSONArray accounts = walletNode.getJSONArray("accounts");
-            for (int ii = 0; ii < accounts.length(); ++ii) {
-                mLogger.info(String.format("deserializing account %d", ii));
-                JSONObject acctNode = accounts.getJSONObject(ii);
-                mAccounts.add(new HDAccount(mParams, mMasterKey, acctNode));
-            }
+            return obj;
         }
         catch (JSONException ex) {
-            String msg = "trouble deserializing wallet: " + ex.toString();
-
-            // Have to break the message into chunks for big messages ...
-            while (msg.length() > 1024) {
-                String chunk = msg.substring(0, 1024);
-                mLogger.error(chunk);
-                msg = msg.substring(1024);
-            }
-            mLogger.error(msg);
-
-            throw new RuntimeException(msg);
+            throw new RuntimeException(ex);	// Shouldn't happen.
         }
     }
 
@@ -552,7 +578,7 @@ public class HDWallet {
         String tmpPath = path + ".tmp";
         try {
             // Serialize into a byte array.
-            JSONObject jsonobj = new JSONObject(dumps());
+            JSONObject jsonobj = dumps();
             String jsonstr = jsonobj.toString(4);	// indentation
             byte[] plainBytes = jsonstr.getBytes(Charset.forName("UTF-8"));
 
@@ -601,29 +627,6 @@ public class HDWallet {
 		} catch (InvalidCipherTextException ex) {
             mLogger.warn("encryption failed: " + ex.toString());
 		}
-    }
-
-    public Map dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("seed", Base58.encode(mWalletSeed));
-        switch (mBIP39Version) {
-        case V0_5:
-            obj.put("bip39_version", "V0_5");
-            break;
-        case V0_6:
-            obj.put("bip39_version", "V0_6");
-            break;
-        default:
-            throw new RuntimeException("unknown BIP39 version");
-        }
-
-        List<Map> acctList = new ArrayList<Map>();
-        for (HDAccount acct : mAccounts)
-            acctList.add(acct.dumps());
-        obj.put("accounts", acctList);
-
-        return obj;
     }
 
     // Ensure that there are enough spare addresses on all chains.

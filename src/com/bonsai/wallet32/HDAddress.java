@@ -62,48 +62,57 @@ public class HDAddress {
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,
                      JSONObject addrNode)
-        throws RuntimeException {
+        throws RuntimeException, JSONException {
 
+        mParams = params;
+
+        mAddrNum = addrNode.getInt("addrNum");
+
+        mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
+
+        // Derive ECKey.
+        byte[] prvBytes = mAddrKey.getPrivKeyBytes();
         try {
-
-            mParams = params;
-
-            mAddrNum = addrNode.getInt("addrNum");
-
-            mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
-
-            // Derive ECKey.
-            byte[] prvBytes = mAddrKey.getPrivKeyBytes();
-            try {
-                mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
-            } catch (AddressFormatException ex) {
-                throw new RuntimeException("failed to decode pubByts");
-            }
+            mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
+        } catch (AddressFormatException ex) {
+            throw new RuntimeException("failed to decode pubByts");
+        }
         
-            mECKey = new ECKey(prvBytes, mPubBytes);
+        mECKey = new ECKey(prvBytes, mPubBytes);
 
-            // Set creation time to Wallet32 epoch.
-            mECKey.setCreationTimeSeconds(EPOCH);
+        // Set creation time to Wallet32 epoch.
+        mECKey.setCreationTimeSeconds(EPOCH);
 
-            // Derive public key, public hash and address.
-            mPubKey = mECKey.getPubKey();
-            mPubKeyHash = mECKey.getPubKeyHash();
-            mAddress = mECKey.toAddress(mParams);
+        // Derive public key, public hash and address.
+        mPubKey = mECKey.getPubKey();
+        mPubKeyHash = mECKey.getPubKeyHash();
+        mAddress = mECKey.toAddress(mParams);
 
-            // Initialize transaction count and balance.  If we don't have
-            // a persisted available amount, presume it is all available.
-            mNumTrans = addrNode.getInt("numTrans");
-            mBalance = BigInteger.valueOf(addrNode.getLong("balance"));
-            mAvailable = addrNode.has("available") ?
-                BigInteger.valueOf(addrNode.getLong("available")) : mBalance;
+        // Initialize transaction count and balance.  If we don't have
+        // a persisted available amount, presume it is all available.
+        mNumTrans = addrNode.getInt("numTrans");
+        mBalance = BigInteger.valueOf(addrNode.getLong("balance"));
+        mAvailable = addrNode.has("available") ?
+            BigInteger.valueOf(addrNode.getLong("available")) : mBalance;
 
-            mLogger.info("read address " + mAddrKey.getPath() + ": " +
-                         mAddress.toString());
+        mLogger.info("read address " + mAddrKey.getPath() + ": " +
+                     mAddress.toString());
+    }
+
+    public JSONObject dumps() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("addrNum", mAddrNum);
+            obj.put("pubBytes", Base58.encode(mPubBytes));
+            obj.put("numTrans", mNumTrans);
+            obj.put("balance", mBalance.longValue());
+            obj.put("available", mAvailable.longValue());
+
+            return obj;
         }
         catch (JSONException ex) {
-            String msg = "trouble deserializing address: " + ex.toString();
-            mLogger.error(msg);
-            throw new RuntimeException(msg);
+            throw new RuntimeException(ex);	// Shouldn't happen.
         }
     }
 
@@ -249,17 +258,5 @@ public class HDAddress {
 
     public boolean matchAddress(Address addr) {
         return mAddress.toString().equals(addr.toString());
-    }
-
-    public Map dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("addrNum", mAddrNum);
-        obj.put("pubBytes", Base58.encode(mPubBytes));
-        obj.put("numTrans", Integer.valueOf(mNumTrans));
-        obj.put("balance", mBalance.longValue());
-        obj.put("available", mAvailable.longValue());
-
-        return obj;
     }
 }
