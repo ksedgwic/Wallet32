@@ -21,11 +21,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -55,23 +56,42 @@ public class HDAccount {
 
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
-                     JsonNode acctNode)
-        throws RuntimeException {
+                     JSONObject acctNode)
+        throws RuntimeException, JSONException {
 
         mParams = params;
 
-        mAccountName = acctNode.path("name").textValue();
-        mAccountId = acctNode.path("id").intValue();
+        mAccountName = acctNode.getString("name");
+        mAccountId = acctNode.getInt("id");
 
-        mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
+        mAccountKey =
+            HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
 
         mLogger.info("created HDAccount " + mAccountName + ": " +
                      mAccountKey.getPath());
 
         mReceiveChain =
-            new HDChain(mParams, mAccountKey, acctNode.path("receive"));
+            new HDChain(mParams, mAccountKey,
+                        acctNode.getJSONObject("receive"));
         mChangeChain =
-            new HDChain(mParams, mAccountKey, acctNode.path("change"));
+            new HDChain(mParams, mAccountKey,
+                        acctNode.getJSONObject("change"));
+    }
+
+    public JSONObject dumps() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("name", mAccountName);
+            obj.put("id", mAccountId);
+            obj.put("receive", mReceiveChain.dumps());
+            obj.put("change", mChangeChain.dumps());
+
+            return obj;
+        }
+        catch (JSONException ex) {
+            throw new RuntimeException(ex);	// Shouldn't happen.
+        }
     }
 
     public HDAccount(NetworkParameters params,
@@ -221,17 +241,6 @@ public class HDAccount {
             // Does all the real work ...
             return mDefaultCoinSelector.select(biTarget, filtered);
         }
-    }
-
-    public Object dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("name", mAccountName);
-        obj.put("id", mAccountId);
-        obj.put("receive", mReceiveChain.dumps());
-        obj.put("change", mChangeChain.dumps());
-
-        return obj;
     }
 
     // Returns the largest number of addresses added to a chain.

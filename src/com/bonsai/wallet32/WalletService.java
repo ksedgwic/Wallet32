@@ -333,6 +333,8 @@ public class WalletService extends Service
                 mLogger.error("wallet restore failed: " + ex.toString());
 			} catch (IOException ex) {
                 mLogger.error("wallet restore failed: " + ex.toString());
+			} catch (RuntimeException ex) {
+                mLogger.error("wallet restore failed: " + ex.toString());
 			}
 
             if (mHDWallet == null) {

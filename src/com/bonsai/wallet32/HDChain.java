@@ -23,11 +23,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -53,13 +55,13 @@ public class HDChain {
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
-                   JsonNode chainNode)
-        throws RuntimeException {
+                   JSONObject chainNode)
+        throws RuntimeException, JSONException {
 
         mParams = params;
 
-        mChainName = chainNode.path("name").textValue();
-        mIsReceive = chainNode.path("isReceive").booleanValue();
+        mChainName = chainNode.getString("name");
+        mIsReceive = chainNode.getBoolean("isReceive");
 
         int chainnum = mIsReceive ? 0 : 1;
 
@@ -69,10 +71,30 @@ public class HDChain {
                      mChainKey.getPath());
         
         mAddrs = new ArrayList<HDAddress>();
-        Iterator<JsonNode> it = chainNode.path("addrs").iterator();
-        while (it.hasNext()) {
-            JsonNode addrNode = it.next();
+        JSONArray addrobjs = chainNode.getJSONArray("addrs");
+        for (int ii = 0; ii < addrobjs.length(); ++ii) {
+            JSONObject addrNode = addrobjs.getJSONObject(ii);
             mAddrs.add(new HDAddress(mParams, mChainKey, addrNode));
+        }
+    }
+
+    public JSONObject dumps() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("name", mChainName);
+            obj.put("isReceive", mIsReceive);
+
+            JSONArray addrs = new JSONArray();
+            for (HDAddress addr : mAddrs)
+                addrs.put(addr.dumps());
+
+            obj.put("addrs", addrs);
+
+            return obj;
+        }
+        catch (JSONException ex) {
+            throw new RuntimeException(ex);	// Shouldn't happen.
         }
     }
 
@@ -163,20 +185,6 @@ public class HDChain {
                 return true;
         }
         return false;
-    }
-
-    public Object dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("name", mChainName);
-        obj.put("isReceive", Boolean.valueOf(mIsReceive));
-
-        List<Object> addrsList = new ArrayList<Object>();
-        for (HDAddress addr : mAddrs)
-            addrsList.add(addr.dumps());
-        obj.put("addrs", addrsList);
-
-        return obj;
     }
 
     private int marginSize() {

@@ -21,11 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
@@ -60,19 +61,19 @@ public class HDAddress {
 
     public HDAddress(NetworkParameters params,
                      DeterministicKey chainKey,
-                     JsonNode addrNode)
-        throws RuntimeException {
+                     JSONObject addrNode)
+        throws RuntimeException, JSONException {
 
         mParams = params;
 
-        mAddrNum = addrNode.path("addrNum").intValue();
+        mAddrNum = addrNode.getInt("addrNum");
 
         mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
 
         // Derive ECKey.
         byte[] prvBytes = mAddrKey.getPrivKeyBytes();
         try {
-            mPubBytes = Base58.decode(addrNode.path("pubBytes").textValue());
+            mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
         } catch (AddressFormatException ex) {
             throw new RuntimeException("failed to decode pubByts");
         }
@@ -89,13 +90,30 @@ public class HDAddress {
 
         // Initialize transaction count and balance.  If we don't have
         // a persisted available amount, presume it is all available.
-        mNumTrans = addrNode.path("numTrans").intValue();
-        mBalance = addrNode.path("balance").bigIntegerValue();
+        mNumTrans = addrNode.getInt("numTrans");
+        mBalance = BigInteger.valueOf(addrNode.getLong("balance"));
         mAvailable = addrNode.has("available") ?
-            addrNode.path("available").bigIntegerValue() : mBalance;
+            BigInteger.valueOf(addrNode.getLong("available")) : mBalance;
 
         mLogger.info("read address " + mAddrKey.getPath() + ": " +
                      mAddress.toString());
+    }
+
+    public JSONObject dumps() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("addrNum", mAddrNum);
+            obj.put("pubBytes", Base58.encode(mPubBytes));
+            obj.put("numTrans", mNumTrans);
+            obj.put("balance", mBalance.longValue());
+            obj.put("available", mAvailable.longValue());
+
+            return obj;
+        }
+        catch (JSONException ex) {
+            throw new RuntimeException(ex);	// Shouldn't happen.
+        }
     }
 
     public HDAddress(NetworkParameters params,
@@ -240,17 +258,5 @@ public class HDAddress {
 
     public boolean matchAddress(Address addr) {
         return mAddress.toString().equals(addr.toString());
-    }
-
-    public Object dumps() {
-        Map<String,Object> obj = new HashMap<String,Object>();
-
-        obj.put("addrNum", mAddrNum);
-        obj.put("pubBytes", Base58.encode(mPubBytes));
-        obj.put("numTrans", Integer.valueOf(mNumTrans));
-        obj.put("balance", mBalance);
-        obj.put("available", mAvailable);
-
-        return obj;
     }
 }
