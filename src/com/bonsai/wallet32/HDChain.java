@@ -49,7 +49,7 @@ public class HDChain {
 
     private ArrayList<HDAddress>	mAddrs;
 
-    static private final int	DESIRED_MARGIN = 8;
+    static private final int	DESIRED_MARGIN = 32;
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
