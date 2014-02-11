@@ -29,7 +29,9 @@
 
         <activity
             android:name="com.bonsai.wallet32.LobbyActivity"
-            android:label="@string/title_activity_lobby" >
+            android:label="@string/title_activity_lobby"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -43,16 +45,22 @@
         </activity>
         <activity
             android:name="com.bonsai.wallet32.PasscodeActivity"
-            android:label="@string/title_activity_passcode" >
+            android:label="@string/title_activity_passcode"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
         <activity
             android:name="com.bonsai.wallet32.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
         <activity
             android:name="com.bonsai.wallet32.ViewSeedActivity"
             android:label="@string/title_activity_view_seed"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -60,7 +68,9 @@
         <activity
             android:name="com.bonsai.wallet32.RescanActivity"
             android:label="@string/title_activity_rescan"
-            android:parentActivityName="com.bonsai.wallet32.RescanActivity" >
+            android:parentActivityName="com.bonsai.wallet32.RescanActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -69,7 +79,9 @@
             android:name="com.bonsai.wallet32.ViewAccountActivity"
             android:label="@string/title_activity_view_account"
 	    android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -78,7 +90,9 @@
             android:name="com.bonsai.wallet32.SendBitcoinActivity"
             android:label="@string/title_activity_send_bitcoin"
 	    android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -87,7 +101,9 @@
             android:name="com.bonsai.wallet32.ReceiveBitcoinActivity"
             android:label="@string/title_activity_receive_bitcoin"
 	    android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -96,7 +112,9 @@
             android:name="com.bonsai.wallet32.SweepKeyActivity"
             android:label="@string/title_activity_sweep_key"
 	    android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -104,7 +122,9 @@
         <activity
             android:name="com.bonsai.wallet32.ViewTransactionsActivity"
             android:label="@string/title_activity_view_transactions"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -112,7 +132,9 @@
         <activity
             android:name="com.bonsai.wallet32.ViewTransactionActivity"
             android:label="@string/title_activity_view_transaction"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -120,7 +142,9 @@
         <activity
             android:name="com.bonsai.wallet32.ViewAddressActivity"
             android:label="@string/title_activity_view_address"
-            android:parentActivityName="com.bonsai.wallet32.MainActivity" >
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bonsai.wallet32.MainActivity" />
@@ -131,23 +155,33 @@
             android:configChanges="orientation|keyboardHidden"
             android:stateNotNeeded="true"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
         <activity
             android:name="com.bonsai.wallet32.CreateRestoreActivity"
-            android:label="@string/title_activity_create_restore" >
+            android:label="@string/title_activity_create_restore"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
         <activity
             android:name="com.bonsai.wallet32.RestoreWalletActivity"
-            android:label="@string/title_activity_restore_wallet" >
+            android:label="@string/title_activity_restore_wallet"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
         <activity
             android:name="com.bonsai.wallet32.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
         <activity
             android:name="com.bonsai.wallet32.AboutActivity"
-            android:label="@string/title_activity_about" >
+            android:label="@string/title_activity_about"
+	    android:screenOrientation="sensorPortrait"
+	    >
         </activity>
     </application>
 
