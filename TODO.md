@@ -2,6 +2,12 @@
 Bugs
 ----------------------------------------------------------------
 
+q* Not showing satoshi spam amounts correctly.
+
+* Pending -> Dead issues "Confirmed" notification.
+
+* Rotating screen while encrypting/decrypting crashes.
+
 * Pausing Passcode activity while it is "encrypting wallet" crashes.
 
 * Need to handle precision of BTC values much better then 4 fixed places.
