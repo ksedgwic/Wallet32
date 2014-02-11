@@ -183,6 +183,12 @@ public class MainActivity extends BaseWalletActivity {
     @SuppressLint("ValidFragment")
 	public class SyncProgressDialogFragment extends DialogFragment {
         @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             String details = getArguments().getString("details");
             AlertDialog.Builder builder =

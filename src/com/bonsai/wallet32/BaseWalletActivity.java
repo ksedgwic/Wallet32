@@ -163,6 +163,12 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
 
     public static class MyDialogFragment extends DialogFragment {
         @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             super.onCreateDialog(savedInstanceState);
             String msg = getArguments().getString("msg");
