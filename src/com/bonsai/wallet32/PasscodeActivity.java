@@ -213,6 +213,15 @@ public class PasscodeActivity extends ActionBarActivity {
     }
 
     public void submitPasscode(View view) {
+        // We don't currently allow empty passcodes.
+        // If we do, we'll have to side-step the keyCrypter.deriveKey
+        // step because it doesn't like empty passcodes ...
+        if (mPasscode.length() == 0) {
+            showErrorDialog(mRes.getString(R.string.passcode_errortitle),
+                            mRes.getString(R.string.passcode_empty));
+            return;
+        }
+
         switch (mState) {
         case PASSCODE_CREATE:	confirmPasscode();		break;
         case PASSCODE_CONFIRM:	checkPasscode();		break;

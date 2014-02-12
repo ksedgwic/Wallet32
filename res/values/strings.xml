@@ -32,6 +32,7 @@
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_show">Show Passcode</string>
     <string name="passcode_errortitle">Passcode Error</string>
+    <string name="passcode_empty">Empty passcodes are not supported</string>
     <string name="passcode_mismatch">Passcodes didn\'t match, try again</string>
     <string name="passcode_invalid">Passcode invalid, try again</string>
     <string name="passcode_waittitle">Please Wait</string>
