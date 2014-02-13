@@ -138,10 +138,10 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 }
 
                 // What is the value of this input?
-                double value = 0.0;
+                Double value = null;
                 TransactionOutput cto = txIn.getConnectedOutput();
                 if (cto != null)
-                    value = cto.getValue().doubleValue() / 1e8;
+                    value = Double.valueOf(cto.getValue().doubleValue() / 1e8);
 
                 mInputAddrs.add(addr);
                 mInputDescrs.add(descr);
@@ -168,7 +168,8 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 }
 
                 // What is the value of this input?
-                double value = txOut.getValue().doubleValue() / 1e8;
+                Double value =
+                    Double.valueOf(txOut.getValue().doubleValue() / 1e8);
 
                 mOutputAddrs.add(addr);
                 mOutputDescrs.add(descr);
@@ -186,6 +187,8 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 "\u2000";
             String pathDef =
                 "\u2000\u2000\u2000\u2000\u2000\u2000\u2000\u2000\u2000\u2000";
+            String valueDef =
+                "\u2000\u2000\u2000\u2000\u2000\u2000";
 
             TableLayout inputsTable =
                 (TableLayout) findViewById(R.id.inputs_table);
@@ -193,13 +196,17 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             // addTransputsHeader(inputsTable);
 
             double totalInputBalance = 0.0;
+            boolean haveAllInputValues = true;
 
             for (int ndx = 0; ndx < mInputAddrs.size(); ++ndx) {
                 Address addr = mInputAddrs.get(ndx);
                 HDAddressDescription descr = mInputDescrs.get(ndx);
                 Double value = mInputValues.get(ndx);
 
-                totalInputBalance += value;
+                if (value == null)
+                    haveAllInputValues = false;
+                else
+                    totalInputBalance += value;
 
                 // We can fill wallet-specific fields if we found the
                 // address in the wallet.
@@ -216,16 +223,19 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 if (addr != null)
                     addrStr = addr.toString().substring(0, 8) + "...";
 
-                mLogger.info(String.format("input:  %12s %1s %8s %11s %f",
-                                           acctStr, chainCode, path,
-                                           addrStr, value));
+                String valueStr = valueDef;
+                if (value != null)
+                    valueStr = String.format("%.05f", value);
 
-                String valStr = String.format("%.05f", value);
+                mLogger.info(String.format("input:  %12s %1s %8s %11s %s",
+                                           acctStr, chainCode, path,
+                                           addrStr, valueStr));
 
                 addTransputsRow(R.id.inputs_table, ndx, inputsTable,
-                                acctStr, chainCode, path, addrStr, valStr);
+                                acctStr, chainCode, path, addrStr, valueStr);
             }
-            addTransputsSum(inputsTable, totalInputBalance);
+            if (haveAllInputValues)
+                addTransputsSum(inputsTable, totalInputBalance);
 
             TableLayout outputsTable =
                 (TableLayout) findViewById(R.id.outputs_table);
@@ -256,29 +266,41 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 if (addr != null)
                     addrStr = addr.toString().substring(0, 8) + "...";
 
-                mLogger.info(String.format("output: %12s %1s %8s %11s %f",
-                                           acctStr, chainCode, path,
-                                           addrStr, value));
                 String valStr = String.format("%.05f", value);
+
+                mLogger.info(String.format("output: %12s %1s %8s %11s %s",
+                                           acctStr, chainCode, path,
+                                           addrStr, valStr));
 
                 addTransputsRow(R.id.outputs_table, ndx, outputsTable,
                                 acctStr, chainCode, path, addrStr, valStr);
             }
             addTransputsSum(outputsTable, totalOutputBalance);
 
-            double fee = totalInputBalance - totalOutputBalance;
-            {
-                String valStr = String.format("%.05f", fee);
-                TextView tv = (TextView) findViewById(R.id.fee);
-                tv.setText(valStr);
-            }
         
-            mLogger.info(String.format(" Total Inputs: %f",
-                                       totalInputBalance));
             mLogger.info(String.format("Total Outputs: %f",
                                        totalOutputBalance));
-            mLogger.info(String.format("   Miners Fee: %f",
-                                       fee));
+
+            if (!haveAllInputValues) {
+                // Since we can't compute the fee, hide the
+                // view layout section.
+                View feeLayout = findViewById(R.id.fee_layout);
+                feeLayout.setVisibility(View.GONE);
+            }
+            else {
+                // Update the fee layout.
+                mLogger.info(String.format(" Total Inputs: %f",
+                                           totalInputBalance));
+
+                double fee = totalInputBalance - totalOutputBalance;
+                {
+                    String valStr = String.format("%.05f", fee);
+                    TextView tv = (TextView) findViewById(R.id.fee);
+                    tv.setText(valStr);
+                }
+                mLogger.info(String.format("   Miners Fee: %f",
+                                           fee));
+            }
         }
     }
 
