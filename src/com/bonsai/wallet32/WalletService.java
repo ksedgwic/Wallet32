@@ -64,6 +64,7 @@ import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
 import com.google.bitcoin.core.TransactionConfidence;
+import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutPoint;
 import com.google.bitcoin.core.Utils;
@@ -198,15 +199,38 @@ public class WalletService extends Service
                             if (tx.isPending())
                                 return;
                  
-                            mLogger.info(String.format("showing notification confirm receive %f",
-                                                       amount));
+                            ConfidenceType ct =
+                                tx.getConfidence().getConfidenceType();
+                        
+                            if (ct == ConfidenceType.BUILDING) {
+                                mLogger.info(String.format("receive %f confirm",
+                                                           amount));
 
-                            // Show receive no longer pending.
-                            showEventNotification(noteId,
-                                                  R.drawable.ic_note_bc_green,
-                                                  mRes.getString(R.string.wallet_service_note_rcnf_title),
-                                                  mRes.getString(R.string.wallet_service_note_rcnf_msg,
-                                                                 amount));
+                                // Notify confirmed.
+                                showEventNotification
+                                    (noteId,
+                                     R.drawable.ic_note_bc_green,
+                                     mRes.getString(R.string.wallet_service_note_rcnf_title),
+                                     mRes.getString(R.string.wallet_service_note_rcnf_msg,
+                                                    amount));
+
+                            }
+                            else if (ct == ConfidenceType.DEAD) {
+                                mLogger.info(String.format("receive %f dead",
+                                                           amount));
+                                // Notify dead.
+                                showEventNotification
+                                    (noteId,
+                                     R.drawable.ic_note_bc_gray,
+                                     mRes.getString(R.string.wallet_service_note_rdead_title),
+                                     mRes.getString(R.string.wallet_service_note_rdead_msg,
+                                                    amount));
+
+                            }
+                            else {
+                                mLogger.info(String.format("receive %f unknown",
+                                                           amount));
+                            }
 
                             // We're all done listening ...
                             txconf.removeEventListener(this);
@@ -251,16 +275,37 @@ public class WalletService extends Service
                             if (tx.isPending())
                                 return;
                  
-                            mLogger.info(String.format("showing notification confirm send %f",
-                                                       amount));
+                            ConfidenceType ct =
+                                tx.getConfidence().getConfidenceType();
+                        
+                            if (ct == ConfidenceType.BUILDING) {
+                                mLogger.info(String.format("send %f confirm",
+                                                           amount));
 
-                            // Show no longer pending.
-                            showEventNotification
-                                (noteId,
-                                 R.drawable.ic_note_bc_red,
-                                 mRes.getString(R.string.wallet_service_note_scnf_title),
-                                 mRes.getString(R.string.wallet_service_note_scnf_msg,
-                                                amount));
+                                // Show no longer pending.
+                                showEventNotification
+                                    (noteId,
+                                     R.drawable.ic_note_bc_red,
+                                     mRes.getString(R.string.wallet_service_note_scnf_title),
+                                     mRes.getString(R.string.wallet_service_note_scnf_msg,
+                                                    amount));
+                            }
+                            else if (ct == ConfidenceType.DEAD) {
+                                mLogger.info(String.format("send %f dead",
+                                                           amount));
+                                // Notify dead.
+                                showEventNotification
+                                    (noteId,
+                                     R.drawable.ic_note_bc_gray,
+                                     mRes.getString(R.string.wallet_service_note_sdead_title),
+                                     mRes.getString(R.string.wallet_service_note_sdead_msg,
+                                                    amount));
+
+                            }
+                            else {
+                                mLogger.info(String.format("send %f unknown",
+                                                           amount));
+                            }
 
                             // We're all done listening ...
                             txconf.removeEventListener(this);
