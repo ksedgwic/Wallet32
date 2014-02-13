@@ -534,13 +534,16 @@ public class SendBitcoinActivity extends BaseWalletActivity {
         }
 
         try {
-            mLogger.info(String.format("send from %d, to %s, amount %f, fee %f",
-                                       mCheckedFromId, addrString,
-                                       amount, fee));
+            mLogger.info(String.format
+                         ("send from %d, to %s, amount %f, fee %f starting",
+                          mCheckedFromId, addrString, amount, fee));
+
             mWalletService.sendCoinsFromAccount(mCheckedFromId,
                                                 addrString,
                                                 amount,
                                                 fee);
+
+            mLogger.info("send finished");
 
             // Head to the transaction view for this account ...
             Intent intent = new Intent(this, ViewTransactionsActivity.class);
