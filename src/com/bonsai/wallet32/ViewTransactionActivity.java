@@ -30,10 +30,14 @@ import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
@@ -117,6 +121,20 @@ public class ViewTransactionActivity extends BaseWalletActivity {
     }
 
     private class EnumerateTransputsTask extends AsyncTask<Void, Void, Void> {
+
+        DialogFragment df = null;
+
+        @Override
+        protected void onPreExecute() {
+            mLogger.info("getting sizes starting");
+            if (mTx.getInputs().size() > 20 || mTx.getOutputs().size() > 20) {
+                df = showModalDialog
+                    (mRes.getString(R.string.transaction_waittitle),
+                     mRes.getString(R.string.transaction_waitprocess));
+            }
+            mLogger.info("getting sizes finished");
+        }
+
 		protected Void doInBackground(Void... arg0)
         {
             mInputAddrs = new ArrayList<Address>();
@@ -301,6 +319,50 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 mLogger.info(String.format("   Miners Fee: %f",
                                            fee));
             }
+
+            if (df != null)
+                df.dismiss();
+        }
+    }
+
+    protected DialogFragment showModalDialog(String title, String msg) {
+        DialogFragment df = new MyDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putString("msg", msg);
+        args.putBoolean("hasOK", false);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "note");
+        return df;
+    }
+
+    public static class MyDialogFragment extends DialogFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+            String msg = getArguments().getString("msg");
+            String title = getArguments().getString("title");
+            boolean hasOK = getArguments().getBoolean("hasOK");
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            builder.setTitle(title);
+            builder.setMessage(msg);
+            if (hasOK) {
+                builder
+                    .setPositiveButton(R.string.base_error_ok,
+                                       new DialogInterface.OnClickListener() {
+                                           public void onClick(DialogInterface di,
+                                                               int id) {
+                                              }
+                                          });
+            }
+            return builder.create();
         }
     }
 
