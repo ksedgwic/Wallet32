@@ -268,6 +268,8 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
         Address addr = mWalletService.nextReceiveAddress(mCheckedToId);
         String addrstr = addr.toString();
 
+        mLogger.info(String.format("picked %s to receive", addrstr));
+
         // Was the amount specified?
         EditText amountEditText = (EditText) findViewById(R.id.amount_btc);
         String amountString = amountEditText.getText().toString();

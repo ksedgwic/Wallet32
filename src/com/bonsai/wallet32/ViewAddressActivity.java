@@ -78,7 +78,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
         mURI = BitcoinURI.convertToBitcoinURI(mAddress, amt, null, null);
 
-        mLogger.info("uri=" + mURI);
+        mLogger.info("view address uri=" + mURI);
 
         final int size =
             (int) (240 * getResources().getDisplayMetrics().density);
@@ -165,6 +165,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
     }
 
     public void copyAddress(View view) {
+        mLogger.info(String.format("copying %s to the clipboard", mURI));
 		mClipboardManager.setText(mURI);
 		Toast.makeText(this,
                        R.string.view_clipboard_copy,
@@ -173,6 +174,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
     }
 
     public void copyKey(View view) {
+        mLogger.info("copying private key to the clipboard");
         mClipboardManager.setText(mPrivateKey);
 		Toast.makeText(this,
                        R.string.view_clipboard_copy_key,
