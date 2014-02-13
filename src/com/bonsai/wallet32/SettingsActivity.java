@@ -265,7 +265,8 @@ public class SettingsActivity extends PreferenceActivity {
 			intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachments);
 		}
 
-		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "ken@bonsai.com" });
+		intent.putExtra(Intent.EXTRA_EMAIL,
+                        new String[] { "wallet32-dump@bonsai.com" });
         intent.putExtra(Intent.EXTRA_SUBJECT, "wallet32 logs");
 		intent.putExtra(Intent.EXTRA_TEXT, "-- LOGS ATTACHED --");
 
