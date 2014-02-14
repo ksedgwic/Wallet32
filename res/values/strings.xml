@@ -304,7 +304,7 @@ This transaction is really large; it will take a while to process ...\n
     <string name="about_contents"><![CDATA[\n
 Wallet32\n
 \n
-Version: 0.1.11 (30-Jan-2014)\n
+Version: 0.1.12 (13-Feb-2014)\n
 \n
 Source:  https://github.com/ksedgwic/Wallet32\n
 \n
@@ -312,6 +312,7 @@ Author:  Ken Sedgwick <ken@bonsai.com>\n
 \n
 Wallet32 is made possible by:\n
 bitcoinj  https://code.google.com/p/bitcoinj/\n
+bitcoin-wallet https://github.com/schildbach/bitcoin-wallet\n
 zxscanlib https://github.com/LivotovLabs/zxscanlib\n
 \n
 Donate: 1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk\n

@@ -49,15 +49,16 @@ About Wallet32
 
 Wallet32
 
-Version: 0.1.11 (30-Jan-2014)
+Version: 0.1.12 (13-Feb-2014)
 
 Source:  https://github.com/ksedgwic/Wallet32
 
 Author:  Ken Sedgwick <ken@bonsai.com>
 
 Wallet32 is made possible by:
-* bitcoinj    https://code.google.com/p/bitcoinj/
-* zxscanlib   https://github.com/LivotovLabs/zxscanlib
+* bitcoinj       https://code.google.com/p/bitcoinj/
+* bitcoin-wallet https://github.com/schildbach/bitcoin-wallet
+* zxscanlib      https://github.com/LivotovLabs/zxscanlib
 
 Donate: 1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk
 
