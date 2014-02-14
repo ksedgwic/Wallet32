@@ -207,7 +207,7 @@ public class HDChain {
         int numUnused = marginSize();
 
         // Do we have an ample margin?
-        if (numUnused > DESIRED_MARGIN) {
+        if (numUnused >= DESIRED_MARGIN) {
             return 0;
         }
         else {
