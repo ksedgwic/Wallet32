@@ -575,6 +575,29 @@ public class HDWallet {
 		}
     }
 
+    public BigInteger computeRecommendedFee(Wallet wallet,
+                                            int acctnum,
+                                            BigInteger value)
+        throws IllegalArgumentException, InsufficientMoneyException {
+
+        // Create a dry-run send request and extract the recommended fee.
+        // Which account are we using for this send?
+        HDAccount acct = mAccounts.get(acctnum);
+
+        // Pretend we are sending the bitcoin to ourselves.
+        Address dest = acct.nextReceiveAddress();
+            
+        SendRequest req = SendRequest.to(dest, value);
+        req.changeAddress = acct.nextChangeAddress();
+        req.coinSelector = acct.coinSelector();
+        req.aesKey = mAesKey;
+
+        // Let the wallet do the heavy lifting ...
+        wallet.completeTx(req);
+
+        return req.fee != null ? req.fee : BigInteger.ZERO;
+    }
+
     public void persist() {
         String path = persistPath(mFilePrefix);
         String tmpPath = path + ".tmp";

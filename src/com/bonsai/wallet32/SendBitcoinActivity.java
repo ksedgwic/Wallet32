@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.uri.BitcoinURI;
@@ -357,7 +358,9 @@ public class SendBitcoinActivity extends BaseWalletActivity {
                 if (cb.isChecked()) {
                     TableLayout table =
                         (TableLayout) findViewById(R.id.from_choices);
+
                     mCheckedFromId = cb.getId();
+
                     for (Integer acctid : mAccountIds) {
                         int rbid = acctid.intValue();
                         if (rbid != mCheckedFromId) {
@@ -484,6 +487,46 @@ public class SendBitcoinActivity extends BaseWalletActivity {
     public void scanQR(View view) {
         // CaptureActivity
         ZXScanHelper.scan(this, 12345);
+    }
+
+    public void computeFee(View view) {
+        // Which account was selected?
+        if (mCheckedFromId == -1) {
+            showErrorDialog(mRes.getString(R.string.send_error_noaccount));
+            return;
+        }
+
+        // Fetch the amount to send.
+        double amount = 0.0;
+        String amountString = mBTCAmountEditText.getText().toString();
+        if (amountString.length() == 0) {
+            showErrorDialog(mRes.getString(R.string.send_error_noamount));
+            return;
+        }
+        try {
+            amount = parseNumberWorkaround(amountString);
+        } catch (NumberFormatException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_badamount));
+            return;
+        }
+
+        double fee;
+        try {
+            fee = mWalletService.computeRecommendedFee(mCheckedFromId, amount);
+		} catch (IllegalArgumentException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_dust));
+            return;
+		} catch (InsufficientMoneyException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_insufficient));
+            return;
+		}
+
+        mLogger.info(String.format("recommended fee is %f", fee));
+        String msg = mRes.getString(R.string.send_set_fee, fee);
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+        String feeString = String.format("%f", fee);
+        mBTCFeeEditText.setText(feeString);
     }
 
     public void sendBitcoin(View view) {

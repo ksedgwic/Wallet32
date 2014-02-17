@@ -59,6 +59,7 @@ import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.DownloadListener;
 import com.google.bitcoin.core.DumpedPrivateKey;
 import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
@@ -924,6 +925,19 @@ public class WalletService extends Service
             String msg = "Malformed bitcoin address: " + ex.getMessage();
             throw new RuntimeException(msg);
         }
+    }
+
+    public double computeRecommendedFee(int acctnum, double amount)
+    		throws IllegalArgumentException, InsufficientMoneyException {
+        BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
+            
+        mLogger.info("computeRecommendedFee starting");
+        BigInteger fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
+                                                         acctnum,
+                                                         vv);
+        mLogger.info("computeRecommendedFee finished");
+
+        return fee.doubleValue() / 1e8;
     }
 
     public double amountForAccount(WalletTransaction wtx, int acctnum) {
