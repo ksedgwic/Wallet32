@@ -900,6 +900,32 @@ public class WalletService extends Service
         return mHDWallet.findAddress(addr);
     }
 
+    public static class AmountAndFee {
+        public double	mAmount;
+        public double	mFee;
+        public AmountAndFee(double amt, double fee) {
+            mAmount = amt;
+            mFee = fee;
+        }
+    }
+
+    public AmountAndFee useAll(int acctnum) throws InsufficientMoneyException{
+        return mHDWallet.useAll(mKit.wallet(), acctnum);
+    }
+
+    public double computeRecommendedFee(int acctnum, double amount)
+    		throws IllegalArgumentException, InsufficientMoneyException {
+        BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
+            
+        mLogger.info("computeRecommendedFee starting");
+        BigInteger fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
+                                                         acctnum,
+                                                         vv);
+        mLogger.info("computeRecommendedFee finished");
+
+        return fee.doubleValue() / 1e8;
+    }
+
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
                                      double amount,
@@ -925,19 +951,6 @@ public class WalletService extends Service
             String msg = "Malformed bitcoin address: " + ex.getMessage();
             throw new RuntimeException(msg);
         }
-    }
-
-    public double computeRecommendedFee(int acctnum, double amount)
-    		throws IllegalArgumentException, InsufficientMoneyException {
-        BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
-            
-        mLogger.info("computeRecommendedFee starting");
-        BigInteger fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
-                                                         acctnum,
-                                                         vv);
-        mLogger.info("computeRecommendedFee finished");
-
-        return fee.doubleValue() / 1e8;
     }
 
     public double amountForAccount(WalletTransaction wtx, int acctnum) {

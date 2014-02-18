@@ -38,6 +38,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bonsai.wallet32.WalletService.AmountAndFee;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.InsufficientMoneyException;
@@ -527,6 +528,34 @@ public class SendBitcoinActivity extends BaseWalletActivity {
 
         String feeString = String.format("%f", fee);
         mBTCFeeEditText.setText(feeString);
+    }
+
+    public void useAll(View view) {
+        // Which account was selected?
+        if (mCheckedFromId == -1) {
+            showErrorDialog(mRes.getString(R.string.send_error_noaccount));
+            return;
+        }
+
+        AmountAndFee amtnfee;
+        try {
+            amtnfee = mWalletService.useAll(mCheckedFromId);
+
+            mLogger.info(String.format("setting amount to %f, fee to %f",
+                                       amtnfee.mAmount, amtnfee.mFee));
+            String msg = mRes.getString(R.string.send_set_amt_fee,
+                                        amtnfee.mAmount, amtnfee.mFee);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+            String amtString = String.format("%f", amtnfee.mAmount);
+            mBTCAmountEditText.setText(amtString);
+
+            String feeString = String.format("%f", amtnfee.mFee);
+            mBTCFeeEditText.setText(feeString);
+
+		} catch (InsufficientMoneyException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_insufficient));
+		}
     }
 
     public void sendBitcoin(View view) {

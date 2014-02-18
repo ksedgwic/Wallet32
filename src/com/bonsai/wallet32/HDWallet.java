@@ -46,6 +46,7 @@ import org.spongycastle.crypto.params.ParametersWithIV;
 
 import android.content.Context;
 
+import com.bonsai.wallet32.WalletService.AmountAndFee;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
@@ -575,13 +576,39 @@ public class HDWallet {
 		}
     }
 
+    public AmountAndFee useAll(Wallet wallet, int acctnum) throws InsufficientMoneyException {
+        // Create a pretend send request and extract the recommended
+        // fee.  Which account are we using for this send?
+        HDAccount acct = mAccounts.get(acctnum);
+
+        // Pretend we are sending the bitcoin to ourselves.
+        Address dest = acct.nextReceiveAddress();
+            
+        SendRequest req = SendRequest.emptyWallet(dest);
+        req.coinSelector = acct.coinSelector();
+        req.aesKey = mAesKey;
+
+        // Let the wallet do the heavy lifting ...
+        wallet.completeTx(req);
+
+        // It doesn't look like req.fee gets set to the required fee
+        // when using emptyWallet.  Figure out the fee ourselves ...
+        //
+        BigInteger outAmt = req.tx.getValueSentFromMe(wallet);
+        BigInteger inAmt = req.tx.getValueSentToMe(wallet);
+        BigInteger feeAmt = outAmt.subtract(inAmt);
+
+        return new AmountAndFee(inAmt.doubleValue() / 1e8,
+                                feeAmt.doubleValue() / 1e8);
+    }
+
     public BigInteger computeRecommendedFee(Wallet wallet,
                                             int acctnum,
                                             BigInteger value)
         throws IllegalArgumentException, InsufficientMoneyException {
 
-        // Create a dry-run send request and extract the recommended fee.
-        // Which account are we using for this send?
+        // Create a pretend send request and extract the recommended
+        // fee.  Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
 
         // Pretend we are sending the bitcoin to ourselves.

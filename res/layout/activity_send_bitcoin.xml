@@ -121,15 +121,41 @@
     	  android:layout_height="wrap_content"
     	  >
 
-	<TextView
-    	    android:id="@+id/amount_label"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="wrap_content"
-    	    android:text="@string/send_amount_label"
-    	    android:textAppearance="@android:style/TextAppearance.Small"
-    	    android:textStyle="bold"
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
     	    android:layout_span="7"
-    	    />
+	    >
+
+	  <TextView
+    	      android:id="@+id/amount_label"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/send_amount_label"
+    	      android:textAppearance="@android:style/TextAppearance.Small"
+    	      android:textStyle="bold"
+    	      />
+
+	  <!-- Stretchy Horizontal Spacer -->
+	  <View
+    	      android:layout_width="0dp"
+    	      android:layout_height="fill_parent"
+    	      android:layout_weight="1"
+    	      />
+
+	  <Button
+    	      android:id="@+id/use_all"
+    	      android:layout_width="wrap_content"
+    	      android:layout_height="wrap_content"
+    	      android:text="@string/send_use_all"
+    	      android:onClick="useAll"
+    	      android:textAppearance="@android:style/TextAppearance.Small"
+    	      android:minHeight="0dp"
+    	      android:minWidth="0dp"
+    	      />
+
+	</LinearLayout>
 
       </TableRow>
 

@@ -146,6 +146,8 @@ to fully recover all of your address activity ...
     <string name="send_to_hint">Bitcoin Address</string>
     <string name="send_to_qr">Scan QR Code</string>
     <string name="send_amount_label">Send Amount:</string>
+    <string name="send_use_all">Use All</string>
+    <string name="send_set_amt_fee">Setting amount to %1$f, fee to %2$f</string>
     <string name="amount_btc_hint">0.0000</string>
     <string name="amount_fiat_hint">0.00</string>
     <string name="send_fee_label">Miner\'s Fee:</string>
