@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -53,7 +54,7 @@ import com.google.bitcoin.uri.BitcoinURIParseException;
 
 import eu.livotov.zxscan.ZXScanHelper;
 
-public class SendBitcoinActivity extends BaseWalletActivity {
+public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSender {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(SendBitcoinActivity.class);
@@ -656,15 +657,18 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             mLogger.info("insufficient funds for recommended fee");
             // FIXME - Add fee-too-small dialog.
 		}
-        
+    }
 
-        /*
+    public void onSendBitcoin(int acctId,
+                              String addrString,
+                              double amount,
+                              double fee) {
         try {
             mLogger.info(String.format
                          ("send from %d, to %s, amount %f, fee %f starting",
-                          mCheckedFromId, addrString, amount, fee));
+                          acctId, addrString, amount, fee));
 
-            mWalletService.sendCoinsFromAccount(mCheckedFromId,
+            mWalletService.sendCoinsFromAccount(acctId,
                                                 addrString,
                                                 amount,
                                                 fee);
@@ -686,16 +690,17 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             showErrorDialog(ex.getMessage());
             return;
         }
-        */
     }
 
     public static class SendConfirmDialogFragment extends DialogFragment {
-        int		mAcctId;
-        String	mAcctStr;
-        String	mAddr;
-        double	mAmount;
-        double	mFee;
-        double	mRate;
+        private int		mAcctId;
+        private String	mAcctStr;
+        private String	mAddr;
+        private double	mAmount;
+        private double	mFee;
+        private double	mRate;
+
+        private BitcoinSender mSender;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -757,18 +762,12 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             
             builder.setView(dv);
 
-            /*
-            // FIXME - replace this with custom dialog.
-            String msg = String.format("send %f BTC with %f fee to %s?",
-                                       mAmount, mFee, mAddr);
-            builder.setMessage(msg);
-            */
-
             builder.setPositiveButton
                 (R.string.send_confirm_send,
                  new DialogInterface.OnClickListener() {
                      public void onClick(DialogInterface di, int id) {
                          mLogger.info("send confirmed");
+                         mSender.onSendBitcoin(mAcctId, mAddr, mAmount, mFee);
                      }
                  });
 
@@ -781,6 +780,17 @@ public class SendBitcoinActivity extends BaseWalletActivity {
                  });
 
             return builder.create();
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                mSender = (BitcoinSender) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() +
+                                             " must implement BitcoinSender");
+            }
         }
     }
 
