@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    >
+
+  <TextView
+      android:id="@+id/from_header"
+      android:text="@string/send_confirm_from"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="left"
+      android:textStyle="bold"
+      />
+
+  <TextView
+      android:id="@+id/from_account"
+      android:text="Account XYZ"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="left"
+      />
+
+  <!-- Rigid Vertical Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="16dp"
+      />
+
+  <TextView
+      android:id="@+id/to_header"
+      android:text="@string/send_confirm_to"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="left"
+      android:textStyle="bold"
+      />
+
+  <TextView
+      android:id="@+id/to_addr"
+      android:text="1xxxxyyyzzzzzxxxxyyyzzzzz"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="left"
+      />
+
+  <!-- Rigid Vertical Spacer -->
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="16dp"
+      />
+
+  <TableLayout
+      android:id="@+id/send_amounts"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      >
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <!-- Placeholder -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="fill_parent"
+	  />
+
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+	  android:id="@+id/btc_header"
+	  android:text="@string/btc_label"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center"
+    	  android:textStyle="bold"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+	  android:id="@+id/fiat_header"
+	  android:text="@string/fiat_label"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center"
+    	  android:textStyle="bold"
+	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+	  android:id="@+id/amount_label"
+	  android:text="@string/send_confirm_amount"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+	  android:id="@+id/amount_btc"
+	  android:text="0.000000"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+      <TextView
+	  android:id="@+id/amount_fiat"
+	  android:text="0.00"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+	  android:id="@+id/fee_label"
+	  android:text="@string/send_confirm_fee"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+	  android:id="@+id/fee_btc"
+	  android:text="0.000000"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+      <TextView
+	  android:id="@+id/fee_fiat"
+	  android:text="0.00"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+	  />
+
+    </TableRow>
+
+    <TableRow
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	>
+
+      <TextView
+	  android:id="@+id/total_label"
+	  android:text="@string/send_confirm_total"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+    	  android:textStyle="bold"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+
+      <TextView
+	  android:id="@+id/total_btc"
+	  android:text="0.000000"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+    	  android:textStyle="bold"
+	  />
+      
+      <!-- Rigid Horizontal Spacer -->
+      <View
+	  android:layout_width="14dp"
+	  android:layout_height="fill_parent"
+	  />
+      <TextView
+	  android:id="@+id/total_fiat"
+	  android:text="0.00"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="center_vertical|right"
+    	  android:textStyle="bold"
+	  />
+
+    </TableRow>
+
+  </TableLayout>
+
+</LinearLayout>

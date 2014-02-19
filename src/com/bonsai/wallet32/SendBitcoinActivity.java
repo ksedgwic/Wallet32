@@ -23,8 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -214,7 +218,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
                 }
                 else {
                     bb = ff / mFiatPerBTC;
-                    bbs = String.format("%.4f", bb);
+                    bbs = String.format("%f", bb);
                 }
             } catch (final NumberFormatException ex) {
                 bbs = "";
@@ -316,7 +320,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
                 }
                 else {
                     bb = ff / mFiatPerBTC;
-                    bbs = String.format("%.5f", bb);
+                    bbs = String.format("%f", bb);
                 }
             } catch (final NumberFormatException ex) {
                 bbs = "";
@@ -391,7 +395,7 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.04f BTC", btc));
+        tv1.setText(String.format("%f BTC", btc));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f USD", fiat));
@@ -569,7 +573,8 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             showErrorDialog(mRes.getString(R.string.send_error_noaccount));
             return;
         }
-
+        String acctName = mWalletService.getAccount(mCheckedFromId).getName();
+        
         // Fetch the address.
         String addrString = mToAddressEditText.getText().toString();
         if (addrString.length() == 0) {
@@ -605,6 +610,55 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             return;
         }
 
+        // Check to make sure we have enough money for this send.
+        double avail = mWalletService.availableForAccount(mCheckedFromId);
+        if (amount + fee > avail) {
+            showErrorDialog(mRes.getString(R.string.send_error_insufficient));
+            return;
+        }
+
+        // Check the recommended fee, generate warning dialog or
+        // confirm send dialog ...
+        try {
+            double recommendedFee =
+                mWalletService.computeRecommendedFee(mCheckedFromId, amount);
+
+            if (fee > recommendedFee) {
+                // Warn that fee is larger then recommended.
+                mLogger.info(String.format("fee %f larger then recommended %f",
+                                           fee, recommendedFee));
+                // FIXME - Add fee-too-large dialog.
+            }
+            else if (fee < recommendedFee) {
+                // Warn that fee is less then recommended.
+                mLogger.info(String.format("fee %f less then recommended %f",
+                                           fee, recommendedFee));
+                // FIXME - Add fee-too-small dialog.
+            }
+            else {
+                // Looks good, confirm the send.
+                mLogger.info(String.format("fee %f equals recommended %f",
+                                           fee, recommendedFee));
+                showSendConfirmDialog(mCheckedFromId,
+                                      acctName,
+                                      addrString,
+                                      amount,
+                                      fee,
+                                      mFiatPerBTC);
+            }
+            
+		} catch (IllegalArgumentException ex) {
+            showErrorDialog(mRes.getString(R.string.send_error_dust));
+            return;
+		} catch (InsufficientMoneyException ex) {
+            // An InsufficientMoneyException here means the send amount
+            // is too large for the recommended fee.
+            mLogger.info("insufficient funds for recommended fee");
+            // FIXME - Add fee-too-small dialog.
+		}
+        
+
+        /*
         try {
             mLogger.info(String.format
                          ("send from %d, to %s, amount %f, fee %f starting",
@@ -632,6 +686,121 @@ public class SendBitcoinActivity extends BaseWalletActivity {
             showErrorDialog(ex.getMessage());
             return;
         }
+        */
+    }
+
+    public static class SendConfirmDialogFragment extends DialogFragment {
+        int		mAcctId;
+        String	mAcctStr;
+        String	mAddr;
+        double	mAmount;
+        double	mFee;
+        double	mRate;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+
+            mAcctId = getArguments().getInt("acctId");
+            mAcctStr = getArguments().getString("acctStr");
+            mAddr = getArguments().getString("addr");
+            mAmount = getArguments().getDouble("amount");
+            mFee = getArguments().getDouble("fee");
+            mRate = getArguments().getDouble("rate");
+
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+
+            builder.setTitle(R.string.send_confirm_title);
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View dv = inflater.inflate(R.layout.dialog_confirm_send, null);
+
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.to_addr);
+                tv.setText(mAddr);
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.from_account);
+                tv.setText(mAcctStr);
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.amount_btc);
+                tv.setText(String.format("%f", mAmount));
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.amount_fiat);
+                tv.setText(String.format("%.2f", mAmount * mRate));
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.fee_btc);
+                tv.setText(String.format("%f", mFee));
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.fee_fiat);
+                tv.setText(String.format("%.2f", mFee * mRate));
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.total_btc);
+                tv.setText(String.format("%f", mAmount + mFee));
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.total_fiat);
+                tv.setText(String.format("%.2f", (mAmount + mFee) * mRate));
+            }
+            
+            builder.setView(dv);
+
+            /*
+            // FIXME - replace this with custom dialog.
+            String msg = String.format("send %f BTC with %f fee to %s?",
+                                       mAmount, mFee, mAddr);
+            builder.setMessage(msg);
+            */
+
+            builder.setPositiveButton
+                (R.string.send_confirm_send,
+                 new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface di, int id) {
+                         mLogger.info("send confirmed");
+                     }
+                 });
+
+            builder.setNegativeButton
+                (R.string.send_confirm_cancel,
+                 new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface di, int id) {
+                         mLogger.info("send canceled");
+                     }
+                 });
+
+            return builder.create();
+        }
+    }
+
+    private DialogFragment showSendConfirmDialog(int acctId,
+                                                 String acctStr,
+                                                 String addrStr,
+                                                 double amount,
+                                                 double fee,
+                                                 double rate) {
+        DialogFragment df = new SendConfirmDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("acctId", acctId);
+        args.putString("acctStr", acctStr);
+        args.putString("addr", addrStr);
+        args.putDouble("amount", amount);
+        args.putDouble("fee", fee);
+        args.putDouble("rate", rate);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "sendconfirm");
+        return df;
     }
 
     private static double parseNumberWorkaround(String numstr)

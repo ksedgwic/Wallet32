@@ -167,6 +167,15 @@ to fully recover all of your address activity ...
     <string name="send_error_badfee">Fee to send is malformed</string>
     <string name="send_error_badqr">To address is not a valid bitcoin address</string>
     <string name="send_error_wrongnw">To address is for wrong network</string>
+    <string name="send_confirm_title">Confirm Send</string>
+    <string name="send_confirm_from">Send From:</string>
+    <string name="send_confirm_to">Send To:</string>
+    <string name="send_confirm_amount">Amount</string>
+    <string name="send_confirm_fee">Miner\'s Fee</string>
+    <string name="send_confirm_total">Total</string>
+    <string name="send_confirm_send">Send</string>
+    <string name="send_confirm_cancel">Cancel</string>
+
     <string name="title_activity_receive_bitcoin">Receive Bitcoin</string>
     <string name="receive_to_label">Receive To:</string>
     <string name="receive_amount_label">Receive Amount: (optional)</string>

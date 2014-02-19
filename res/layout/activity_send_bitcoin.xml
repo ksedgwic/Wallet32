@@ -41,7 +41,7 @@
 
       <TableLayout
     	  android:id="@+id/from_choices"
-    	  android:layout_width="wrap_content"
+    	  android:layout_width="fill_parent"
     	  android:layout_height="wrap_content"
     	  android:gravity="left"
     	  />

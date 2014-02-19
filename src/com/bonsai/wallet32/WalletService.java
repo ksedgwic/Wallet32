@@ -961,6 +961,10 @@ public class WalletService extends Service
         return mHDWallet.balanceForAccount(acctnum);
     }
 
+    public double availableForAccount(int acctnum) {
+        return mHDWallet.availableForAccount(acctnum);
+    }
+
     private void setState(State newstate) {
         // SHUTDOWN is final ...
         if (mState == State.SHUTDOWN)
