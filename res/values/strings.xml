@@ -167,6 +167,11 @@ to fully recover all of your address activity ...
     <string name="send_error_badfee">Fee to send is malformed</string>
     <string name="send_error_badqr">To address is not a valid bitcoin address</string>
     <string name="send_error_wrongnw">To address is for wrong network</string>
+    <string name="send_feeadjust_title">Adjust Fee?</string>
+    <string name="send_feeadjust_large">The specified fee of %1$f is larger then the recommended fee of %2$f.</string>
+    <string name="send_feeadjust_small">The specified fee of %1$f is smaller then the recommended fee of %2$f.</string>
+    <string name="send_feeadjust_adjust">Adjust Fee</string>
+    <string name="send_feeadjust_send">Send Anyway</string>
     <string name="send_confirm_title">Confirm Send</string>
     <string name="send_confirm_from">Send From:</string>
     <string name="send_confirm_to">Send To:</string>

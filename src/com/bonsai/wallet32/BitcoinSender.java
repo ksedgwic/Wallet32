@@ -16,6 +16,14 @@
 package com.bonsai.wallet32;
 
 public interface BitcoinSender {
+    public void onShowSendConfirmDialog(int acctId,
+                                        String acctName,
+                                        String addrString,
+                                        double amount,
+                                        double fee);
+
+    public void onAdjustFee();
+
     public void onSendBitcoin(int acctId,
                               String addrString,
                               double amount,

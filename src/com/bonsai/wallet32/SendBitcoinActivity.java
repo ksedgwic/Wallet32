@@ -496,6 +496,10 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     }
 
     public void computeFee(View view) {
+        setFeeToRecommended();
+    }
+
+    public void setFeeToRecommended() {
         // Which account was selected?
         if (mCheckedFromId == -1) {
             showErrorDialog(mRes.getString(R.string.send_error_noaccount));
@@ -628,13 +632,29 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 // Warn that fee is larger then recommended.
                 mLogger.info(String.format("fee %f larger then recommended %f",
                                            fee, recommendedFee));
-                // FIXME - Add fee-too-large dialog.
+                showFeeAdjustDialog
+                    (mRes.getString(R.string.send_feeadjust_large,
+                                    fee, recommendedFee),
+                     mCheckedFromId,
+                     acctName,
+                     addrString,
+                     amount,
+                     fee,
+                     mFiatPerBTC);
             }
             else if (fee < recommendedFee) {
                 // Warn that fee is less then recommended.
                 mLogger.info(String.format("fee %f less then recommended %f",
                                            fee, recommendedFee));
-                // FIXME - Add fee-too-small dialog.
+                showFeeAdjustDialog
+                    (mRes.getString(R.string.send_feeadjust_small,
+                                    fee, recommendedFee),
+                     mCheckedFromId,
+                     acctName,
+                     addrString,
+                     amount,
+                     fee,
+                     mFiatPerBTC);
             }
             else {
                 // Looks good, confirm the send.
@@ -657,6 +677,23 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             mLogger.info("insufficient funds for recommended fee");
             // FIXME - Add fee-too-small dialog.
 		}
+    }
+
+    public void onShowSendConfirmDialog(int acctId,
+                                        String acctName,
+                                        String addrString,
+                                        double amount,
+                                        double fee) {
+        showSendConfirmDialog(acctId,
+                              acctName,
+                              addrString,
+                              amount,
+                              fee,
+                              mFiatPerBTC);
+    }
+
+    public void onAdjustFee() {
+        setFeeToRecommended();
     }
 
     public void onSendBitcoin(int acctId,
@@ -802,6 +839,98 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                                                  double rate) {
         DialogFragment df = new SendConfirmDialogFragment();
         Bundle args = new Bundle();
+        args.putInt("acctId", acctId);
+        args.putString("acctStr", acctStr);
+        args.putString("addr", addrStr);
+        args.putDouble("amount", amount);
+        args.putDouble("fee", fee);
+        args.putDouble("rate", rate);
+        df.setArguments(args);
+        df.show(getSupportFragmentManager(), "sendconfirm");
+        return df;
+    }
+
+    public static class FeeAdjustDialogFragment extends DialogFragment {
+        private String	mMsg;
+        private int		mAcctId;
+        private String	mAcctStr;
+        private String	mAddr;
+        private double	mAmount;
+        private double	mFee;
+        private double	mRate;
+
+        private BitcoinSender mSender;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+
+            mMsg = getArguments().getString("msg");
+            mAcctId = getArguments().getInt("acctId");
+            mAcctStr = getArguments().getString("acctStr");
+            mAddr = getArguments().getString("addr");
+            mAmount = getArguments().getDouble("amount");
+            mFee = getArguments().getDouble("fee");
+            mRate = getArguments().getDouble("rate");
+
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+
+            builder.setTitle(R.string.send_feeadjust_title);
+            builder.setMessage(mMsg);
+            builder.setPositiveButton
+                (R.string.send_feeadjust_send,
+                 new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface di, int id) {
+                         mLogger.info("send anyway");
+                         mSender.onShowSendConfirmDialog(mAcctId,
+                                                         mAcctStr,
+                                                         mAddr,
+                                                         mAmount,
+                                                         mFee);
+                     }
+                 });
+
+            builder.setNegativeButton
+                (R.string.send_feeadjust_adjust,
+                 new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface di, int id) {
+                         mLogger.info("adjust fee");
+                         mSender.onAdjustFee();
+                     }
+                 });
+
+            return builder.create();
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                mSender = (BitcoinSender) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString() +
+                                             " must implement BitcoinSender");
+            }
+        }
+    }
+
+    private DialogFragment showFeeAdjustDialog(String msg,
+                                               int acctId,
+                                               String acctStr,
+                                               String addrStr,
+                                               double amount,
+                                               double fee,
+                                               double rate) {
+        DialogFragment df = new FeeAdjustDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("msg", msg);
         args.putInt("acctId", acctId);
         args.putString("acctStr", acctStr);
         args.putString("addr", addrStr);
