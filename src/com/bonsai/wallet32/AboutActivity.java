@@ -1,4 +1,4 @@
-// Copyright (C) 2013  Bonsai Software, Inc.
+// Copyright (C) 2013-2014  Bonsai Software, Inc.
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
 
 public class AboutActivity extends BaseWalletActivity {
 
@@ -29,6 +31,10 @@ public class AboutActivity extends BaseWalletActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
+
+        TextView tv = (TextView) findViewById(R.id.about_contents);
+        tv.setMovementMethod(LinkMovementMethod.getInstance());
+
         mLogger.info("AboutActivity created");
 	}
 }

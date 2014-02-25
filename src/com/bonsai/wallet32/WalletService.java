@@ -686,9 +686,9 @@ public class WalletService extends Service
             mRateUpdater = null;
         }
 
-        if (src.equals("MTGOXUSD")) {
-            mLogger.info("Switching to MtGox USD");
-            mRateUpdater = new MtGoxRateUpdater(getApplicationContext());
+        if (src.equals("COINDESKUSD")) {
+            mLogger.info("Switching to CoinDesk BPI USD");
+            mRateUpdater = new CoinDeskRateUpdater(getApplicationContext());
         }
         else if (src.equals("BITSTAMPUSD")) {
             mLogger.info("Switching to BitStamp USD");

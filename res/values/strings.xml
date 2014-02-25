@@ -264,15 +264,15 @@ This transaction is really large; it will take a while to process ...\n
     <string name="settings_confirm_cancel">Cancel</string>
 
     <string name="pref_fiat_rate_source">Fiat Rate Source</string>
-    <string name="pref_fiat_rate_sources_default">BITSTAMPUSD</string>
+    <string name="pref_fiat_rate_sources_default">COINDESKUSD</string>
 
     <string-array name="pref_fiat_rate_sources_entries">
-      <item>MtGox USD</item>
+      <item>CoinDesk BPI USD</item>
       <item>BitStamp USD</item>
     </string-array>
 
     <string-array name="pref_fiat_rate_sources_values">
-      <item>MTGOXUSD</item>
+      <item>COINDESKUSD</item>
       <item>BITSTAMPUSD</item>
     </string-array>
 
@@ -321,23 +321,25 @@ This transaction is really large; it will take a while to process ...\n
     <string name="wallet_service_note_sdead_msg">%1$f BTC dead</string>
 
     <string name="title_activity_about">About Wallet32</string>
-    <string name="about_contents"><![CDATA[\n
+    <string name="about_contents">
 Wallet32\n
 \n
 Version: 0.1.12 (13-Feb-2014)\n
 \n
-Source:  https://github.com/ksedgwic/Wallet32\n
+Source:  <a href="https://github.com/ksedgwic/Wallet32">https://github.com/ksedgwic/Wallet32</a>\n
 \n
-Author:  Ken Sedgwick <ken@bonsai.com>\n
+Author:  Ken Sedgwick <a href="mailto:ken@bonsai.com">&lt;ken@bonsai.com&gt;</a>\n
 \n
 Wallet32 is made possible by:\n
-bitcoinj  https://code.google.com/p/bitcoinj/\n
-bitcoin-wallet https://github.com/schildbach/bitcoin-wallet\n
-zxscanlib https://github.com/LivotovLabs/zxscanlib\n
+\t<a href="https://code.google.com/p/bitcoinj">bitcoinj</a>\n
+\t<a href="https://github.com/schildbach/bitcoin-wallet">bitcoin-wallet</a>\n
+\t<a href="https://github.com/LivotovLabs/zxscanlib">ZXScanLib</a>\n
 \n
-Donate: 1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk\n
+Powered by <a href="http://www.coindesk.com/price/">CoinDesk</a>\n
+\n
+Donate: <a href="bitcoin:1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk">1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk</a>\n
 \n
 Copyright (C) 2013-2014 Bonsai Software, Inc.\n
 All rights reserved.
-]]></string>
+</string>
 </resources>

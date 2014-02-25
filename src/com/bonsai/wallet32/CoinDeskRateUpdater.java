@@ -1,4 +1,4 @@
-// Copyright (C) 2013  Bonsai Software, Inc.
+// Copyright (C) 2014  Bonsai Software, Inc.
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-public class MtGoxRateUpdater extends Thread implements RateUpdater {
+public class CoinDeskRateUpdater extends Thread implements RateUpdater {
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(MtGoxRateUpdater.class);
+        LoggerFactory.getLogger(CoinDeskRateUpdater.class);
 
     private double mRate = 0.0;
     private String mCode = "USD";
@@ -46,7 +46,7 @@ public class MtGoxRateUpdater extends Thread implements RateUpdater {
 
     private boolean mRunning = false;
 
-    public MtGoxRateUpdater(Context context) {
+    public CoinDeskRateUpdater(Context context) {
         mLBM = LocalBroadcastManager.getInstance(context);
     }
 
@@ -86,8 +86,7 @@ public class MtGoxRateUpdater extends Thread implements RateUpdater {
         mLogger.info("run loop finished");
     }
 
-    protected final String url =
-        "https://data.mtgox.com/api/2/BTCUSD/money/ticker_fast";
+    protected final String url = "https://api.coindesk.com/v1/bpi/currentprice/USD.json";
 
     protected double fetchLatestRate() {
         try {
@@ -107,9 +106,9 @@ public class MtGoxRateUpdater extends Thread implements RateUpdater {
             is.close();
             String json = sb.toString();
             JSONObject jObj = new JSONObject(json);
-            JSONObject dataObj = jObj.getJSONObject("data");
-            JSONObject lastObj = dataObj.getJSONObject("last_local");
-            double rate = lastObj.getDouble("value");
+            JSONObject bpiObj = jObj.getJSONObject("bpi");
+            JSONObject usdObj = bpiObj.getJSONObject("USD");
+            double rate = usdObj.getDouble("rate");
             return rate;
 
         } catch (UnsupportedEncodingException e) {
