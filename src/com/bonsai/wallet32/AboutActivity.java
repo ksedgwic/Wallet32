@@ -30,6 +30,11 @@ public class AboutActivity extends BaseWalletActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        // Turn off "up" navigation since we can be called in
+        // the lobby activities.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
 		setContentView(R.layout.activity_about);
 
         TextView tv = (TextView) findViewById(R.id.about_contents);

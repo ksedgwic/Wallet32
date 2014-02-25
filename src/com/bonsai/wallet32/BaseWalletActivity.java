@@ -78,6 +78,7 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
 
 		super.onCreate(savedInstanceState);
 
+        // By default we should have an up.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mLogger.info("BaseWalletActivity created");
@@ -112,16 +113,21 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main_actions, menu);
+		getMenuInflater().inflate(R.menu.base_actions, menu);
         return super.onCreateOptionsMenu(menu);
 	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
+        Intent intent;
         switch (item.getItemId()) {
         case R.id.action_settings:
-            Intent intent = new Intent(this, SettingsActivity.class);
+            intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        case R.id.action_about:
+            intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
             return true;
         default:

@@ -4,6 +4,7 @@
     <string name="app_name">Wallet32</string>
     <string name="service_name">Wallet Service</string>
     <string name="action_settings">Settings</string>
+    <string name="action_about">About Wallet32</string>
     <string name="title_activity_lobby">Wallet32</string>
     <string name="lobby_starting">Wallet32 Starting &#8230;</string>
     <string name="title_activity_create_restore">Create/Restore Wallet</string>
