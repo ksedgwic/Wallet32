@@ -124,10 +124,17 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         switch (item.getItemId()) {
         case R.id.action_settings:
             intent = new Intent(this, SettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+            return true;
+        case R.id.action_view_seed:
+            intent = new Intent(this, ViewSeedActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             return true;
         case R.id.action_about:
             intent = new Intent(this, AboutActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             return true;
         default:

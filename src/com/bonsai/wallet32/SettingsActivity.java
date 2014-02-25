@@ -102,6 +102,26 @@ public class SettingsActivity extends PreferenceActivity {
 
         {
             Preference butt =
+                (Preference) findPreference("pref_viewSeed");
+            butt.setOnPreferenceClickListener
+                (new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            Intent intent =
+                                new Intent(mThis, ViewSeedActivity.class);
+                            Bundle bundle = new Bundle();
+                            intent.putExtras(bundle);
+                            intent.setFlags
+                                (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            startActivity(intent);
+                            finish();	// All done here...
+                            return true;
+                        }
+                    });
+        }
+
+        {
+            Preference butt =
                 (Preference) findPreference("pref_addAccount");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
@@ -158,6 +178,8 @@ public class SettingsActivity extends PreferenceActivity {
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, AboutActivity.class);
+                            intent.setFlags
+                                (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
                             finish();	// All done here...
                             return true;

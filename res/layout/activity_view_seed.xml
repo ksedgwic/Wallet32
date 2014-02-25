@@ -138,21 +138,6 @@
 	android:layout_weight="5"
 	/>
 
-    <Button
-	android:id="@+id/done"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/seed_done"
-	android:onClick="seedDone"
-	/>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
   </LinearLayout>
 
 </LinearLayout>

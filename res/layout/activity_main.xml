@@ -68,14 +68,6 @@
 	android:onClick="sweepKey"
 	/>
 
-    <Button
-	android:id="@+id/seed"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_seed"
-	android:onClick="viewSeed"
-	/>
-
     <!-- Stretchy Spacer -->
     <View
 	android:layout_width="fill_parent"

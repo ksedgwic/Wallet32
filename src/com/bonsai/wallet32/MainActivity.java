@@ -367,11 +367,6 @@ public class MainActivity extends BaseWalletActivity {
         startActivity(intent);
     }
 
-    public void viewSeed(View view) {
-        Intent intent = new Intent(this, ViewSeedActivity.class);
-        startActivity(intent);
-    }
-
     public void exitApp(View view) {
         mLogger.info("Exit selected");
         doExit();

@@ -23,13 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import android.os.Bundle;
+import android.widget.TextView;
+
 import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 public class ViewSeedActivity extends BaseWalletActivity {
 
@@ -56,6 +54,10 @@ public class ViewSeedActivity extends BaseWalletActivity {
         mSeedFetched = false;
 
 		super.onCreate(savedInstanceState);
+
+        // Turn off "up" navigation since we can be called from
+        // any activity.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 		setContentView(R.layout.activity_view_seed);
 
@@ -121,12 +123,5 @@ public class ViewSeedActivity extends BaseWalletActivity {
         default:
             throw new RuntimeException("unknown BIP39 version");
         }
-    }
-
-    public void seedDone(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
-        finish();	// All done here ...
     }
 }

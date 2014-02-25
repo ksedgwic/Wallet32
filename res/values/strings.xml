@@ -4,6 +4,7 @@
     <string name="app_name">Wallet32</string>
     <string name="service_name">Wallet Service</string>
     <string name="action_settings">Settings</string>
+    <string name="action_view_seed">View Seed</string>
     <string name="action_about">About Wallet32</string>
     <string name="title_activity_lobby">Wallet32</string>
     <string name="lobby_starting">Wallet32 Starting &#8230;</string>
@@ -127,7 +128,6 @@ to fully recover all of your address activity ...
     <string name="button_receive">Receive Bitcoin</string>
     <string name="button_transactions">View Transactions</string>
     <string name="button_sweep">Sweep Private Key</string>
-    <string name="button_seed">View Seed</string>
     <string name="button_exit">Exit Application</string>
     <string name="title_activity_view_account">View Account</string>
     <string name="account_name_label">Account:</string>
@@ -282,6 +282,9 @@ This transaction is really large; it will take a while to process ...\n
 
     <string name="pref_change_passcode">Change Passcode</string>
     <string name="pref_change_passcode_summary">Choose a new passcode</string>
+
+    <string name="pref_view_seed">View Seed</string>
+    <string name="pref_view_seed_summary">View your wallet\'s seed</string>
 
     <string name="pref_add_account">Add Account</string>
     <string name="pref_add_account_summary">Add an account to your wallet</string>
