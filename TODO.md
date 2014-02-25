@@ -2,24 +2,16 @@
 Bugs
 ----------------------------------------------------------------
 
-q* Not showing satoshi spam amounts correctly.
+* Not showing satoshi spam amounts correctly.
 
 * Pausing Passcode activity while it is "encrypting wallet" crashes.
 
 * Need to handle precision of BTC values much better then 4 fixed places.
 
-* Disable Settings actions on everything prior to MainActivity.
-
-* I don't think the Home "Up" feature is working from the ViewSeed page,
-  at least on initial create.
-
 Needed
 ----------------------------------------------------------------
 
 * Testnet build.
-
-* View Seed needs to be "pre-main" when started from create wallet
-  and BaseWalletActivity when called from main.
 
 * Electrum compatibility.
 
@@ -39,21 +31,13 @@ Next
 
 * Make passcode creation estimate of brute-force difficulty.
 
-* Add coindesk index rate updater.
-
 * Add transaction label support.
-
-* Move view seed from main to settings.
 
 * Auto logout of service after idle for N minutes.
 
 * Non-USD fiat support.
 
 * Font selections for tables.
-
-* Sweep Activity.
-
-* Create "adjust" dialog when amount > avail.
 
 * Factor wallet file prefix into single location.
 
