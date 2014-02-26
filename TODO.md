@@ -2,6 +2,8 @@
 Bugs
 ----------------------------------------------------------------
 
+* Restore wallet needs to start w/ 32 addresses per chain.
+
 * Not showing satoshi spam amounts correctly.
 
 * Pausing Passcode activity while it is "encrypting wallet" crashes.
