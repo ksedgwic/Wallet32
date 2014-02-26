@@ -58,7 +58,7 @@ Author:  Ken Sedgwick <ken@bonsai.com>
 Wallet32 is made possible by:
 * [bitcoinj](https://code.google.com/p/bitcoinj/)
 * [bitcoin-wallet](https://github.com/schildbach/bitcoin-wallet)
-* [zxscanlib](https://github.com/LivotovLabs/zxscanlib)
+* [ZXScanLib](https://github.com/LivotovLabs/zxscanlib)
 * [blockchain.info](https://blockchain.info)
 * [Bitstamp](https://www.bitstamp.net)
 

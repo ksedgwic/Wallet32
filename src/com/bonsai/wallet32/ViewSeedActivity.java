@@ -23,7 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.bitcoin.crypto.MnemonicCodeX;
@@ -55,13 +58,21 @@ public class ViewSeedActivity extends BaseWalletActivity {
 
 		super.onCreate(savedInstanceState);
 
+        Bundle bundle = getIntent().getExtras();
+        boolean showDone = false;
+        if (bundle != null && bundle.containsKey("showDone"))
+            showDone = bundle.getBoolean("showDone");
+
+        mLogger.info("ViewSeedActivity created");
+
         // Turn off "up" navigation since we can be called from
         // any activity.
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 		setContentView(R.layout.activity_view_seed);
 
-        mLogger.info("ViewSeedActivity created");
+        if (!showDone)
+            findViewById(R.id.done).setVisibility(View.GONE);
 	}
 
 	@Override
@@ -123,5 +134,12 @@ public class ViewSeedActivity extends BaseWalletActivity {
         default:
             throw new RuntimeException("unknown BIP39 version");
         }
+    }
+
+    public void seedDone(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
+        finish();	// All done here ...
     }
 }

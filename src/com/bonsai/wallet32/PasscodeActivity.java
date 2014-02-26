@@ -286,6 +286,9 @@ public class PasscodeActivity extends ActionBarActivity {
                 startService(svcintent);
 
                 Intent intent = new Intent(this, ViewSeedActivity.class);
+                Bundle bundle2 = new Bundle();
+                bundle2.putBoolean("showDone", true);
+                intent.putExtras(bundle2);
                 startActivity(intent);
             }
         }

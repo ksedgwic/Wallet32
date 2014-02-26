@@ -97,11 +97,10 @@ public class ViewAddressActivity extends BaseWalletActivity {
         // some actions.
         //
         if (mPrivateKey == null) {
-            Button keybutt = (Button) findViewById(R.id.copy_key);
-            keybutt.setVisibility(View.GONE);
-
-            Button bcibutt = (Button) findViewById(R.id.blockchain);
-            bcibutt.setVisibility(View.GONE);
+            findViewById(R.id.opt_space1).setVisibility(View.GONE);
+            findViewById(R.id.copy_key).setVisibility(View.GONE);
+            findViewById(R.id.opt_space2).setVisibility(View.GONE);
+            findViewById(R.id.blockchain).setVisibility(View.GONE);
         }
 
         updateAmount();

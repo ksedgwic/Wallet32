@@ -19,7 +19,7 @@
     <string name="restore_mnemonic_hint">space separated word list</string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
     <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
-    <string name="restore_legacydescr">If your wallet was created prior to version v0.1.8 (19-Jan-2014) you should check this box:</string>
+    <string name="restore_legacydescr">If the wallet you want to restore was created prior to version v0.1.8 (19-Jan-2014) you should check this box:</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
     <string name="restore_badhexlength">Bad hex seed length</string>
     <string name="restore_bothbad">Both hex seed and mnemonic specified</string>
@@ -40,11 +40,11 @@
     <string name="passcode_waittitle">Please Wait</string>
     <string name="passcode_waitvalidate"><![CDATA[
 Your wallet is encrypted with scrypt to keep it safe;
-decrypting it will take a few seconds ...\n
+decrypting it will take a few seconds.\n
     ]]></string>
     <string name="passcode_waitsetup"><![CDATA[
 Your wallet is encrypted with scrypt to keep it safe;
-setting it up will take a few seconds ...\n
+setting it up will take a few seconds.\n
     ]]></string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>
@@ -68,16 +68,17 @@ restore the wallet from either the hex code or ordered list of words below.\n
 \nIt\'s critical to keep these seed values safe from prying eyes!  If
 anyone else learns your seed value they can restore your wallet
 elsewhere and take your funds! Store your seed backup in multiple
-safe places that only you have access to.
+safe places that only you have access to.\n
+\nYou can get back to this screen from the menu.
     ]]></string>
     <string name="seed_hex_label">Hex Value</string>
     <string name="seed_mnemonic_label">Ordered Word List</string>
     <string name="seed_bip39_current"><![CDATA[
-\nYour wallet is using the current version of BIP-0039 (v0.6);
+\nThis wallet is using the current version of BIP-0039 (v0.6);
 you should not use the legacy setting if you need to recover it.
     ]]></string>
     <string name="seed_bip39_legacy"><![CDATA[
-\nYour wallet is using a legacy version of BIP-0039 (v0.5);
+\nThis wallet is using a legacy version of BIP-0039 (v0.5);
 you must use the legacy setting to recover it.
     ]]></string>
     <string name="seed_done">Done</string>
@@ -89,7 +90,7 @@ An epoch rescan starts from the date that Wallet32 first became
 available; it\'s almost always what you want.\n
 \nFull rescans are much more expensive and should only be used if
 you need to scan for transactions somehow created prior to
-using Wallet32 ...
+using Wallet32.
     ]]></string>
     <string name="rescan_rescan">Rescan</string>
     <string name="rescan_cancel">Cancel</string>
@@ -100,24 +101,24 @@ using Wallet32 ...
     <string name="sync_scan_date_label">Scan Date</string>
     <string name="sync_scan_cmpl_label">Complete In</string>
     <string name="sync_details_created"><![CDATA[
-Your wallet is now syncing with the blockchain for the first time.
-This will take a few minutes; subsequent syncs will be much faster ...
+Syncing with the blockchain for the first time.
+This will take a few minutes; subsequent syncs will be much faster.
     ]]></string>
     <string name="sync_details_restore"><![CDATA[
-We\'re restoring your wallet by scanning the blockchain for
-pre-existing transactions.  This will take a while ...
+Restoring the wallet by scanning the blockchain for
+pre-existing transactions.  This will take a while.
     ]]></string>
     <string name="sync_details_startup"><![CDATA[
-Your wallet is scanning the blockchain for recent transactions ...
+Scanning the blockchain for recent transactions.
     ]]></string>
     <string name="sync_details_rescan"><![CDATA[
-Your wallet is performing a rescan of the blockchain; this will
-take a while ...
+Performing a rescan of the blockchain; this will
+take a while.
     ]]></string>
     <string name="sync_details_rerescan"><![CDATA[
-Your wallet discovered some new used chain addresses in the previous
-scan and needs to rescan the blockchain again.  It can take a while
-to fully recover all of your address activity ...
+New used chain addresses were discovered in the previous scan.
+Rescanning the blockchain again.  It can take a while
+to fully recover all of your address activity.
     ]]></string>
     <string name="sync_abort">Abort and Exit</string>
     <string name="title_activity_main">Wallet32</string>
@@ -215,7 +216,7 @@ to fully recover all of your address activity ...
     <string name="sweep_error_wrongnw">To address is for wrong network</string>
     <string name="sweep_wait_title">Please Wait</string>
     <string name="sweep_wait_fetching"><![CDATA[
-Fetching unspent balance for this address from blockchain.info ...\n
+Fetching unspent balance for this address from blockchain.info.\n
     ]]></string>
 
     <string name="title_activity_view_transactions">View Transactions</string>
@@ -227,7 +228,7 @@ Fetching unspent balance for this address from blockchain.info ...\n
     <string name="title_activity_view_transaction">View Transaction</string>
     <string name="transaction_waittitle">Please Wait</string>
     <string name="transaction_waitprocess"><![CDATA[
-This transaction is really large; it will take a while to process ...\n
+This transaction is really large; it will take a while to process.\n
     ]]></string>
     <string name="transaction_hash_label">Hash</string>
     <string name="transaction_date_label">Date</string>
@@ -284,10 +285,10 @@ This transaction is really large; it will take a while to process ...\n
     <string name="pref_change_passcode_summary">Choose a new passcode</string>
 
     <string name="pref_view_seed">View Seed</string>
-    <string name="pref_view_seed_summary">View your wallet\'s seed</string>
+    <string name="pref_view_seed_summary">View the wallet\'s seed</string>
 
     <string name="pref_add_account">Add Account</string>
-    <string name="pref_add_account_summary">Add an account to your wallet</string>
+    <string name="pref_add_account_summary">Add an account to the wallet</string>
     <string name="pref_add_account_title">Confirm Add Account</string>
     <string name="pref_add_account_confirm">Are you sure you want to add an account?</string>
     <string name="pref_add_account_yes">Add Account</string>
