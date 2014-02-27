@@ -15,9 +15,18 @@ Features include:
 * Same wallet may be securely accessed concurrently from multiple devices.
 * Wallet data is protected by scrypt passcode.
 
+
+Beta Test Version
+================
+
+A beta test version of Wallet32 is available in the google play store
+to members of the bitcoinj google group.  If you are in the bitcoinj
+google group you can click on this link to install the beta:
+
+[https://play.google.com/apps/testing/com.bonsai.wallet32](https://play.google.com/apps/testing/com.bonsai.wallet32)
+
 Alpha Test Version
 ================
-This is [an example](http://example.com/ "Title") inline link.
 
 An alpha test version of Wallet32 is available in the google play store.
 You'll need to join the
