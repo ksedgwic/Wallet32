@@ -492,6 +492,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
     public void scanQR(View view) {
         // CaptureActivity
+        ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12345);
     }
