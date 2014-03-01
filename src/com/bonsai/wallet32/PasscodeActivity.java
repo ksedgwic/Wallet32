@@ -40,8 +40,11 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PasscodeActivity extends ActionBarActivity {
+
+    private static final int MAX_PASSCODE_LENGTH = 32;
 
     private static Logger mLogger =
         LoggerFactory.getLogger(PasscodeActivity.class);
@@ -176,6 +179,14 @@ public class PasscodeActivity extends ActionBarActivity {
     }
 
     public void enterDigit(View view) {
+        // Is the passcode at maximum length?
+        if (mPasscode.length() == MAX_PASSCODE_LENGTH) {
+            String msg = mRes.getString(R.string.passcode_error_maxlen);
+            mLogger.warn(msg);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Which button was clicked?
         String val;
         switch (view.getId()) {

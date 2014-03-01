@@ -259,6 +259,8 @@ at com.bonsai.wallet32.WalletService.onStartCommand(WalletService.java:533)
 com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
 (Same crash loop as mentioned before afterwards)
 
+19. QR scanner repsonse sound is way too loud
+
 20. QR scanner needs a target area as it won't scan on the whole image
 
 ----------------------------------------------------------------
@@ -301,8 +303,6 @@ sensible, but still shouldn't be accessible that way.
 it doesn't cover the UI
 
 18. More than 8 accounts start pushing out of the view
-
-19. QR scanner repsonse sound is way too loud
 
 21. The wallet doesn't lock itself right away when using the home
 button. It also stays in the recent apps list potentially showing
