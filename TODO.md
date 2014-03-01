@@ -195,3 +195,126 @@ https://play.google.com/apps/testing/com.bonsai.wallet32
 
 ----------------------------------------------------------------
 
+Wallet32 Beta Test
+
+A beta version of Wallet32, a BIP-0032 hierarchical deterministic
+bitcoin wallet for android is available to members of the bitcoinj
+google group.
+
+Features include:
+
+* Multiple logical "accounts" within each wallet.
+* Fresh receive and change addresses are used for each transfer.
+* Wallet only needs to be backed up once, on initial creation.
+* Wallet backup consists of simple list of 12 common words (BIP-0039).
+* Same wallet may be securely accessed concurrently from multiple devices.
+* Wallet data is protected by scrypt passcode.
+
+The wallet is available at the following location:
+
+https://play.google.com/apps/testing/com.bonsai.wallet32
+
+Source code available here:
+
+https://github.com/ksedgwic/Wallet32
+
+Please let me know what you think!
+
+Ken
+
+----------------------------------------------------------------
+
+7. What is "T" an "Path" in the account overview? Does the user need to
+know that?
+
+The "T" column is the number of transactions for each address.  It is
+pretty important in an HD Wallet because "holes" (sequential groups of
+addresses without any transactions) make wallet recovery more
+difficult.
+
+The "Path" column is the HD tree location of the address.  It's useful
+when cross-referencing addresses in the view transaction activity.
+
+16. I haven't tried, but there should be a waring about a too low/high fee.
+
+There are warnings for fee too high and fee too low.
+
+25. Sweep view asks for private key or address. What is the use of an
+address there?
+
+I wanted a way to verify funds on a public identifier without actually
+sweeping the private key.  I shoehorned the function here.  I agree
+that it is not well documented and confusing.  I think I should make
+a separate "scan public identifier" activity instead.
+
+----------------------------------------------------------------
+
+1. Del button in bottom right is a bad place imho as there are usually
+the Submit buttons. Maybe get rid of the "Clr" button?
+
+2. Decrypt dialog shouldn't be dismissable by tapping outside. Doing so
+and entering a wrong code afterwards leads to decrypt, then force
+close. After the crash it tries to start again and crashes with a NPE
+at com.bonsai.wallet32.WalletService.onStartCommand(WalletService.java:533)
+
+3. I think limiting the passcode length isn't a bad idea. You can push
+everything out of view with huge codes. Props for making 4 digit
+blocks though!
+
+4. Sync Progress dialog takes half a minute until it starts
+processing. Can confuse users
+
+5. Progress bar in said dialog is in old Android style
+
+6. PIN change should ask for the old PIN first, even if the wallet was
+unlocked before.
+
+8. Hitting a specific address is pretty hard in that list.
+
+9. I'd consider copying a private key to clipboard a super risky
+operation. Pattern matching malware watching the clipboard?
+
+10. Click on "Edit" for account name should give focus to the text field.
+
+11. Settings -> View Seed is doubling of the menu. Also, Pressing back
+from this screen doesn't go back to settings, but the main screen
+
+12. Adding an account gives no progress feedback. Again UI looks
+unresponsive. Not sure if Settings is the right place to have this
+too.
+
+13. Scanning a non bitcoin QR crashes the wallet with a NPE at
+com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
+(Same crash loop as mentioned before afterwards)
+
+14. Start app -> Menu -> About -> Menu -> Settings. Doesn't show anything
+sensible, but still shouldn't be accessible that way.
+
+15. You can create receiving requests with more than 21mil coins.
+
+17. Soft keyboard goes over the activity. Instead, it should push it up so
+it doesn't cover the UI
+
+18. More than 8 accounts start pushing out of the view
+
+19. QR scanner repsonse sound is way too loud
+
+20. QR scanner needs a target area as it won't scan on the whole image
+
+21. The wallet doesn't lock itself right away when using the home
+button. It also stays in the recent apps list potentially showing
+sensitive info on the preview image
+
+22. Starting activities via command line bypasses PIN, but doesn't show
+anything sensitive as the wallet is encrypted. (e.g. adb shell am
+start -n com.bonsai.wallet32/.MainActivity)
+
+23. Just my opinion: Overall design wastes a lot of screen real estate. It
+also look too "clean". Not a fan of having averything centered.
+
+24. Showing a toast on each and every character input at the address field
+is too much.
+
+25. Sweep view asks for private key or address. What is the use of an
+address there? Also, trying to manually enter anything crashes with a
+NPE at com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)

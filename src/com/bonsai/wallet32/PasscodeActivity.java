@@ -404,6 +404,7 @@ public class PasscodeActivity extends ActionBarActivity {
         args.putString("msg", msg);
         args.putBoolean("hasOK", false);
         df.setArguments(args);
+        df.setCancelable(false);
         df.show(getSupportFragmentManager(), "note");
         return df;
     }
