@@ -201,7 +201,6 @@ to fully recover all of your address activity.
     <string name="sweep_fee_label">Miner\'s Fee:</string>
     <string name="sweep_acct_label">Sweep to Account:</string>
     <string name="sweep_key">Sweep Private Key</string>
-    <string name="sweep_error_badkey">Private key is not a valid bitcoin key</string>
     <string name="sweep_error_blockchain">There was a problem accessing address history at blockchain.info, try again later.</string>
     <string name="sweep_error_parse">There was a problem parsing the key\'s history from blockchain.info</string>
     <string name="sweep_no_unspent">This key has no unspent balance</string>
@@ -212,8 +211,8 @@ to fully recover all of your address activity.
     <string name="sweep_error_nooutputs">No unspent outputs for key</string>
     <string name="sweep_error_nofee">Missing fee for sweep</string>
     <string name="sweep_error_badfee">Sweep fee is malformed</string>
-    <string name="sweep_error_badqr">To address is not a valid bitcoin address</string>
-    <string name="sweep_error_wrongnw">To address is for wrong network</string>
+    <string name="sweep_error_badqr">QR code is not a valid bitcoin address</string>
+    <string name="sweep_error_wrongnw">Address is for wrong network</string>
     <string name="sweep_wait_title">Please Wait</string>
     <string name="sweep_wait_fetching"><![CDATA[
 Fetching unspent balance for this address from blockchain.info.\n

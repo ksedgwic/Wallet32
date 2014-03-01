@@ -248,14 +248,21 @@ that it is not well documented and confusing.  I think I should make
 a separate "scan public identifier" activity instead.
 
 ----------------------------------------------------------------
-
-1. Del button in bottom right is a bad place imho as there are usually
-the Submit buttons. Maybe get rid of the "Clr" button?
+Fixed
 
 2. Decrypt dialog shouldn't be dismissable by tapping outside. Doing so
 and entering a wrong code afterwards leads to decrypt, then force
 close. After the crash it tries to start again and crashes with a NPE
 at com.bonsai.wallet32.WalletService.onStartCommand(WalletService.java:533)
+
+13. Scanning a non bitcoin QR crashes the wallet with a NPE at
+com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
+(Same crash loop as mentioned before afterwards)
+
+----------------------------------------------------------------
+
+1. Del button in bottom right is a bad place imho as there are usually
+the Submit buttons. Maybe get rid of the "Clr" button?
 
 3. I think limiting the passcode length isn't a bad idea. You can push
 everything out of view with huge codes. Props for making 4 digit
@@ -282,10 +289,6 @@ from this screen doesn't go back to settings, but the main screen
 12. Adding an account gives no progress feedback. Again UI looks
 unresponsive. Not sure if Settings is the right place to have this
 too.
-
-13. Scanning a non bitcoin QR crashes the wallet with a NPE at
-com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
-(Same crash loop as mentioned before afterwards)
 
 14. Start app -> Menu -> About -> Menu -> Settings. Doesn't show anything
 sensible, but still shouldn't be accessible that way.

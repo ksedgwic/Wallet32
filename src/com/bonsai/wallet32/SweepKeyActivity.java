@@ -503,6 +503,8 @@ public class SweepKeyActivity extends BaseWalletActivity {
             // If we can decode a private key we're set.
             mKey = new DumpedPrivateKey(params, privstr).getKey();
 
+            mAddr = mKey.toAddress(params);
+
             mPrivateKeyEditText.setText(privstr, TextView.BufferType.EDITABLE);
 
 		} catch (AddressFormatException e) {
@@ -535,23 +537,18 @@ public class SweepKeyActivity extends BaseWalletActivity {
                 String msg = mRes.getString(R.string.sweep_needprivate);
                 mLogger.warn(msg);
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-            } else {
-                String msg = mRes.getString(R.string.sweep_error_badkey);
-                mLogger.warn(msg);
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
             }
 		}
-
-        if (mKey != null)
-            mAddr = mKey.toAddress(params);
 
         // Clear any existing outputs.
         mUnspentOutputs = null;
 
-        // Send a message to update the unspent outputs.  Can't do it
-        // directly here because we are in a bad context ...
-        Message msgObj = mHandleKeyChanged.obtainMessage();
-        mHandleKeyChanged.sendMessage(msgObj);
+        if (mAddr != null) {
+            // Send a message to update the unspent outputs.  Can't do it
+            // directly here because we are in a bad context ...
+            Message msgObj = mHandleKeyChanged.obtainMessage();
+            mHandleKeyChanged.sendMessage(msgObj);
+        }
 
         // Restore the field changed listener.
         mPrivateKeyEditText.addTextChangedListener(mPrivateKeyWatcher);
