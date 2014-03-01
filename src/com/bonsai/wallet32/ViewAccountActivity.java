@@ -162,6 +162,9 @@ public class ViewAccountActivity extends BaseWalletActivity {
         case SET:
             // This is an edit action.
             setNameState(NameEditState.CLEAN);
+            mAccountNameEditText.requestFocus();
+            mAccountNameEditText.setSelection
+                (mAccountNameEditText.getText().length());
             break;
         case DIRTY:
             // This is a submit action.
