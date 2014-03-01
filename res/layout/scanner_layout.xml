@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
+
+  <FrameLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:foreground="@drawable/crosshairs"
+      android:foregroundGravity="center"
+      >
+
+    <SurfaceView
+	android:id="@+id/preview_view"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	/>
+
+  </FrameLayout>
+
+</LinearLayout>
