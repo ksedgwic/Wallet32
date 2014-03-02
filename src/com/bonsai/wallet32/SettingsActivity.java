@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,6 +37,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.Preference;
@@ -194,20 +196,40 @@ public class SettingsActivity extends PreferenceActivity {
                 mLogger.info("add account confirmed");
                 if (mWalletService != null)
                 {
-                    mWalletService.addAccount();
-
-                    // Back to the main activity.
-                    Intent intent =
-                        new Intent(mThis, MainActivity.class);
-                    intent.setFlags
-                        (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    startActivity(intent);
-
-                    // All done here...
-                    finish();
+                    new AddAccountTask().execute();
                 }
             }
         };
+
+    private class AddAccountTask extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show
+                (SettingsActivity.this, "",
+                 mRes.getString(R.string.pref_add_account_adding));
+        }
+
+		protected Void doInBackground(Void... arg0)
+        {
+            mWalletService.addAccount();
+			return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            progressDialog.dismiss();
+
+            // Back to the main activity.
+            Intent intent = new Intent(mThis, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+
+            // All done here...
+            finish();
+        }
+    }
 
 	@Override
     protected void onResume() {

@@ -297,6 +297,7 @@ This transaction is really large; it will take a while to process.\n
     <string name="pref_add_account_confirm">Are you sure you want to add an account?</string>
     <string name="pref_add_account_yes">Add Account</string>
     <string name="pref_add_account_no">Cancel</string>
+    <string name="pref_add_account_adding">Adding account &#8230;</string>
 
     <string name="pref_rescan_blockchain">Rescan Blockchain ...</string>
     <string name="pref_rescan_summary">Rescan Blockchain</string>
