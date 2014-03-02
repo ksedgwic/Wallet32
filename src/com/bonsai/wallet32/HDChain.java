@@ -17,11 +17,8 @@ package com.bonsai.wallet32;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +49,7 @@ public class HDChain {
     private ArrayList<HDAddress>	mAddrs;
 
     static private final int	DESIRED_MARGIN = 32;
+    static private final int	MAX_UNUSED_GAP = 8;
 
     public HDChain(NetworkParameters params,
                    DeterministicKey accountKey,
@@ -116,6 +114,10 @@ public class HDChain {
         mAddrs = new ArrayList<HDAddress>();
         for (int ii = 0; ii < numAddrs; ++ii)
             mAddrs.add(new HDAddress(mParams, mChainKey, ii));
+    }
+
+    public static int maxSafeExtend() {
+        return DESIRED_MARGIN - MAX_UNUSED_GAP;
     }
 
     public boolean isReceive() {
