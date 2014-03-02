@@ -268,9 +268,22 @@ operation. Pattern matching malware watching the clipboard?
 com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
 (Same crash loop as mentioned before afterwards)
 
+14. Start app -> Menu -> About -> Menu -> Settings. Doesn't show anything
+sensible, but still shouldn't be accessible that way.
+
 19. QR scanner repsonse sound is way too loud
 
 20. QR scanner needs a target area as it won't scan on the whole image
+
+----------------------------------------------------------------
+Issues
+
+11. Settings -> View Seed is doubling of the menu. Also, Pressing back
+from this screen doesn't go back to settings, but the main screen
+
+Back from View Seed goes to wherever Settings was selected from.  I
+don't think anything from Settings goes back to Settings.  Not sure
+what the consistent thing to do here is.
 
 ----------------------------------------------------------------
 
@@ -287,15 +300,9 @@ unlocked before.
 
 8. Hitting a specific address is pretty hard in that list.
 
-11. Settings -> View Seed is doubling of the menu. Also, Pressing back
-from this screen doesn't go back to settings, but the main screen
-
 12. Adding an account gives no progress feedback. Again UI looks
 unresponsive. Not sure if Settings is the right place to have this
 too.
-
-14. Start app -> Menu -> About -> Menu -> Settings. Doesn't show anything
-sensible, but still shouldn't be accessible that way.
 
 15. You can create receiving requests with more than 21mil coins.
 

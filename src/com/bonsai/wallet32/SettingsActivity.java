@@ -238,9 +238,13 @@ public class SettingsActivity extends PreferenceActivity {
                 final String logFileName = logFile.getName();
                 final File file;
                 if (logFileName.endsWith(".log.gz"))
-                    file = File.createTempFile(logFileName.substring(0, logFileName.length() - 6), ".log.gz", cacheDir);
+                    file = File.createTempFile
+                        (logFileName.substring(0, logFileName.length() - 6),
+                         ".log.gz", cacheDir);
                 else if (logFileName.endsWith(".log"))
-                    file = File.createTempFile(logFileName.substring(0, logFileName.length() - 3), ".log", cacheDir);
+                    file = File.createTempFile
+                        (logFileName.substring(0, logFileName.length() - 3),
+                         ".log", cacheDir);
                 else
                     continue;
 
@@ -265,7 +269,8 @@ public class SettingsActivity extends PreferenceActivity {
 		startSend(text, attachments);
 	}
 
-	private void startSend(final CharSequence text, final ArrayList<Uri> attachments)
+	private void startSend(final CharSequence text,
+                           final ArrayList<Uri> attachments)
 	{
 		final Intent intent;
 
@@ -284,7 +289,8 @@ public class SettingsActivity extends PreferenceActivity {
 		{
 			intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 			intent.setType("text/plain");
-			intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachments);
+			intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,
+                                               attachments);
 		}
 
 		intent.putExtra(Intent.EXTRA_EMAIL,
@@ -292,7 +298,9 @@ public class SettingsActivity extends PreferenceActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, "wallet32 logs");
 		intent.putExtra(Intent.EXTRA_TEXT, "-- LOGS ATTACHED --");
 
-		startActivity(Intent.createChooser(intent, getString(R.string.send_logs_mail_intent_chooser)));
+		startActivity(Intent.createChooser
+                      (intent,
+                       getString(R.string.send_logs_mail_intent_chooser)));
 	}
 
     public void showConfirmDialog(String title,
@@ -310,12 +318,13 @@ public class SettingsActivity extends PreferenceActivity {
             .setMessage(msg)
             .setCancelable(false)
             .setPositiveButton(yesstr, listener)
-            .setNegativeButton(nostr,
-                               new DialogInterface.OnClickListener() {
-                                   public void onClick(DialogInterface dialog, int id) {
-                                       dialog.cancel();
-                                   }
-                               });
+            .setNegativeButton
+            (nostr,
+             new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                     dialog.cancel();
+                 }
+             });
  
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
