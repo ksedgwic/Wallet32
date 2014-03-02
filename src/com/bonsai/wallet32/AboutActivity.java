@@ -19,10 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
-public class AboutActivity extends BaseWalletActivity {
+public class AboutActivity extends ActionBarActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(AboutActivity.class);
