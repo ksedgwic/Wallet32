@@ -259,6 +259,8 @@ at com.bonsai.wallet32.WalletService.onStartCommand(WalletService.java:533)
 everything out of view with huge codes. Props for making 4 digit
 blocks though!
 
+10. Click on "Edit" for account name should give focus to the text field.
+
 13. Scanning a non bitcoin QR crashes the wallet with a NPE at
 com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
 (Same crash loop as mentioned before afterwards)
@@ -284,8 +286,6 @@ unlocked before.
 
 9. I'd consider copying a private key to clipboard a super risky
 operation. Pattern matching malware watching the clipboard?
-
-10. Click on "Edit" for account name should give focus to the text field.
 
 11. Settings -> View Seed is doubling of the menu. Also, Pressing back
 from this screen doesn't go back to settings, but the main screen

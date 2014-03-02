@@ -70,11 +70,19 @@
       />
 
   <Button
-      android:id="@+id/copy"
+      android:id="@+id/send_request"
       android:layout_width="180dp"
       android:layout_height="wrap_content"
-      android:text="@string/button_copy"
-      android:onClick="copyAddress"
+      android:text="@string/button_send_request"
+      android:onClick="sendRequest"
+      />
+
+  <Button
+      android:id="@+id/send_address"
+      android:layout_width="180dp"
+      android:layout_height="wrap_content"
+      android:text="@string/button_send_address"
+      android:onClick="sendAddress"
       />
 
   <!-- Stretchy Spacer -->
@@ -86,11 +94,11 @@
       />
 
   <Button
-      android:id="@+id/copy_key"
+      android:id="@+id/send_key"
       android:layout_width="180dp"
       android:layout_height="wrap_content"
-      android:text="@string/button_copy_key"
-      android:onClick="copyKey"
+      android:text="@string/button_send_key"
+      android:onClick="sendKey"
       />
 
   <!-- Stretchy Spacer -->

@@ -21,18 +21,14 @@ import java.util.Hashtable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.ClipboardManager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.zxing.BarcodeFormat;
@@ -54,15 +50,10 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
     private String mURI;
 
-	private ClipboardManager mClipboardManager;
-
 	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-		mClipboardManager =
-            (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
 		super.onCreate(savedInstanceState);
 
@@ -96,9 +87,14 @@ public class ViewAddressActivity extends BaseWalletActivity {
         // activity we should show a simplified version; remove
         // some actions.
         //
-        if (mPrivateKey == null) {
+        if (mPrivateKey != null) {
+            // We are viewing an address from the account.
+            findViewById(R.id.send_request).setVisibility(View.GONE);
+        } else {
+            // We are sending a receive request.
+            findViewById(R.id.send_address).setVisibility(View.GONE);
             findViewById(R.id.opt_space1).setVisibility(View.GONE);
-            findViewById(R.id.copy_key).setVisibility(View.GONE);
+            findViewById(R.id.send_key).setVisibility(View.GONE);
             findViewById(R.id.opt_space2).setVisibility(View.GONE);
             findViewById(R.id.blockchain).setVisibility(View.GONE);
         }
@@ -163,21 +159,41 @@ public class ViewAddressActivity extends BaseWalletActivity {
         return bitmap;
     }
 
-    public void copyAddress(View view) {
-        mLogger.info(String.format("copying %s to the clipboard", mURI));
-		mClipboardManager.setText(mURI);
-		Toast.makeText(this,
-                       R.string.view_clipboard_copy,
-                       Toast.LENGTH_SHORT).show();
+    public void sendRequest(View view) {
+        Intent intent=new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_SUBJECT, 
+                        mRes.getString(R.string.address_send_request_subject));
+        intent.putExtra(Intent.EXTRA_TEXT, mURI);
+        startActivity(Intent.createChooser
+                      (intent,
+                       mRes.getString(R.string.address_send_request_title)));
         finish();
     }
 
-    public void copyKey(View view) {
-        mLogger.info("copying private key to the clipboard");
-        mClipboardManager.setText(mPrivateKey);
-		Toast.makeText(this,
-                       R.string.view_clipboard_copy_key,
-                       Toast.LENGTH_SHORT).show();
+    public void sendAddress(View view) {
+        Intent intent=new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_SUBJECT, 
+                        mRes.getString(R.string.address_send_address_subject));
+        intent.putExtra(Intent.EXTRA_TEXT, mURI);
+        startActivity(Intent.createChooser
+                      (intent,
+                       mRes.getString(R.string.address_send_address_title)));
+        finish();
+    }
+
+    public void sendKey(View view) {
+        Intent intent=new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_SUBJECT, 
+                        mRes.getString(R.string.address_send_key_subject));
+        intent.putExtra(Intent.EXTRA_TEXT, mPrivateKey);
+        startActivity(Intent.createChooser
+                      (intent, mRes.getString(R.string.address_send_key_title)));
         finish();
     }
 

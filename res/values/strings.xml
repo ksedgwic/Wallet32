@@ -243,15 +243,19 @@ This transaction is really large; it will take a while to process.\n
     <string name="transputs_header_btc">BTC</string>
     <string name="transputs_total">Total</string>
     <string name="title_activity_view_address">View Address</string>
-    <string name="view_clipboard_copy">Address copied to clipboard</string>
-    <string name="view_clipboard_copy_key">Private key copied to clipboard</string>
-    <string name="button_copy">Copy Address</string>
-    <string name="button_copy_key">Copy Private Key</string>
+    <string name="button_send_request">Send Request &#8230;</string>
+    <string name="button_send_address">Send Address &#8230;</string>
+    <string name="button_send_key">Send Private Key &#8230;</string>
     <string name="button_blockchain">blockchain.info</string>
-    <string name="button_dismiss">Dismiss</string>
     <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>
     <string name="eq_label">=</string>
+    <string name="address_send_request_title">Send request &#8230;</string>
+    <string name="address_send_request_subject">Bitcoin Request</string>
+    <string name="address_send_address_title">Send address &#8230;</string>
+    <string name="address_send_address_subject">Bitcoin Address</string>
+    <string name="address_send_key_title">Send private key &#8230;</string>
+    <string name="address_send_key_subject">Bitcoin Key</string>
     <string name="network_status_setup">Wallet Initializing</string>
     <string name="network_status_start">Network Starting</string>
     <string name="network_status_sync">Network Syncing, %1$d%% Done</string>
