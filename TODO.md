@@ -264,6 +264,10 @@ operation. Pattern matching malware watching the clipboard?
 
 10. Click on "Edit" for account name should give focus to the text field.
 
+12. Adding an account gives no progress feedback. Again UI looks
+unresponsive. Not sure if Settings is the right place to have this
+too.
+
 13. Scanning a non bitcoin QR crashes the wallet with a NPE at
 com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
 (Same crash loop as mentioned before afterwards)
@@ -299,10 +303,6 @@ processing. Can confuse users
 unlocked before.
 
 8. Hitting a specific address is pretty hard in that list.
-
-12. Adding an account gives no progress feedback. Again UI looks
-unresponsive. Not sure if Settings is the right place to have this
-too.
 
 15. You can create receiving requests with more than 21mil coins.
 

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ReceiveBitcoinActivity"
-    android:orientation="vertical"
+    android:id="@+id/receive_scroll_id"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center"
+    android:fillViewport="true"
+    android:padding="16dp"
     >
 
   <LinearLayout
-      android:layout_width="280dp"
+      android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:orientation="vertical"
       android:gravity="center"
@@ -169,5 +170,4 @@
 
   </LinearLayout>
 
-</LinearLayout>
-
+</ScrollView>
