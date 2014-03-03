@@ -257,7 +257,9 @@ This transaction is really large; it will take a while to process.\n
     <string name="address_send_key_title">Send private key &#8230;</string>
     <string name="address_send_key_subject">Bitcoin Key</string>
     <string name="network_status_setup">Wallet Initializing</string>
-    <string name="network_status_start">Network Starting</string>
+    <string name="network_status_wallet">Setting up Wallet</string>
+    <string name="network_status_keysadd">Adding Keys</string>
+    <string name="network_status_peering">Connecting to Peers</string>
     <string name="network_status_sync">Network Syncing, %1$d%% Done</string>
     <string name="network_status_ready">Network Ready</string>
     <string name="network_status_shutdown">Shutting Down</string>

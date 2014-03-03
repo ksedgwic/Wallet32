@@ -87,7 +87,9 @@ public class WalletService extends Service
 
     public enum State {
         SETUP,			// CTOR
-        START,			
+        WALLET_SETUP,	// Setting up wallet app kit.
+        KEYS_ADD,		// Adding keys.
+        PEERING,		// Connecting to peers.
         SYNCING,		// Many times from sync progress.
         READY,
         SHUTDOWN,
@@ -355,6 +357,8 @@ public class WalletService extends Service
             final Long scanTime = params[0];
             WalletApplication wallapp = (WalletApplication) mContext;
 
+            setState(State.WALLET_SETUP);
+
             mLogger.info("setting up wallet, scanTime=" +
                          scanTime.toString());
 
@@ -383,7 +387,6 @@ public class WalletService extends Service
                 System.exit(0);
             }
 
-            // 2 seconds to here.
             mLogger.info("creating new wallet app kit");
 
             // Checkpointing fails on full rescan because the earliest
@@ -408,6 +411,8 @@ public class WalletService extends Service
                     protected void onSetupCompleted() {
                         mLogger.info("adding keys");
 
+                        setState(WalletService.State.KEYS_ADD);
+
                         // Add all the existing keys, they'll be
                         // ignored if they are already in the
                         // WalletAppKit.
@@ -424,20 +429,20 @@ public class WalletService extends Service
                         //
                         mHDWallet.ensureMargins(wallet());
 
-                        // 40 Seconds to here.
-
                         // We don't need to check for HDChain.maxSafeExtend()
                         // here because we are about to scan anyway.
                         // We'll check again after the scan ...
+
+                        // Now we're peering.
+                        setState(WalletService.State.PEERING);
                     }
                 };
             mKit.setDownloadListener(mkDownloadListener());
             if (chkpntis != null)
                 mKit.setCheckpoints(chkpntis);
 
-            setState(State.START);
+            setState(State.WALLET_SETUP);
 
-            // Still 2 seconds in.
             mLogger.info("waiting for blockchain setup");
 
             // Download the block chain and wait until it's done.
@@ -818,8 +823,12 @@ public class WalletService extends Service
         switch (mState) {
         case SETUP:
             return mRes.getString(R.string.network_status_setup);
-        case START:
-            return mRes.getString(R.string.network_status_start);
+        case WALLET_SETUP:
+            return mRes.getString(R.string.network_status_wallet);
+        case KEYS_ADD:
+            return mRes.getString(R.string.network_status_keysadd);
+        case PEERING:
+            return mRes.getString(R.string.network_status_peering);
         case SYNCING:
             return mRes.getString(R.string.network_status_sync,
                                   (int) mPercentDone);

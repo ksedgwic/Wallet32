@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class MainActivity extends BaseWalletActivity {
     private WalletApplication	mWalletApp;
 
     private View mDialogView = null;
+    private ProgressDialog mStateProgress = null;
     private DialogFragment mSyncProgressDialog = null;
 
     private static SimpleDateFormat mDateFormatter =
@@ -96,12 +98,27 @@ public class MainActivity extends BaseWalletActivity {
         if (mWalletService == null)
             return;
 
-        // If we aren't ready make sure a sync progress dialog is up.
-        if (mWalletService.getState() != WalletService.State.READY)
+        switch (mWalletService.getState()) {
+        case SETUP:
+        case WALLET_SETUP:
+        case KEYS_ADD:
+        case PEERING:
+            // All of these states use a progress dialog.
+            if (mStateProgress != null)
+                mStateProgress.dismiss();
+            mStateProgress =
+                ProgressDialog.show(MainActivity.this, "",
+                                    mWalletService.getStateString());
+            break;
+        case SYNCING:
+            if (mStateProgress != null) {
+                mStateProgress.dismiss();
+                mStateProgress = null;
+            }
+
             if (mSyncProgressDialog == null)
                 showSyncProgressDialog();
 
-        if (mWalletService.getState() == WalletService.State.SYNCING) {
             int pctdone = (int) mWalletService.getPercentDone();
 
             String timeLeft = formatTimeLeft(mWalletService.getMsecsLeft());
@@ -116,9 +133,13 @@ public class MainActivity extends BaseWalletActivity {
                     (ProgressBar) mDialogView.findViewById(R.id.progress_bar);
                 pb.setProgress(pctdone);
             }
-        }
+            break;
+        case READY:
+            if (mStateProgress != null) {
+                mStateProgress.dismiss();
+                mStateProgress = null;
+            }
 
-        else if (mWalletService.getState() == WalletService.State.READY) {
             if (mSyncProgressDialog != null) {
                 mSyncProgressDialog.dismiss();
                 mSyncProgressDialog = null;
@@ -135,6 +156,11 @@ public class MainActivity extends BaseWalletActivity {
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
+            break;
+        case SHUTDOWN:
+            break;
+        case ERROR:
+            break;
         }
 
         updateBalances();
