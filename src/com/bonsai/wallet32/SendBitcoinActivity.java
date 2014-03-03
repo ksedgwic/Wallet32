@@ -26,8 +26,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -522,23 +524,55 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             return;
         }
 
-        double fee;
-        try {
-            fee = mWalletService.computeRecommendedFee(mCheckedFromId, amount);
-		} catch (IllegalArgumentException ex) {
-            showErrorDialog(mRes.getString(R.string.send_error_dust));
-            return;
-		} catch (InsufficientMoneyException ex) {
-            showErrorDialog(mRes.getString(R.string.send_error_insufficient));
-            return;
-		}
+        new SetFeeToRecommendedTask().execute(amount);
+    }
 
-        mLogger.info(String.format("recommended fee is %f", fee));
-        String msg = mRes.getString(R.string.send_set_fee, fee);
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    private class SetFeeToRecommendedTask extends AsyncTask<Double, Void, Double> {
+        private ProgressDialog progressDialog;
 
-        String feeString = String.format("%f", fee);
-        mBTCFeeEditText.setText(feeString);
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show
+                (SendBitcoinActivity.this, "",
+                 mRes.getString(R.string.send_computing_fee));
+        }
+
+		protected Double doInBackground(Double... params)
+        {
+            final Double amount = params[0];
+
+            Double fee = null;
+            try {
+                fee =
+                mWalletService.computeRecommendedFee(mCheckedFromId, amount);
+            } catch (IllegalArgumentException ex) {
+                // just return null fee
+            } catch (InsufficientMoneyException ex) {
+                // just return null fee
+            }
+            return fee;
+        }
+
+        @Override
+        protected void onPostExecute(Double fee) {
+            progressDialog.dismiss();
+
+            if (fee == null) {
+                // Pick one of these.
+                // showErrorDialog(mRes.getString(R.string.send_error_dust));
+                showErrorDialog(mRes.getString
+                                (R.string.send_error_insufficient));
+                return;
+            }
+            else {
+                mLogger.info(String.format("recommended fee is %f", fee));
+                String msg = mRes.getString(R.string.send_set_fee, fee);
+                Toast.makeText(SendBitcoinActivity.this, msg, Toast.LENGTH_SHORT).show();
+
+                String feeString = String.format("%f", fee);
+                mBTCFeeEditText.setText(feeString);
+            }
+        }
     }
 
     public void useAll(View view) {
@@ -548,25 +582,53 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             return;
         }
 
-        AmountAndFee amtnfee;
-        try {
-            amtnfee = mWalletService.useAll(mCheckedFromId);
+        new UseAllTask().execute();
+    }
 
-            mLogger.info(String.format("setting amount to %f, fee to %f",
-                                       amtnfee.mAmount, amtnfee.mFee));
-            String msg = mRes.getString(R.string.send_set_amt_fee,
-                                        amtnfee.mAmount, amtnfee.mFee);
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    private class UseAllTask extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+        private AmountAndFee amtnfee = null;
 
-            String amtString = String.format("%f", amtnfee.mAmount);
-            mBTCAmountEditText.setText(amtString);
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show
+                (SendBitcoinActivity.this, "",
+                 mRes.getString(R.string.send_computing_fee));
+        }
 
-            String feeString = String.format("%f", amtnfee.mFee);
-            mBTCFeeEditText.setText(feeString);
+		protected Void doInBackground(Void... arg0)
+        {
+            try {
+                amtnfee = mWalletService.useAll(mCheckedFromId);
+            } catch (InsufficientMoneyException ex) {
+                // just leave amtnfee null ...
+            }
+			return null;
+        }
 
-		} catch (InsufficientMoneyException ex) {
-            showErrorDialog(mRes.getString(R.string.send_error_insufficient));
-		}
+        @Override
+        protected void onPostExecute(Void result) {
+            progressDialog.dismiss();
+
+            if (amtnfee == null) {
+                showErrorDialog
+                    (mRes.getString(R.string.send_error_insufficient));
+            }
+            else {
+                mLogger.info(String.format("setting amount to %f, fee to %f",
+                                           amtnfee.mAmount, amtnfee.mFee));
+                String msg = mRes.getString(R.string.send_set_amt_fee,
+                                            amtnfee.mAmount, amtnfee.mFee);
+                Toast.makeText(SendBitcoinActivity.this,
+                               msg, Toast.LENGTH_SHORT).show();
+
+                String amtString = String.format("%f", amtnfee.mAmount);
+                mBTCAmountEditText.setText(amtString);
+
+                String feeString = String.format("%f", amtnfee.mFee);
+                mBTCFeeEditText.setText(feeString);
+            }
+        }
     }
 
     public void sendBitcoin(View view) {
