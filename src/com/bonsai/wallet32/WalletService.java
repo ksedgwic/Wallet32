@@ -86,9 +86,9 @@ public class WalletService extends Service
         LoggerFactory.getLogger(WalletService.class);
 
     public enum State {
-        SETUP,
-        START,
-        SYNCING,
+        SETUP,			// CTOR
+        START,			
+        SYNCING,		// Many times from sync progress.
         READY,
         SHUTDOWN,
         ERROR
@@ -383,6 +383,7 @@ public class WalletService extends Service
                 System.exit(0);
             }
 
+            // 2 seconds to here.
             mLogger.info("creating new wallet app kit");
 
             // Checkpointing fails on full rescan because the earliest
@@ -423,6 +424,8 @@ public class WalletService extends Service
                         //
                         mHDWallet.ensureMargins(wallet());
 
+                        // 40 Seconds to here.
+
                         // We don't need to check for HDChain.maxSafeExtend()
                         // here because we are about to scan anyway.
                         // We'll check again after the scan ...
@@ -434,6 +437,7 @@ public class WalletService extends Service
 
             setState(State.START);
 
+            // Still 2 seconds in.
             mLogger.info("waiting for blockchain setup");
 
             // Download the block chain and wait until it's done.
