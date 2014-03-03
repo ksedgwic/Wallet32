@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".SweepKeyActivity"
+    tools:context=".SendBitcoinActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -11,7 +11,7 @@
 
   <ScrollView
       android:id="@+id/receive_scroll_id"
-      android:layout_width="fill_parent"
+      android:layout_width="400dp"
       android:layout_height="fill_parent"
       android:fillViewport="true"
       android:padding="20dp"
@@ -36,14 +36,46 @@
       <LinearLayout
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
+	  android:orientation="vertical"
+	  android:gravity="left"
+	  >
+
+	<TextView
+    	    android:id="@+id/from_label"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:text="@string/send_from_label"
+    	    android:textAppearance="@android:style/TextAppearance.Small"
+    	    android:textStyle="bold"
+    	    />
+
+	<TableLayout
+    	    android:id="@+id/from_choices"
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:gravity="left"
+    	    />
+
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <LinearLayout
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
 	  android:orientation="horizontal"
 	  >
 
 	<TextView
-    	    android:id="@+id/key_label"
+    	    android:id="@+id/to_label"
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
-    	    android:text="@string/sweep_key_label"
+    	    android:text="@string/send_to_label"
     	    android:textAppearance="@android:style/TextAppearance.Small"
     	    android:textStyle="bold"
     	    />
@@ -59,7 +91,7 @@
     	    android:id="@+id/qr"
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
-    	    android:text="@string/sweep_qr"
+    	    android:text="@string/send_to_qr"
     	    android:onClick="scanQR"
     	    android:textAppearance="@android:style/TextAppearance.Small"
     	    android:minHeight="0dp"
@@ -69,14 +101,14 @@
       </LinearLayout>
 
       <EditText
-	  android:id="@+id/private_key"
+	  android:id="@+id/to_address"
 	  android:inputType="text"
 	  android:singleLine="true"
 	  android:layout_width="fill_parent"
 	  android:layout_height="40dp"
 	  android:textSize="14sp"
 	  android:gravity="left"
-	  android:hint="@string/sweep_key_hint"
+	  android:hint="@string/send_to_hint"
 	  />
 
       <!-- Stretchy Spacer -->
@@ -87,10 +119,11 @@
 	  />
 
       <TableLayout
-	  android:id="@+id/balance"
+	  android:id="@+id/send_amounts"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
 	  android:gravity="center"
+	  android:stretchColumns="*"
 	  >
 
 	<TableRow
@@ -98,15 +131,41 @@
     	    android:layout_height="wrap_content"
     	    >
 
-	  <TextView
-    	      android:id="@+id/balance_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/sweep_balance_label"
-    	      android:textAppearance="@android:style/TextAppearance.Small"
-    	      android:textStyle="bold"
+	  <LinearLayout
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:orientation="horizontal"
     	      android:layout_span="7"
-    	      />
+	      >
+
+	    <TextView
+    		android:id="@+id/amount_label"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/send_amount_label"
+    		android:textAppearance="@android:style/TextAppearance.Small"
+    		android:textStyle="bold"
+    		/>
+
+	    <!-- Stretchy Horizontal Spacer -->
+	    <View
+    		android:layout_width="0dp"
+    		android:layout_height="fill_parent"
+    		android:layout_weight="1"
+    		/>
+
+	    <Button
+    		android:id="@+id/use_all"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/send_use_all"
+    		android:onClick="useAll"
+    		android:textAppearance="@android:style/TextAppearance.Small"
+    		android:minHeight="0dp"
+    		android:minWidth="0dp"
+    		/>
+
+	  </LinearLayout>
 
 	</TableRow>
 
@@ -122,8 +181,10 @@
 	      android:layout_weight="1"
 	      />
 
-	  <TextView
-    	      android:id="@+id/balance_btc"
+	  <EditText
+    	      android:id="@+id/amount_btc"
+    	      android:inputType="numberDecimal"
+    	      android:digits="0123456789.,"
     	      android:singleLine="true"
     	      android:layout_width="wrap_content"
 	      android:layout_height="40dp"
@@ -131,18 +192,18 @@
     	      android:minWidth="60dp"
     	      android:maxWidth="120dp"
     	      android:gravity="right"
-    	      android:layout_marginRight="10dp"
+    	      android:hint="@string/amount_btc_hint"
     	      />
 
 	  <TextView
-    	      android:id="@+id/balance_btc_label"
+    	      android:id="@+id/amount_btc_label"
     	      android:layout_width="wrap_content"
     	      android:layout_height="wrap_content"
     	      android:text="@string/btc_label"
     	      />
 
 	  <TextView
-    	      android:id="@+id/balance_eq_label"
+    	      android:id="@+id/amount_eq_label"
     	      android:layout_width="wrap_content"
     	      android:layout_height="wrap_content"
     	      android:layout_marginLeft="6dp"
@@ -150,8 +211,10 @@
     	      android:text="@string/eq_label"
     	      />
 
-	  <TextView
-    	      android:id="@+id/balance_fiat"
+	  <EditText
+    	      android:id="@+id/amount_fiat"
+    	      android:inputType="numberDecimal"
+    	      android:digits="0123456789.,"
     	      android:singleLine="true"
     	      android:layout_width="wrap_content"
 	      android:layout_height="40dp"
@@ -159,11 +222,11 @@
     	      android:minWidth="45dp"
     	      android:maxWidth="120dp"
     	      android:gravity="right"
-    	      android:layout_marginRight="10dp"
+    	      android:hint="@string/amount_fiat_hint"
     	      />
 
 	  <TextView
-    	      android:id="@+id/balance_fiat_label"
+    	      android:id="@+id/amount_fiat_label"
     	      android:layout_width="wrap_content"
     	      android:layout_height="wrap_content"
     	      android:text="@string/fiat_label"
@@ -183,15 +246,41 @@
     	    android:layout_height="wrap_content"
     	    >
 
-	  <TextView
-    	      android:id="@+id/fee_label"
-    	      android:layout_width="wrap_content"
-    	      android:layout_height="wrap_content"
-    	      android:text="@string/sweep_fee_label"
-    	      android:textAppearance="@android:style/TextAppearance.Small"
-    	      android:textStyle="bold"
+	  <LinearLayout
+	      android:layout_width="fill_parent"
+	      android:layout_height="wrap_content"
+	      android:orientation="horizontal"
     	      android:layout_span="7"
-    	      />
+	      >
+
+	    <TextView
+    		android:id="@+id/fee_label"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/send_fee_label"
+    		android:textAppearance="@android:style/TextAppearance.Small"
+    		android:textStyle="bold"
+    		/>
+
+	    <!-- Stretchy Horizontal Spacer -->
+	    <View
+    		android:layout_width="0dp"
+    		android:layout_height="fill_parent"
+    		android:layout_weight="1"
+    		/>
+
+	    <Button
+    		android:id="@+id/compute_fee"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/send_compute_fee"
+    		android:onClick="computeFee"
+    		android:textAppearance="@android:style/TextAppearance.Small"
+    		android:minHeight="0dp"
+    		android:minWidth="0dp"
+    		/>
+
+	  </LinearLayout>
 
 	</TableRow>
 
@@ -276,50 +365,19 @@
 	  android:layout_weight="1"
 	  />
 
-      <LinearLayout
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:orientation="vertical"
-	  android:gravity="left"
-	  >
-
-	<TextView
-	    android:id="@+id/to_label"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="@string/sweep_acct_label"
-	    android:textAppearance="@android:style/TextAppearance.Small"
-	    android:textStyle="bold"/>
-
-	<TableLayout
-	    android:id="@+id/to_choices"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:gravity="left"
-	    />
-
-      </LinearLayout>
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="4"
-	  />
-
       <Button
-	  android:id="@+id/sweep"
+	  android:id="@+id/send"
 	  android:layout_width="180dp"
 	  android:layout_height="wrap_content"
-	  android:text="@string/sweep_key"
-	  android:onClick="sweepKey"
+	  android:text="@string/send_bitcoin"
+	  android:onClick="sendBitcoin"
 	  />
 
       <!-- Stretchy Spacer -->
       <View
 	  android:layout_width="fill_parent"
 	  android:layout_height="0dp"
-	  android:layout_weight="2"
+	  android:layout_weight="1"
 	  />
 
     </LinearLayout>

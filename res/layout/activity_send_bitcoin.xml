@@ -7,14 +7,16 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp"
     >
 
   <ScrollView
       android:id="@+id/receive_scroll_id"
-      android:layout_width="280dp"
+      android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
       >
 
     <LinearLayout
