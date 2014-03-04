@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ShowPairingActivity"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    >
+
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      android:layout_width="400dp"
+      android:layout_height="fill_parent"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
+      >
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="center"
+	>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <FrameLayout
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_gravity="center"
+	  >
+
+	<ImageView
+	    android:id="@+id/pairing_qr_view"
+	    android:layout_width="240dp"
+	    android:layout_height="240dp"
+	    android:layout_gravity="center"
+	    android:scaleType="centerInside"
+	    />
+
+      </FrameLayout>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="5"
+	  />
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

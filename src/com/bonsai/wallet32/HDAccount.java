@@ -94,6 +94,22 @@ public class HDAccount {
         }
     }
 
+    public JSONObject getPairingObj() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("name", mAccountName);
+            obj.put("id", mAccountId);
+            obj.put("nrcv", mReceiveChain.numAddrs());
+            obj.put("nchg", mChangeChain.numAddrs());
+
+            return obj;
+        }
+        catch (JSONException ex) {
+            throw new RuntimeException(ex);	// Shouldn't happen.
+        }
+    }
+
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
                      String accountName,

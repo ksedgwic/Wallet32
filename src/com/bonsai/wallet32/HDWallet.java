@@ -291,6 +291,35 @@ public class HDWallet {
         }
     }
 
+    public JSONObject getPairingObj() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            obj.put("seed", Base58.encode(mWalletSeed));
+            switch (mBIP39Version) {
+            case V0_5:
+                obj.put("bip39v", "V0_5");
+                break;
+            case V0_6:
+                obj.put("bip39v", "V0_6");
+                break;
+            default:
+                throw new RuntimeException("unknown BIP39 version");
+            }
+
+            JSONArray accts = new JSONArray();
+            for (HDAccount acct : mAccounts)
+                accts.put(acct.getPairingObj());
+
+            obj.put("accts", accts);
+
+            return obj;
+        }
+        catch (JSONException ex) {
+            throw new RuntimeException(ex);	// Shouldn't happen.
+        }
+    }
+
     public HDWallet(Context ctxt,
                     NetworkParameters params,
                     File directory,

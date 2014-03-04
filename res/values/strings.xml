@@ -83,6 +83,11 @@ you should not use the legacy setting if you need to recover it.
 you must use the legacy setting to recover it.
     ]]></string>
     <string name="seed_done">Done</string>
+    <string name="title_activity_show_pairing">Wallet Pairing Code</string>
+    <string name="pairing_directions"><![CDATA[
+\nYou can scan this code when you setup Wallet32 on another device.\n
+\nBoth wallets will concurrently control the same funds.
+    ]]></string>
     <string name="title_activity_rescan">Rescan Blockchain</string>
     <string name="rescan_full">Full Rescan (EXPENSIVE!)</string>
     <string name="rescan_epoch">Rescan from Wallet32 Epoch</string>
@@ -293,6 +298,9 @@ This transaction is really large; it will take a while to process.\n
 
     <string name="pref_view_seed">View Seed</string>
     <string name="pref_view_seed_summary">View the wallet\'s seed</string>
+
+    <string name="pref_show_pairing">Show Pairing Code</string>
+    <string name="pref_show_pairing_summary">Setup another wallet to be paired with this wallet</string>
 
     <string name="pref_add_account">Add Account</string>
     <string name="pref_add_account_summary">Add an account to the wallet</string>

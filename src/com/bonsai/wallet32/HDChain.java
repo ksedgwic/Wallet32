@@ -128,6 +128,10 @@ public class HDChain {
         return mAddrs;
     }
 
+    public int numAddrs() {
+        return mAddrs.size();
+    }
+
     public void gatherAllKeys(KeyCrypter keyCrypter,
                               KeyParameter aesKey,
                               long creationTime,

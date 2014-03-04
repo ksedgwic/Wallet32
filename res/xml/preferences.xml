@@ -26,15 +26,21 @@
 	/>
 
     <Preference
+        android:key="pref_addAccount"
+	android:title="@string/pref_add_account"
+        android:summary="@string/pref_add_account_summary"
+	/>
+
+    <Preference
         android:key="pref_viewSeed"
 	android:title="@string/pref_view_seed"
         android:summary="@string/pref_view_seed_summary"
 	/>
 
     <Preference
-        android:key="pref_addAccount"
-	android:title="@string/pref_add_account"
-        android:summary="@string/pref_add_account_summary"
+        android:key="pref_showPairing"
+	android:title="@string/pref_show_pairing"
+        android:summary="@string/pref_show_pairing_summary"
 	/>
 
     <Preference

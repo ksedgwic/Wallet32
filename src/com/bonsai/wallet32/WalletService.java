@@ -656,6 +656,11 @@ public class WalletService extends Service
         return mHDWallet == null ? null : mHDWallet.getWalletSeed();
     }
 
+    public String getPairingCode() {
+        JSONObject obj = mHDWallet.getPairingObj();
+        return obj.toString();
+    }
+
     public MnemonicCodeX.Version getBIP39Version() {
         return mHDWallet.getBIP39Version();
     }

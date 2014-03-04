@@ -10,7 +10,7 @@
     >
 
   <ScrollView
-      android:id="@+id/receive_scroll_id"
+      android:id="@+id/outer_scroll_id"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:fillViewport="true"

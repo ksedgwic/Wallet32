@@ -104,6 +104,24 @@ public class SettingsActivity extends PreferenceActivity {
 
         {
             Preference butt =
+                (Preference) findPreference("pref_addAccount");
+            butt.setOnPreferenceClickListener
+                (new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            showConfirmDialog
+                                (mRes.getString(R.string.pref_add_account_title),
+                                 mRes.getString(R.string.pref_add_account_confirm),
+                                 mRes.getString(R.string.pref_add_account_yes),
+                                 mRes.getString(R.string.pref_add_account_no),
+                                 mAddAccountConfirmed);
+                            return true;
+                        }
+                    });
+        }
+
+        {
+            Preference butt =
                 (Preference) findPreference("pref_viewSeed");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
@@ -124,17 +142,19 @@ public class SettingsActivity extends PreferenceActivity {
 
         {
             Preference butt =
-                (Preference) findPreference("pref_addAccount");
+                (Preference) findPreference("pref_showPairing");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
-                            showConfirmDialog
-                                (mRes.getString(R.string.pref_add_account_title),
-                                 mRes.getString(R.string.pref_add_account_confirm),
-                                 mRes.getString(R.string.pref_add_account_yes),
-                                 mRes.getString(R.string.pref_add_account_no),
-                                 mAddAccountConfirmed);
+                            Intent intent =
+                                new Intent(mThis, ShowPairingActivity.class);
+                            Bundle bundle = new Bundle();
+                            intent.putExtras(bundle);
+                            intent.setFlags
+                                (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            startActivity(intent);
+                            finish();	// All done here...
                             return true;
                         }
                     });

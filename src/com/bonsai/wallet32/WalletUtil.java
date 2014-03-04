@@ -15,6 +15,10 @@
 
 package com.bonsai.wallet32;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.bitcoinj.wallet.Protos;
@@ -32,11 +37,12 @@ import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.encoders.Hex;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
-import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.core.TransactionInput;
@@ -50,10 +56,12 @@ import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.protobuf.ByteString;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public class WalletUtil {
 
@@ -61,6 +69,8 @@ public class WalletUtil {
         LoggerFactory.getLogger(WalletUtil.class);
 
     private static final String filePrefix = "wallet32";
+
+	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
 
     public static void setPasscode(Context context,
                                    WalletService walletService,
@@ -203,6 +213,44 @@ public class WalletUtil {
     public static byte[] msgHexToBytes(String hexstr) {
         byte[] msgbytes = Hex.decode(hexstr);
         return Utils.reverseBytes(msgbytes);
+    }
+
+    public static Bitmap createBitmap(String content, final int size) {
+        final Hashtable<EncodeHintType, Object> hints =
+            new Hashtable<EncodeHintType, Object>();
+        hints.put(EncodeHintType.MARGIN, 0);
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+        BitMatrix result;
+		try {
+			result = sQRCodeWriter.encode(content,
+                                          BarcodeFormat.QR_CODE,
+                                          size,
+                                          size,
+                                          hints);
+		} catch (WriterException ex) {
+            mLogger.warn("qr encoder failed: " + ex.toString());
+            return null;
+		}
+
+        final int width = result.getWidth();
+        final int height = result.getHeight();
+        final int[] pixels = new int[width * height];
+
+        for (int y = 0; y < height; y++)
+        {
+            final int offset = y * width;
+            for (int x = 0; x < width; x++)
+            {
+                pixels[offset + x] =
+                    result.get(x, y) ? Color.BLACK : Color.TRANSPARENT;
+            }
+        }
+
+        final Bitmap bitmap =
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        return bitmap;
     }
 
     // Thanks to devrandom!
