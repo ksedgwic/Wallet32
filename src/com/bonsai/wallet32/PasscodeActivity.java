@@ -55,14 +55,21 @@ public class PasscodeActivity extends ActionBarActivity {
         PASSCODE_ENTER
     }
 
+    private enum Action {
+        ACTION_NONE,
+        ACTION_CREATE,
+        ACTION_RESTORE,
+        ACTION_PAIR
+    }
+
     private Resources mRes;
     SharedPreferences mPrefs;
 
     private boolean mChangePasscode;
+    private Action mAction;
 
     private boolean	mShowPasscode;
     private State	mState;
-    private boolean	mRestoreWallet;
     private String	mPasscode;
     private String	mLastPasscode;
 
@@ -94,7 +101,23 @@ public class PasscodeActivity extends ActionBarActivity {
         boolean createPasscode = bundle.getBoolean("createPasscode");
         mState = createPasscode ? State.PASSCODE_CREATE : State.PASSCODE_ENTER;
         mChangePasscode = bundle.getBoolean("changePasscode");
-        mRestoreWallet = bundle.getBoolean("restoreWallet");
+        String action = bundle.getString("action");
+        if (action == null) {
+            mAction = Action.ACTION_NONE;
+            mLogger.info("ACTION_NONE");
+        } else if (action.equals("create")) {
+            mAction = Action.ACTION_CREATE;
+            mLogger.info("ACTION_CREATE");
+        } else if (action.equals("restore")) {
+            mAction = Action.ACTION_RESTORE;
+            mLogger.info("ACTION_RESTORE");
+        } else if (action.equals("pair")) {
+            mAction = Action.ACTION_PAIR;
+            mLogger.info("ACTION_PAIR");
+        } else {
+            mLogger.error("unknown action value " + action);
+            mAction = Action.ACTION_NONE;
+        }
 
         TextView msgtv = (TextView) findViewById(R.id.message);
         switch (mState) {
@@ -277,31 +300,40 @@ public class PasscodeActivity extends ActionBarActivity {
 
     private void setupComplete() {
 
-        // Are we going on to create or restore?
-        if (mRestoreWallet) {
-            Intent intent = new Intent(this, RestoreWalletActivity.class);
+        Intent intent;
+
+        switch (mAction) {
+        case ACTION_NONE:
+            // Just changing the passcode.
+            break;
+
+        case ACTION_CREATE:
+            // Create the wallet.
+            WalletUtil.createWallet(getApplicationContext());
+
+            // Spin up the WalletService.
+            Intent svcintent = new Intent(this, WalletService.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("SyncState", "CREATED");
+            svcintent.putExtras(bundle);
+            startService(svcintent);
+
+            intent = new Intent(this, ViewSeedActivity.class);
+            Bundle bundle2 = new Bundle();
+            bundle2.putBoolean("showDone", true);
+            intent.putExtras(bundle2);
             startActivity(intent);
-        }
-        else {
-            // If we are changing the passcode the wallet is already
-            // started ...
-            if (!mChangePasscode) {
-                // Create the wallet.
-                WalletUtil.createWallet(getApplicationContext());
+            break;
 
-                // Spin up the WalletService.
-                Intent svcintent = new Intent(this, WalletService.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("SyncState", "CREATED");
-                svcintent.putExtras(bundle);
-                startService(svcintent);
+        case ACTION_RESTORE:
+            intent = new Intent(this, RestoreWalletActivity.class);
+            startActivity(intent);
+            break;
 
-                Intent intent = new Intent(this, ViewSeedActivity.class);
-                Bundle bundle2 = new Bundle();
-                bundle2.putBoolean("showDone", true);
-                intent.putExtras(bundle2);
-                startActivity(intent);
-            }
+        case ACTION_PAIR:
+            intent = new Intent(this, PairWalletActivity.class);
+            startActivity(intent);
+            break;
         }
 
         // And we're done here ...

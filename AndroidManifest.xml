@@ -182,6 +182,12 @@
 	    >
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.PairWalletActivity"
+            android:label="@string/title_activity_pair_wallet"
+	    android:screenOrientation="sensorPortrait"
+	    >
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.SettingsActivity"
             android:label="@string/title_activity_settings"
 	    android:screenOrientation="sensorPortrait"

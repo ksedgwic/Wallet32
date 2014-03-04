@@ -12,6 +12,7 @@
     <string name="create_nowallet">No Wallet Found</string>
     <string name="button_create">Create New Wallet</string>
     <string name="button_restore">Restore Wallet</string>
+    <string name="button_pair">Pair with Wallet on Other Device</string>
     <string name="title_activity_restore_wallet">Restore Wallet</string>
     <string name="restore_seed">Enter Wallet Seed:</string>
     <string name="restore_seed_hint">Hexadecimal Seed</string>
@@ -28,6 +29,13 @@
     <string name="restore_badword">%1$s is not in mnemonic word list</string>
     <string name="restore_badchecksum">Checksum error; corrupted word list</string>
     <string name="restore_badnumaccts">Bad number of accounts value</string>
+    <string name="title_activity_pair_wallet">Pair Wallet</string>
+    <string name="pair_directions"><![CDATA[
+Select Show Pairing Code from the other wallet\'s settings and scan it.
+    ]]></string>
+    <string name="pair_error_scanfail">Scan of pairing code failed</string>
+    <string name="button_scan_pair">Scan Pairing Code</string>
+    <string name="pair_wait_setup">Setting up Paired Wallet</string>
     <string name="title_activity_passcode">Enter Passcode</string>
     <string name="passcode_create">Create Passcode</string>
     <string name="passcode_confirm">Confirm Passcode</string>
@@ -264,7 +272,7 @@ This transaction is really large; it will take a while to process.\n
     <string name="address_send_key_subject">Bitcoin Key</string>
     <string name="network_status_setup">Wallet Initializing</string>
     <string name="network_status_wallet">Setting up Wallet</string>
-    <string name="network_status_keysadd">Adding Keys</string>
+    <string name="network_status_keysadd">Setting up Addresses</string>
     <string name="network_status_peering">Connecting to Peers</string>
     <string name="network_status_sync">Network Syncing, %1$d%% Done</string>
     <string name="network_status_ready">Network Ready</string>

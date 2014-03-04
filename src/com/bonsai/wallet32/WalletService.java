@@ -657,7 +657,7 @@ public class WalletService extends Service
     }
 
     public String getPairingCode() {
-        JSONObject obj = mHDWallet.getPairingObj();
+        JSONObject obj = mHDWallet.dumps(true);
         return obj.toString();
     }
 

@@ -16,10 +16,8 @@
 package com.bonsai.wallet32;
 
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +54,8 @@ public class HDAccount {
 
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
-                     JSONObject acctNode)
+                     JSONObject acctNode,
+                     boolean isPairing)
         throws RuntimeException, JSONException {
 
         mParams = params;
@@ -70,38 +69,36 @@ public class HDAccount {
         mLogger.info("created HDAccount " + mAccountName + ": " +
                      mAccountKey.getPath());
 
-        mReceiveChain =
-            new HDChain(mParams, mAccountKey,
-                        acctNode.getJSONObject("receive"));
-        mChangeChain =
-            new HDChain(mParams, mAccountKey,
-                        acctNode.getJSONObject("change"));
+        if (isPairing) {
+            int numReceive = acctNode.getInt("nrcv");
+            int numChange = acctNode.getInt("nchg");
+            mReceiveChain = new HDChain(mParams, mAccountKey,
+                                        true, "Receive", numReceive);
+            mChangeChain = new HDChain(mParams, mAccountKey,
+                                       false, "Change", numChange);
+        } else {
+            mReceiveChain =
+                new HDChain(mParams, mAccountKey,
+                            acctNode.getJSONObject("receive"));
+            mChangeChain =
+                new HDChain(mParams, mAccountKey,
+                            acctNode.getJSONObject("change"));
+        }
     }
 
-    public JSONObject dumps() {
+    public JSONObject dumps(boolean isPairing) {
         try {
             JSONObject obj = new JSONObject();
 
             obj.put("name", mAccountName);
             obj.put("id", mAccountId);
-            obj.put("receive", mReceiveChain.dumps());
-            obj.put("change", mChangeChain.dumps());
-
-            return obj;
-        }
-        catch (JSONException ex) {
-            throw new RuntimeException(ex);	// Shouldn't happen.
-        }
-    }
-
-    public JSONObject getPairingObj() {
-        try {
-            JSONObject obj = new JSONObject();
-
-            obj.put("name", mAccountName);
-            obj.put("id", mAccountId);
-            obj.put("nrcv", mReceiveChain.numAddrs());
-            obj.put("nchg", mChangeChain.numAddrs());
+            if (isPairing) {
+                obj.put("nrcv", mReceiveChain.numAddrs());
+                obj.put("nchg", mChangeChain.numAddrs());
+            } else {
+                obj.put("receive", mReceiveChain.dumps());
+                obj.put("change", mChangeChain.dumps());
+            }
 
             return obj;
         }

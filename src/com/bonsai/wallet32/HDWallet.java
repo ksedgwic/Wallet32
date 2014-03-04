@@ -107,7 +107,7 @@ public class HDWallet {
                                           keyCrypter, aesKey);
 
             return new HDWallet(ctxt, params, directory, filePrefix,
-                                keyCrypter, aesKey, node);
+                                keyCrypter, aesKey, node, false);
         }
         catch (JSONException ex) {
             String msg = "trouble deserializing wallet: " + ex.toString();
@@ -203,7 +203,8 @@ public class HDWallet {
                     String filePrefix,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
-                    JSONObject walletNode) throws JSONException {
+                    JSONObject walletNode,
+                    boolean isPairing) throws JSONException {
 
         mParams = params;
         mDirectory = directory;
@@ -258,11 +259,12 @@ public class HDWallet {
         for (int ii = 0; ii < accounts.length(); ++ii) {
             mLogger.info(String.format("deserializing account %d", ii));
             JSONObject acctNode = accounts.getJSONObject(ii);
-            mAccounts.add(new HDAccount(mParams, mMasterKey, acctNode));
+            mAccounts.add(new HDAccount(mParams, mMasterKey,
+                                        acctNode, isPairing));
         }
     }
 
-    public JSONObject dumps() {
+    public JSONObject dumps(boolean isPairing) {
         try {
             JSONObject obj = new JSONObject();
 
@@ -280,38 +282,9 @@ public class HDWallet {
 
             JSONArray accts = new JSONArray();
             for (HDAccount acct : mAccounts)
-                accts.put(acct.dumps());
+                accts.put(acct.dumps(isPairing));
 
             obj.put("accounts", accts);
-
-            return obj;
-        }
-        catch (JSONException ex) {
-            throw new RuntimeException(ex);	// Shouldn't happen.
-        }
-    }
-
-    public JSONObject getPairingObj() {
-        try {
-            JSONObject obj = new JSONObject();
-
-            obj.put("seed", Base58.encode(mWalletSeed));
-            switch (mBIP39Version) {
-            case V0_5:
-                obj.put("bip39v", "V0_5");
-                break;
-            case V0_6:
-                obj.put("bip39v", "V0_6");
-                break;
-            default:
-                throw new RuntimeException("unknown BIP39 version");
-            }
-
-            JSONArray accts = new JSONArray();
-            for (HDAccount acct : mAccounts)
-                accts.put(acct.getPairingObj());
-
-            obj.put("accts", accts);
 
             return obj;
         }
@@ -659,7 +632,7 @@ public class HDWallet {
         String tmpPath = path + ".tmp";
         try {
             // Serialize into a byte array.
-            JSONObject jsonobj = dumps();
+            JSONObject jsonobj = dumps(false);
             String jsonstr = jsonobj.toString(4);	// indentation
             byte[] plainBytes = jsonstr.getBytes(Charset.forName("UTF-8"));
 
