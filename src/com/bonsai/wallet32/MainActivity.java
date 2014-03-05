@@ -105,10 +105,11 @@ public class MainActivity extends BaseWalletActivity {
         case PEERING:
             // All of these states use a progress dialog.
             if (mStateProgress != null)
-                mStateProgress.dismiss();
-            mStateProgress =
-                ProgressDialog.show(MainActivity.this, "",
-                                    mWalletService.getStateString());
+                mStateProgress.setMessage(mWalletService.getStateString());
+            else
+                mStateProgress =
+                    ProgressDialog.show(MainActivity.this, "",
+                                        mWalletService.getStateString());
             break;
         case SYNCING:
             if (mStateProgress != null) {
