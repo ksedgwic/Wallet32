@@ -9,230 +9,242 @@
     android:gravity="center"
     >
 
-  <LinearLayout
-      android:orientation="vertical"
-      android:layout_width="280dp"
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      style="@style/OuterWidth"
       android:layout_height="fill_parent"
-      android:gravity="center"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
       >
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
     <LinearLayout
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:gravity="left"
+	android:layout_height="fill_parent"
+	android:gravity="center"
 	>
 
-      <TextView
-	  android:id="@+id/hash_label"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:text="@string/transaction_hash_label"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  android:textStyle="bold"
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
 	  />
 
-      <TextView
-	  android:id="@+id/hash"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  />
-      
-    </LinearLayout>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
-    <LinearLayout
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:gravity="left"
-	>
-
-      <TextView
-	  android:id="@+id/date_label"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:text="@string/transaction_date_label"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  android:textStyle="bold"
-	  />
-
-      <TextView
-	  android:id="@+id/date"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  />
-      
-    </LinearLayout>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
-    <LinearLayout
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:gravity="left"
-	>
-
-      <TextView
-	  android:id="@+id/confidence_label"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:text="@string/transaction_confidence_label"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  android:textStyle="bold"
-	  />
-
-      <TextView
-	  android:id="@+id/confidence"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  />
-      
-    </LinearLayout>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
-    <TextView
-    	android:id="@+id/inputs_label"
-    	android:text="@string/transaction_inputs_label"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:textStyle="bold"
-	android:layout_gravity="left"
-	android:textAppearance="@android:style/TextAppearance.Small"
-    	/>
-    
-    <ScrollView
-	android:id="@+id/inputs_scroll_id"
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="10"
-	android:fillViewport="true"
-	>
-
-      <TableLayout
-	  android:id="@+id/inputs_table"
+      <LinearLayout
+	  android:orientation="vertical"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  >
+
+	<TextView
+	    android:id="@+id/hash_label"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/transaction_hash_label"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    android:textStyle="bold"
+	    />
+
+	<TextView
+	    android:id="@+id/hash"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+	
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
 	  />
 
-    </ScrollView>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
-    <TextView
-    	android:id="@+id/outputs_label"
-    	android:text="@string/transaction_outputs_label"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:textStyle="bold"
-	android:layout_gravity="left"
-	android:textAppearance="@android:style/TextAppearance.Small"
-    	/>
-    
-    <ScrollView
-	android:id="@+id/inputs_scroll_id"
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="10"
-	android:fillViewport="true"
-	>
-
-      <TableLayout
-	  android:id="@+id/outputs_table"
+      <LinearLayout
+	  android:orientation="vertical"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  >
+
+	<TextView
+	    android:id="@+id/date_label"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/transaction_date_label"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    android:textStyle="bold"
+	    />
+
+	<TextView
+	    android:id="@+id/date"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+	
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
 	  />
 
-    </ScrollView>
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  >
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+	<TextView
+	    android:id="@+id/confidence_label"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/transaction_confidence_label"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    android:textStyle="bold"
+	    />
 
-    <LinearLayout
-	android:id="@+id/fee_layout"
-	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:gravity="left"
-	>
+	<TextView
+	    android:id="@+id/confidence"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+	
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
       <TextView
-	  android:id="@+id/fee_label"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:text="@string/transaction_fee_label"
+    	  android:id="@+id/inputs_label"
+    	  android:text="@string/transaction_inputs_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:textStyle="bold"
+	  android:layout_gravity="left"
 	  android:textAppearance="@android:style/TextAppearance.Small"
-	  android:textStyle="bold"
-	  />
-
-      <TextView
-	  android:id="@+id/fee"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  />
+    	  />
       
+      <ScrollView
+	  android:id="@+id/inputs_scroll_id"
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="10"
+	  android:fillViewport="true"
+	  >
+
+	<TableLayout
+	    android:id="@+id/inputs_table"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    />
+
+      </ScrollView>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <TextView
+    	  android:id="@+id/outputs_label"
+    	  android:text="@string/transaction_outputs_label"
+    	  android:layout_width="wrap_content"
+    	  android:layout_height="wrap_content"
+    	  android:textStyle="bold"
+	  android:layout_gravity="left"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+    	  />
+      
+      <ScrollView
+	  android:id="@+id/inputs_scroll_id"
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="10"
+	  android:fillViewport="true"
+	  >
+
+	<TableLayout
+	    android:id="@+id/outputs_table"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    />
+
+      </ScrollView>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <LinearLayout
+	  android:id="@+id/fee_layout"
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  >
+
+	<TextView
+	    android:id="@+id/fee_label"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/transaction_fee_label"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    android:textStyle="bold"
+	    />
+
+	<TextView
+	    android:id="@+id/fee"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+	
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="2"
+	  />
+
+      <Button
+	  android:id="@+id/blockchain"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/button_blockchain"
+	  android:onClick="viewBlockchain"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
     </LinearLayout>
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="2"
-	/>
-
-    <Button
-	android:id="@+id/blockchain"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_blockchain"
-	android:onClick="viewBlockchain"
-	/>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
-  </LinearLayout>
+  </ScrollView>
 
 </LinearLayout>

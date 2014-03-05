@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".SendBitcoinActivity"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:gravity="center"
     >
 
@@ -20,9 +20,9 @@
       >
 
     <LinearLayout
+	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:orientation="vertical"
 	android:gravity="center"
 	>
 
@@ -34,9 +34,9 @@
 	  />
 
       <LinearLayout
+	  android:orientation="vertical"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
-	  android:orientation="vertical"
 	  android:gravity="left"
 	  >
 
@@ -66,9 +66,9 @@
 	  />
 
       <LinearLayout
+	  android:orientation="horizontal"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
-	  android:orientation="horizontal"
 	  >
 
 	<TextView
@@ -132,9 +132,9 @@
     	    >
 
 	  <LinearLayout
+	      android:orientation="horizontal"
 	      android:layout_width="fill_parent"
 	      android:layout_height="wrap_content"
-	      android:orientation="horizontal"
     	      android:layout_span="7"
 	      >
 
@@ -247,9 +247,9 @@
     	    >
 
 	  <LinearLayout
+	      android:orientation="horizontal"
 	      android:layout_width="fill_parent"
 	      android:layout_height="wrap_content"
-	      android:orientation="horizontal"
     	      android:layout_span="7"
 	      >
 

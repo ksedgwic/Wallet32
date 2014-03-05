@@ -11,15 +11,18 @@
 
   <LinearLayout
       android:orientation="vertical"
-      android:layout_width="280dp"
+      style="@style/OuterWidth"
       android:layout_height="fill_parent"
       android:gravity="center"
+      android:paddingLeft="10dp"
+      android:paddingBottom="10dp"
       >
 
     <LinearLayout
 	android:orientation="horizontal"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
+	android:paddingTop="10dp"
 	>
 
       <TextView
@@ -42,7 +45,7 @@
     	  android:layout_width="wrap_content"
 	  android:layout_height="wrap_content"
 	  >
-      
+	
 	<TextView
     	    android:id="@+id/account_name_textview"
     	    android:layout_width="wrap_content"
@@ -77,13 +80,6 @@
 
     </LinearLayout>    
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
     <TextView
     	android:id="@+id/receive_label"
     	android:text="@string/account_receive_label"
@@ -92,6 +88,7 @@
     	android:textStyle="bold"
 	android:layout_gravity="left"
 	android:textAppearance="@android:style/TextAppearance.Small"
+	android:paddingTop="10dp"
     	/>
     
     <ScrollView
@@ -100,6 +97,8 @@
 	android:layout_height="0dp"
 	android:layout_weight="10"
 	android:fillViewport="true"
+	android:padding="5dp"
+	android:scrollbarStyle="outsideOverlay"
 	>
 
       <TableLayout
@@ -110,13 +109,6 @@
 
     </ScrollView>
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
     <TextView
     	android:id="@+id/change_label"
     	android:text="@string/account_change_label"
@@ -125,6 +117,7 @@
     	android:textStyle="bold"
 	android:layout_gravity="left"
 	android:textAppearance="@android:style/TextAppearance.Small"
+	android:paddingTop="10dp"
     	/>
     
     <ScrollView
@@ -133,6 +126,8 @@
 	android:layout_height="0dp"
 	android:layout_weight="10"
 	android:fillViewport="true"
+	android:padding="5dp"
+	android:scrollbarStyle="outsideOverlay"
 	>
 
       <TableLayout
@@ -142,13 +137,6 @@
 	  />
 
     </ScrollView>
-
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
 
   </LinearLayout>
 

@@ -3,240 +3,263 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".PasscodeActivity"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:gravity="center"
     >
 
-    <!-- Stretchy Spacer -->
-    <View
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      style="@style/OuterWidth"
+      android:layout_height="fill_parent"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
+      >
+
+    <LinearLayout
+	android:orientation="vertical"
 	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+	android:layout_height="fill_parent"
+	android:gravity="center"
+	>
 
-    <TextView
-	android:id="@+id/message"
-	android:text="@string/passcode_enter"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Large"
-	android:textStyle="bold"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+      <TextView
+	  android:id="@+id/message"
+	  android:text="@string/passcode_enter"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Large"
+	  android:textStyle="bold"
+	  />
 
-    <TextView
-	android:id="@+id/passcode"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Medium"
-	android:textStyle="bold"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+      <TextView
+	  android:id="@+id/passcode"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Medium"
+	  android:textStyle="bold"
+	  />
 
-    <CheckBox
-	android:id="@+id/show_passcode"
-	android:text="@string/passcode_show"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:textStyle="bold"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+      <CheckBox
+	  android:id="@+id/show_passcode"
+	  android:text="@string/passcode_show"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:textStyle="bold"
+	  />
 
-    <TableLayout
-	android:id="@+id/balance_table"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+      <TableLayout
+	  android:id="@+id/balance_table"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  />
 
-  	    <Button
-		android:id="@+id/button_1"
-		android:text="@string/passcode_1"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+      <TableRow
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  >
 
-  	    <Button
-		android:id="@+id/button_2"
-		android:text="@string/passcode_2"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_1"
+	    android:text="@string/passcode_1"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-  	    <Button
-		android:id="@+id/button_3"
-		android:text="@string/passcode_3"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_2"
+	    android:text="@string/passcode_2"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-	</TableRow>
-    
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+  	<Button
+	    android:id="@+id/button_3"
+	    android:text="@string/passcode_3"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-  	    <Button
-		android:id="@+id/button_4"
-		android:text="@string/passcode_4"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+      </TableRow>
+      
+      <TableRow
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  >
 
-  	    <Button
-		android:id="@+id/button_5"
-		android:text="@string/passcode_5"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_4"
+	    android:text="@string/passcode_4"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-  	    <Button
-		android:id="@+id/button_6"
-		android:text="@string/passcode_6"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_5"
+	    android:text="@string/passcode_5"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-	</TableRow>
-    
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+  	<Button
+	    android:id="@+id/button_6"
+	    android:text="@string/passcode_6"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-  	    <Button
-		android:id="@+id/button_7"
-		android:text="@string/passcode_7"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+      </TableRow>
+      
+      <TableRow
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  >
 
-  	    <Button
-		android:id="@+id/button_8"
-		android:text="@string/passcode_8"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_7"
+	    android:text="@string/passcode_7"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-  	    <Button
-		android:id="@+id/button_9"
-		android:text="@string/passcode_9"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_8"
+	    android:text="@string/passcode_8"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-	</TableRow>
-    
-        <TableRow
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    >
+  	<Button
+	    android:id="@+id/button_9"
+	    android:text="@string/passcode_9"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-  	    <Button
-		android:id="@+id/button_clr"
-		android:text="@string/passcode_clr"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="clearPasscode"
-		/>
+      </TableRow>
+      
+      <TableRow
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  >
 
-  	    <Button
-		android:id="@+id/button_0"
-		android:text="@string/passcode_0"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="enterDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_clr"
+	    android:text="@string/passcode_clr"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="clearPasscode"
+	    />
 
-  	    <Button
-		android:id="@+id/button_del"
-		android:text="@string/passcode_del"
-		android:layout_width="75dp"
-		android:layout_height="75dp"
-		android:textAppearance="@android:style/TextAppearance.Large"
-		android:textStyle="bold"
-		android:onClick="deleteDigit"
-		/>
+  	<Button
+	    android:id="@+id/button_0"
+	    android:text="@string/passcode_0"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="enterDigit"
+	    />
 
-	</TableRow>
-    
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="3"
-	/>
+  	<Button
+	    android:id="@+id/button_del"
+	    android:text="@string/passcode_del"
+	    android:layout_width="75dp"
+	    android:layout_height="75dp"
+	    android:textAppearance="@android:style/TextAppearance.Large"
+	    android:textStyle="bold"
+	    android:onClick="deleteDigit"
+	    />
 
-    <Button
-	android:id="@+id/submit"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/passcode_submit"
-	android:onClick="submitPasscode"
-	/>
+      </TableRow>
+      
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="3"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="3"
-	/>
+      <Button
+	  android:id="@+id/submit"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/passcode_submit"
+	  android:onClick="submitPasscode"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="3"
+	  />
+
+    </LinearLayout>
+
+  </ScrollView>
 
 </LinearLayout>
+
+

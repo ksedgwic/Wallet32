@@ -9,97 +9,109 @@
     android:gravity="center"
     >
 
-  <LinearLayout
-      android:layout_width="280dp"
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      style="@style/OuterWidth"
       android:layout_height="fill_parent"
-      android:orientation="vertical"
-      android:gravity="center"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
       >
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="5"
-	/>
-
-    <RadioGroup
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
+    <LinearLayout
 	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="center"
 	>
 
-      <RadioButton
-	  android:id="@+id/full_choice"
-	  android:text="@string/rescan_full"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-          android:onClick="onFullClicked"
-	  android:layout_marginBottom="10dp"
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="5"
 	  />
 
-      <RadioButton
-	  android:id="@+id/epoch_choice"
-	  android:text="@string/rescan_epoch"
-	  android:layout_width="wrap_content"
+      <RadioGroup
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
-          android:onClick="onEpochClicked"
+	  >
+
+	<RadioButton
+	    android:id="@+id/full_choice"
+	    android:text="@string/rescan_full"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+            android:onClick="onFullClicked"
+	    android:layout_marginBottom="10dp"
+	    />
+
+	<RadioButton
+	    android:id="@+id/epoch_choice"
+	    android:text="@string/rescan_epoch"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+            android:onClick="onEpochClicked"
+	    />
+
+      </RadioGroup>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="5"
 	  />
 
-    </RadioGroup>
+      <TextView
+	  android:id="@+id/directions"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:text="@string/rescan_directions"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="5"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="20"
+	  />
 
-    <TextView
-	android:id="@+id/directions"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:text="@string/rescan_directions"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	/>
+      <Button
+	  android:id="@+id/rescan"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/rescan_rescan"
+	  android:onClick="doRescan"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="20"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-    <Button
-	android:id="@+id/rescan"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/rescan_rescan"
-	android:onClick="doRescan"
-	/>
+      <Button
+	  android:id="@+id/rescan"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/rescan_cancel"
+	  android:onClick="doCancel"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-    <Button
-	android:id="@+id/rescan"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/rescan_cancel"
-	android:onClick="doCancel"
-	/>
+    </LinearLayout>
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
-
-  </LinearLayout>
+  </ScrollView>
 
 </LinearLayout>

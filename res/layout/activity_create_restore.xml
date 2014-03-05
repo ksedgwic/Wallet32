@@ -3,74 +3,93 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".CreateRestoreActivity"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingBottom="16dp"
     android:gravity="center"
     >
 
-    <!-- Rigid Spacer -->
-    <View
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      style="@style/OuterWidth"
+      android:layout_height="fill_parent"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
+      >
+
+    <LinearLayout
+	android:orientation="vertical"
 	android:layout_width="fill_parent"
-	android:layout_height="20dp"
-	/>
+	android:layout_height="fill_parent"
+	android:gravity="center"
+	>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_nowallet"
-	android:textAppearance="@android:style/TextAppearance.Large"
-	/>
+      <!-- Rigid Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="20dp"
+	  />
 
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="50dp"
-	/>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/create_nowallet"
+	  android:textAppearance="@android:style/TextAppearance.Large"
+	  />
 
-    <Button
-	android:id="@+id/create"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_create"
-	android:onClick="createWallet"
-	/>
+      <!-- Rigid Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="50dp"
+	  />
 
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="10dp"
-	/>
+      <Button
+	  android:id="@+id/create"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/button_create"
+	  android:onClick="createWallet"
+	  />
 
-    <Button
-	android:id="@+id/restore"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_restore"
-	android:onClick="restoreWallet"
-	/>
+      <!-- Rigid Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="10dp"
+	  />
 
-    <!-- Rigid Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="10dp"
-	/>
+      <Button
+	  android:id="@+id/restore"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/button_restore"
+	  android:onClick="restoreWallet"
+	  />
 
-    <Button
-	android:id="@+id/pair"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_pair"
-	android:onClick="pairWallet"
-	/>
+      <!-- Rigid Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="10dp"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+      <Button
+	  android:id="@+id/pair"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/button_pair"
+	  android:onClick="pairWallet"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+    </LinearLayout>
+
+  </ScrollView>
 
 </LinearLayout>

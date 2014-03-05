@@ -10,17 +10,17 @@
     >
 
   <LinearLayout
+      android:orientation="vertical"
       style="@style/OuterWidth"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:padding="8dp"
+      android:paddingTop="12dp"
+      android:paddingBottom="12dp"
       >
 
     <LinearLayout
+	android:orientation="horizontal"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:orientation="horizontal"
-	android:padding="8dp"
 	>
 
       <!-- Stretchy Spacer -->

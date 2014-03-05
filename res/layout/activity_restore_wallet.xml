@@ -3,124 +3,143 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RestoreWalletActivity"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingBottom="16dp"
     android:gravity="center"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restore_seed"
-	android:textAppearance="@android:style/TextAppearance.Medium"
-	/>
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      style="@style/OuterWidth"
+      android:layout_height="fill_parent"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
+      >
 
-    <EditText
-	android:id="@+id/seed"
-	android:inputType="text"
-	android:singleLine="true"
-	android:minWidth="200dp"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:gravity="left"
-	android:hint="@string/restore_seed_hint"
-	/>
-
-    <!-- Stretchy Spacer -->
-    <View
+    <LinearLayout
+	android:orientation="vertical"
 	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="4"
-	/>
+	android:layout_height="fill_parent"
+	android:gravity="center"
+	>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restore_mnemonic"
-	android:textAppearance="@android:style/TextAppearance.Medium"
-	/>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_seed"
+	  android:textAppearance="@android:style/TextAppearance.Medium"
+	  />
 
-    <EditText
-	android:id="@+id/mnemonic"
-	android:inputType="textMultiLine"
-	android:minWidth="200dp"
-	android:layout_width="wrap_content"
-	android:layout_height="120dp"
-	android:gravity="left|top"
-	android:hint="@string/restore_mnemonic_hint"
-	/>
+      <EditText
+	  android:id="@+id/seed"
+	  android:inputType="text"
+	  android:singleLine="true"
+	  android:minWidth="200dp"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  android:hint="@string/restore_seed_hint"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="4"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
+	  />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restore_numaccounts"
-	android:textAppearance="@android:style/TextAppearance.Medium"
-	/>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_mnemonic"
+	  android:textAppearance="@android:style/TextAppearance.Medium"
+	  />
 
-    <EditText
-	android:id="@+id/numaccounts"
-	android:inputType="numberDecimal"
-	android:singleLine="true"
-	android:minWidth="40dp"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:gravity="left"
-	/>
+      <EditText
+	  android:id="@+id/mnemonic"
+	  android:inputType="textMultiLine"
+	  android:minWidth="200dp"
+	  android:layout_width="wrap_content"
+	  android:layout_height="120dp"
+	  android:gravity="left|top"
+	  android:hint="@string/restore_mnemonic_hint"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="4"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
+	  />
 
-    <TextView
-	android:id="@+id/legacy_descr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restore_legacydescr"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:layout_marginLeft="16dp"
-	android:layout_marginRight="16dp"
-	/>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_numaccounts"
+	  android:textAppearance="@android:style/TextAppearance.Medium"
+	  />
 
-    <CheckBox
-        android:id="@+id/legacy_bipver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restore_legacybipver"
-	/>
+      <EditText
+	  android:id="@+id/numaccounts"
+	  android:inputType="numberDecimal"
+	  android:singleLine="true"
+	  android:minWidth="40dp"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="8"
-	/>
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
+	  />
 
-    <Button
-	android:id="@+id/restore"
-	android:layout_width="180dp"
-	android:layout_height="wrap_content"
-	android:text="@string/button_restore"
-	android:onClick="restoreWallet"
-	/>
+      <TextView
+	  android:id="@+id/legacy_descr"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_legacydescr"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:layout_marginLeft="16dp"
+	  android:layout_marginRight="16dp"
+	  />
 
-    <!-- Stretchy Spacer -->
-    <View
-	android:layout_width="fill_parent"
-	android:layout_height="0dp"
-	android:layout_weight="1"
-	/>
+      <CheckBox
+          android:id="@+id/legacy_bipver"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_legacybipver"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="8"
+	  />
+
+      <Button
+	  android:id="@+id/restore"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/button_restore"
+	  android:onClick="restoreWallet"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+    </LinearLayout>
+
+  </ScrollView>
 
 </LinearLayout>
