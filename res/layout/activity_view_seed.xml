@@ -135,6 +135,20 @@
 	  />
 
       <TextView
+	  android:id="@+id/acct_derive"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <TextView
 	  android:id="@+id/bip39_version"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

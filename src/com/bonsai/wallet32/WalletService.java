@@ -661,6 +661,10 @@ public class WalletService extends Service
         return obj.toString();
     }
 
+    public boolean getAccountDerivePrivate() {
+        return mHDWallet.getAccountDerivePrivate();
+    }
+
     public MnemonicCodeX.Version getBIP39Version() {
         return mHDWallet.getBIP39Version();
     }

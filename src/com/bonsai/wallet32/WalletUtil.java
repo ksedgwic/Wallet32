@@ -129,6 +129,9 @@ public class WalletUtil {
         // New wallets are version V0_6.
         MnemonicCodeX.Version bip39version = MnemonicCodeX.Version.V0_6;
 
+        // New wallets use private derivation for accounts.
+        boolean accountDerivePrivate = true;
+        
         // Setup a wallet with the seed.
         HDWallet hdwallet = new HDWallet(context,
         								 params,
@@ -138,7 +141,8 @@ public class WalletUtil {
                                          wallapp.mAesKey,
                                          seed,
                                          numAccounts,
-                                         bip39version);
+                                         bip39version,
+                                         accountDerivePrivate);
         hdwallet.persist();
     }
 

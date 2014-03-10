@@ -100,6 +100,30 @@
 	  />
 
       <TextView
+	  android:id="@+id/pubderiv_descr"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_pubderivdescr"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:layout_marginLeft="16dp"
+	  android:layout_marginRight="16dp"
+	  />
+
+      <CheckBox
+          android:id="@+id/public_acct_deriv"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/restore_pubderiv"
+	  />
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
+	  />
+
+      <TextView
 	  android:id="@+id/legacy_descr"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

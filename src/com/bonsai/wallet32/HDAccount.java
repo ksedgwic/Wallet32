@@ -31,6 +31,7 @@ import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
+import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
@@ -55,7 +56,8 @@ public class HDAccount {
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
                      JSONObject acctNode,
-                     boolean isPairing)
+                     boolean isPairing,
+                     boolean usePrivateDerivation)
         throws RuntimeException, JSONException {
 
         mParams = params;
@@ -63,8 +65,12 @@ public class HDAccount {
         mAccountName = acctNode.getString("name");
         mAccountId = acctNode.getInt("id");
 
+        int childnum = mAccountId;
+        if (usePrivateDerivation)
+            childnum |= ChildNumber.PRIV_BIT;
+
         mAccountKey =
-            HDKeyDerivation.deriveChildKey(masterKey, mAccountId);
+            HDKeyDerivation.deriveChildKey(masterKey, childnum);
 
         mLogger.info("created HDAccount " + mAccountName + ": " +
                      mAccountKey.getPath());
@@ -110,10 +116,14 @@ public class HDAccount {
     public HDAccount(NetworkParameters params,
                      DeterministicKey masterKey,
                      String accountName,
-                     int acctnum) {
+                     int acctnum,
+                     boolean usePrivateDerivation) {
 
         mParams = params;
-        mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, acctnum);
+        int childnum = acctnum;
+        if (usePrivateDerivation)
+            childnum |= ChildNumber.PRIV_BIT;
+        mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, childnum);
         mAccountName = accountName;
         mAccountId = acctnum;
 

@@ -172,6 +172,10 @@ public class RestoreWalletActivity extends ActionBarActivity {
         MnemonicCodeX.Version bip39version =
             legacycb.isChecked() ? MnemonicCodeX.Version.V0_5 : MnemonicCodeX.Version.V0_6;
 
+        CheckBox usepubderivcb =
+            (CheckBox) findViewById(R.id.public_acct_deriv);
+        boolean acctDerivePrivate = !usepubderivcb.isChecked();
+
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
         // Setup a wallet with the restore seed.
@@ -183,7 +187,8 @@ public class RestoreWalletActivity extends ActionBarActivity {
                                          wallapp.mAesKey,
                                          seed,
                                          numaccts,
-                                         bip39version);
+                                         bip39version,
+                                         acctDerivePrivate);
         hdwallet.persist();
 
         // Spin up the WalletService.

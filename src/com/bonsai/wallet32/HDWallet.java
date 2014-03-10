@@ -86,6 +86,7 @@ public class HDWallet {
 
     private final byte[]			mWalletSeed;
     private final MnemonicCodeX.Version	mBIP39Version;
+    private final boolean			mAccountDerivePrivate;
 
     private ArrayList<HDAccount>	mAccounts;
 
@@ -235,6 +236,23 @@ public class HDWallet {
                 }
             }
 
+            if (!walletNode.has("acct_derive")) {
+                mAccountDerivePrivate = false;
+                mLogger.info("defaulting mAccountDerivePrivate to false");
+            } else {
+                String acctderivstr = walletNode.getString("acct_derive");
+                if (acctderivstr.equals("PRV")) {
+                    mAccountDerivePrivate = true;
+                    mLogger.info("setting mAccountDerivePrivate to true");
+                } else if (acctderivstr.equals("PUB")) {
+                    mAccountDerivePrivate = false;
+                    mLogger.info("setting mAccountDerivePrivate to false");
+                } else {
+                    throw new RuntimeException
+                        ("unknown acct_derive value: " + acctderivstr);
+                }
+            }
+
         } catch (AddressFormatException e) {
             throw new RuntimeException("couldn't decode wallet seed");
         }
@@ -260,7 +278,8 @@ public class HDWallet {
             mLogger.info(String.format("deserializing account %d", ii));
             JSONObject acctNode = accounts.getJSONObject(ii);
             mAccounts.add(new HDAccount(mParams, mMasterKey,
-                                        acctNode, isPairing));
+                                        acctNode, isPairing,
+                                        mAccountDerivePrivate));
         }
     }
 
@@ -279,6 +298,11 @@ public class HDWallet {
             default:
                 throw new RuntimeException("unknown BIP39 version");
             }
+
+            if (mAccountDerivePrivate)
+                obj.put("acct_derive", "PRV");
+            else
+                obj.put("acct_derive", "PUB");
 
             JSONArray accts = new JSONArray();
             for (HDAccount acct : mAccounts)
@@ -301,7 +325,8 @@ public class HDWallet {
                     KeyParameter aesKey,
                     byte[] walletSeed,
                     int numAccounts,
-                    MnemonicCodeX.Version bip39Version) {
+                    MnemonicCodeX.Version bip39Version,
+                    boolean acctDerivPrivate) {
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
@@ -309,6 +334,7 @@ public class HDWallet {
         mAesKey = aesKey;
         mWalletSeed = walletSeed;
         mBIP39Version = bip39Version;
+        mAccountDerivePrivate = acctDerivPrivate;
         
         switch (mBIP39Version) {
         case V0_5:
@@ -340,7 +366,8 @@ public class HDWallet {
         mAccounts = new ArrayList<HDAccount>();
         for (int ii = 0; ii < numAccounts; ++ii) {
             String acctName = String.format("Account %d", ii);
-            mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ii));
+            mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ii,
+            			  mAccountDerivePrivate));
         }
     }
 
@@ -351,6 +378,10 @@ public class HDWallet {
 
     public byte[] getWalletSeed() {
         return mWalletSeed;
+    }
+
+    public boolean getAccountDerivePrivate() {
+        return mAccountDerivePrivate;
     }
 
     public MnemonicCodeX.Version getBIP39Version() {
@@ -368,7 +399,7 @@ public class HDWallet {
     public void addAccount() {
         int ndx = mAccounts.size();
         String acctName = String.format("Account %d", ndx);
-        mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ndx));
+        mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ndx, mAccountDerivePrivate));
     }
 
     public void gatherAllKeys(long creationTime, List<ECKey> keys) {

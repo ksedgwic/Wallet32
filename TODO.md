@@ -2,24 +2,22 @@
 Bugs
 ----------------------------------------------------------------
 
-* Restore wallet needs to start w/ 32 addresses per chain.
-
 * Not showing satoshi spam amounts correctly.
-
-* Pausing Passcode activity while it is "encrypting wallet" crashes.
 
 * Need to handle precision of BTC values much better then 4 fixed places.
 
 Needed
 ----------------------------------------------------------------
 
+* Advanced Features Setting (send change to account, private key ops)
+
+* Multiple wallets
+
 * Testnet build.
 
 * Electrum compatibility.
 
 * Embelish messages and directions.
-
-* Add file logging.
 
 * Send dump feature.
 
@@ -198,8 +196,8 @@ https://play.google.com/apps/testing/com.bonsai.wallet32
 Wallet32 Beta Test
 
 A beta version of Wallet32, a BIP-0032 hierarchical deterministic
-bitcoin wallet for android is available to members of the bitcoinj
-google group.
+bitcoin wallet for android is available to members of the Bitcoin
+Google+ Community.
 
 Features include:
 
