@@ -19,7 +19,7 @@
     <string name="restore_mnemonic">Or Enter Wallet Mnemonic:</string>
     <string name="restore_mnemonic_hint">space separated word list</string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
-    <string name="restore_pubderivdescr">If the wallet you want to restore was created prior to version v0.1.18 (09-Mar-2014) you should check this box:</string>
+    <string name="restore_pubderivdescr">If the wallet you want to restore was created prior to version v0.1.18 (14-Mar-2014) you should check this box:</string>
     <string name="restore_pubderiv">Use Public Derivation for Accounts</string>
     <string name="restore_legacydescr">If the wallet you want to restore was created prior to version v0.1.8 (19-Jan-2014) you should check this box:</string>
     <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
@@ -365,7 +365,7 @@ This transaction is really large; it will take a while to process.\n
     <string name="about_contents">
 Wallet32\n
 \n
-Version: 0.1.17 (04-Mar-2014)\n
+Version: 0.1.18 (14-Mar-2014)\n
 \n
 Source:  <a href="https://github.com/ksedgwic/Wallet32">https://github.com/ksedgwic/Wallet32</a>\n
 \n
