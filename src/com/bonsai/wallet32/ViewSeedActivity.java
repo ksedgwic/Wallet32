@@ -26,7 +26,6 @@ import org.spongycastle.util.encoders.Hex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.bitcoin.crypto.MnemonicCodeX;
@@ -112,9 +111,9 @@ public class ViewSeedActivity extends BaseWalletActivity {
 		}
         for (int ii = 0; ii < words.size(); ii += 3) {
             if (ii != 0)
-                builder.append("\n");
+                builder.append("\n\n");
 
-            builder.append(String.format("%-9s %-9s %-9s",
+            builder.append(String.format("%s %s %s",
                                          words.get(ii),
                                          words.get(ii+1),
                                          words.get(ii+2)));
