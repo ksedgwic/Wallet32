@@ -326,3 +326,23 @@ is too much.
 25. Sweep view asks for private key or address. What is the use of an
 address there? Also, trying to manually enter anything crashes with a
 NPE at com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
+
+----------------------------------------------------------------
+
+                                        Create  Change
+create		Create Wallet		true	false
+restore		Restore Wallet		true	false
+pair		Pair Wallet		true	false
+
+login		Login			false	false
+viewseed	View Seed		false	false
+
+change		Change Passcode		true	true
+
+1) Remove boolean's, use actions to imply.
+
+2) Make change action verify first.
+
+change		Change Passcode		true	true
+
+3) Add viewseed action, transition to View Seed

@@ -26,6 +26,7 @@ import org.spongycastle.util.encoders.Hex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.bitcoin.crypto.MnemonicCodeX;

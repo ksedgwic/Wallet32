@@ -92,8 +92,7 @@ public class SettingsActivity extends PreferenceActivity {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
                             Bundle bundle = new Bundle();
-                            bundle.putBoolean("createPasscode", true);
-                            bundle.putBoolean("changePasscode", true);
+                            bundle.putString("action", "change");
                             intent.putExtras(bundle);
                             startActivity(intent);
                             finish();	// All done here...
@@ -128,11 +127,10 @@ public class SettingsActivity extends PreferenceActivity {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
-                                new Intent(mThis, ViewSeedActivity.class);
+                                new Intent(mThis, PasscodeActivity.class);
                             Bundle bundle = new Bundle();
+                            bundle.putString("action", "viewseed");
                             intent.putExtras(bundle);
-                            intent.setFlags
-                                (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
                             finish();	// All done here...
                             return true;
@@ -148,11 +146,10 @@ public class SettingsActivity extends PreferenceActivity {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
-                                new Intent(mThis, ShowPairingActivity.class);
+                                new Intent(mThis, PasscodeActivity.class);
                             Bundle bundle = new Bundle();
+                            bundle.putString("action", "showpairing");
                             intent.putExtras(bundle);
-                            intent.setFlags
-                                (Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivity(intent);
                             finish();	// All done here...
                             return true;

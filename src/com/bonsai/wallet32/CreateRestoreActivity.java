@@ -62,8 +62,6 @@ public class CreateRestoreActivity extends Activity {
 
         Intent intent = new Intent(this, PasscodeActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean("createPasscode", true);
-        bundle.putBoolean("changePasscode", false);
         bundle.putString("action", "create");
         intent.putExtras(bundle);
         startActivity(intent);
@@ -77,7 +75,6 @@ public class CreateRestoreActivity extends Activity {
 
         Intent intent = new Intent(this, PasscodeActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean("createPasscode", true);
         bundle.putString("action", "restore");
         intent.putExtras(bundle);
         startActivity(intent);
@@ -91,7 +88,6 @@ public class CreateRestoreActivity extends Activity {
 
         Intent intent = new Intent(this, PasscodeActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean("createPasscode", true);
         bundle.putString("action", "pair");
         intent.putExtras(bundle);
         startActivity(intent);

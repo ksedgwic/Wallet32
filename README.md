@@ -15,6 +15,9 @@ Features include:
 * Same wallet may be securely accessed concurrently from multiple devices.
 * Wallet data is protected by scrypt passcode.
 
+Wallet32 is available in the Google play store:
+
+[https://play.google.com/store/apps/details?id=com.bonsai.wallet32](https://play.google.com/store/apps/details?id=com.bonsai.wallet32)
 
 Beta Test Version
 ================

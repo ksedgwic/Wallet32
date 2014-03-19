@@ -89,8 +89,7 @@ public class LobbyActivity extends Activity {
 
                 Intent intent = new Intent(this, PasscodeActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("createPasscode", false);
-                bundle.putBoolean("changePasscode", false);
+                bundle.putString("action", "login");
                 intent.putExtras(bundle);
                 startActivity(intent);
 

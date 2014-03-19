@@ -42,6 +42,7 @@ Select Show Pairing Code from the other wallet\'s settings and scan it.
     <string name="passcode_create">Create Passcode</string>
     <string name="passcode_confirm">Confirm Passcode</string>
     <string name="passcode_enter">Enter Passcode</string>
+    <string name="passcode_current">Enter Current Passcode</string>
     <string name="passcode_show">Show Passcode</string>
     <string name="passcode_error_maxlen">Passcode is maximum length</string>
     <string name="passcode_errortitle">Passcode Error</string>
@@ -51,11 +52,19 @@ Select Show Pairing Code from the other wallet\'s settings and scan it.
     <string name="passcode_waittitle">Please Wait</string>
     <string name="passcode_waitvalidate"><![CDATA[
 Your wallet is encrypted with scrypt to keep it safe;
+validating your passcode will take a few seconds.\n
+    ]]></string>
+    <string name="passcode_waitdecrypt"><![CDATA[
+Your wallet is encrypted with scrypt to keep it safe;
 decrypting it will take a few seconds.\n
     ]]></string>
     <string name="passcode_waitsetup"><![CDATA[
 Your wallet is encrypted with scrypt to keep it safe;
 setting it up will take a few seconds.\n
+    ]]></string>
+    <string name="passcode_waitchange"><![CDATA[
+Changing the passcode on your wallet; this can take a
+few minutes to re-encrypt each of the existing keys.\n
     ]]></string>
     <string name="passcode_submit">Submit</string>
     <string name="passcode_1">1</string>

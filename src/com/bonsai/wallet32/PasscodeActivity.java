@@ -56,10 +56,13 @@ public class PasscodeActivity extends ActionBarActivity {
     }
 
     private enum Action {
-        ACTION_NONE,
         ACTION_CREATE,
         ACTION_RESTORE,
-        ACTION_PAIR
+        ACTION_PAIR,
+        ACTION_LOGIN,
+        ACTION_CHANGE,
+        ACTION_VIEWSEED,
+        ACTION_SHOWPAIRING
     }
 
     private Resources mRes;
@@ -98,13 +101,12 @@ public class PasscodeActivity extends ActionBarActivity {
         mRes = getResources();
 
         Bundle bundle = getIntent().getExtras();
-        boolean createPasscode = bundle.getBoolean("createPasscode");
-        mState = createPasscode ? State.PASSCODE_CREATE : State.PASSCODE_ENTER;
-        mChangePasscode = bundle.getBoolean("changePasscode");
+
         String action = bundle.getString("action");
         if (action == null) {
-            mAction = Action.ACTION_NONE;
-            mLogger.info("ACTION_NONE");
+            String msg = "missing action in PasscodeActivity";
+            mLogger.error(msg);
+            throw new RuntimeException(msg);
         } else if (action.equals("create")) {
             mAction = Action.ACTION_CREATE;
             mLogger.info("ACTION_CREATE");
@@ -114,21 +116,51 @@ public class PasscodeActivity extends ActionBarActivity {
         } else if (action.equals("pair")) {
             mAction = Action.ACTION_PAIR;
             mLogger.info("ACTION_PAIR");
+        } else if (action.equals("login")) {
+            mAction = Action.ACTION_LOGIN;
+            mLogger.info("ACTION_LOGIN");
+        } else if (action.equals("change")) {
+            mAction = Action.ACTION_CHANGE;
+            mLogger.info("ACTION_CHANGE");
+        } else if (action.equals("viewseed")) {
+            mAction = Action.ACTION_VIEWSEED;
+            mLogger.info("ACTION_VIEWSEED");
+        } else if (action.equals("showpairing")) {
+            mAction = Action.ACTION_SHOWPAIRING;
+            mLogger.info("ACTION_SHOWPAIRING");
         } else {
-            mLogger.error("unknown action value " + action);
-            mAction = Action.ACTION_NONE;
+            String msg = "unknown action value " + action;
+            mLogger.error(msg);
+            throw new RuntimeException(msg);
         }
 
         TextView msgtv = (TextView) findViewById(R.id.message);
-        switch (mState) {
-        case PASSCODE_CREATE:
+
+        switch (mAction) {
+            // These actions verify the passcode.
+        case ACTION_LOGIN:
+        case ACTION_VIEWSEED:
+        case ACTION_SHOWPAIRING:
+            mState = State.PASSCODE_ENTER;
+            mChangePasscode = false;
+            msgtv.setText(R.string.passcode_enter);
+            break;
+
+            // These actions directly create a passcode.
+        case ACTION_CREATE:
+        case ACTION_RESTORE:
+        case ACTION_PAIR:
+            mState = State.PASSCODE_CREATE;
+            mChangePasscode = false;
             msgtv.setText(R.string.passcode_create);
             break;
-        case PASSCODE_CONFIRM:
-            msgtv.setText(R.string.passcode_confirm);
-            break;
-        case PASSCODE_ENTER:
-            msgtv.setText(R.string.passcode_enter);
+
+            // This action verifies the passcode and then creates a
+            // new one.
+        case ACTION_CHANGE:
+            mState = State.PASSCODE_ENTER;
+            mChangePasscode = true;
+            msgtv.setText(R.string.passcode_current);
             break;
         }
 
@@ -303,10 +335,6 @@ public class PasscodeActivity extends ActionBarActivity {
         Intent intent;
 
         switch (mAction) {
-        case ACTION_NONE:
-            // Just changing the passcode.
-            break;
-
         case ACTION_CREATE:
             // Create the wallet.
             WalletUtil.createWallet(getApplicationContext());
@@ -334,13 +362,23 @@ public class PasscodeActivity extends ActionBarActivity {
             intent = new Intent(this, PairWalletActivity.class);
             startActivity(intent);
             break;
+
+        case ACTION_CHANGE:
+            // We're all set, back to where we came from.
+            break;
+
+        default:
+            // Shouldn't ever get here.
+            String msg = "unexpected action in setupComplete";
+            mLogger.error(msg);
+            throw new RuntimeException(msg);
         }
 
         // And we're done here ...
         finish();
     }
 
-    // We're opening a wallet and the passcode has been entered.
+    // We need to validate the passcode.
     private void validatePasscode() {
         new ValidatePasscodeTask().execute(mPasscode);
     }
@@ -359,9 +397,13 @@ public class PasscodeActivity extends ActionBarActivity {
             msgtv.setText(R.string.passcode_enter);
 
             mState = State.PASSCODE_ENTER;
+            return;
         }
 
-        else {
+        // The passcode was valid.
+
+        switch (mAction) {
+        case ACTION_LOGIN:
             // Spin up the WalletService.
             Intent svcintent = new Intent(this, WalletService.class);
             Bundle bundle = new Bundle();
@@ -375,6 +417,35 @@ public class PasscodeActivity extends ActionBarActivity {
 
             // And we're done with this activity.
             finish();
+            break;
+
+        case ACTION_CHANGE:
+            // Now we're ready to create a new passcode.
+            mState = State.PASSCODE_CREATE;
+            TextView msgtv = (TextView) findViewById(R.id.message);
+            msgtv.setText(R.string.passcode_create);
+            setPasscode("");
+            return;
+
+        case ACTION_VIEWSEED:
+            // Off to view the seed.
+            Intent intent2 = new Intent(this, ViewSeedActivity.class);
+            intent2.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent2);
+
+            // And we're done with this activity.
+            finish();
+            break;
+
+        case ACTION_SHOWPAIRING:
+            // Off to view the pairing code.
+            Intent intent3 = new Intent(this, ShowPairingActivity.class);
+            intent3.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent3);
+
+            // And we're done with this activity.
+            finish();
+            break;
         }
     }
 
@@ -457,8 +528,11 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPreExecute() {
+            String msg = mAction == Action.ACTION_CHANGE ?
+                mRes.getString(R.string.passcode_waitchange) :
+                mRes.getString(R.string.passcode_waitsetup);
             df = showModalDialog(mRes.getString(R.string.passcode_waittitle),
-                                 mRes.getString(R.string.passcode_waitsetup));
+                                 msg);
         }
 
 		protected Void doInBackground(String... arg0)
@@ -477,13 +551,18 @@ public class PasscodeActivity extends ActionBarActivity {
         }
     }
 
-    private class ValidatePasscodeTask extends AsyncTask<String, Void, Boolean> {
+    private class ValidatePasscodeTask
+        extends AsyncTask<String, Void, Boolean> {
+
         DialogFragment df;
 
         @Override
         protected void onPreExecute() {
+            String msg = mAction == Action.ACTION_LOGIN ?
+                mRes.getString(R.string.passcode_waitdecrypt) :
+                mRes.getString(R.string.passcode_waitvalidate);
             df = showModalDialog(mRes.getString(R.string.passcode_waittitle),
-                                 mRes.getString(R.string.passcode_waitvalidate));
+                                 msg);
         }
 
 		protected Boolean doInBackground(String... arg0)
