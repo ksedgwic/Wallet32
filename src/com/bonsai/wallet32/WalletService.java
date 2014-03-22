@@ -47,6 +47,8 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -132,6 +134,8 @@ public class WalletService extends Service
 
     private BigInteger			mBalanceAvailable;
     private BigInteger			mBalanceEstimated;
+
+	private WakeLock			mWakeLock;
 
     private volatile int		mNoteId = 0;
 
@@ -349,6 +353,13 @@ public class WalletService extends Service
     }
     
     private class SetupWalletTask extends AsyncTask<Long, Void, Integer> {
+
+        @Override
+        protected void onPreExecute() {
+            mWakeLock.acquire();
+            mLogger.info("wakelock acquired");
+        }
+
 		@Override
 		protected Integer doInBackground(Long... params)
         {
@@ -484,6 +495,10 @@ public class WalletService extends Service
 
         @Override
         protected void onPostExecute(Integer maxExtended) {
+
+            mWakeLock.release();
+            mLogger.info("wakelock released");
+
             // Do we need another rescan?
             if (maxExtended > HDChain.maxSafeExtend()) {
                 mLogger.info(String.format("rescan extended by %d, rescanning",
@@ -516,6 +531,11 @@ public class WalletService extends Service
 
         mContext = getApplicationContext();
         mRes = mContext.getResources();
+
+		final String lockName = getPackageName() + " blockchain sync";
+		final PowerManager pm =
+            (PowerManager) getSystemService(Context.POWER_SERVICE);
+		mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, lockName);
 
         SharedPreferences sharedPref =
             PreferenceManager.getDefaultSharedPreferences(this);

@@ -220,6 +220,12 @@ Ken
 
 ----------------------------------------------------------------
 
+Old Donation Address
+
+1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk
+
+----------------------------------------------------------------
+
 7. What is "T" an "Path" in the account overview? Does the user need to
 know that?
 
