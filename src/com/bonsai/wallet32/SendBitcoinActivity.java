@@ -540,17 +540,18 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 		protected Double doInBackground(Double... params)
         {
             final Double amount = params[0];
+            long amountI = (long) (amount * 1e8);
 
-            Double fee = null;
+            Long fee = null;
             try {
-                fee =
-                mWalletService.computeRecommendedFee(mCheckedFromId, amount);
+                fee = mWalletService.computeRecommendedFee(mCheckedFromId,
+                                                           amountI);
             } catch (IllegalArgumentException ex) {
                 // just return null fee
             } catch (InsufficientMoneyException ex) {
                 // just return null fee
             }
-            return fee;
+            return fee.doubleValue() / 1e8;
         }
 
         @Override
@@ -678,6 +679,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             showErrorDialog(mRes.getString(R.string.send_error_badfee));
             return;
         }
+        long feeI = (long)(fee * 1e8);
 
         // Check to make sure we have enough money for this send.
         double avail = mWalletService.availableForAccount(mCheckedFromId);
@@ -689,16 +691,21 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         // Check the recommended fee, generate warning dialog or
         // confirm send dialog ...
         try {
-            double recommendedFee =
-                mWalletService.computeRecommendedFee(mCheckedFromId, amount);
+            BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
 
-            if (fee > recommendedFee) {
+            long amountI = (long)(amount * 1e8);
+            long recFeeI =
+                mWalletService.computeRecommendedFee(mCheckedFromId, amountI);
+
+            if (feeI > recFeeI) {
                 // Warn that fee is larger than recommended.
-                mLogger.info(String.format("fee %f larger than recommended %f",
-                                           fee, recommendedFee));
+                mLogger.info(String.format("fee %s larger than recommended %s",
+                                           btcfmt.amount(feeI),
+                                           btcfmt.amount(recFeeI)));
                 showFeeAdjustDialog
                     (mRes.getString(R.string.send_feeadjust_large,
-                                    fee, recommendedFee),
+                                    btcfmt.amount(feeI),
+                                    btcfmt.amount(recFeeI)),
                      mCheckedFromId,
                      acctName,
                      addrString,
@@ -706,13 +713,15 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                      fee,
                      mFiatPerBTC);
             }
-            else if (fee < recommendedFee) {
+            else if (feeI < recFeeI) {
                 // Warn that fee is less than recommended.
-                mLogger.info(String.format("fee %f less than recommended %f",
-                                           fee, recommendedFee));
+                mLogger.info(String.format("fee %s less than recommended %s",
+                                           btcfmt.amount(feeI),
+                                           btcfmt.amount(recFeeI)));
                 showFeeAdjustDialog
                     (mRes.getString(R.string.send_feeadjust_small,
-                                    fee, recommendedFee),
+                                    btcfmt.amount(feeI),
+                                    btcfmt.amount(recFeeI)),
                      mCheckedFromId,
                      acctName,
                      addrString,
@@ -722,8 +731,9 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             else {
                 // Looks good, confirm the send.
-                mLogger.info(String.format("fee %f equals recommended %f",
-                                           fee, recommendedFee));
+                mLogger.info(String.format("fee %s equals recommended %s",
+                                           btcfmt.amount(feeI),
+                                           btcfmt.amount(recFeeI)));
                 showSendConfirmDialog(mCheckedFromId,
                                       acctName,
                                       addrString,

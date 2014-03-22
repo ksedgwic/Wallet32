@@ -949,17 +949,15 @@ public class WalletService extends Service
         return mHDWallet.useAll(mKit.wallet(), acctnum);
     }
 
-    public double computeRecommendedFee(int acctnum, double amount)
+    public long computeRecommendedFee(int acctnum, long amount)
     		throws IllegalArgumentException, InsufficientMoneyException {
-        BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
-            
-        mLogger.info("computeRecommendedFee starting");
-        BigInteger fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
-                                                         acctnum,
-                                                         vv);
-        mLogger.info("computeRecommendedFee finished");
 
-        return fee.doubleValue() / 1e8;
+        mLogger.info("computeRecommendedFee starting");
+        long fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
+                                                   acctnum,
+                                                   amount);
+        mLogger.info("computeRecommendedFee finished");
+        return fee;
     }
 
     public void sendCoinsFromAccount(int acctnum,

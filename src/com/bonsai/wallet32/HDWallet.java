@@ -25,10 +25,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,7 +58,6 @@ import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
-import com.google.bitcoin.core.Wallet.SendResult;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
@@ -635,11 +631,9 @@ public class HDWallet {
                                 feeAmt.doubleValue() / 1e8);
     }
 
-    public BigInteger computeRecommendedFee(Wallet wallet,
-                                            int acctnum,
-                                            BigInteger value)
+    public long computeRecommendedFee(Wallet wallet, int acctnum, long value)
         throws IllegalArgumentException, InsufficientMoneyException {
-
+        
         // Create a pretend send request and extract the recommended
         // fee.  Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
@@ -647,7 +641,7 @@ public class HDWallet {
         // Pretend we are sending the bitcoin to ourselves.
         Address dest = acct.nextReceiveAddress();
             
-        SendRequest req = SendRequest.to(dest, value);
+        SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector();
         req.aesKey = mAesKey;
@@ -655,7 +649,7 @@ public class HDWallet {
         // Let the wallet do the heavy lifting ...
         wallet.completeTx(req);
 
-        return req.fee != null ? req.fee : BigInteger.ZERO;
+        return req.fee != null ? req.fee.longValue() : 0;
     }
 
     public void persist() {
