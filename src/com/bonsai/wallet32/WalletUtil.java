@@ -196,7 +196,7 @@ public class WalletUtil {
 			dis = new DataInputStream(new FileInputStream(saltFile));
 			dis.readFully(salt);
 			dis.close();
-            mLogger.info("read salt " + new String(Hex.encode(salt)));
+            // mLogger.info("read salt " + new String(Hex.encode(salt)));
             return salt;
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();

@@ -54,6 +54,9 @@ public class WalletApplication extends Application {
 
         super.onCreate();
 
+        // Log the About contents so we have the version string.
+        mLogger.info(getResources().getString(R.string.about_contents));
+
         mLogger.info("WalletApplication created");
     }
 

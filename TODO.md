@@ -9,6 +9,8 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
+* Keep awake while syncing
+
 * Advanced Features Setting (send change to account, private key ops)
 
 * Multiple wallets
@@ -20,10 +22,6 @@ Needed
 * Embelish messages and directions.
 
 * Send dump feature.
-
-
-Next
-----------------------------------------------------------------
 
 * mBTC Support
 
