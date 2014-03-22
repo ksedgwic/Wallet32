@@ -328,8 +328,9 @@ public class WalletUtil {
                     input.setScriptSig(ScriptBuilder.createInputScript(signatures[i]));
                 } else {
                     // Should be unreachable - if we don't recognize
-                    // then type of script we're trying to sign for,
-                    // we should // have failed above when fetching the key to sign with.
+                    // the type of script we're trying to sign for,
+                    // then we should have failed above when fetching
+                    // the key to sign with.
                     throw new RuntimeException("Do not understand script type: " + scriptPubKey);
                 }
         }

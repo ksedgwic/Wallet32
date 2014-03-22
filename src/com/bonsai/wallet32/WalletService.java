@@ -401,7 +401,7 @@ public class WalletService extends Service
             mLogger.info("creating new wallet app kit");
 
             // Checkpointing fails on full rescan because the earliest
-            // create time is earlier then the genesis block time.
+            // create time is earlier than the genesis block time.
             //
             InputStream chkpntis = null;
             if (scanTime != 0) {

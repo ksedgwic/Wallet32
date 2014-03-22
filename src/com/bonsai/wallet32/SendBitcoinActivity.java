@@ -693,8 +693,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 mWalletService.computeRecommendedFee(mCheckedFromId, amount);
 
             if (fee > recommendedFee) {
-                // Warn that fee is larger then recommended.
-                mLogger.info(String.format("fee %f larger then recommended %f",
+                // Warn that fee is larger than recommended.
+                mLogger.info(String.format("fee %f larger than recommended %f",
                                            fee, recommendedFee));
                 showFeeAdjustDialog
                     (mRes.getString(R.string.send_feeadjust_large,
@@ -707,8 +707,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                      mFiatPerBTC);
             }
             else if (fee < recommendedFee) {
-                // Warn that fee is less then recommended.
-                mLogger.info(String.format("fee %f less then recommended %f",
+                // Warn that fee is less than recommended.
+                mLogger.info(String.format("fee %f less than recommended %f",
                                            fee, recommendedFee));
                 showFeeAdjustDialog
                     (mRes.getString(R.string.send_feeadjust_small,
