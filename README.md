@@ -76,6 +76,6 @@ Wallet32 is made possible by:
 
 Powered by [CoinDesk](http://www.coindesk.com/price)
 
-Donate: [1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk](bitcoin:1DjvS5TGhTaTaQj8Q6Tnw24irHKhaCbAbk)
+Donate: [14qJ7PAfKCBtcMHzQNerHwUtgt4HVSZFRL](bitcoin:14qJ7PAfKCBtcMHzQNerHwUtgt4HVSZFRL)
 
 Copyright (C) 2013-2014 Bonsai Software, Inc.  All rights reserved.
