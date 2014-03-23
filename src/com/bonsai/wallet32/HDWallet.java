@@ -605,7 +605,9 @@ public class HDWallet {
 		}
     }
 
-    public AmountAndFee useAll(Wallet wallet, int acctnum) throws InsufficientMoneyException {
+    public AmountAndFee useAll(Wallet wallet, int acctnum)
+        throws InsufficientMoneyException {
+
         // Create a pretend send request and extract the recommended
         // fee.  Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);

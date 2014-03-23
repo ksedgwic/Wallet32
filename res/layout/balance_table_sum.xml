@@ -13,7 +13,7 @@
       android:layout_marginLeft="8dp"
       android:layout_marginRight="8dp"
       android:textAppearance="@android:style/TextAppearance.Small"
-      android:gravity="center_vertical|right"
+      android:gravity="center"
       android:textStyle="bold"
       />
   

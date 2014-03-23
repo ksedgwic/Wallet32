@@ -383,6 +383,13 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 			}
         };
 
+    private void addAccountHeader(TableLayout table) {
+        TableRow row =
+            (TableRow) LayoutInflater.from(this)
+            .inflate(R.layout.send_from_header, table, false);
+        table.addView(row);
+    }
+
     private void addAccountRow(TableLayout table,
                                int acctId,
                                String acctName,
@@ -400,10 +407,10 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s BTC", btcfmt.formatCol(btc, 0, true)));
+        tv1.setText(String.format("%s", btcfmt.formatCol(btc, 0, true)));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.02f USD", fiat));
+        tv2.setText(String.format("%.02f", fiat));
 
         table.addView(row);
     }
@@ -416,6 +423,9 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
         // Clear any existing table content.
         table.removeAllViews();
+
+        addAccountHeader(table);
+
         mAccountIds = new ArrayList<Integer>();
 
         // double sumbtc = 0.0;
@@ -513,14 +523,14 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         }
 
         // Fetch the amount to send.
-        double amount = 0.0;
+        long amount = 0;
         String amountString = mBTCAmountEditText.getText().toString();
         if (amountString.length() == 0) {
             showErrorDialog(mRes.getString(R.string.send_error_noamount));
             return;
         }
         try {
-            amount = parseNumberWorkaround(amountString);
+            amount = btcfmt.parse(amountString);
         } catch (NumberFormatException ex) {
             showErrorDialog(mRes.getString(R.string.send_error_badamount));
             return;
@@ -529,7 +539,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         new SetFeeToRecommendedTask().execute(amount);
     }
 
-    private class SetFeeToRecommendedTask extends AsyncTask<Double, Void, Double> {
+    private class SetFeeToRecommendedTask extends AsyncTask<Long, Void, Long> {
         private ProgressDialog progressDialog;
 
         @Override
@@ -539,25 +549,24 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                  mRes.getString(R.string.send_computing_fee));
         }
 
-		protected Double doInBackground(Double... params)
+		protected Long doInBackground(Long... params)
         {
-            final Double amount = params[0];
-            long amountI = (long) (amount * 1e8);
+            final Long amount = params[0];
 
             Long fee = null;
             try {
                 fee = mWalletService.computeRecommendedFee(mCheckedFromId,
-                                                           amountI);
+                                                           amount);
             } catch (IllegalArgumentException ex) {
                 // just return null fee
             } catch (InsufficientMoneyException ex) {
                 // just return null fee
             }
-            return fee.doubleValue() / 1e8;
+            return fee;
         }
 
         @Override
-        protected void onPostExecute(Double fee) {
+        protected void onPostExecute(Long fee) {
             progressDialog.dismiss();
 
             if (fee == null) {
@@ -568,11 +577,13 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 return;
             }
             else {
-                mLogger.info(String.format("recommended fee is %f", fee));
-                String msg = mRes.getString(R.string.send_set_fee, fee);
+                mLogger.info(String.format("recommended fee is %s",
+                                           btcfmt.format(fee)));
+                String msg = mRes.getString(R.string.send_set_fee,
+                                            btcfmt.format(fee));
                 Toast.makeText(SendBitcoinActivity.this, msg, Toast.LENGTH_SHORT).show();
 
-                String feeString = String.format("%f", fee);
+                String feeString = btcfmt.format(fee);
                 mBTCFeeEditText.setText(feeString);
             }
         }

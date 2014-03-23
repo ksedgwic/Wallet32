@@ -203,6 +203,13 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
 			}
         };
 
+    private void addAccountHeader(TableLayout table) {
+        TableRow row =
+            (TableRow) LayoutInflater.from(this)
+            .inflate(R.layout.receive_to_header, table, false);
+        table.addView(row);
+    }
+
     private void addAccountRow(TableLayout table,
                                int acctId,
                                String acctName,
@@ -220,10 +227,10 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s BTC", btcfmt.formatCol(btc, 2, true)));
+        tv1.setText(String.format("%s", btcfmt.formatCol(btc, 0, true)));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.02f USD", fiat));
+        tv2.setText(String.format("%.02f", fiat));
 
         table.addView(row);
     }
@@ -236,8 +243,10 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
 
         // Clear any existing table content.
         table.removeAllViews();
-        mAccountIds = new ArrayList<Integer>();
 
+        addAccountHeader(table);
+
+        mAccountIds = new ArrayList<Integer>();
         // double sumbtc = 0.0;
         List<Balance> balances = mWalletService.getBalances();
         if (balances != null) {

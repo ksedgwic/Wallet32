@@ -12,13 +12,9 @@
       android:layout_weight="1"
       />
 
-  <RadioButton
-      android:id="@+id/to_account"
-      android:text="Sample Account"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:gravity="center_vertical|left"
-      android:textAppearance="@android:style/TextAppearance.Small"
+  <View
+      android:layout_width="0dp"
+      android:layout_height="0dp"
       />
 
   <!-- Stretchy Horizontal Spacer -->
@@ -29,13 +25,13 @@
       />
 
   <TextView
-      android:id="@+id/row_btc"
-      android:text="0.0000"
+      android:id="@+id/btc_header"
+      android:text="@string/receive_header_btc"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical|right"
       android:textAppearance="@android:style/TextAppearance.Small"
-      android:typeface="monospace"
+      android:textStyle="bold"
+      android:gravity="center"
       />
   
   <!-- Stretchy Horizontal Spacer -->
@@ -46,13 +42,13 @@
       />
 
   <TextView
-      android:id="@+id/row_fiat"
-      android:text="0.00"
+      android:id="@+id/fiat_header"
+      android:text="@string/receive_header_fiat"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical|right"
       android:textAppearance="@android:style/TextAppearance.Small"
-      android:typeface="monospace"
+      android:textStyle="bold"
+      android:gravity="center"
       />
 
   <!-- Stretchy Horizontal Spacer -->

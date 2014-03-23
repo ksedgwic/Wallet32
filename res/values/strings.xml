@@ -179,6 +179,8 @@ to fully recover all of your address activity.
     <string name="address_header_fiat">USD</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
+    <string name="send_header_btc">BTC</string>
+    <string name="send_header_fiat">USD</string>
     <string name="send_to_label">Send To:</string>
     <string name="send_to_hint">Bitcoin Address</string>
     <string name="send_to_qr">Scan QR Code</string>
@@ -190,7 +192,7 @@ to fully recover all of your address activity.
     <string name="amount_fiat_hint">0.00</string>
     <string name="send_fee_label">Miner\'s Fee:</string>
     <string name="send_compute_fee">Compute Fee</string>
-    <string name="send_set_fee">Setting fee to %1$f</string>
+    <string name="send_set_fee">Setting fee to %1$s</string>
     <string name="fee_btc_hint">0.00000</string>
     <string name="fee_fiat_hint">0.000</string>
     <string name="send_bitcoin">Send Bitcoin</string>
@@ -221,6 +223,8 @@ to fully recover all of your address activity.
 
     <string name="title_activity_receive_bitcoin">Receive Bitcoin</string>
     <string name="receive_to_label">Receive To:</string>
+    <string name="receive_header_btc">BTC</string>
+    <string name="receive_header_fiat">USD</string>
     <string name="receive_amount_label">Receive Amount: (optional)</string>
     <string name="amount_btc_hint">0.0000</string>
     <string name="amount_fiat_hint">0.00</string>
