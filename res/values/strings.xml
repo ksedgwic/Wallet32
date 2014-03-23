@@ -362,17 +362,17 @@ This transaction is really large; it will take a while to process.\n
     <string name="wallet_service_started">Wallet32 Service Started</string>
     <string name="wallet_service_info">Touch to open wallet</string>
     <string name="wallet_service_note_sent_title">BTC Sent</string>
-    <string name="wallet_service_note_sent_msg">%1$f BTC sent</string>
+    <string name="wallet_service_note_sent_msg">%1$s BTC sent</string>
     <string name="wallet_service_note_rcvd_title">BTC Received</string>
-    <string name="wallet_service_note_rcvd_msg">%1$f BTC received</string>
+    <string name="wallet_service_note_rcvd_msg">%1$s BTC received</string>
     <string name="wallet_service_note_scnf_title">Send Confirmed</string>
-    <string name="wallet_service_note_scnf_msg">%1$f BTC confirmed</string>
+    <string name="wallet_service_note_scnf_msg">%1$s BTC confirmed</string>
     <string name="wallet_service_note_rcnf_title">Receive Confirmed</string>
-    <string name="wallet_service_note_rcnf_msg">%1$f BTC confirmed</string>
+    <string name="wallet_service_note_rcnf_msg">%1$s BTC confirmed</string>
     <string name="wallet_service_note_rdead_title">Receive Dead</string>
-    <string name="wallet_service_note_rdead_msg">%1$f BTC dead</string>
+    <string name="wallet_service_note_rdead_msg">%1$s BTC dead</string>
     <string name="wallet_service_note_sdead_title">Send Dead</string>
-    <string name="wallet_service_note_sdead_msg">%1$f BTC dead</string>
+    <string name="wallet_service_note_sdead_msg">%1$s BTC dead</string>
 
     <string name="title_activity_about">About Wallet32</string>
     <string name="about_contents">

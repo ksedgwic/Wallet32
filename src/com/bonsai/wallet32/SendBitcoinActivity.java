@@ -462,8 +462,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                                        TextView.BufferType.EDITABLE);
 
             if (amt != null) {
-                double amtval = amt.doubleValue() / 1e8;
-                String amtstr = String.format("%f", amtval);
+                long amtval = amt.longValue();
+                String amtstr = btcfmt.format(amtval);
                 mBTCAmountEditText.setText(amtstr,
                                            TextView.BufferType.EDITABLE);
             }

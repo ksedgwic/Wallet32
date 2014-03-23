@@ -141,6 +141,8 @@ public class WalletService extends Service
 
     private static final String mFilePrefix = "wallet32";
 
+    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
+
     private MyDownloadListener mkDownloadListener() {
         return new MyDownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date, long msecsLeft) {
@@ -168,11 +170,11 @@ public class WalletService extends Service
                                         BigInteger newBalance)
             {
                 BigInteger amt = newBalance.subtract(prevBalance);
-                final double amount = amt.doubleValue() / 1e8;
+                final long amount = amt.longValue();
 
                 // Change coins will be part of a balance transaction
                 // that is negative in value ... skip them ...
-                if (amount < 0.0)
+                if (amount < 0)
                     return;
 
                 // We allocate a new notification id for each receive.
@@ -180,14 +182,14 @@ public class WalletService extends Service
                 // will replace the receive note with the confirm ...
                 final int noteId = ++mNoteId;
 
-                mLogger.info(String.format("showing notification receive %f",
+                mLogger.info(String.format("showing notification receive %d",
                                            amount));
 
                 showEventNotification(noteId,
                                       R.drawable.ic_note_bc_green_lt,
                                       mRes.getString(R.string.wallet_service_note_rcvd_title),
                                       mRes.getString(R.string.wallet_service_note_rcvd_msg,
-                                                     amount));
+                                                     btcfmt.format(amount)));
 
                 final TransactionConfidence txconf = tx.getConfidence();
 
@@ -204,7 +206,7 @@ public class WalletService extends Service
                                 tx.getConfidence().getConfidenceType();
                         
                             if (ct == ConfidenceType.BUILDING) {
-                                mLogger.info(String.format("receive %f confirm",
+                                mLogger.info(String.format("receive %d confirm",
                                                            amount));
 
                                 // Notify confirmed.
@@ -213,11 +215,11 @@ public class WalletService extends Service
                                      R.drawable.ic_note_bc_green,
                                      mRes.getString(R.string.wallet_service_note_rcnf_title),
                                      mRes.getString(R.string.wallet_service_note_rcnf_msg,
-                                                    amount));
+                                                    btcfmt.format(amount)));
 
                             }
                             else if (ct == ConfidenceType.DEAD) {
-                                mLogger.info(String.format("receive %f dead",
+                                mLogger.info(String.format("receive %d dead",
                                                            amount));
                                 // Notify dead.
                                 showEventNotification
@@ -225,11 +227,11 @@ public class WalletService extends Service
                                      R.drawable.ic_note_bc_gray,
                                      mRes.getString(R.string.wallet_service_note_rdead_title),
                                      mRes.getString(R.string.wallet_service_note_rdead_msg,
-                                                    amount));
+                                                    btcfmt.format(amount)));
 
                             }
                             else {
-                                mLogger.info(String.format("receive %f unknown",
+                                mLogger.info(String.format("receive %d unknown",
                                                            amount));
                             }
 
@@ -248,14 +250,14 @@ public class WalletService extends Service
                                     BigInteger newBalance)
             {
                 BigInteger amt = prevBalance.subtract(newBalance);
-                final double amount = amt.doubleValue() / 1e8;
+                final long amount = amt.longValue();
 
                 // We allocate a new notification id for each receive.
                 // We use it on both the receive and confirm so it
                 // will replace the receive note with the confirm ...
                 final int noteId = ++mNoteId;
 
-                mLogger.info(String.format("showing notification send %f",
+                mLogger.info(String.format("showing notification send %d",
                                            amount));
 
                 showEventNotification
@@ -263,7 +265,7 @@ public class WalletService extends Service
                      R.drawable.ic_note_bc_red_lt,
                      mRes.getString(R.string.wallet_service_note_sent_title),
                      mRes.getString(R.string.wallet_service_note_sent_msg,
-                                    amount));
+                                    btcfmt.format(amount)));
 
                 final TransactionConfidence txconf = tx.getConfidence();
 
@@ -280,7 +282,7 @@ public class WalletService extends Service
                                 tx.getConfidence().getConfidenceType();
                         
                             if (ct == ConfidenceType.BUILDING) {
-                                mLogger.info(String.format("send %f confirm",
+                                mLogger.info(String.format("send %d confirm",
                                                            amount));
 
                                 // Show no longer pending.
@@ -289,10 +291,10 @@ public class WalletService extends Service
                                      R.drawable.ic_note_bc_red,
                                      mRes.getString(R.string.wallet_service_note_scnf_title),
                                      mRes.getString(R.string.wallet_service_note_scnf_msg,
-                                                    amount));
+                                                    btcfmt.format(amount)));
                             }
                             else if (ct == ConfidenceType.DEAD) {
-                                mLogger.info(String.format("send %f dead",
+                                mLogger.info(String.format("send %d dead",
                                                            amount));
                                 // Notify dead.
                                 showEventNotification
@@ -300,11 +302,11 @@ public class WalletService extends Service
                                      R.drawable.ic_note_bc_gray,
                                      mRes.getString(R.string.wallet_service_note_sdead_title),
                                      mRes.getString(R.string.wallet_service_note_sdead_msg,
-                                                    amount));
+                                                    btcfmt.format(amount)));
 
                             }
                             else {
-                                mLogger.info(String.format("send %f unknown",
+                                mLogger.info(String.format("send %d unknown",
                                                            amount));
                             }
 
