@@ -52,6 +52,8 @@ public class MainActivity extends BaseWalletActivity {
     private static SimpleDateFormat mDateFormatter =
         new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 
+    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -299,7 +301,7 @@ public class MainActivity extends BaseWalletActivity {
     private void addBalanceRow(TableLayout table,
                                int accountId,
                                String acct,
-                               double btc,
+                               long btc,
                                double fiat) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
@@ -310,17 +312,17 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.05f", btc));
+        tv1.setText(btcfmt.format(btc));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.03f", fiat));
+        tv2.setText(String.format("%.02f", fiat));
 
         table.addView(row);
     }
 
     private void addBalanceSum(TableLayout table,
                                String acct,
-                               double btc,
+                               long btc,
                                double fiat) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
@@ -330,10 +332,10 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.05f", btc));
+        tv1.setText(btcfmt.format(btc));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
-        tv2.setText(String.format("%.03f", fiat));
+        tv2.setText(String.format("%.02f", fiat));
 
         table.addView(row);
     }
@@ -349,7 +351,7 @@ public class MainActivity extends BaseWalletActivity {
 
         addBalanceHeader(table);
 
-        double sumbtc = 0.0;
+        long sumbtc = 0;
         List<Balance> balances = mWalletService.getBalances();
         if (balances != null) {
             for (Balance bal : balances) {
@@ -358,11 +360,12 @@ public class MainActivity extends BaseWalletActivity {
                               bal.accountId,
                               bal.accountName,
                               bal.balance,
-                              bal.balance * mFiatPerBTC);
+                              btcfmt.fiatAtRate(bal.balance, mFiatPerBTC));
             }
         }
 
-        addBalanceSum(table, "Total", sumbtc, sumbtc * mFiatPerBTC);
+        addBalanceSum(table, "Total", sumbtc,
+                      btcfmt.fiatAtRate(sumbtc, mFiatPerBTC));
     }
 
     public void viewAccount(View view) {

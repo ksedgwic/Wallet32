@@ -890,9 +890,9 @@ public class WalletService extends Service
         return mRateUpdater == null ? "???" : mRateUpdater.getCode();
     }
 
-    static public double getDefaultFee() {
+    static public long getDefaultFee() {
         final BigInteger dmtf = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
-        return dmtf.doubleValue() / 1e8;
+        return dmtf.longValue();
     }
 
     public List<HDAccount> getAccounts() {
@@ -937,9 +937,9 @@ public class WalletService extends Service
     }
 
     public static class AmountAndFee {
-        public double	mAmount;
-        public double	mFee;
-        public AmountAndFee(double amt, double fee) {
+        public long		mAmount;
+        public long		mFee;
+        public AmountAndFee(long amt, long fee) {
             mAmount = amt;
             mFee = fee;
         }
@@ -962,21 +962,20 @@ public class WalletService extends Service
 
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
-                                     double amount,
-                                     double fee) throws RuntimeException {
+                                     long amount,
+                                     long fee) throws RuntimeException {
         if (mHDWallet == null)
             return;
 
         try {
             Address dest = new Address(mParams, address);
-            BigInteger vv = BigInteger.valueOf((int)(amount * 1e8));
-            BigInteger ff = BigInteger.valueOf((int)(fee * 1e8));
 
             mLogger.info(String
-                         .format("send coins: acct=%d, dest=%s, val=%s, fee=%s",
-                                 acctnum, address, vv, ff));
+                         .format("send coins: acct=%d, dest=%s, val=%d, fee=%d",
+                                 acctnum, address, amount, fee));
             
-            mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest, vv, ff);
+            mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest,
+                                       amount, fee);
 
         } catch (WrongNetworkException ex) {
             String msg = "Address for wrong network: " + ex.getMessage();
@@ -987,15 +986,15 @@ public class WalletService extends Service
         }
     }
 
-    public double amountForAccount(WalletTransaction wtx, int acctnum) {
+    public long amountForAccount(WalletTransaction wtx, int acctnum) {
         return mHDWallet.amountForAccount(wtx, acctnum);
     }
 
-    public double balanceForAccount(int acctnum) {
+    public long balanceForAccount(int acctnum) {
         return mHDWallet.balanceForAccount(acctnum);
     }
 
-    public double availableForAccount(int acctnum) {
+    public long availableForAccount(int acctnum) {
         return mHDWallet.availableForAccount(acctnum);
     }
 
@@ -1013,7 +1012,7 @@ public class WalletService extends Service
         mLBM.sendBroadcast(intent);
     }
 
-    public void sweepKey(ECKey key, double fee,
+    public void sweepKey(ECKey key, long fee,
                          int accountId, JSONArray outputs) {
         mLogger.info("sweepKey starting");
 
@@ -1049,7 +1048,7 @@ public class WalletService extends Service
         }
 
         // Compute balance - fee.
-        long amount = balance - (long)(fee * 1e8);
+        long amount = balance - fee;
         mLogger.info(String.format("sweeping %d", amount));
 
         // Figure out the destination address.

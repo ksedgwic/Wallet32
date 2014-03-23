@@ -144,13 +144,13 @@ public class HDAccount {
 
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
-                            BigInteger value,
+                            long value,
                             boolean avail) {
         mReceiveChain.applyOutput(pubkey, pubkeyhash, value, avail);
         mChangeChain.applyOutput(pubkey, pubkeyhash, value, avail);
     }
 
-    public void applyInput(byte[] pubkey, BigInteger value) {
+    public void applyInput(byte[] pubkey, long value) {
         mReceiveChain.applyInput(pubkey, value);
         mChangeChain.applyInput(pubkey, value);
     }
@@ -187,23 +187,23 @@ public class HDAccount {
         return mChangeChain;
     }
 
-    public BigInteger balance() {
-        BigInteger balance = BigInteger.ZERO;
-        balance = balance.add(mReceiveChain.balance());
-        balance = balance.add(mChangeChain.balance());
+    public long balance() {
+        long balance = 0;
+        balance += mReceiveChain.balance();
+        balance += mChangeChain.balance();
         return balance;
     }
 
-    public BigInteger available() {
-        BigInteger available = BigInteger.ZERO;
-        available = available.add(mReceiveChain.available());
-        available = available.add(mChangeChain.available());
+    public long available() {
+        long available = 0;
+        available += mReceiveChain.available();
+        available += mChangeChain.available();
         return available;
     }
 
     public void logBalance() {
-        mLogger.info(mAccountName + " balance " + balance().toString() +
-                     ", " + "available " + available().toString());
+        mLogger.info(mAccountName + " balance " + Long.toString(balance()) +
+                     ", " + "available " + Long.toString(available()));
 
         // Now log any active addresses in this account.
         mReceiveChain.logBalance();

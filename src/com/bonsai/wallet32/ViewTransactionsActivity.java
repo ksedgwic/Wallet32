@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -49,6 +48,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         LoggerFactory.getLogger(ViewTransactionsActivity.class);
 
     private int mAccountNum = -1;    // -1 means all accounts
+
+    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -180,19 +181,19 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                 }
             });
 
-        double btcbal = mWalletService.balanceForAccount(mAccountNum);
+        long btcbal = mWalletService.balanceForAccount(mAccountNum);
         
         for (WalletTransaction wtx : txs) {
             Transaction tx = wtx.getTransaction();
             TransactionConfidence conf = tx.getConfidence();
             ConfidenceType ct = conf.getConfidenceType();
 
-            double btc = mWalletService.amountForAccount(wtx, mAccountNum);
-            if (btc != 0.0) {
+            long btc = mWalletService.amountForAccount(wtx, mAccountNum);
+            if (btc != 0) {
                 String hash = tx.getHashAsString();
                 String datestr = dateFormater.format(tx.getUpdateTime());
-                String btcstr = String.format("%.5f", btc);
-                String btcbalstr = String.format("%.5f", btcbal);
+                String btcstr = btcfmt.format(btc);
+                String btcbalstr = btcfmt.format(btcbal);
 
                 String confstr;
                 switch (ct) {

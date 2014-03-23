@@ -57,11 +57,13 @@ public class ViewTransactionActivity extends BaseWalletActivity {
 
     private ArrayList<Address>				mInputAddrs;
     private ArrayList<HDAddressDescription> mInputDescrs;
-    private ArrayList<Double>				mInputValues;
+    private ArrayList<Long>					mInputValues;
 
     private ArrayList<Address>				mOutputAddrs;
     private ArrayList<HDAddressDescription>	mOutputDescrs;
-    private ArrayList<Double>				mOutputValues;
+    private ArrayList<Long>					mOutputValues;
+
+    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +141,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
         {
             mInputAddrs = new ArrayList<Address>();
             mInputDescrs = new ArrayList<HDAddressDescription>();
-            mInputValues = new ArrayList<Double>();
+            mInputValues = new ArrayList<Long>();
 
             // Enumerate inputs.
             for (TransactionInput txIn : mTx.getInputs()) {
@@ -156,10 +158,10 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 }
 
                 // What is the value of this input?
-                Double value = null;
+                Long value = null;
                 TransactionOutput cto = txIn.getConnectedOutput();
                 if (cto != null)
-                    value = Double.valueOf(cto.getValue().doubleValue() / 1e8);
+                    value = Long.valueOf(cto.getValue().longValue());
 
                 mInputAddrs.add(addr);
                 mInputDescrs.add(descr);
@@ -169,7 +171,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
 
             mOutputAddrs = new ArrayList<Address>();
             mOutputDescrs = new ArrayList<HDAddressDescription>();
-            mOutputValues = new ArrayList<Double>();
+            mOutputValues = new ArrayList<Long>();
 
             // Enumerate outputs.
             for (TransactionOutput txOut : mTx.getOutputs()) {
@@ -186,8 +188,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 }
 
                 // What is the value of this input?
-                Double value =
-                    Double.valueOf(txOut.getValue().doubleValue() / 1e8);
+                Long value = Long.valueOf(txOut.getValue().longValue());
 
                 mOutputAddrs.add(addr);
                 mOutputDescrs.add(descr);
@@ -213,13 +214,13 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             inputsTable.removeAllViews(); // Clear any existing table content.
             // addTransputsHeader(inputsTable);
 
-            double totalInputBalance = 0.0;
+            long totalInputBalance = 0;
             boolean haveAllInputValues = true;
 
             for (int ndx = 0; ndx < mInputAddrs.size(); ++ndx) {
                 Address addr = mInputAddrs.get(ndx);
                 HDAddressDescription descr = mInputDescrs.get(ndx);
-                Double value = mInputValues.get(ndx);
+                Long value = mInputValues.get(ndx);
 
                 if (value == null)
                     haveAllInputValues = false;
@@ -243,7 +244,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
 
                 String valueStr = valueDef;
                 if (value != null)
-                    valueStr = String.format("%.05f", value);
+                    valueStr = String.format("%s", btcfmt.format(value));
 
                 mLogger.info(String.format("input:  %12s %1s %8s %11s %s",
                                            acctStr, chainCode, path,
@@ -260,12 +261,12 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             outputsTable.removeAllViews(); // Clear any existing table content.
             // addTransputsHeader(outputsTable);
 
-            double totalOutputBalance = 0.0;
+            long totalOutputBalance = 0;
 
             for (int ndx = 0; ndx < mOutputAddrs.size(); ++ndx) {
                 Address addr = mOutputAddrs.get(ndx);
                 HDAddressDescription descr = mOutputDescrs.get(ndx);
-                Double value = mOutputValues.get(ndx);
+                Long value = mOutputValues.get(ndx);
 
                 totalOutputBalance += value;
 
@@ -284,7 +285,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 if (addr != null)
                     addrStr = addr.toString().substring(0, 8) + "...";
 
-                String valStr = String.format("%.05f", value);
+                String valStr = String.format("%s", btcfmt.format(value));
 
                 mLogger.info(String.format("output: %12s %1s %8s %11s %s",
                                            acctStr, chainCode, path,
@@ -296,8 +297,8 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             addTransputsSum(outputsTable, totalOutputBalance);
 
         
-            mLogger.info(String.format("Total Outputs: %f",
-                                       totalOutputBalance));
+            mLogger.info(String.format("Total Outputs: %s",
+                                       btcfmt.format(totalOutputBalance)));
 
             if (!haveAllInputValues) {
                 // Since we can't compute the fee, hide the
@@ -307,17 +308,17 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             }
             else {
                 // Update the fee layout.
-                mLogger.info(String.format(" Total Inputs: %f",
-                                           totalInputBalance));
+                mLogger.info(String.format(" Total Inputs: %s",
+                                           btcfmt.format(totalInputBalance)));
 
-                double fee = totalInputBalance - totalOutputBalance;
+                long fee = totalInputBalance - totalOutputBalance;
                 {
-                    String valStr = String.format("%.05f", fee);
+                    String valStr = String.format("%s", btcfmt.format(fee));
                     TextView tv = (TextView) findViewById(R.id.fee);
                     tv.setText(valStr);
                 }
-                mLogger.info(String.format("   Miners Fee: %f",
-                                           fee));
+                mLogger.info(String.format("   Miners Fee: %s",
+                                           btcfmt.format(fee)));
             }
 
             if (df != null)
@@ -416,13 +417,13 @@ public class ViewTransactionActivity extends BaseWalletActivity {
         table.addView(row);
     }
 
-    private void addTransputsSum(TableLayout table, double btc) {
+    private void addTransputsSum(TableLayout table, long btc) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transputs_table_sum, table, false);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%.05f", btc));
+        tv1.setText(String.format("%s", btcfmt.format(btc)));
 
         table.addView(row);
     }

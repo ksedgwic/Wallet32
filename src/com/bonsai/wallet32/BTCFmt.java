@@ -15,7 +15,6 @@
 
 package com.bonsai.wallet32;
 
-import java.math.BigInteger;
 
 public class BTCFmt {
 
@@ -31,7 +30,13 @@ public class BTCFmt {
     // Returns the minimum length scaled string which maintains all
     // necessary precision.
     //
-    public String amount(long amt) {
+    public String format(long amt) {
+
+        boolean isNeg = false;
+        if (amt < 0) {
+            amt = -amt;
+            isNeg = true;
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append(Long.toString(amt));
@@ -54,6 +59,28 @@ public class BTCFmt {
         if (sb.charAt(sb.length() - 1) == '.')
             sb.deleteCharAt(sb.length() - 1);
 
+        // If we were negative prepend a "-".
+        if (isNeg)
+            sb.insert(0, '-');
+
         return sb.toString();
+    }
+
+    public long parse(String valstr) throws NumberFormatException {
+        // Some countries use comma as the decimal separator.
+        // Android's numberDecimal EditText fields don't handle this
+        // correctly (https://code.google.com/p/android/issues/detail?id=2626).
+        // As a workaround we substitute ',' -> '.' manually ...
+        double dval = Double.parseDouble(valstr.toString().replace(',', '.'));
+        return (long)(dval * Math.pow(10, mScale));
+    }
+
+    public double fiatAtRate(long btc, double fiatPerBTC) {
+        double dval = ((double) btc) / Math.pow(10, mScale);
+        return dval * fiatPerBTC;
+    }
+
+    public long btcAtRate(double fiat, double fiatPerBTC) {
+        return (long) ((fiat / fiatPerBTC) * Math.pow(10, mScale));
     }
 }

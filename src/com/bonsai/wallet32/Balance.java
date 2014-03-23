@@ -18,9 +18,9 @@ package com.bonsai.wallet32;
 public class Balance {
     public final int accountId;
     public final String accountName;
-    public final double balance;
-    public final double available;
-    public Balance(int id, String name, double balance, double available) {
+    public final long balance;
+    public final long available;
+    public Balance(int id, String name, long balance, long available) {
         this.accountId = id;
         this.accountName = name;
         this.balance = balance;

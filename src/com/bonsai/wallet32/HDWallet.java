@@ -426,7 +426,7 @@ public class HDWallet {
                 // Traverse the HDAccounts with all outputs.
                 List<TransactionOutput> lto = tx.getOutputs();
                 for (TransactionOutput to : lto) {
-                    BigInteger value = to.getValue();
+                    long value = to.getValue().longValue();
                     try {
                         byte[] pubkey = null;
                         byte[] pubkeyhash = null;
@@ -455,7 +455,7 @@ public class HDWallet {
                         // mLogger.warn("couldn't find connected output for input");
                         continue;
                     }
-                    BigInteger value = cto.getValue();
+                    long value = cto.getValue().longValue();
                     try {
                         byte[] pubkey = ti.getScriptSig().getPubKey();
                         for (HDAccount hda : mAccounts)
@@ -474,38 +474,38 @@ public class HDWallet {
         //     acct.logBalance();
     }
 
-    public double balanceForAccount(int acctnum) {
+    public long balanceForAccount(int acctnum) {
         // Which accounts are we considering?  (-1 means all)
         if (acctnum != -1) {
-            return mAccounts.get(acctnum).balance().doubleValue() / 1e8;
+            return mAccounts.get(acctnum).balance();
         } else {
-            BigInteger sum = BigInteger.ZERO;
+            long sum = 0;
             for (HDAccount hda : mAccounts)
-                sum = sum.add(hda.balance());
-            return sum.doubleValue() / 1e8;
+                sum += hda.balance();
+            return sum;
         }
     }
 
-    public double availableForAccount(int acctnum) {
+    public long availableForAccount(int acctnum) {
         // Which accounts are we considering?  (-1 means all)
         if (acctnum != -1) {
-            return mAccounts.get(acctnum).available().doubleValue() / 1e8;
+            return mAccounts.get(acctnum).available();
         } else {
-            BigInteger sum = BigInteger.ZERO;
+            long sum = 0;
             for (HDAccount hda : mAccounts)
-                sum = sum.add(hda.available());
-            return sum.doubleValue() / 1e8;
+                sum += hda.available();
+            return sum;
         }
     }
 
-    public double amountForAccount(WalletTransaction wtx, int acctnum) {
+    public long amountForAccount(WalletTransaction wtx, int acctnum) {
 
         // This routine is only called from the View Transactions
         // activity, so it is OK if it uses all balance and not
         // available balance (since the confirmation count is shown).
 
-        BigInteger credits = BigInteger.ZERO;
-        BigInteger debits = BigInteger.ZERO;
+        long credits = 0;
+        long debits = 0;
 
         // Which accounts are we considering?  (-1 means all)
         ArrayList<HDAccount> accts = new ArrayList<HDAccount>();
@@ -521,7 +521,7 @@ public class HDWallet {
         // Consider credits.
         List<TransactionOutput> lto = tx.getOutputs();
         for (TransactionOutput to : lto) {
-            BigInteger value = to.getValue();
+            long value = to.getValue().longValue();
             try {
                 byte[] pubkey = null;
                 byte[] pubkeyhash = null;
@@ -532,7 +532,7 @@ public class HDWallet {
                     pubkeyhash = script.getPubKeyHash();
                 for (HDAccount hda : accts) {
                     if (hda.hasPubKey(pubkey, pubkeyhash))
-                        credits = credits.add(value);
+                        credits += value;
                 }
             } catch (ScriptException e) {
                 // TODO Auto-generated catch block
@@ -552,27 +552,27 @@ public class HDWallet {
                 // mLogger.warn("couldn't find connected output for input");
                 continue;
             }
-            BigInteger value = cto.getValue();
+            long value = cto.getValue().longValue();
             try {
                 byte[] pubkey = ti.getScriptSig().getPubKey();
                 for (HDAccount hda : accts)
                     if (hda.hasPubKey(pubkey, null))
-                        debits = debits.add(value);
+                        debits += value;
             } catch (ScriptException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
 
-        return credits.subtract(debits).doubleValue() / 1e8;
+        return credits - debits;
     }
 
     public void getBalances(List<Balance> balances) {
         for (HDAccount acct : mAccounts)
             balances.add(new Balance(acct.getId(),
                                      acct.getName(),
-                                     acct.balance().doubleValue() / 1e8,
-                                     acct.available().doubleValue() / 1e8));
+                                     acct.balance(),
+                                     acct.available()));
     }
 
     public Address nextReceiveAddress(int acctnum) {
@@ -584,14 +584,14 @@ public class HDWallet {
     public void sendAccountCoins(Wallet wallet,
                                  int acctnum,
                                  Address dest,
-                                 BigInteger value,
-                                 BigInteger fee) throws RuntimeException {
+                                 long value,
+                                 long fee) throws RuntimeException {
 
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
 
-        SendRequest req = SendRequest.to(dest, value);
-        req.fee = fee;
+        SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
+        req.fee = BigInteger.valueOf(fee);
         req.feePerKb = BigInteger.ZERO;
         req.ensureMinRequiredFee = false;
         req.changeAddress = acct.nextChangeAddress();
@@ -627,8 +627,7 @@ public class HDWallet {
         BigInteger inAmt = req.tx.getValueSentToMe(wallet);
         BigInteger feeAmt = outAmt.subtract(inAmt);
 
-        return new AmountAndFee(inAmt.doubleValue() / 1e8,
-                                feeAmt.doubleValue() / 1e8);
+        return new AmountAndFee(inAmt.longValue(), feeAmt.longValue());
     }
 
     public long computeRecommendedFee(Wallet wallet, int acctnum, long value)

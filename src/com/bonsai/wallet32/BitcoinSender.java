@@ -19,13 +19,13 @@ public interface BitcoinSender {
     public void onShowSendConfirmDialog(int acctId,
                                         String acctName,
                                         String addrString,
-                                        double amount,
-                                        double fee);
+                                        long amount,
+                                        long fee);
 
     public void onAdjustFee();
 
     public void onSendBitcoin(int acctId,
                               String addrString,
-                              double amount,
-                              double fee);
+                              long amount,
+                              long fee);
 }

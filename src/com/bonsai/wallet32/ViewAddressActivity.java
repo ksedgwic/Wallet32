@@ -43,7 +43,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewAddressActivity.class);
 
-    private double mAmount = 0.0;
+    private long mAmount = 0;
 
     private String mPrivateKey;
     private String mAddress;
@@ -51,6 +51,8 @@ public class ViewAddressActivity extends BaseWalletActivity {
     private String mURI;
 
 	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
+
+    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +64,9 @@ public class ViewAddressActivity extends BaseWalletActivity {
         Intent intent = getIntent();
         mPrivateKey = intent.getExtras().getString("key");
         mAddress = intent.getExtras().getString("address");
-        mAmount = intent.getExtras().getDouble("amount");
+        mAmount = intent.getExtras().getLong("amount");
 
-        BigInteger amt =
-            mAmount == 0.0 ? null : BigInteger.valueOf((int) (mAmount * 1e8));
+        BigInteger amt = mAmount == 0 ? null : BigInteger.valueOf(mAmount);
 
         mURI = BitcoinURI.convertToBitcoinURI(mAddress, amt, null, null);
 
@@ -111,14 +112,14 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
     private void updateAmount() {
         // Is the amount set?
-        if (mAmount == 0.0)
+        if (mAmount == 0)
             return;
 
-        String amtstr = String.format("Amount: %.04f BTC = %.02f USD",
-                                      mAmount, mAmount * mFiatPerBTC);
+        String amtstr = String.format("Amount: %s BTC = %.02f USD",
+                                      btcfmt.format(mAmount),
+                                      btcfmt.fiatAtRate(mAmount, mFiatPerBTC));
         TextView amttv = (TextView) findViewById(R.id.amount);
         amttv.setText(amtstr);
-        
     }
 
     private Bitmap createBitmap(String content, final int size) {

@@ -15,7 +15,6 @@
 
 package com.bonsai.wallet32;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -142,13 +141,13 @@ public class HDChain {
 
     public void applyOutput(byte[] pubkey,
                             byte[] pubkeyhash,
-                            BigInteger value,
+                            long value,
                             boolean avail) {
         for (HDAddress hda : mAddrs)
             hda.applyOutput(pubkey, pubkeyhash, value, avail);
     }
 
-    public void applyInput(byte[] pubkey, BigInteger value) {
+    public void applyInput(byte[] pubkey, long value) {
         for (HDAddress hda : mAddrs)
             hda.applyInput(pubkey, value);
     }
@@ -158,17 +157,17 @@ public class HDChain {
             hda.clearBalance();
     }
 
-    public BigInteger balance() {
-        BigInteger balance = BigInteger.ZERO;
+    public long balance() {
+        long balance = 0;
         for (HDAddress hda : mAddrs)
-            balance = balance.add(hda.balance());
+            balance += hda.getBalance();
         return balance;
     }
 
-    public BigInteger available() {
-        BigInteger available = BigInteger.ZERO;
+    public long available() {
+        long available = 0;
         for (HDAddress hda : mAddrs)
-            available = available.add(hda.available());
+            available += hda.getAvailable();
         return available;
     }
 

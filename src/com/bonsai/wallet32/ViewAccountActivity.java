@@ -48,6 +48,8 @@ public class ViewAccountActivity extends BaseWalletActivity {
     private EditText mAccountNameEditText;
     private Button mAccountNameSubmitButton;
 
+    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
+
     private enum NameEditState {
         INIT,		// Transient state ...
         UNSET,		// Button disabled, says Edit, text not editable.
@@ -290,9 +292,9 @@ public class ViewAccountActivity extends BaseWalletActivity {
             String path = addr.getPath();
             String addrstr = addr.getAbbrev();
             String ntrans = String.format("%d", addr.numTrans());
-            String bal = String.format("%.05f", addr.getBalance());
-            String fiat =
-                String.format("%.02f", addr.getBalance() * mFiatPerBTC);
+            String bal = btcfmt.format(addr.getBalance());
+            String fiat = String.format
+                ("%.02f", btcfmt.fiatAtRate(addr.getBalance(), mFiatPerBTC));
             addAddressRow(tableId, ndx++, table, path,
                           addrstr, ntrans, bal, fiat);
         }
