@@ -104,11 +104,15 @@ public class BTCFmt {
     }
 
     public double fiatAtRate(long btc, double fiatPerBTC) {
-        double dval = ((double) btc) / Math.pow(10, mScale);
+        // Fiat is always expressed per BTC, not mBTC, for example.
+        final int fiatScale = 8;
+        double dval = ((double) btc) / Math.pow(10, fiatScale);
         return dval * fiatPerBTC;
     }
 
     public long btcAtRate(double fiat, double fiatPerBTC) {
-        return (long) ((fiat / fiatPerBTC) * Math.pow(10, mScale));
+        // Fiat is always expressed per BTC, not mBTC, for example.
+        final int fiatScale = 8;
+        return (long) ((fiat / fiatPerBTC) * Math.pow(10, fiatScale));
     }
 }
