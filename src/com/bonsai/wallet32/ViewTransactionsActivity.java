@@ -192,8 +192,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             if (btc != 0) {
                 String hash = tx.getHashAsString();
                 String datestr = dateFormater.format(tx.getUpdateTime());
-                String btcstr = btcfmt.format(btc);
-                String btcbalstr = btcfmt.format(btcbal);
+                String btcstr = btcfmt.formatCol(btc, 2, true);
+                String btcbalstr = btcfmt.formatCol(btcbal, 2, true);
 
                 String confstr;
                 switch (ct) {

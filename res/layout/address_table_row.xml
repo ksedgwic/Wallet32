@@ -7,92 +7,95 @@
     android:onClick="handleRowClick"
     >
 
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="0dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="0dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_path"
-	android:text="M/0/0/0"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="left"
-	/>
+  <TextView
+      android:id="@+id/row_path"
+      android:text="M/0/0/0"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:gravity="left"
+      />
   
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="4dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_addr"
-	android:text="123456789..."
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="left"
-	android:textColor="#00f" 
-	/>
+  <TextView
+      android:id="@+id/row_addr"
+      android:text="123456789..."
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:gravity="left"
+      android:textColor="#00f" 
+      />
   
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="4dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_btc"
-	android:text="0.0000"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
-	/>
+  <TextView
+      android:id="@+id/row_btc"
+      android:text="0.0000"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:gravity="right"
+      android:typeface="monospace"
+      />
   
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="4dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_fiat"
-	android:text="000.0000"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
-	/>
+  <TextView
+      android:id="@+id/row_fiat"
+      android:text="000.0000"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:gravity="right"
+      android:typeface="monospace"
+      />
   
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="4dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_ntrans"
-	android:text="1"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
-	/>
+  <TextView
+      android:id="@+id/row_ntrans"
+      android:text="1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:gravity="right"
+      android:typeface="monospace"
+      />
   
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="0dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="0dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
 </TableRow>

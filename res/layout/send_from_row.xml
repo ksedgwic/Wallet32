@@ -5,44 +5,46 @@
     android:layout_height="wrap_content"
     >
 
-    <RadioButton
-	android:id="@+id/from_account"
-	android:text="Sample Account"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:gravity="center_vertical|left"
-	android:minHeight="0dp"
-	android:minWidth="0dp"
-	/>
+  <RadioButton
+      android:id="@+id/from_account"
+      android:text="Sample Account"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical|left"
+      android:minHeight="0dp"
+      android:minWidth="0dp"
+      />
 
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-    	android:layout_width="0dp"
-    	android:layout_height="fill_parent"
-    	android:layout_weight="1"
-    	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="0dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_btc"
-	android:text="0.0000"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:gravity="center_vertical|right"
-	/>
+  <TextView
+      android:id="@+id/row_btc"
+      android:text="0.0000"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical|right"
+      android:typeface="monospace"
+      />
   
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-    	android:layout_width="0dp"
-    	android:layout_height="fill_parent"
-    	android:layout_weight="1"
-    	/>
+  <!-- Stretchy Horizontal Spacer -->
+  <View
+      android:layout_width="0dp"
+      android:layout_height="fill_parent"
+      android:layout_weight="1"
+      />
 
-    <TextView
-	android:id="@+id/row_fiat"
-	android:text="0.00"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:gravity="center_vertical|right"
-	/>
+  <TextView
+      android:id="@+id/row_fiat"
+      android:text="0.00"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical|right"
+      android:typeface="monospace"
+      />
 
 </TableRow>

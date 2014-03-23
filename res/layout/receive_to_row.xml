@@ -5,33 +5,35 @@
     android:layout_height="wrap_content"
     >
 
-    <RadioButton
-	android:id="@+id/to_account"
-	android:text="Sample Account"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_marginRight="10dp"
-	android:gravity="center_vertical|left"
-	/>
+  <RadioButton
+      android:id="@+id/to_account"
+      android:text="Sample Account"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginRight="10dp"
+      android:gravity="center_vertical|left"
+      />
 
-    <TextView
-	android:id="@+id/row_btc"
-	android:text="0.0000"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
-	android:gravity="center_vertical|right"
-	/>
+  <TextView
+      android:id="@+id/row_btc"
+      android:text="0.0000"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:gravity="center_vertical|right"
+      android:typeface="monospace"
+      />
   
-    <TextView
-	android:id="@+id/row_fiat"
-	android:text="0.00"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_marginLeft="10dp"
-	android:layout_marginRight="10dp"
-	android:gravity="center_vertical|right"
-	/>
+  <TextView
+      android:id="@+id/row_fiat"
+      android:text="0.00"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:gravity="center_vertical|right"
+      android:typeface="monospace"
+      />
 
 </TableRow>

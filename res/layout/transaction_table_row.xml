@@ -38,6 +38,7 @@
 	android:layout_height="wrap_content"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="right"
+	android:typeface="monospace"
 	/>
   
     <!-- Stretchy Horizontal Spacer -->
@@ -54,6 +55,7 @@
 	android:layout_height="wrap_content"
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="right"
+	android:typeface="monospace"
 	/>
   
     <!-- Stretchy Horizontal Spacer -->

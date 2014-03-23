@@ -292,7 +292,7 @@ public class ViewAccountActivity extends BaseWalletActivity {
             String path = addr.getPath();
             String addrstr = addr.getAbbrev();
             String ntrans = String.format("%d", addr.numTrans());
-            String bal = btcfmt.format(addr.getBalance());
+            String bal = btcfmt.formatCol(addr.getBalance(), 0, true);
             String fiat = String.format
                 ("%.02f", btcfmt.fiatAtRate(addr.getBalance(), mFiatPerBTC));
             addAddressRow(tableId, ndx++, table, path,

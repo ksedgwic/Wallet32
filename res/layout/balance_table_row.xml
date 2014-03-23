@@ -28,6 +28,7 @@
       android:layout_marginRight="8dp"
       android:textAppearance="@android:style/TextAppearance.Small"
       android:gravity="right"
+      android:typeface="monospace"
       />
   
   <TextView
@@ -39,6 +40,7 @@
       android:layout_marginRight="8dp"
       android:textAppearance="@android:style/TextAppearance.Small"
       android:gravity="right"
+      android:typeface="monospace"
       />
 
 </TableRow>

@@ -312,7 +312,7 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(btcfmt.format(btc));
+        tv1.setText(btcfmt.formatCol(btc, 0, true));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -332,7 +332,7 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(btcfmt.format(btc));
+        tv1.setText(btcfmt.formatCol(btc, 0, true));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));

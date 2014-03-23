@@ -31,6 +31,10 @@ public class BTCFmt {
     // necessary precision.
     //
     public String format(long amt) {
+        return formatCol(amt, 0, false);
+    }
+
+    public String formatCol(long amt, int reducePrecision, boolean colPad) {
 
         boolean isNeg = false;
         if (amt < 0) {
@@ -38,26 +42,50 @@ public class BTCFmt {
             isNeg = true;
         }
 
+        if (reducePrecision > 0) {
+            double factor = Math.pow(10, reducePrecision);
+            amt  = Math.round(((double) amt) / factor);
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append(Long.toString(amt));
 
+        // How wide should the fractional field be?
+        int fracWidth = mScale - reducePrecision;
+
         // Add left padding as necessary.
-        int leftPadLen = mScale + 1 - sb.length();
+        int leftPadLen = fracWidth + 1 - sb.length();
         if (leftPadLen > 0)
             for (int ii = 0; ii < leftPadLen; ++ii)
                 sb.insert(0, "0");
 
         // Insert the decimal point.
-        int ndx = sb.length() - mScale;
-        sb.insert(ndx, ".");
+        sb.insert(sb.length() - fracWidth, ".");
 
         // Remove trailing '0' characters.
-        while (sb.charAt(sb.length() - 1) == '0')
-            sb.deleteCharAt(sb.length() - 1);
+        if (colPad) {
+            // Replace trailing '0' with ' '.
+            int ndx;
+            for (ndx = sb.length() - 1; ndx >= 0; --ndx) {
+                if (sb.charAt(ndx) == '0')
+                    sb.replace(ndx, ndx+1, " ");
+                else
+                    break;
+            }
 
-        // If the last character is the '.', remove it too.
-        if (sb.charAt(sb.length() - 1) == '.')
-            sb.deleteCharAt(sb.length() - 1);
+            // If the last character is the '.', replace it too.
+            if (sb.charAt(ndx) == '.')
+                sb.replace(ndx, ndx+1, " ");
+
+        } else {
+            // Just remove the characters.
+            while (sb.charAt(sb.length() - 1) == '0')
+                sb.deleteCharAt(sb.length() - 1);
+
+            // If the last character is the '.', remove it too.
+            if (sb.charAt(sb.length() - 1) == '.')
+                sb.deleteCharAt(sb.length() - 1);
+        }
 
         // If we were negative prepend a "-".
         if (isNeg)
