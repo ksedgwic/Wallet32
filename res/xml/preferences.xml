@@ -4,6 +4,15 @@
     >
 
     <com.bonsai.wallet32.BetterListPreference
+        android:key="pref_btcUnits"
+        android:title="@string/pref_btc_units"
+        android:dialogTitle="@string/pref_btc_units"
+        android:entries="@array/pref_btc_units_entries"
+        android:entryValues="@array/pref_btc_units_values"
+        android:defaultValue="@string/pref_btc_units_default"
+	/>
+
+    <com.bonsai.wallet32.BetterListPreference
         android:key="pref_fiatRateSource"
         android:title="@string/pref_fiat_rate_source"
         android:dialogTitle="@string/pref_fiat_rate_source"

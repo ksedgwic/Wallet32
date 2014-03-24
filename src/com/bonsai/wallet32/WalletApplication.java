@@ -22,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.preference.PreferenceManager;
 
 import com.google.bitcoin.crypto.KeyCrypter;
 
@@ -33,7 +36,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 
-public class WalletApplication extends Application {
+public class WalletApplication
+    extends Application
+    implements OnSharedPreferenceChangeListener {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(WalletApplication.class);
@@ -43,6 +48,8 @@ public class WalletApplication extends Application {
     public KeyParameter		mAesKey;
 
     public String			mIntentURI = null;
+
+    private BTCFmt			mBTCFmt = null;
 
 	@Override
 	public void onCreate()
@@ -57,7 +64,51 @@ public class WalletApplication extends Application {
         // Log the About contents so we have the version string.
         mLogger.info(getResources().getString(R.string.about_contents));
 
+        SharedPreferences sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        String btcUnits =
+            sharedPref.getString(SettingsActivity.KEY_BTC_UNITS, "");
+        setBTCUnits(btcUnits);
+
+        // Register for future preference changes.
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
+
         mLogger.info("WalletApplication created");
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                          String key) {
+        mLogger.info("saw pref key " + key);
+        if (key.equals(SettingsActivity.KEY_BTC_UNITS)) {
+            SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+            String btcUnits =
+                sharedPref.getString(SettingsActivity.KEY_BTC_UNITS, "");
+            setBTCUnits(btcUnits);
+        }
+    }
+
+    private void setBTCUnits(String src) {
+        if (src.equals("MBTC")) {
+            mLogger.info("Setting BTC units to MBTC");
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC);
+        }
+        else if (src.equals("BTC")) {
+            mLogger.info("Setting BTC units to BTC");
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_BTC);
+        }
+        else if (src.equals("")) {
+            mLogger.info("Defaulting BTC units to MBTC");
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC);
+        }
+        else {
+            mLogger.warn("Unknown btc units " + src);
+            return;
+        }
+    }
+
+    public BTCFmt getBTCFmt() {
+        return mBTCFmt;
     }
 
     public void setIntentURI(String uri) {

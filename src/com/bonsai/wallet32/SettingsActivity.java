@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,7 +40,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.DialogFragment;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -50,6 +47,7 @@ public class SettingsActivity extends PreferenceActivity {
         LoggerFactory.getLogger(SettingsActivity.class);
     private Resources mRes;
 
+    public static final String KEY_BTC_UNITS = "pref_btcUnits";
     public static final String KEY_FIAT_RATE_SOURCE = "pref_fiatRateSource";
     public static final String KEY_RESCAN_BLOCKCHAIN = "pref_rescanBlockchain";
 

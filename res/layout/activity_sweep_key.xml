@@ -138,7 +138,7 @@
     	      android:id="@+id/balance_btc_label"
     	      android:layout_width="wrap_content"
     	      android:layout_height="wrap_content"
-    	      android:text="@string/btc_label"
+    	      android:text="XXX"
     	      />
 
 	  <TextView
@@ -225,7 +225,7 @@
     	      android:id="@+id/fee_btc_label"
     	      android:layout_width="wrap_content"
     	      android:layout_height="wrap_content"
-    	      android:text="@string/btc_label"
+    	      android:text="XXX"
     	      />
 
 	  <TextView

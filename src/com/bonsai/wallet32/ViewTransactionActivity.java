@@ -63,8 +63,6 @@ public class ViewTransactionActivity extends BaseWalletActivity {
     private ArrayList<HDAddressDescription>	mOutputDescrs;
     private ArrayList<Long>					mOutputValues;
 
-    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -244,7 +242,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
 
                 String valueStr = valueDef;
                 if (value != null)
-                    valueStr = String.format("%s", btcfmt.format(value));
+                    valueStr = String.format("%s", mBTCFmt.format(value));
 
                 mLogger.info(String.format("input:  %12s %1s %8s %11s %s",
                                            acctStr, chainCode, path,
@@ -285,7 +283,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
                 if (addr != null)
                     addrStr = addr.toString().substring(0, 8) + "...";
 
-                String valStr = String.format("%s", btcfmt.format(value));
+                String valStr = String.format("%s", mBTCFmt.format(value));
 
                 mLogger.info(String.format("output: %12s %1s %8s %11s %s",
                                            acctStr, chainCode, path,
@@ -298,7 +296,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
 
         
             mLogger.info(String.format("Total Outputs: %s",
-                                       btcfmt.format(totalOutputBalance)));
+                                       mBTCFmt.format(totalOutputBalance)));
 
             if (!haveAllInputValues) {
                 // Since we can't compute the fee, hide the
@@ -309,16 +307,16 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             else {
                 // Update the fee layout.
                 mLogger.info(String.format(" Total Inputs: %s",
-                                           btcfmt.format(totalInputBalance)));
+                                           mBTCFmt.format(totalInputBalance)));
 
                 long fee = totalInputBalance - totalOutputBalance;
                 {
-                    String valStr = String.format("%s", btcfmt.format(fee));
+                    String valStr = String.format("%s", mBTCFmt.format(fee));
                     TextView tv = (TextView) findViewById(R.id.fee);
                     tv.setText(valStr);
                 }
                 mLogger.info(String.format("   Miners Fee: %s",
-                                           btcfmt.format(fee)));
+                                           mBTCFmt.format(fee)));
             }
 
             if (df != null)
@@ -423,7 +421,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             .inflate(R.layout.transputs_table_sum, table, false);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s", btcfmt.format(btc)));
+        tv1.setText(String.format("%s", mBTCFmt.format(btc)));
 
         table.addView(row);
     }

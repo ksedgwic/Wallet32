@@ -141,8 +141,6 @@ public class WalletService extends Service
 
     private static final String mFilePrefix = "wallet32";
 
-    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
-
     private MyDownloadListener mkDownloadListener() {
         return new MyDownloadListener() {
             protected void progress(double pct, int blocksToGo, Date date, long msecsLeft) {
@@ -171,6 +169,10 @@ public class WalletService extends Service
             {
                 BigInteger amt = newBalance.subtract(prevBalance);
                 final long amount = amt.longValue();
+
+                WalletApplication app =
+                    (WalletApplication) getApplicationContext();
+                final BTCFmt btcfmt = app.getBTCFmt();
 
                 // Change coins will be part of a balance transaction
                 // that is negative in value ... skip them ...
@@ -251,6 +253,10 @@ public class WalletService extends Service
             {
                 BigInteger amt = prevBalance.subtract(newBalance);
                 final long amount = amt.longValue();
+
+                WalletApplication app =
+                    (WalletApplication) getApplicationContext();
+                final BTCFmt btcfmt = app.getBTCFmt();
 
                 // We allocate a new notification id for each receive.
                 // We use it on both the receive and confirm so it

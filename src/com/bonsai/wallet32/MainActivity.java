@@ -52,8 +52,6 @@ public class MainActivity extends BaseWalletActivity {
     private static SimpleDateFormat mDateFormatter =
         new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
 
-    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -312,7 +310,7 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(btcfmt.formatCol(btc, 0, true));
+        tv1.setText(mBTCFmt.formatCol(btc, 0, true));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -332,7 +330,7 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(btcfmt.formatCol(btc, 0, true));
+        tv1.setText(mBTCFmt.formatCol(btc, 0, true));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -360,12 +358,12 @@ public class MainActivity extends BaseWalletActivity {
                               bal.accountId,
                               bal.accountName,
                               bal.balance,
-                              btcfmt.fiatAtRate(bal.balance, mFiatPerBTC));
+                              mBTCFmt.fiatAtRate(bal.balance, mFiatPerBTC));
             }
         }
 
         addBalanceSum(table, "Total", sumbtc,
-                      btcfmt.fiatAtRate(sumbtc, mFiatPerBTC));
+                      mBTCFmt.fiatAtRate(sumbtc, mFiatPerBTC));
     }
 
     public void viewAccount(View view) {

@@ -82,7 +82,7 @@
 
     <TextView
 	android:id="@+id/header_btc"
-	android:text="@string/transputs_header_btc"
+	android:text="XXX"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:textAppearance="@android:style/TextAppearance.Small"

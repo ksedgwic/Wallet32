@@ -158,7 +158,6 @@ to fully recover all of your address activity.
     <string name="sync_abort">Abort and Exit</string>
     <string name="title_activity_main">Wallet32</string>
     <string name="balance_header_acct">Account</string>
-    <string name="balance_header_btc">BTC</string>
     <string name="balance_header_fiat">USD</string>
     <string name="button_send">Send Bitcoin</string>
     <string name="button_receive">Receive Bitcoin</string>
@@ -175,11 +174,9 @@ to fully recover all of your address activity.
     <string name="address_header_path">Path</string>
     <string name="address_header_addr">Address</string>
     <string name="address_header_ntrans">T</string>
-    <string name="address_header_btc">BTC</string>
     <string name="address_header_fiat">USD</string>
     <string name="title_activity_send_bitcoin">Send Bitcoin</string>
     <string name="send_from_label">Send From:</string>
-    <string name="send_header_btc">BTC</string>
     <string name="send_header_fiat">USD</string>
     <string name="send_to_label">Send To:</string>
     <string name="send_to_hint">Bitcoin Address</string>
@@ -223,7 +220,6 @@ to fully recover all of your address activity.
 
     <string name="title_activity_receive_bitcoin">Receive Bitcoin</string>
     <string name="receive_to_label">Receive To:</string>
-    <string name="receive_header_btc">BTC</string>
     <string name="receive_header_fiat">USD</string>
     <string name="receive_amount_label">Receive Amount: (optional)</string>
     <string name="amount_btc_hint">0.0000</string>
@@ -261,7 +257,6 @@ Fetching unspent balance for this address from blockchain.info.\n
     <string name="title_activity_view_transactions">View Transactions</string>
     <string name="transaction_account_label">Account:</string>
     <string name="transaction_header_date">Date</string>
-    <string name="transaction_header_btc">BTC</string>
     <string name="transaction_header_balance_btc">Bal</string>
     <string name="transaction_header_confidence">Cnf</string>
     <string name="title_activity_view_transaction">View Transaction</string>
@@ -279,14 +274,12 @@ This transaction is really large; it will take a while to process.\n
     <string name="transputs_header_chain"></string>
     <string name="transputs_header_path">Path</string>
     <string name="transputs_header_addr">Address</string>
-    <string name="transputs_header_btc">BTC</string>
     <string name="transputs_total">Total</string>
     <string name="title_activity_view_address">View Address</string>
     <string name="button_send_request">Send Request &#8230;</string>
     <string name="button_send_address">Send Address &#8230;</string>
     <string name="button_send_key">Send Private Key &#8230;</string>
     <string name="button_blockchain">blockchain.info</string>
-    <string name="btc_label">BTC</string>
     <string name="fiat_label">USD</string>
     <string name="eq_label">=</string>
     <string name="address_send_request_title">Send request &#8230;</string>
@@ -309,6 +302,19 @@ This transaction is really large; it will take a while to process.\n
 
     <string name="settings_confirm_ok">OK</string>
     <string name="settings_confirm_cancel">Cancel</string>
+
+    <string name="pref_btc_units">BTC Units</string>
+    <string name="pref_btc_units_default">MBTC</string>
+
+    <string-array name="pref_btc_units_entries">
+      <item>mBTC</item>
+      <item>BTC</item>
+    </string-array>
+
+    <string-array name="pref_btc_units_values">
+      <item>MBTC</item>
+      <item>BTC</item>
+    </string-array>
 
     <string name="pref_fiat_rate_source">Fiat Rate Source</string>
     <string name="pref_fiat_rate_sources_default">COINDESKUSD</string>
@@ -361,18 +367,18 @@ This transaction is really large; it will take a while to process.\n
     <string name="wallet_service_label">Wallet32</string>
     <string name="wallet_service_started">Wallet32 Service Started</string>
     <string name="wallet_service_info">Touch to open wallet</string>
-    <string name="wallet_service_note_sent_title">BTC Sent</string>
-    <string name="wallet_service_note_sent_msg">%1$s BTC sent</string>
-    <string name="wallet_service_note_rcvd_title">BTC Received</string>
-    <string name="wallet_service_note_rcvd_msg">%1$s BTC received</string>
+    <string name="wallet_service_note_sent_title">%1$s Sent</string>
+    <string name="wallet_service_note_sent_msg">%1$s %2$s sent</string>
+    <string name="wallet_service_note_rcvd_title">%1$s Received</string>
+    <string name="wallet_service_note_rcvd_msg">%1$s %2$s received</string>
     <string name="wallet_service_note_scnf_title">Send Confirmed</string>
-    <string name="wallet_service_note_scnf_msg">%1$s BTC confirmed</string>
+    <string name="wallet_service_note_scnf_msg">%1$s %2$s confirmed</string>
     <string name="wallet_service_note_rcnf_title">Receive Confirmed</string>
-    <string name="wallet_service_note_rcnf_msg">%1$s BTC confirmed</string>
+    <string name="wallet_service_note_rcnf_msg">%1$s %2$s confirmed</string>
     <string name="wallet_service_note_rdead_title">Receive Dead</string>
-    <string name="wallet_service_note_rdead_msg">%1$s BTC dead</string>
+    <string name="wallet_service_note_rdead_msg">%1$s %2$s dead</string>
     <string name="wallet_service_note_sdead_title">Send Dead</string>
-    <string name="wallet_service_note_sdead_msg">%1$s BTC dead</string>
+    <string name="wallet_service_note_sdead_msg">%1$s %2$s dead</string>
 
     <string name="title_activity_about">About Wallet32</string>
     <string name="about_contents">

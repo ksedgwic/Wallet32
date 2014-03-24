@@ -88,8 +88,6 @@ public class SweepKeyActivity extends BaseWalletActivity {
     private ECKey		mKey = null;
     private Address		mAddr = null;
 
-    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
-
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -113,7 +111,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
 
         // Set the default fee value.
         long defaultFee = WalletService.getDefaultFee();
-        String defaultFeeString = btcfmt.format(defaultFee);
+        String defaultFeeString = mBTCFmt.format(defaultFee);
         mBTCFeeEditText.setText(defaultFeeString);
 
         mUnspentOutputs = null;
@@ -202,8 +200,8 @@ public class SweepKeyActivity extends BaseWalletActivity {
                     bbs = "";
                 }
                 else {
-                    bb = btcfmt.btcAtRate(ff, mFiatPerBTC);
-                    bbs = btcfmt.format(bb);
+                    bb = mBTCFmt.btcAtRate(ff, mFiatPerBTC);
+                    bbs = mBTCFmt.format(bb);
                 }
             } catch (final NumberFormatException ex) {
                 bbs = "";
@@ -222,8 +220,8 @@ public class SweepKeyActivity extends BaseWalletActivity {
 
             String ffs;
             try {
-                long bb = btcfmt.parse(ss.toString());
-                double ff = btcfmt.fiatAtRate(bb, mFiatPerBTC);
+                long bb = mBTCFmt.parse(ss.toString());
+                double ff = mBTCFmt.fiatAtRate(bb, mFiatPerBTC);
                 ffs = String.format("%.2f", ff);
             } catch (final NumberFormatException ex) {
                 ffs = "";
@@ -283,7 +281,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s", btcfmt.formatCol(btc, 0, true)));
+        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true)));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -312,7 +310,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
                               bal.accountId,
                               bal.accountName,
                               bal.balance,
-                              btcfmt.fiatAtRate(bal.balance, mFiatPerBTC));
+                              mBTCFmt.fiatAtRate(bal.balance, mFiatPerBTC));
                 mAccountIds.add(bal.accountId);
             }
         }
@@ -344,8 +342,8 @@ public class SweepKeyActivity extends BaseWalletActivity {
         String ss = mBalanceBTCText.getText().toString();
         String ffs;
         try {
-            long bb = btcfmt.parse(ss.toString());
-            double ff = btcfmt.fiatAtRate(bb, mFiatPerBTC);
+            long bb = mBTCFmt.parse(ss.toString());
+            double ff = mBTCFmt.fiatAtRate(bb, mFiatPerBTC);
             ffs = String.format("%.2f", ff);
         } catch (final NumberFormatException ex) {
             ffs = "";
@@ -469,7 +467,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
 
                 mLogger.info(String.format("key balance %d", balance));
                 
-                String ffs = String.format("%s", btcfmt.format(balance));
+                String ffs = String.format("%s", mBTCFmt.format(balance));
                 mBalanceBTCText.setText(ffs, TextView.BufferType.NORMAL);
                 updateBalance();
                 mUnspentOutputs = outputs;
@@ -612,7 +610,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
             return;
         }
         try {
-            fee = btcfmt.parse(feeString);
+            fee = mBTCFmt.parse(feeString);
         } catch (NumberFormatException ex) {
             showErrorDialog(mRes.getString(R.string.sweep_error_badfee));
             return;

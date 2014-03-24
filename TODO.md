@@ -2,14 +2,8 @@
 Bugs
 ----------------------------------------------------------------
 
-* Not showing satoshi spam amounts correctly.
-
-* Need to handle precision of BTC values much better then 4 fixed places.
-
 Needed
 ----------------------------------------------------------------
-
-* Keep awake while syncing
 
 * Advanced Features Setting (send change to account, private key ops)
 
@@ -330,3 +324,44 @@ is too much.
 25. Sweep view asks for private key or address. What is the use of an
 address there? Also, trying to manually enter anything crashes with a
 NPE at com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.java:484)
+
+----------------------------------------------------------------
+
+    <string name="balance_header_btc">BTC</string>
+	android:id="@+id/header_btc"
+
+    <string name="address_header_btc">BTC</string>
+	android:id="@+id/header_btc"
+
+    <string name="send_header_btc">BTC</string>
+      android:id="@+id/header_btc"
+
+    <string name="receive_header_btc">BTC</string>
+      android:id="@+id/header_btc"
+
+    <string name="transaction_header_btc">BTC</string>
+	android:id="@+id/header_btc"
+
+    <string name="transputs_header_btc">BTC</string>
+	android:id="@+id/header_btc"
+
+    <string name="btc_label">BTC</string>
+	      android:id="@+id/amount_btc_label"
+    	      android:id="@+id/amount_btc_label"
+    	      android:id="@+id/fee_btc_label"
+    	      android:id="@+id/balance_btc_label"
+    	      android:id="@+id/fee_btc_label"
+	    android:id="@+id/header_btc"
+
+    <string name="wallet_service_note_sent_title">BTC Sent</string>
+    <string name="wallet_service_note_sent_msg">%1$s BTC sent</string>
+    <string name="wallet_service_note_rcvd_title">BTC Received</string>
+    <string name="wallet_service_note_rcvd_msg">%1$s BTC received</string>
+    <string name="wallet_service_note_scnf_title">Send Confirmed</string>
+    <string name="wallet_service_note_scnf_msg">%1$s BTC confirmed</string>
+    <string name="wallet_service_note_rcnf_title">Receive Confirmed</string>
+    <string name="wallet_service_note_rcnf_msg">%1$s BTC confirmed</string>
+    <string name="wallet_service_note_rdead_title">Receive Dead</string>
+    <string name="wallet_service_note_rdead_msg">%1$s BTC dead</string>
+    <string name="wallet_service_note_sdead_title">Send Dead</string>
+    <string name="wallet_service_note_sdead_msg">%1$s BTC dead</string>

@@ -49,8 +49,6 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
     private int mAccountNum = -1;    // -1 means all accounts
 
-    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -192,8 +190,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             if (btc != 0) {
                 String hash = tx.getHashAsString();
                 String datestr = dateFormater.format(tx.getUpdateTime());
-                String btcstr = btcfmt.formatCol(btc, 2, true);
-                String btcbalstr = btcfmt.formatCol(btcbal, 2, true);
+                String btcstr = mBTCFmt.formatCol(btc, 2, true);
+                String btcbalstr = mBTCFmt.formatCol(btcbal, 2, true);
 
                 String confstr;
                 switch (ct) {

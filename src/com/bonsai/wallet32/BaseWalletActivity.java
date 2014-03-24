@@ -47,9 +47,13 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
     protected LocalBroadcastManager mLBM;
     protected Resources mRes;
 
+    protected WalletApplication	mApp;
+
     protected WalletService	mWalletService;
 
     protected double mFiatPerBTC = 0.0;
+
+    protected static BTCFmt mBTCFmt = null;
 
     protected ServiceConnection mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className,
@@ -75,8 +79,11 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
 
         mLBM = LocalBroadcastManager.getInstance(this);
         mRes = getResources();
+        mApp = (WalletApplication) getApplicationContext();
 
 		super.onCreate(savedInstanceState);
+
+        mBTCFmt = mApp.getBTCFmt();
 
         // By default we should have an up.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,6 +97,9 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         super.onResume();
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
+
+        // Refetch the BTC format object in case it's changed.
+        mBTCFmt = mApp.getBTCFmt();
 
         mLBM.registerReceiver(mWalletStateChangedReceiver,
                               new IntentFilter("wallet-state-changed"));

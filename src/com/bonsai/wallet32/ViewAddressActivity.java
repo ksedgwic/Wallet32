@@ -52,8 +52,6 @@ public class ViewAddressActivity extends BaseWalletActivity {
 
 	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
 
-    private BTCFmt btcfmt = new BTCFmt(BTCFmt.SCALE_BTC);
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -116,8 +114,8 @@ public class ViewAddressActivity extends BaseWalletActivity {
             return;
 
         String amtstr = String.format("Amount: %s BTC = %.02f USD",
-                                      btcfmt.format(mAmount),
-                                      btcfmt.fiatAtRate(mAmount, mFiatPerBTC));
+                                      mBTCFmt.format(mAmount),
+                                      mBTCFmt.fiatAtRate(mAmount, mFiatPerBTC));
         TextView amttv = (TextView) findViewById(R.id.amount);
         amttv.setText(amtstr);
     }
