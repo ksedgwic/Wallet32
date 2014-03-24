@@ -380,6 +380,9 @@ This transaction is really large; it will take a while to process.\n
     <string name="wallet_service_note_sdead_title">Send Dead</string>
     <string name="wallet_service_note_sdead_msg">%1$s %2$s dead</string>
 
+    <string name="app_units_btc">BTC</string>
+    <string name="app_units_mbtc">mBTC</string>
+
     <string name="title_activity_about">About Wallet32</string>
     <string name="about_contents">
 Wallet32\n

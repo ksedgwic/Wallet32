@@ -15,6 +15,9 @@
 
 package com.bonsai.wallet32;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 
 public class BTCFmt {
 
@@ -22,20 +25,51 @@ public class BTCFmt {
     public final static int SCALE_MBTC = 5;
 
     private int mScale;
+    private String mUnitStr;
 
-    public BTCFmt(int scale) {
+    public BTCFmt(int scale, Context ctxt) {
         mScale = scale;
+        Resources res = ctxt.getResources();
+        switch (mScale) {
+        case SCALE_BTC:
+            mUnitStr = res.getString(R.string.app_units_btc);
+            break;
+        case SCALE_MBTC:
+            mUnitStr = res.getString(R.string.app_units_mbtc);
+            break;
+        default:
+            throw new RuntimeException(String.format("unknown scale %d", mScale));
+        }
+    }
+
+    public String unitStr() {
+        return mUnitStr;
     }
 
     // Returns the minimum length scaled string which maintains all
     // necessary precision.
     //
     public String format(long amt) {
-        return formatCol(amt, 0, false);
+        return formatInternal(mScale, amt, 0, false);
     }
 
+    // Used for formatting column aligned values.
+    //
     public String formatCol(long amt, int reducePrecision, boolean colPad) {
+        return formatInternal(mScale, amt, reducePrecision, colPad);
+    }
 
+    // Always formats using the BTC units, for cases where scaled
+    // units are not acceptable (eg: request urls)
+    //
+    public String formatBTC(long amt) {
+        return formatInternal(SCALE_BTC, amt, 0, false);
+    }
+
+    protected String formatInternal(int scale,
+                                    long amt,
+                                    int reducePrecision,
+                                    boolean colPad) {
         boolean isNeg = false;
         if (amt < 0) {
             amt = -amt;
@@ -51,7 +85,7 @@ public class BTCFmt {
         sb.append(Long.toString(amt));
 
         // How wide should the fractional field be?
-        int fracWidth = mScale - reducePrecision;
+        int fracWidth = scale - reducePrecision;
 
         // Add left padding as necessary.
         int leftPadLen = fracWidth + 1 - sb.length();

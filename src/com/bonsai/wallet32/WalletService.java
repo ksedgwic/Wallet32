@@ -189,9 +189,10 @@ public class WalletService extends Service
 
                 showEventNotification(noteId,
                                       R.drawable.ic_note_bc_green_lt,
-                                      mRes.getString(R.string.wallet_service_note_rcvd_title),
+                                      mRes.getString(R.string.wallet_service_note_rcvd_title,
+                                                     btcfmt.unitStr()),
                                       mRes.getString(R.string.wallet_service_note_rcvd_msg,
-                                                     btcfmt.format(amount)));
+                                                     btcfmt.format(amount), btcfmt.unitStr()));
 
                 final TransactionConfidence txconf = tx.getConfidence();
 
@@ -215,9 +216,10 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_green,
-                                     mRes.getString(R.string.wallet_service_note_rcnf_title),
+                                     mRes.getString(R.string.wallet_service_note_rcnf_title,
+                                                    btcfmt.unitStr()),
                                      mRes.getString(R.string.wallet_service_note_rcnf_msg,
-                                                    btcfmt.format(amount)));
+                                                    btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else if (ct == ConfidenceType.DEAD) {
@@ -227,9 +229,10 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_gray,
-                                     mRes.getString(R.string.wallet_service_note_rdead_title),
+                                     mRes.getString(R.string.wallet_service_note_rdead_title,
+                                                    btcfmt.unitStr()),
                                      mRes.getString(R.string.wallet_service_note_rdead_msg,
-                                                    btcfmt.format(amount)));
+                                                    btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else {
@@ -269,9 +272,10 @@ public class WalletService extends Service
                 showEventNotification
                     (noteId,
                      R.drawable.ic_note_bc_red_lt,
-                     mRes.getString(R.string.wallet_service_note_sent_title),
+                     mRes.getString(R.string.wallet_service_note_sent_title,
+                                    btcfmt.unitStr()),
                      mRes.getString(R.string.wallet_service_note_sent_msg,
-                                    btcfmt.format(amount)));
+                                    btcfmt.format(amount), btcfmt.unitStr()));
 
                 final TransactionConfidence txconf = tx.getConfidence();
 
@@ -295,9 +299,10 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_red,
-                                     mRes.getString(R.string.wallet_service_note_scnf_title),
+                                     mRes.getString(R.string.wallet_service_note_scnf_title,
+                                                    btcfmt.unitStr()),
                                      mRes.getString(R.string.wallet_service_note_scnf_msg,
-                                                    btcfmt.format(amount)));
+                                                    btcfmt.format(amount), btcfmt.unitStr()));
                             }
                             else if (ct == ConfidenceType.DEAD) {
                                 mLogger.info(String.format("send %d dead",
@@ -306,9 +311,10 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_gray,
-                                     mRes.getString(R.string.wallet_service_note_sdead_title),
+                                     mRes.getString(R.string.wallet_service_note_sdead_title,
+                                                    btcfmt.unitStr()),
                                      mRes.getString(R.string.wallet_service_note_sdead_msg,
-                                                    btcfmt.format(amount)));
+                                                    btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else {

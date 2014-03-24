@@ -114,7 +114,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
             return;
 
         String amtstr = String.format("Amount: %s BTC = %.02f USD",
-                                      mBTCFmt.format(mAmount),
+                                      mBTCFmt.formatBTC(mAmount),
                                       mBTCFmt.fiatAtRate(mAmount, mFiatPerBTC));
         TextView amttv = (TextView) findViewById(R.id.amount);
         amttv.setText(amtstr);

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
@@ -91,15 +92,15 @@ public class WalletApplication
     private void setBTCUnits(String src) {
         if (src.equals("MBTC")) {
             mLogger.info("Setting BTC units to MBTC");
-            mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC);
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC, this);
         }
         else if (src.equals("BTC")) {
             mLogger.info("Setting BTC units to BTC");
-            mBTCFmt = new BTCFmt(BTCFmt.SCALE_BTC);
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_BTC, this);
         }
         else if (src.equals("")) {
             mLogger.info("Defaulting BTC units to MBTC");
-            mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC);
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC, this);
         }
         else {
             mLogger.warn("Unknown btc units " + src);

@@ -118,6 +118,22 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     }
 
 	@Override
+    protected void onResume() {
+        super.onResume();
+        // Set these each time we resume in case we've visited the
+        // Settings and they've changed.
+        {
+            TextView tv = (TextView) findViewById(R.id.amount_btc_label);
+            tv.setText(mBTCFmt.unitStr());
+        }
+        {
+            TextView tv = (TextView) findViewById(R.id.fee_btc_label);
+            tv.setText(mBTCFmt.unitStr());
+        }
+        mLogger.info("SendBitcoinActivity resumed");
+    }
+
+	@Override
     protected void onWalletStateChanged() {
         updateAccounts();
     }
@@ -385,6 +401,10 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.send_from_header, table, false);
+
+        TextView tv = (TextView) row.findViewById(R.id.header_btc);
+        tv.setText(mBTCFmt.unitStr());
+
         table.addView(row);
     }
 
@@ -856,6 +876,10 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             {
                 TextView tv = (TextView) dv.findViewById(R.id.from_account);
                 tv.setText(mAcctStr);
+            }
+            {
+                TextView tv = (TextView) dv.findViewById(R.id.header_btc);
+                tv.setText(mBTCFmt.unitStr());
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.amount_btc);

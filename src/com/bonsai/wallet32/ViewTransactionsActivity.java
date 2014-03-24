@@ -112,6 +112,10 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transaction_table_header, table, false);
+
+        TextView tv = (TextView) row.findViewById(R.id.header_btc);
+        tv.setText(mBTCFmt.unitStr());
+
         table.addView(row);
     }
 
