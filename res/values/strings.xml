@@ -257,7 +257,7 @@ Fetching unspent balance for this address from blockchain.info.\n
     <string name="title_activity_view_transactions">View Transactions</string>
     <string name="transaction_account_label">Account:</string>
     <string name="transaction_header_date">Date</string>
-    <string name="transaction_header_balance_btc">Bal</string>
+    <string name="transaction_header_fiat">USD</string>
     <string name="transaction_header_confidence">Cnf</string>
     <string name="title_activity_view_transaction">View Transaction</string>
     <string name="transaction_waittitle">Please Wait</string>

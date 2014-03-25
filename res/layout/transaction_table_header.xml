@@ -30,6 +30,23 @@
 	/>
 
     <TextView
+	android:id="@+id/header_confidence"
+	android:text="@string/transaction_header_confidence"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textAppearance="@android:style/TextAppearance.Small"
+	android:textStyle="bold"
+	android:gravity="center"
+	/>
+
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <TextView
 	android:id="@+id/header_btc"
 	android:text="XXX"
 	android:layout_width="wrap_content"
@@ -47,25 +64,8 @@
 	/>
 
     <TextView
-	android:id="@+id/header_balance_btc"
-	android:text="@string/transaction_header_balance_btc"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:textStyle="bold"
-	android:gravity="center"
-	/>
-
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
-
-    <TextView
-	android:id="@+id/header_confidence"
-	android:text="@string/transaction_header_confidence"
+	android:id="@+id/header_fiat"
+	android:text="@string/transaction_header_fiat"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:textAppearance="@android:style/TextAppearance.Small"

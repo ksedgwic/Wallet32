@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +89,11 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         updateTransactions();
     }
 
+	@Override
+    protected void onRateChanged() {
+        updateTransactions();
+    }
+
     private void updateAccountSpinner() {
         if (mWalletService != null) {
             mLogger.info("updating account spinner");
@@ -122,9 +128,13 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
     private void addTransactionRow(String hash,
                                    TableLayout table,
                                    String datestr,
+                                   String timestr,
+                                   String confstr,
                                    String btcstr,
                                    String btcbalstr,
-                                   String confstr) {
+                                   String fiatstr,
+                                   String fiatbalstr,
+                                   boolean tintrow) {
         TableRow row =
             (TableRow) LayoutInflater.from(this)
             .inflate(R.layout.transaction_table_row, table, false);
@@ -135,21 +145,36 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             TextView tv = (TextView) row.findViewById(R.id.row_date);
             tv.setText(datestr);
         }
-
         {
-            TextView tv = (TextView) row.findViewById(R.id.row_btc);
-            tv.setText(btcstr);
-        }
-
-        {
-            TextView tv = (TextView) row.findViewById(R.id.row_balance_btc);
-            tv.setText(btcbalstr);
+            TextView tv = (TextView) row.findViewById(R.id.row_time);
+            tv.setText(timestr);
         }
 
         {
             TextView tv = (TextView) row.findViewById(R.id.row_confidence);
             tv.setText(confstr);
         }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_btc_balance);
+            tv.setText(btcbalstr);
+        }
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_btc);
+            tv.setText(btcstr);
+        }
+
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_fiat_balance);
+            tv.setText(fiatbalstr);
+        }
+        {
+            TextView tv = (TextView) row.findViewById(R.id.row_fiat);
+            tv.setText(fiatstr);
+        }
+
+        if (tintrow)
+            row.setBackgroundColor(Color.parseColor("#ccffcc"));
 
         table.addView(row);
     }
@@ -166,7 +191,9 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
         addTransactionHeader(table);
 
         SimpleDateFormat dateFormater =
-            new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormater =
+            new SimpleDateFormat("kk:mm:ss");
 
         // Read all the transactions and sort by date.
         Iterable<WalletTransaction> txit = mWalletService.getTransactions();
@@ -184,6 +211,7 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
             });
 
         long btcbal = mWalletService.balanceForAccount(mAccountNum);
+        int rowcounter = 0;
         
         for (WalletTransaction wtx : txs) {
             Transaction tx = wtx.getTransaction();
@@ -192,10 +220,19 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
             long btc = mWalletService.amountForAccount(wtx, mAccountNum);
             if (btc != 0) {
+                double fiat = mBTCFmt.fiatAtRate(btc, mFiatPerBTC);
+                double fiatbal = mBTCFmt.fiatAtRate(btcbal, mFiatPerBTC);
+
                 String hash = tx.getHashAsString();
+
                 String datestr = dateFormater.format(tx.getUpdateTime());
-                String btcstr = mBTCFmt.formatCol(btc, 2, true);
-                String btcbalstr = mBTCFmt.formatCol(btcbal, 2, true);
+                String timestr = timeFormater.format(tx.getUpdateTime());
+
+                String btcstr = mBTCFmt.formatCol(btc, 0, true);
+                String btcbalstr = mBTCFmt.formatCol(btcbal, 0, true);
+
+                String fiatstr = String.format("%.02f", fiat);
+                String fiatbalstr = String.format("%.02f", fiatbal);
 
                 String confstr;
                 switch (ct) {
@@ -212,8 +249,12 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                 // This is just too noisy ...
                 // mLogger.info("tx " + hash);
 
-                addTransactionRow(hash, table, datestr,
-                                  btcstr, btcbalstr, confstr);
+                boolean tintrow = rowcounter % 2 == 0;
+                ++rowcounter;
+
+                addTransactionRow(hash, table, datestr, timestr, confstr,
+                                  btcstr, btcbalstr, fiatstr, fiatbalstr,
+                                  tintrow);
             }
 
             // We're working backward in time ...

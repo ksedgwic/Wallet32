@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:onClick="handleRowClick"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
     >
 
     <!-- Stretchy Horizontal Spacer -->
@@ -14,49 +16,34 @@
 	android:layout_weight="1"
 	/>
 
-    <TextView
-	android:id="@+id/row_date"
-	android:text="2013-11-17 11:11:11"
+    <LinearLayout
+	android:orientation="vertical"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="left"
-	android:textColor="#00f" 
-	/>
-  
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+	>
 
-    <TextView
-	android:id="@+id/row_btc"
-	android:text="0.0000"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
-	android:typeface="monospace"
-	/>
-  
-    <!-- Stretchy Horizontal Spacer -->
-    <View
-	android:layout_width="4dp"
-	android:layout_height="fill_parent"
-	android:layout_weight="1"
-	/>
+      <TextView
+	  android:id="@+id/row_date"
+	  android:text="2013-11-17"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:gravity="left"
+	  android:textColor="#00f" 
+	  />
 
-    <TextView
-	android:id="@+id/row_balance_btc"
-	android:text="000.0000"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:textAppearance="@android:style/TextAppearance.Small"
-	android:gravity="right"
-	android:typeface="monospace"
-	/>
+      <TextView
+	  android:id="@+id/row_time"
+	  android:text="11:11:11"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:gravity="left"
+	  android:textColor="#00f" 
+	  />
+
+    </LinearLayout>
   
     <!-- Stretchy Horizontal Spacer -->
     <View
@@ -73,6 +60,78 @@
 	android:textAppearance="@android:style/TextAppearance.Small"
 	android:gravity="right"
 	/>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:gravity="right"
+	>
+
+      <TextView
+	  android:id="@+id/row_btc_balance"
+	  android:text="0.0000"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:gravity="right"
+	  android:typeface="monospace"
+	  />
+      
+      <TextView
+	  android:id="@+id/row_btc"
+	  android:text="0.0000"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:gravity="right"
+	  android:typeface="monospace"
+	  />
+
+    </LinearLayout>
+  
+    <!-- Stretchy Horizontal Spacer -->
+    <View
+	android:layout_width="4dp"
+	android:layout_height="fill_parent"
+	android:layout_weight="1"
+	/>
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:gravity="right"
+	>
+
+      <TextView
+	  android:id="@+id/row_fiat_balance"
+	  android:text="000.00"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:gravity="right"
+	  android:typeface="monospace"
+	  />
+      
+      <TextView
+	  android:id="@+id/row_fiat"
+	  android:text="000.00"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:textAppearance="@android:style/TextAppearance.Small"
+	  android:gravity="right"
+	  android:typeface="monospace"
+	  />
+
+    </LinearLayout>
   
     <!-- Stretchy Horizontal Spacer -->
     <View
