@@ -58,6 +58,7 @@ import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.SendRequest;
+import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
@@ -79,10 +80,18 @@ public class HDWallet {
     private KeyParameter			mAesKey;
 
     private final DeterministicKey	mMasterKey;
+    private final DeterministicKey	mWalletRoot;
 
     private final byte[]			mWalletSeed;
     private final MnemonicCodeX.Version	mBIP39Version;
-    private final boolean			mAccountDerivePrivate;
+    
+    public enum HDStructVersion {
+        HDSV_L0PUB,	// Level0, public derivation.	M/<acct>/<chain>/<n>
+        HDSV_L0PRV,	// Level0, private derivation.	M/<acct>'/<chain>/<n>
+        HDSV_STDV0	// Standard, version 0.			M/0/0'/<acct>'/<chain>/<n>
+    }
+    
+    private HDStructVersion			mHDStructVersion;
 
     private ArrayList<HDAccount>	mAccounts;
 
@@ -233,16 +242,19 @@ public class HDWallet {
             }
 
             if (!walletNode.has("acct_derive")) {
-                mAccountDerivePrivate = false;
-                mLogger.info("defaulting mAccountDerivePrivate to false");
+                mHDStructVersion = HDStructVersion.HDSV_L0PUB;
+                mLogger.info("defaulting mHDStructVersion to HDSV_L0PUB");
             } else {
                 String acctderivstr = walletNode.getString("acct_derive");
                 if (acctderivstr.equals("PRV")) {
-                    mAccountDerivePrivate = true;
-                    mLogger.info("setting mAccountDerivePrivate to true");
+                    mHDStructVersion = HDStructVersion.HDSV_L0PRV;
+                    mLogger.info("setting mHDStructVersion to HDSV_L0PRV");
                 } else if (acctderivstr.equals("PUB")) {
-                    mAccountDerivePrivate = false;
-                    mLogger.info("setting mAccountDerivePrivate to false");
+                    mHDStructVersion = HDStructVersion.HDSV_L0PUB;
+                    mLogger.info("setting mHDStructVersion to HDSV_L0PUB");
+                } else if (acctderivstr.equals("STDV0")) {
+                    mHDStructVersion = HDStructVersion.HDSV_STDV0;
+                    mLogger.info("setting mHDStructVersion to HDSV_STDV0");
                 } else {
                     throw new RuntimeException
                         ("unknown acct_derive value: " + acctderivstr);
@@ -266,16 +278,34 @@ public class HDWallet {
 
         mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
 
-        mLogger.info("restored HDWallet " + mMasterKey.getPath());
+        switch (mHDStructVersion) {
+        case HDSV_L0PUB:
+        case HDSV_L0PRV:
+            // Both of the level 0 derivations use the master as the
+            // root of the accounts.
+            mWalletRoot = mMasterKey;
+            break;
+        case HDSV_STDV0:
+            // Standard derivation starts from M/0/0'
+            DeterministicKey t0 =
+                HDKeyDerivation.deriveChildKey(mMasterKey, 0);
+            mWalletRoot =
+                HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+            break;
+        default:
+            throw new RuntimeException("invalid HDStructVersion");
+        }
+
+        mLogger.info("restoring HDWallet " + mWalletRoot.getPath());
 
         mAccounts = new ArrayList<HDAccount>();
         JSONArray accounts = walletNode.getJSONArray("accounts");
         for (int ii = 0; ii < accounts.length(); ++ii) {
             mLogger.info(String.format("deserializing account %d", ii));
             JSONObject acctNode = accounts.getJSONObject(ii);
-            mAccounts.add(new HDAccount(mParams, mMasterKey,
+            mAccounts.add(new HDAccount(mParams, mWalletRoot,
                                         acctNode, isPairing,
-                                        mAccountDerivePrivate));
+                                        mHDStructVersion));
         }
     }
 
@@ -295,10 +325,17 @@ public class HDWallet {
                 throw new RuntimeException("unknown BIP39 version");
             }
 
-            if (mAccountDerivePrivate)
-                obj.put("acct_derive", "PRV");
-            else
+            switch (mHDStructVersion) {
+            case HDSV_L0PUB:
                 obj.put("acct_derive", "PUB");
+                break;
+            case HDSV_L0PRV:
+                obj.put("acct_derive", "PRV");
+                break;
+            case HDSV_STDV0:
+                obj.put("acct_derive", "STDV0");
+                break;
+            }
 
             JSONArray accts = new JSONArray();
             for (HDAccount acct : mAccounts)
@@ -322,7 +359,7 @@ public class HDWallet {
                     byte[] walletSeed,
                     int numAccounts,
                     MnemonicCodeX.Version bip39Version,
-                    boolean acctDerivPrivate) {
+                    HDStructVersion hdsv) {
         mParams = params;
         mDirectory = directory;
         mFilePrefix = filePrefix;
@@ -330,7 +367,7 @@ public class HDWallet {
         mAesKey = aesKey;
         mWalletSeed = walletSeed;
         mBIP39Version = bip39Version;
-        mAccountDerivePrivate = acctDerivPrivate;
+        mHDStructVersion = hdsv;
         
         switch (mBIP39Version) {
         case V0_5:
@@ -356,14 +393,32 @@ public class HDWallet {
 
         mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
 
-        mLogger.info("created HDWallet " + mMasterKey.getPath());
+        switch (mHDStructVersion) {
+        case HDSV_L0PUB:
+        case HDSV_L0PRV:
+            // Both of the level 0 derivations use the master as the
+            // root of the accounts.
+            mWalletRoot = mMasterKey;
+            break;
+        case HDSV_STDV0:
+            // Standard derivation starts from M/0/0'
+            DeterministicKey t0 =
+                HDKeyDerivation.deriveChildKey(mMasterKey, 0);
+            mWalletRoot =
+                HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+            break;
+        default:
+            throw new RuntimeException("invalid HDStructVersion");
+        }
+
+        mLogger.info("created HDWallet " + mWalletRoot.getPath());
 
         // Add some accounts.
         mAccounts = new ArrayList<HDAccount>();
         for (int ii = 0; ii < numAccounts; ++ii) {
             String acctName = String.format("Account %d", ii);
-            mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ii,
-            			  mAccountDerivePrivate));
+            mAccounts.add(new HDAccount(mParams, mWalletRoot, acctName, ii,
+                                        mHDStructVersion));
         }
     }
 
@@ -376,8 +431,8 @@ public class HDWallet {
         return mWalletSeed;
     }
 
-    public boolean getAccountDerivePrivate() {
-        return mAccountDerivePrivate;
+    public HDStructVersion getHDStructVersion() {
+        return mHDStructVersion;
     }
 
     public MnemonicCodeX.Version getBIP39Version() {
@@ -395,7 +450,8 @@ public class HDWallet {
     public void addAccount() {
         int ndx = mAccounts.size();
         String acctName = String.format("Account %d", ndx);
-        mAccounts.add(new HDAccount(mParams, mMasterKey, acctName, ndx, mAccountDerivePrivate));
+        mAccounts.add(new HDAccount(mParams, mWalletRoot, acctName, ndx,
+                                    mHDStructVersion));
     }
 
     public void gatherAllKeys(long creationTime, List<ECKey> keys) {

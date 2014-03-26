@@ -19,8 +19,14 @@
     <string name="restore_mnemonic">Or Enter Wallet Mnemonic:</string>
     <string name="restore_mnemonic_hint">space separated word list</string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
-    <string name="restore_pubderivdescr">If the wallet you want to restore was created prior to version v0.1.18 (14-Mar-2014) you should check this box:</string>
-    <string name="restore_pubderiv">Use Public Derivation for Accounts</string>
+    <string name="restore_hdstructdescr"><![CDATA[
+If the wallet you want to restore was created recently should use Standard Derivation.\n
+If the wallet you want to restore was created prior to version v0.2.2 (27-Mar-2014) you should select Level 0 Private.\n
+If the wallet you want to restore was created prior to version v0.1.18 (14-Mar-2014) you should select Level 0 Public.\n
+    ]]></string>
+    <string name="restore_stdv0">Use Standard Derivation</string>
+    <string name="restore_lvl0prv">Use Level 0 Private Derivation</string>
+    <string name="restore_lvl0pub">Use Level 0 Public Derivation</string>
     <string name="restore_legacydescr">If the wallet you want to restore was created prior to version v0.1.8 (19-Jan-2014) you should check this box:</string>
     <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
@@ -93,14 +99,19 @@ safe places that only you have access to.\n
     ]]></string>
     <string name="seed_hex_label">Hex Value</string>
     <string name="seed_mnemonic_label">Ordered Word List</string>
+    <string name="seed_acct_derive_stdv0"><![CDATA[
+\nThis wallet is using the proposed standard account derivations;
+you should not use either of the legacy level 0 account derivation
+settings if you need to recover it.
+    ]]></string>
     <string name="seed_acct_derive_prv"><![CDATA[
-\nThis wallet is using private account derivations;
-you should not use the public account derivation setting if you need to
+\nThis wallet is using level 0 private account derivations;
+you must use the level 0 private account derivation setting if you need to
 recover it.
     ]]></string>
     <string name="seed_acct_derive_pub"><![CDATA[
-\nThis wallet is using public account derivations;
-you must use the public account derivation setting if you need to
+\nThis wallet is using level 0 public account derivations;
+you must use the level 0 public account derivation setting if you need to
 recover it.
     ]]></string>
     <string name="seed_bip39_current"><![CDATA[

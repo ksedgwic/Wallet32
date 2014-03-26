@@ -185,13 +185,10 @@ https://play.google.com/apps/testing/com.bonsai.wallet32
 
 ----------------------------------------------------------------
 
-Wallet32 Beta Test
+Wallet32: A Hierarchical Deterministic Bitcoin Wallet for Android
 
-A beta version of Wallet32, a BIP-0032 hierarchical deterministic
-bitcoin wallet for android is available to members of the Bitcoin
-Google+ Community.
-
-Features include:
+Wallet32 is a BIP-0032 hierarchical deterministic bitcoin wallet for
+android. Features include:
 
 * Multiple logical "accounts" within each wallet.
 * Fresh receive and change addresses are used for each transfer.
@@ -200,9 +197,9 @@ Features include:
 * Same wallet may be securely accessed concurrently from multiple devices.
 * Wallet data is protected by scrypt passcode.
 
-The wallet is available at the following location:
+The wallet is available in the Google play store at:
 
-https://play.google.com/apps/testing/com.bonsai.wallet32
+https://play.google.com/store/apps/details?id=com.bonsai.wallet32
 
 Source code available here:
 

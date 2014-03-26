@@ -57,7 +57,7 @@ public class HDAccount {
                      DeterministicKey masterKey,
                      JSONObject acctNode,
                      boolean isPairing,
-                     boolean usePrivateDerivation)
+                     HDWallet.HDStructVersion hdsv)
         throws RuntimeException, JSONException {
 
         mParams = params;
@@ -66,8 +66,16 @@ public class HDAccount {
         mAccountId = acctNode.getInt("id");
 
         int childnum = mAccountId;
-        if (usePrivateDerivation)
+        switch (hdsv) {
+        case HDSV_L0PUB:
+            // Old level 0 public just uses the child number.
+            break;
+        case HDSV_L0PRV:
+        case HDSV_STDV0:
+            // Both L0PRV and CNSV0 use private derivation.
             childnum |= ChildNumber.PRIV_BIT;
+            break;
+        }
 
         mAccountKey =
             HDKeyDerivation.deriveChildKey(masterKey, childnum);
@@ -117,12 +125,20 @@ public class HDAccount {
                      DeterministicKey masterKey,
                      String accountName,
                      int acctnum,
-                     boolean usePrivateDerivation) {
+                     HDWallet.HDStructVersion hdsv) {
 
         mParams = params;
         int childnum = acctnum;
-        if (usePrivateDerivation)
+        switch (hdsv) {
+        case HDSV_L0PUB:
+            // Old level 0 public just uses the child number.
+            break;
+        case HDSV_L0PRV:
+        case HDSV_STDV0:
+            // Both L0PRV and CNSV0 use private derivation.
             childnum |= ChildNumber.PRIV_BIT;
+            break;
+        }
         mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, childnum);
         mAccountName = accountName;
         mAccountId = acctnum;

@@ -123,10 +123,17 @@ public class ViewSeedActivity extends BaseWalletActivity {
         mnetv.setText(builder.toString());
 
         TextView acctpubtv = (TextView) findViewById(R.id.acct_derive);
-        if (mWalletService.getAccountDerivePrivate())
-            acctpubtv.setText(mRes.getString(R.string.seed_acct_derive_prv));
-        else
+        switch (mWalletService.getHDStructVersion()) {
+        case HDSV_L0PUB:
             acctpubtv.setText(mRes.getString(R.string.seed_acct_derive_pub));
+            break;
+        case HDSV_L0PRV:
+            acctpubtv.setText(mRes.getString(R.string.seed_acct_derive_prv));
+            break;
+        case HDSV_STDV0:
+            acctpubtv.setText(mRes.getString(R.string.seed_acct_derive_stdv0));
+            break;
+        }
 
         TextView bipvertv = (TextView) findViewById(R.id.bip39_version);
         MnemonicCodeX.Version bipver = mWalletService.getBIP39Version();

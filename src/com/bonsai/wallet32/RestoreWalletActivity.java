@@ -38,7 +38,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
+import com.bonsai.wallet32.HDWallet.HDStructVersion;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
@@ -172,9 +174,20 @@ public class RestoreWalletActivity extends ActionBarActivity {
         MnemonicCodeX.Version bip39version =
             legacycb.isChecked() ? MnemonicCodeX.Version.V0_5 : MnemonicCodeX.Version.V0_6;
 
-        CheckBox usepubderivcb =
-            (CheckBox) findViewById(R.id.public_acct_deriv);
-        boolean acctDerivePrivate = !usepubderivcb.isChecked();
+        HDStructVersion hdsv;
+        RadioGroup hdsrg = (RadioGroup) findViewById(R.id.hdstruct_choice);
+        switch (hdsrg.getCheckedRadioButtonId()) {
+        default:
+        case R.id.hdstruct_stdv0:
+            hdsv = HDWallet.HDStructVersion.HDSV_STDV0;
+            break;
+        case R.id.hdstruct_lvl0prv:
+            hdsv = HDWallet.HDStructVersion.HDSV_L0PRV;
+            break;
+        case R.id.hdstruct_lvl0pub:
+            hdsv = HDWallet.HDStructVersion.HDSV_L0PUB;
+            break;
+        }
 
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
@@ -188,7 +201,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                                          seed,
                                          numaccts,
                                          bip39version,
-                                         acctDerivePrivate);
+                                         hdsv);
         hdwallet.persist();
 
         // Spin up the WalletService.

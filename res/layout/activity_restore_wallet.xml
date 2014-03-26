@@ -100,21 +100,47 @@
 	  />
 
       <TextView
-	  android:id="@+id/pubderiv_descr"
+	  android:id="@+id/hdstruct_descr"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/restore_pubderivdescr"
+          android:text="@string/restore_hdstructdescr"
 	  android:textAppearance="@android:style/TextAppearance.Small"
 	  android:layout_marginLeft="16dp"
 	  android:layout_marginRight="16dp"
 	  />
 
-      <CheckBox
-          android:id="@+id/public_acct_deriv"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_pubderiv"
-	  />
+      <RadioGroup
+	  android:id="@+id/hdstruct_choice"
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  >
+
+	<RadioButton
+	    android:id="@+id/hdstruct_stdv0"
+	    android:text="@string/restore_stdv0"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="10dp"
+	    android:checked="true"
+	    />
+
+	<RadioButton
+	    android:id="@+id/hdstruct_lvl0prv"
+	    android:text="@string/restore_lvl0prv"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="10dp"
+	    />
+
+	<RadioButton
+	    android:id="@+id/hdstruct_lvl0pub"
+	    android:text="@string/restore_lvl0pub"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    />
+
+      </RadioGroup>
 
       <!-- Stretchy Spacer -->
       <View
