@@ -17,8 +17,6 @@ Needed
 
 * Send dump feature.
 
-* mBTC Support
-
 * Tune for slow platforms.
 
 * Make passcode creation estimate of brute-force difficulty.
