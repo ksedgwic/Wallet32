@@ -142,7 +142,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
             }
             catch (MnemonicException.MnemonicWordException ex) {
                 String msg = mRes.getString(R.string.restore_badword,
-                                            ex.getMessage());
+                                            ex.badWord);
                 showErrorDialog(msg);
                 return;
             }
@@ -170,22 +170,26 @@ public class RestoreWalletActivity extends ActionBarActivity {
             return;
         }
 
-        CheckBox legacycb = (CheckBox) findViewById(R.id.legacy_bipver);
-        MnemonicCodeX.Version bip39version =
-            legacycb.isChecked() ? MnemonicCodeX.Version.V0_5 : MnemonicCodeX.Version.V0_6;
-
+        MnemonicCodeX.Version bip39version;
         HDStructVersion hdsv;
-        RadioGroup hdsrg = (RadioGroup) findViewById(R.id.hdstruct_choice);
+        RadioGroup hdsrg = (RadioGroup) findViewById(R.id.format_choice);
         switch (hdsrg.getCheckedRadioButtonId()) {
         default:
-        case R.id.hdstruct_stdv0:
+        case R.id.format_v0_4:
             hdsv = HDWallet.HDStructVersion.HDSV_STDV0;
+            bip39version = MnemonicCodeX.Version.V0_6;
             break;
-        case R.id.hdstruct_lvl0prv:
+        case R.id.format_v0_3:
             hdsv = HDWallet.HDStructVersion.HDSV_L0PRV;
+            bip39version = MnemonicCodeX.Version.V0_6;
             break;
-        case R.id.hdstruct_lvl0pub:
+        case R.id.format_v0_2:
             hdsv = HDWallet.HDStructVersion.HDSV_L0PUB;
+            bip39version = MnemonicCodeX.Version.V0_6;
+            break;
+        case R.id.format_v0_1:
+            hdsv = HDWallet.HDStructVersion.HDSV_L0PUB;
+            bip39version = MnemonicCodeX.Version.V0_5;
             break;
         }
 

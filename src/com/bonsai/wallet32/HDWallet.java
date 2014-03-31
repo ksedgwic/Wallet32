@@ -431,6 +431,24 @@ public class HDWallet {
         return mWalletSeed;
     }
 
+    public String getFormatVersionString() {
+        if (mBIP39Version == MnemonicCodeX.Version.V0_5) {
+            return "0.1";
+        }
+        else {
+            switch (mHDStructVersion) {
+            case HDSV_L0PUB:
+                return "0.2";
+            case HDSV_L0PRV:
+                return "0.3";
+            case HDSV_STDV0:
+                return "0.4";
+            default:
+                throw new RuntimeException("unknown HDStructVersion");
+            }
+        }
+    }
+
     public HDStructVersion getHDStructVersion() {
         return mHDStructVersion;
     }

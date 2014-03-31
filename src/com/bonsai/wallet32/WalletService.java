@@ -695,6 +695,10 @@ public class WalletService extends Service
         return obj.toString();
     }
 
+    public String getFormatVersionString() {
+        return mHDWallet.getFormatVersionString();
+    }
+
     public HDWallet.HDStructVersion getHDStructVersion() {
         return mHDWallet.getHDStructVersion();
     }

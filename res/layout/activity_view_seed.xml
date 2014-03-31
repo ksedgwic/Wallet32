@@ -74,6 +74,40 @@
 	  >
 
 	<TextView
+	    android:id="@+id/version_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/seed_version_label"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    android:textStyle="bold"
+	    />
+
+	<TextView
+	    android:id="@+id/format_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	    android:layout_marginLeft="32dp"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    android:textIsSelectable="true"
+	    />
+
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  >
+
+	<TextView
 	    android:id="@+id/hex_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,6 +120,7 @@
 	    android:id="@+id/seed_hex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+	    android:layout_marginLeft="32dp"
 	    android:textAppearance="@android:style/TextAppearance.Small"
 	    android:textIsSelectable="true"
 	    />
@@ -126,34 +161,6 @@
 	    />
 
       </LinearLayout>
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="1"
-	  />
-
-      <TextView
-	  android:id="@+id/acct_derive"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  />
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="1"
-	  />
-
-      <TextView
-	  android:id="@+id/bip39_version"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  />
 
       <!-- Stretchy Spacer -->
       <View

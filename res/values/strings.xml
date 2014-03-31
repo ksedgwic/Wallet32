@@ -17,24 +17,26 @@
     <string name="restore_seed">Enter Wallet Seed:</string>
     <string name="restore_seed_hint">Hexadecimal Seed</string>
     <string name="restore_mnemonic">Or Enter Wallet Mnemonic:</string>
-    <string name="restore_mnemonic_hint">space separated word list</string>
-    <string name="restore_numaccounts">Number of accounts to restore:</string>
-    <string name="restore_hdstructdescr"><![CDATA[
-If the wallet you want to restore was created recently should use Standard Derivation.\n
-If the wallet you want to restore was created prior to version v0.2.2 (27-Mar-2014) you should select Level 0 Private.\n
-If the wallet you want to restore was created prior to version v0.1.18 (14-Mar-2014) you should select Level 0 Public.\n
+    <string name="restore_mnemonic_hint"><![CDATA[space separated ordered
+\nword list goes
+\nhere ...
     ]]></string>
-    <string name="restore_stdv0">Use Standard Derivation</string>
-    <string name="restore_lvl0prv">Use Level 0 Private Derivation</string>
-    <string name="restore_lvl0pub">Use Level 0 Public Derivation</string>
-    <string name="restore_legacydescr">If the wallet you want to restore was created prior to version v0.1.8 (19-Jan-2014) you should check this box:</string>
-    <string name="restore_legacybipver">Legacy BIP-0039 Version</string>
+    <string name="restore_numaccounts">Number of accounts to restore:</string>
+    <string name="restore_format_label"><![CDATA[
+Wallet32 has been tracking the BIP39 and BIP32 standards as they
+develop. If you are restoring a wallet that was created with Wallet32
+using an earlier format version please select the appropriate choice below:
+    ]]></string>
+    <string name="restore_format_v0_4">Version 0.4, current wallets</string>
+    <string name="restore_format_v0_3">Version 0.3, before ~30-Mar-2014</string>
+    <string name="restore_format_v0_2">Version 0.2, before ~14-Mar-2014</string>
+    <string name="restore_format_v0_1">Version 0.1, before ~19-Jan-2014</string>
     <string name="restore_badhexvalue">Bad hex seed value</string>
     <string name="restore_badhexlength">Bad hex seed length</string>
     <string name="restore_bothbad">Both hex seed and mnemonic specified</string>
     <string name="restore_noseed">Enter hex seed or mnemonic</string>
     <string name="restore_badlength">Mnemonic word list not 12 words</string>
-    <string name="restore_badword">%1$s is not in mnemonic word list</string>
+    <string name="restore_badword">%1$s is not in the mnemonic word list</string>
     <string name="restore_badchecksum">Checksum error; corrupted word list</string>
     <string name="restore_badnumaccts">Bad number of accounts value</string>
     <string name="title_activity_pair_wallet">Pair Wallet</string>
@@ -90,38 +92,17 @@ few minutes to re-encrypt each of the existing keys.\n
     <string name="seed_directions"><![CDATA[
 \nWallet32 is a BIP-0032 Hierarchical Deterministic wallet and can
 be restored from a seed value if you lose your device.  You can
-restore the wallet from either the hex code or ordered list of words below.\n
+restore the wallet from the format version and either the hex code or
+ordered list of words below.\n
 \nIt\'s critical to keep these seed values safe from prying eyes!  If
 anyone else learns your seed value they can restore your wallet
 elsewhere and take your funds! Store your seed backup in multiple
 safe places that only you have access to.\n
 \nYou can get back to this screen from the menu.
     ]]></string>
+    <string name="seed_version_label">Format Version</string>
     <string name="seed_hex_label">Hex Value</string>
     <string name="seed_mnemonic_label">Ordered Word List</string>
-    <string name="seed_acct_derive_stdv0"><![CDATA[
-\nThis wallet is using the proposed standard account derivations;
-you should not use either of the legacy level 0 account derivation
-settings if you need to recover it.
-    ]]></string>
-    <string name="seed_acct_derive_prv"><![CDATA[
-\nThis wallet is using level 0 private account derivations;
-you must use the level 0 private account derivation setting if you need to
-recover it.
-    ]]></string>
-    <string name="seed_acct_derive_pub"><![CDATA[
-\nThis wallet is using level 0 public account derivations;
-you must use the level 0 public account derivation setting if you need to
-recover it.
-    ]]></string>
-    <string name="seed_bip39_current"><![CDATA[
-\nThis wallet is using the current version of BIP-0039 (v0.6);
-you should not use the legacy setting if you need to recover it.
-    ]]></string>
-    <string name="seed_bip39_legacy"><![CDATA[
-\nThis wallet is using a legacy version of BIP-0039 (v0.5);
-you must use the legacy setting to recover it.
-    ]]></string>
     <string name="seed_done">Done</string>
     <string name="title_activity_show_pairing">Wallet Pairing Code</string>
     <string name="pairing_directions"><![CDATA[

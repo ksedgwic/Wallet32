@@ -26,121 +26,39 @@
 	android:gravity="center"
 	>
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_seed"
-	  android:textAppearance="@android:style/TextAppearance.Medium"
-	  />
-
-      <EditText
-	  android:id="@+id/seed"
-	  android:inputType="text"
-	  android:singleLine="true"
-	  android:minWidth="200dp"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:gravity="left"
-	  android:hint="@string/restore_seed_hint"
-	  />
-
       <!-- Stretchy Spacer -->
       <View
 	  android:layout_width="fill_parent"
 	  android:layout_height="0dp"
-	  android:layout_weight="4"
+	  android:layout_weight="1"
 	  />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_mnemonic"
-	  android:textAppearance="@android:style/TextAppearance.Medium"
-	  />
-
-      <EditText
-	  android:id="@+id/mnemonic"
-	  android:inputType="textMultiLine"
-	  android:minWidth="200dp"
-	  android:layout_width="wrap_content"
-	  android:layout_height="120dp"
-	  android:gravity="left|top"
-	  android:hint="@string/restore_mnemonic_hint"
-	  />
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="4"
-	  />
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_numaccounts"
-	  android:textAppearance="@android:style/TextAppearance.Medium"
-	  />
-
-      <EditText
-	  android:id="@+id/numaccounts"
-	  android:inputType="numberDecimal"
-	  android:singleLine="true"
-	  android:minWidth="40dp"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:gravity="left"
-	  />
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="4"
-	  />
-
-      <TextView
-	  android:id="@+id/hdstruct_descr"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_hdstructdescr"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  android:layout_marginLeft="16dp"
-	  android:layout_marginRight="16dp"
-	  />
-
-      <RadioGroup
-	  android:id="@+id/hdstruct_choice"
+      <LinearLayout
 	  android:orientation="vertical"
 	  android:layout_width="fill_parent"
 	  android:layout_height="wrap_content"
+	  android:gravity="left"
 	  >
 
-	<RadioButton
-	    android:id="@+id/hdstruct_stdv0"
-	    android:text="@string/restore_stdv0"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_marginBottom="10dp"
-	    android:checked="true"
+	<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/restore_seed"
+	    android:textAppearance="@android:style/TextAppearance.Small"
 	    />
 
-	<RadioButton
-	    android:id="@+id/hdstruct_lvl0prv"
-	    android:text="@string/restore_lvl0prv"
+	<EditText
+	    android:id="@+id/seed"
+	    android:inputType="text"
+	    android:singleLine="true"
+	    android:minWidth="200dp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_marginBottom="10dp"
+	    android:hint="@string/restore_seed_hint"
+	    android:textAppearance="@android:style/TextAppearance.Small"
 	    />
 
-	<RadioButton
-	    android:id="@+id/hdstruct_lvl0pub"
-	    android:text="@string/restore_lvl0pub"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    />
-
-      </RadioGroup>
+      </LinearLayout>
 
       <!-- Stretchy Spacer -->
       <View
@@ -149,22 +67,136 @@
 	  android:layout_weight="4"
 	  />
 
-      <TextView
-	  android:id="@+id/legacy_descr"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_legacydescr"
-	  android:textAppearance="@android:style/TextAppearance.Small"
-	  android:layout_marginLeft="16dp"
-	  android:layout_marginRight="16dp"
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="16dp"
+	  android:gravity="left"
+	  >
+
+	<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/restore_mnemonic"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+	<EditText
+	    android:id="@+id/mnemonic"
+	    android:inputType="textMultiLine"
+	    android:minWidth="200dp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="80dp"
+	    android:gravity="left|top"
+	    android:hint="@string/restore_mnemonic_hint"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    >
+	    <requestFocus />
+	</EditText>
+
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
 	  />
 
-      <CheckBox
-          android:id="@+id/legacy_bipver"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/restore_legacybipver"
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="16dp"
+	  android:gravity="left"
+	  >
+
+	<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/restore_numaccounts"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+	<EditText
+	    android:id="@+id/numaccounts"
+	    android:inputType="numberDecimal"
+	    android:singleLine="true"
+	    android:minWidth="40dp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
 	  />
+
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="16dp"
+	  android:gravity="left"
+	  >
+
+	<TextView
+	    android:id="@+id/format_directions"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+            android:text="@string/restore_format_label"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+	
+	<RadioGroup
+	    android:id="@+id/format_choice"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    >
+
+	  <RadioButton
+	      android:id="@+id/format_v0_4"
+	      android:text="@string/restore_format_v0_4"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:textAppearance="@android:style/TextAppearance.Small"
+	      android:checked="true"
+	      />
+
+	  <RadioButton
+	      android:id="@+id/format_v0_3"
+	      android:text="@string/restore_format_v0_3"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:textAppearance="@android:style/TextAppearance.Small"
+	      />
+
+	  <RadioButton
+	      android:id="@+id/format_v0_2"
+	      android:text="@string/restore_format_v0_2"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:textAppearance="@android:style/TextAppearance.Small"
+	      />
+
+	  <RadioButton
+	      android:id="@+id/format_v0_1"
+	      android:text="@string/restore_format_v0_1"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:textAppearance="@android:style/TextAppearance.Small"
+	      />
+
+	</RadioGroup>
+
+      </LinearLayout>
 
       <!-- Stretchy Spacer -->
       <View

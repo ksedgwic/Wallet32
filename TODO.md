@@ -362,3 +362,25 @@ NPE at com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.jav
     <string name="wallet_service_note_rdead_msg">%1$s BTC dead</string>
     <string name="wallet_service_note_sdead_title">Send Dead</string>
     <string name="wallet_service_note_sdead_msg">%1$s BTC dead</string>
+
+----------------------------------------------------------------
+
+			Wallet Format 0.4
+      	 		Standard Account Derivation
+			bip39_version = V0_6
+			acct_derive = HDSV_STDV0
+30-Mar-2014	v0.2.2
+			Wallet Format 0.3
+			Level 0 Private Account Derivation
+			bip39_version = V0_6
+			acct_derive = HDSV_L0PRV
+14-Mar-2014	v0.1.18
+			Wallet Format 0.2
+			Level 0 Public Account Derivation
+			bip39_version = V0_6
+			acct_derive = HDSV_L0PUB
+19-Jan-2014	v0.1.8
+			Wallet Format 0.1
+			Legacy BIP-0039
+			bip39_version = V0_5
+			acct_derive = HDSV_L0PUB
