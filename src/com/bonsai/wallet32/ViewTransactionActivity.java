@@ -320,7 +320,7 @@ public class ViewTransactionActivity extends BaseWalletActivity {
             }
 
             if (df != null)
-                df.dismiss();
+                df.dismissAllowingStateLoss();
         }
     }
 

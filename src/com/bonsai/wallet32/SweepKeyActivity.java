@@ -458,7 +458,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
 
         @Override
         protected void onPostExecute(String jsonstr) {
-            mDF.dismiss();
+            mDF.dismissAllowingStateLoss();
 
             if (jsonstr == null) {
                 showErrorDialog(mRes.getString(R.string.sweep_error_blockchain));

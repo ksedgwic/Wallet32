@@ -546,7 +546,7 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            df.dismiss();
+            df.dismissAllowingStateLoss();
             setupComplete();
         }
     }
@@ -574,7 +574,7 @@ public class PasscodeActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            df.dismiss();
+            df.dismissAllowingStateLoss();
             validateComplete(result.booleanValue());
         }
     }

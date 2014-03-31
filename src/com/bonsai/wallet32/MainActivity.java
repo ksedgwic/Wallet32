@@ -142,7 +142,7 @@ public class MainActivity extends BaseWalletActivity {
             }
 
             if (mSyncProgressDialog != null) {
-                mSyncProgressDialog.dismiss();
+                mSyncProgressDialog.dismissAllowingStateLoss();
                 mSyncProgressDialog = null;
                 mDialogView = null;
             }
