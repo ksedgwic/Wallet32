@@ -45,9 +45,11 @@ public class MainActivity extends BaseWalletActivity {
 
     private WalletApplication	mWalletApp;
 
-    private View mDialogView = null;
-    private ProgressDialog mStateProgress = null;
+    private View mSyncDialogView = null;
     private DialogFragment mSyncProgressDialog = null;
+
+    private View mStateDialogView = null;
+    private DialogFragment mStateProgressDialog = null;
 
     private static SimpleDateFormat mDateFormatter =
         new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
@@ -104,17 +106,15 @@ public class MainActivity extends BaseWalletActivity {
         case KEYS_ADD:
         case PEERING:
             // All of these states use a progress dialog.
-            if (mStateProgress != null)
-                mStateProgress.setMessage(mWalletService.getStateString());
+            if (mStateProgressDialog != null)
+                updateStateMessage(mWalletService.getStateString());
             else
-                mStateProgress =
-                    ProgressDialog.show(MainActivity.this, "",
-                                        mWalletService.getStateString());
+                showStateProgressDialog(mWalletService.getStateString());
             break;
         case SYNCING:
-            if (mStateProgress != null) {
-                mStateProgress.dismiss();
-                mStateProgress = null;
+            if (mStateProgressDialog != null) {
+                mStateProgressDialog.dismissAllowingStateLoss();
+                mStateProgressDialog = null;
             }
 
             if (mSyncProgressDialog == null)
@@ -129,22 +129,23 @@ public class MainActivity extends BaseWalletActivity {
                             mDateFormatter.format(mWalletService.getScanDate()),
                             timeLeft);
 
-            if (mDialogView != null) {
+            if (mSyncDialogView != null) {
                 ProgressBar pb =
-                    (ProgressBar) mDialogView.findViewById(R.id.progress_bar);
+                    (ProgressBar) mSyncDialogView.findViewById(R.id.progress_bar);
                 pb.setProgress(pctdone);
             }
             break;
         case READY:
-            if (mStateProgress != null) {
-                mStateProgress.dismiss();
-                mStateProgress = null;
+            if (mStateProgressDialog != null) {
+                mStateProgressDialog.dismissAllowingStateLoss();
+                mStateProgressDialog = null;
+                mStateDialogView = null;
             }
 
             if (mSyncProgressDialog != null) {
                 mSyncProgressDialog.dismissAllowingStateLoss();
                 mSyncProgressDialog = null;
-                mDialogView = null;
+                mSyncDialogView = null;
             }
 
             // Did we have an intent uri? (Sent from another application ...)
@@ -208,6 +209,56 @@ public class MainActivity extends BaseWalletActivity {
     }
 
     @SuppressLint("ValidFragment")
+	public class StateProgressDialogFragment extends DialogFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String details = getArguments().getString("details");
+            AlertDialog.Builder builder =
+                new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            mStateDialogView =
+                inflater.inflate(R.layout.dialog_state_progress, null);
+            TextView detailsTextView =
+                (TextView) mStateDialogView.findViewById(R.id.state_details);
+            detailsTextView.setText(details);
+            builder.setView(mStateDialogView)
+                .setNegativeButton(R.string.sync_abort,
+                                   new DialogInterface.OnClickListener() {
+                                       public void onClick(DialogInterface dialog,
+                                                           int id) {
+                                           mLogger.info("Abort sync selected");
+                                           doExit();
+                                       }
+                                   });      
+            return builder.create();
+        }
+    }
+
+    private void showStateProgressDialog(String details) {
+        DialogFragment df = new StateProgressDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("details", details);
+        df.setArguments(args);
+        df.setCancelable(false);
+        df.show(getSupportFragmentManager(), "state_progress_dialog");
+        mStateProgressDialog = df;
+    }
+
+    private void updateStateMessage(String msg) {
+        if (mStateDialogView == null)
+            return;
+        TextView smtv =
+            (TextView) mStateDialogView.findViewById(R.id.state_details);
+        smtv.setText(msg);
+    }
+
+    @SuppressLint("ValidFragment")
 	public class SyncProgressDialogFragment extends DialogFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -221,11 +272,11 @@ public class MainActivity extends BaseWalletActivity {
             AlertDialog.Builder builder =
                 new AlertDialog.Builder(getActivity());
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            mDialogView = inflater.inflate(R.layout.dialog_sync_progress, null);
+            mSyncDialogView = inflater.inflate(R.layout.dialog_sync_progress, null);
             TextView detailsTextView =
-                (TextView) mDialogView.findViewById(R.id.sync_details);
+                (TextView) mSyncDialogView.findViewById(R.id.sync_details);
             detailsTextView.setText(details);
-            builder.setView(mDialogView)
+            builder.setView(mSyncDialogView)
                 .setNegativeButton(R.string.sync_abort,
                                    new DialogInterface.OnClickListener() {
                                        public void onClick(DialogInterface dialog,
@@ -273,19 +324,19 @@ public class MainActivity extends BaseWalletActivity {
 
     private void updateSyncStats(String pctstr, String blksstr,
                                  String datestr, String cmplstr) {
-        if (mDialogView == null)
+        if (mSyncDialogView == null)
             return;
 
-        TextView pcttv = (TextView) mDialogView.findViewById(R.id.percent);
+        TextView pcttv = (TextView) mSyncDialogView.findViewById(R.id.percent);
         pcttv.setText(pctstr);
 
-        TextView blkstv = (TextView) mDialogView.findViewById(R.id.blocks_left);
+        TextView blkstv = (TextView) mSyncDialogView.findViewById(R.id.blocks_left);
         blkstv.setText(blksstr);
                 
-        TextView datetv = (TextView) mDialogView.findViewById(R.id.scan_date);
+        TextView datetv = (TextView) mSyncDialogView.findViewById(R.id.scan_date);
         datetv.setText(datestr);
 
-        TextView cmpltv = (TextView) mDialogView.findViewById(R.id.scan_cmpl);
+        TextView cmpltv = (TextView) mSyncDialogView.findViewById(R.id.scan_cmpl);
         cmpltv.setText(cmplstr);
     }
 

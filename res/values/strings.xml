@@ -122,6 +122,7 @@ using Wallet32.
     <string name="rescan_rescan">Rescan</string>
     <string name="rescan_cancel">Cancel</string>
     <string name="base_error_ok">OK</string>
+    <string name="sync_state_title">Setting Up Wallet</string>
     <string name="sync_title">Sync Progress</string>
     <string name="sync_percent_label">Percent Complete</string>
     <string name="sync_blocks_left_label">Blocks Left</string>
