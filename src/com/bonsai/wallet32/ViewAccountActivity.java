@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -101,6 +103,30 @@ public class ViewAccountActivity extends BaseWalletActivity {
 
         mLogger.info("ViewAccountActivity created");
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.account_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        Intent intent;
+        switch (item.getItemId()) {
+        case R.id.action_export_xpub:
+            intent = new Intent(this, ShowXPubActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("xpubstr", mAccount.xpubstr());
+            intent.putExtras(bundle);
+            startActivity(intent);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
 	@Override
     protected void onWalletServiceBound() {

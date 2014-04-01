@@ -183,6 +183,10 @@ public class HDAccount {
         return mChangeChain.hasPubKey(pubkey, pubkeyhash);
     }
 
+    public String xpubstr() {
+        return mAccountKey.serializePubB58();
+    }
+
     public String getName() {
         return mAccountName;
     }

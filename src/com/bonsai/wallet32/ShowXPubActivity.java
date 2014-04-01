@@ -17,42 +17,39 @@ package com.bonsai.wallet32;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-public class ShowPairingActivity extends BaseWalletActivity {
+public class ShowXPubActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
-        LoggerFactory.getLogger(ShowPairingActivity.class);
-
-    private boolean			mSeedFetched;
+        LoggerFactory.getLogger(ShowXPubActivity.class);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-        mSeedFetched = false;
-
 		super.onCreate(savedInstanceState);
 
-        mLogger.info("ShowPairingActivity created");
+        mLogger.info("ShowXPubActivity created");
 
-		setContentView(R.layout.activity_show_pairing);
-	}
+		setContentView(R.layout.activity_show_xpub);
 
-	@Override
-    protected void onWalletServiceBound() {
-        String pairingCode = mWalletService.getPairingCode();
+        Bundle bundle = getIntent().getExtras();
+
+        String xpubstr = bundle.getString("xpubstr");
+
+        TextView tv = (TextView) findViewById(R.id.xpubstr);
+        tv.setText(xpubstr);
 
         final int size =
             (int) (240 * getResources().getDisplayMetrics().density);
 
-        Bitmap bm = WalletUtil.createBitmap(pairingCode, size);
+        Bitmap bm = WalletUtil.createBitmap(xpubstr, size);
         if (bm != null) {
-            ImageView iv = (ImageView) findViewById(R.id.pairing_qr_view);
+            ImageView iv = (ImageView) findViewById(R.id.xpub_qr_view);
             iv.setImageBitmap(bm);
         }
-    }
+	}
 }

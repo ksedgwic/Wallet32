@@ -68,6 +68,16 @@
                 android:value="com.bonsai.wallet32.MainActivity" />
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.ShowXPubActivity"
+            android:label="@string/title_activity_show_xpub"
+            android:parentActivityName="com.bonsai.wallet32.MainActivity"
+	    android:screenOrientation="sensorPortrait"
+	    >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bonsai.wallet32.MainActivity" />
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.ShowPairingActivity"
             android:label="@string/title_activity_show_pairing"
             android:parentActivityName="com.bonsai.wallet32.MainActivity"

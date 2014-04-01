@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_view_seed">View Seed</string>
     <string name="action_about">About Wallet32</string>
+    <string name="action_export_xpub">Export Account XPUB</string>
     <string name="title_activity_lobby">Wallet32</string>
     <string name="lobby_starting">Wallet32 Starting &#8230;</string>
     <string name="title_activity_create_restore">Create/Restore Wallet</string>
@@ -104,6 +105,10 @@ safe places that only you have access to.\n
     <string name="seed_hex_label">Hex Value</string>
     <string name="seed_mnemonic_label">Ordered Word List</string>
     <string name="seed_done">Done</string>
+    <string name="title_activity_show_xpub">Account XPUB Code</string>
+    <string name="xpub_directions"><![CDATA[
+\nYou can use this code to export the public identifiers for this account.
+    ]]></string>
     <string name="title_activity_show_pairing">Wallet Pairing Code</string>
     <string name="pairing_directions"><![CDATA[
 \nYou can scan this code when you setup Wallet32 on another device.\n
