@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Hashtable;
 import java.util.List;
@@ -40,6 +41,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
@@ -48,6 +51,8 @@ import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.bitcoin.core.Utils;
+import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
 import com.google.bitcoin.crypto.MnemonicCodeX;
@@ -336,5 +341,22 @@ public class WalletUtil {
         }
 
         // Every input is now complete.
+    }
+
+    public static DeterministicKey createMasterPubKeyFromPubB58(String xpubstr)
+        throws AddressFormatException
+    {
+        byte[] data = Base58.decodeChecked(xpubstr);
+        ByteBuffer ser = ByteBuffer.wrap(data);
+        if (ser.getInt() != 0x0488B21E)
+            throw new AddressFormatException("bad xpub version");
+        ser.get();		// depth
+        ser.getInt();	// parent fingerprint
+        ser.getInt();	// child number
+        byte[] chainCode = new byte[32];
+        ser.get(chainCode);
+        byte[] pubBytes = new byte[33];
+        ser.get(pubBytes);
+        return HDKeyDerivation.createMasterPubKeyFromBytes(pubBytes, chainCode);
     }
 }

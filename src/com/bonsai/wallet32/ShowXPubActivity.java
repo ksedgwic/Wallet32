@@ -18,6 +18,13 @@ package com.bonsai.wallet32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.HDKeyDerivation;
+
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -27,6 +34,8 @@ public class ShowXPubActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(ShowXPubActivity.class);
+
+    private String mXPubStr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,5 +60,45 @@ public class ShowXPubActivity extends BaseWalletActivity {
             ImageView iv = (ImageView) findViewById(R.id.xpub_qr_view);
             iv.setImageBitmap(bm);
         }
+
+        mXPubStr = xpubstr;
 	}
+
+    // FIXME - This code is just checking the xpub, remove it.
+	@Override
+    protected void onWalletServiceBound() {
+        if (false) {
+            NetworkParameters params =
+                mWalletService == null ? null : mWalletService.getParams();
+
+            DeterministicKey accountKey;
+            try {
+                accountKey = WalletUtil.createMasterPubKeyFromPubB58(mXPubStr);
+            } catch (AddressFormatException e) {
+                throw new RuntimeException("failed to decode account key");
+            }
+
+            DeterministicKey recvChainKey =
+                HDKeyDerivation.deriveChildKey(accountKey, 0);
+            for (int ii = 0; ii < 10; ++ii) {
+                DeterministicKey kk =
+                    HDKeyDerivation.deriveChildKey(recvChainKey, ii);
+                byte[] pubBytes = kk.getPubKeyBytes();
+                ECKey eckey = new ECKey(null, pubBytes);
+                Address addr = eckey.toAddress(params);
+                mLogger.info(String.format("recv[%d] %s", ii, addr.toString()));
+            }
+
+            DeterministicKey chngChainKey =
+                HDKeyDerivation.deriveChildKey(accountKey, 1);
+            for (int ii = 0; ii < 10; ++ii) {
+                DeterministicKey kk =
+                    HDKeyDerivation.deriveChildKey(chngChainKey, ii);
+                byte[] pubBytes = kk.getPubKeyBytes();
+                ECKey eckey = new ECKey(null, pubBytes);
+                Address addr = eckey.toAddress(params);
+                mLogger.info(String.format("chng[%d] %s", ii, addr.toString()));
+            }
+        }
+    }
 }
