@@ -74,7 +74,7 @@ public class HDAddress {
         try {
             mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
         } catch (AddressFormatException ex) {
-            throw new RuntimeException("failed to decode pubByts");
+            throw new RuntimeException("failed to decode pubBytes");
         }
         
         mECKey = new ECKey(prvBytes, mPubBytes);
