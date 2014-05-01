@@ -38,6 +38,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionConfidence;
 import com.google.bitcoin.core.TransactionConfidence.ConfidenceType;
@@ -206,7 +207,17 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                                    WalletTransaction wt1) {
                     Date dt0 = wt0.getTransaction().getUpdateTime();
                     Date dt1 = wt1.getTransaction().getUpdateTime();
-                    return -dt0.compareTo(dt1);
+                    int cmp = -dt0.compareTo(dt1);
+                    if (cmp == 0) {
+                        // These two transactions happened in the same
+                        // block (same time) so we should compare
+                        // something else to keep the sorting order
+                        // stable.
+                        Sha256Hash h0 = wt0.getTransaction().getHash();
+                        Sha256Hash h1 = wt1.getTransaction().getHash();
+                        return -h0.compareTo(h1);
+                    }
+                    return cmp;
                 }
             });
 

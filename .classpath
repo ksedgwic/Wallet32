@@ -8,6 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CaptureActivity"/>
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="lib" path="libs/logback-android-1.1.1-1.jar"/>
-	<classpathentry kind="lib" path="libs/uber-bitcoinj-0.11.1-nolib.jar"/>
+	<classpathentry kind="lib" path="/Users/ksedgwic/bonsai/workspace/Wallet32/libs/uber-bitcoinj-0.11.2-nolib.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
