@@ -15,14 +15,22 @@
 
 package com.bonsai.wallet32;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
@@ -51,6 +59,8 @@ public class WalletApplication
     public String			mIntentURI = null;
 
     private BTCFmt			mBTCFmt = null;
+
+    private String			mWalletDirName;
 
 	@Override
 	public void onCreate()
@@ -120,8 +130,140 @@ public class WalletApplication
         return mIntentURI;
     }
 
+    public static class WalletEntry {
+        public String	mName;		// User friendly name.
+        public String	mPath;		// Wallet directory path name.
+        public WalletEntry(String name, String path) {
+            mName = name;
+            mPath = path;
+        }
+        public JSONObject dumpJSON() throws JSONException {
+            JSONObject entobj = new JSONObject();
+            entobj.put("name", mName);
+            entobj.put("path", mPath);
+            return entobj;
+        }
+		public static WalletEntry loadJSON(JSONObject entobj)
+            throws JSONException {
+            return new WalletEntry(entobj.getString("name"),
+                                   entobj.getString("path"));
+        }
+    }
+
+    public List<WalletEntry> listWallets() {
+        List<WalletEntry> wallets = new ArrayList<WalletEntry>();
+
+        File walletDirFile =
+            new File(getFilesDir(), getWalletPrefix() + ".walletdir");
+
+        // Does the directory not exist?
+        if (!walletDirFile.exists()) {
+            // Yes, we don't have a directory file yet.  Create a
+            // default one with a single entry for default wallet.
+            mLogger.info("creating default wallet directory in " +
+                         walletDirFile.getPath());
+            wallets.add(new WalletEntry("Default", "."));
+            persistWalletDirectory(wallets);
+        }
+        else {
+            mLogger.info("reading wallet directory in " +
+                         walletDirFile.getPath());
+            wallets = loadWalletDirectory();
+        }
+
+        return wallets;
+    }
+
+    public void persistWalletDirectory(List<WalletEntry> wallets) {
+        File walletDirFile =
+            new File(getFilesDir(), getWalletPrefix() + ".walletdir");
+        try {
+            File tmpFile = new File(walletDirFile.getPath() + ".tmp");
+            if (tmpFile.exists()) {
+                mLogger.info("deleting existing at " + tmpFile.getPath());
+                tmpFile.delete();
+            }
+        
+            JSONArray listobj = new JSONArray();
+            for (WalletEntry entry : wallets)
+                listobj.put(entry.dumpJSON());
+            JSONObject rootobj = new JSONObject();
+            rootobj.put("wallets", listobj);
+            String jsonstr = rootobj.toString(4);	// indentation
+            byte[] jsondata = jsonstr.getBytes(Charset.forName("UTF-8"));
+
+            mLogger.info("persisting: " + jsonstr);
+
+            FileOutputStream ostrm = new FileOutputStream(tmpFile);
+            ostrm.write(jsondata);
+            ostrm.close();
+
+            // Swap the tmp file into place.
+            if (!tmpFile.renameTo(walletDirFile))
+                mLogger.warn("failed to rename to " + walletDirFile.getPath());
+            else
+                mLogger.info("persisted to " + walletDirFile.getPath());
+        }
+        catch (Exception ex) {
+            mLogger.error("persistWalletDirectory failed: " + ex.toString());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public List<WalletEntry> loadWalletDirectory() {
+        File walletDirFile =
+            new File(getFilesDir(), getWalletPrefix() + ".walletdir");
+
+        try {
+            int len = (int) walletDirFile.length();
+            DataInputStream dis =
+                new DataInputStream(new FileInputStream(walletDirFile));
+            byte[] jsondata = new byte[len];
+            dis.readFully(jsondata);
+            String jsonstr = new String(jsondata);
+            mLogger.info("loading: " + jsonstr);
+            JSONObject rootobj = new JSONObject(jsonstr);
+            JSONArray listobj = rootobj.getJSONArray("wallets");
+            ArrayList<WalletEntry> wallets = new ArrayList<WalletEntry>();
+            for (int ii = 0; ii < listobj.length(); ++ii)
+                wallets.add(WalletEntry.loadJSON(listobj.getJSONObject(ii)));
+            return wallets;
+        }
+        catch (Exception ex) {
+            mLogger.error("loadWalletDirectory failed: " + ex.toString());
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void makeWalletDirectory(String walletDirName) {
+        File dir = new File(getFilesDir(), walletDirName);
+        boolean success = dir.mkdir();
+    }
+
+    public void setWalletDirName(String walletDirName) {
+        mWalletDirName = walletDirName;
+    }
+
+    public File getWalletDir() {
+        return new File(getFilesDir(), mWalletDirName);
+    }
+
+    public String getWalletPrefix() {
+        return "wallet32";
+    }
+
+    public File getHDWalletFile(String suffix) {
+        String filename = getWalletPrefix() + ".hdwallet";
+        if (suffix != null)
+            filename = filename + suffix;
+        return new File(getWalletDir(), filename);
+    }
+
 	private void initLogging()
 	{
+        // We can't log into the wallet specific directories because
+        // logging is initialized well before we've selected one.
+
 		final File logDir = getDir("log", MODE_PRIVATE); // Context.MODE_WORLD_READABLE
 		final File logFile = new File(logDir, "wallet32.log");
 

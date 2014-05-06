@@ -22,9 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.bonsai.wallet32.WalletApplication.WalletEntry;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -183,6 +186,28 @@ public class SettingsActivity extends PreferenceActivity {
                             sendLogs();
                             finish();
                             return true;
+                        }
+                    });
+        }
+
+        {
+            Preference butt =
+                (Preference) findPreference("pref_addWallet");
+            butt.setOnPreferenceClickListener
+                (new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            WalletApplication wallapp =
+                                (WalletApplication) getApplicationContext();
+                            List<WalletEntry> wallets =
+                                wallapp.loadWalletDirectory();
+                            int sz = wallets.size();
+                            String name = String.format("Wallet %d", sz + 1);
+                            String path = String.format("wallet%03d", sz + 1);
+                            wallets.add(new WalletEntry(name, path));
+                            wallapp.makeWalletDirectory(path);
+                            wallapp.persistWalletDirectory(wallets);
+							return true;
                         }
                     });
         }

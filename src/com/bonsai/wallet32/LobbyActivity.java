@@ -17,6 +17,7 @@ package com.bonsai.wallet32;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +28,18 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar.LayoutParams;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class LobbyActivity extends Activity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(LobbyActivity.class);
+
+    private WalletApplication mWalletApp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,7 @@ public class LobbyActivity extends Activity {
         editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
         editor.commit();
 
-        WalletApplication wapp = (WalletApplication) getApplicationContext();
+        mWalletApp = (WalletApplication) getApplicationContext();
 
         // Were we called with VIEW intent URI (another app wants to send)?
         {
@@ -65,7 +72,7 @@ public class LobbyActivity extends Activity {
                 && "bitcoin".equals(scheme))
             {
                 mLogger.info("saw URI " + intentUri.toString());
-                wapp.setIntentURI(intentUri.toString());
+                mWalletApp.setIntentURI(intentUri.toString());
             }
         }
 
@@ -75,36 +82,64 @@ public class LobbyActivity extends Activity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
+            finish();
         }
 
         else {
-            // Is there an existing wallet?
-            File dir = getApplicationContext().getFilesDir();
-            String filePrefix = "wallet32"; // FIXME - Also in WalletService
-            String path = filePrefix + ".hdwallet";	// FIXME - WalletService
-            File walletFile = new File(dir, path);
-            if (walletFile.exists()) {
+            List<WalletApplication.WalletEntry> walletList = mWalletApp.listWallets();
+            if (walletList.size() == 1) {
+                // If there is one wallet, open it by default.
+                openWallet(walletList.get(0).mPath);
+                finish();
+            }
+            else {
+                LinearLayout ll =
+                    (LinearLayout) findViewById(R.id.button_layout);
+                LayoutParams lp =
+                    new LayoutParams(LayoutParams.MATCH_PARENT,
+                                     LayoutParams.WRAP_CONTENT);
 
-                mLogger.info("Existing wallet found");
-
-                Intent intent = new Intent(this, PasscodeActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("action", "login");
-                intent.putExtras(bundle);
-                startActivity(intent);
-
-            } else {
-
-                mLogger.info("No existing wallet");
-
-                Intent intent = new Intent(this, CreateRestoreActivity.class);
-                startActivity(intent);
+                for (WalletApplication.WalletEntry entry : walletList) {
+                    Button butt = new Button(this);
+                    butt.setText(entry.mName);
+                    butt.setTag(entry.mPath);
+                    butt.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View view) {
+                                String path = (String) view.getTag();
+                                mWalletApp.makeWalletDirectory(path);
+                                openWallet(path);
+                            }
+                        });
+                            
+                    ll.addView(butt, lp);
+                }
             }
         }
-
-        // Prevent the user from coming back here.
-        finish();
 	}
+
+    public void openWallet(String walletPath) {
+
+        mWalletApp.setWalletDirName(walletPath);
+
+        File walletFile = mWalletApp.getHDWalletFile(null);
+        if (walletFile.exists()) {
+
+            mLogger.info("Existing wallet found");
+
+            Intent intent = new Intent(this, PasscodeActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("action", "login");
+            intent.putExtras(bundle);
+            startActivity(intent);
+
+        } else {
+
+            mLogger.info("No existing wallet");
+
+            Intent intent = new Intent(this, CreateRestoreActivity.class);
+            startActivity(intent);
+        }
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,5 +147,4 @@ public class LobbyActivity extends Activity {
 		getMenuInflater().inflate(R.menu.lobby_actions, menu);
 		return true;
 	}
-
 }

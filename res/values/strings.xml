@@ -355,6 +355,9 @@ This transaction is really large; it will take a while to process.\n
 
     <string name="send_logs_mail_intent_chooser">Send Logs with…</string>
 
+    <string name="pref_add_wallet">Add Wallet</string>
+    <string name="pref_add_wallet_summary">Add an additional wallet</string>
+
     <string name="pref_about">About Wallet32</string>
 
     <string name="pref_rescan_title">Confirm Rescan</string>

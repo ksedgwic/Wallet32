@@ -87,6 +87,8 @@ public class WalletService extends Service
     private static Logger mLogger =
         LoggerFactory.getLogger(WalletService.class);
 
+    private WalletApplication mWalletApp;
+
     public enum State {
         SETUP,			// CTOR
         WALLET_SETUP,	// Setting up wallet app kit.
@@ -341,7 +343,7 @@ public class WalletService extends Service
                 int maxExtended = mHDWallet.ensureMargins(mKit.wallet());
 
                 // Persist the new state.
-                mHDWallet.persist();
+                mHDWallet.persist(mWalletApp);
 
                 Intent intent = new Intent("wallet-state-changed");
                 mLBM.sendBroadcast(intent);
@@ -380,7 +382,6 @@ public class WalletService extends Service
             // scanTime  0 : full rescan
             // scanTime  t : scan from time t
             final Long scanTime = params[0];
-            WalletApplication wallapp = (WalletApplication) mContext;
 
             setState(State.WALLET_SETUP);
 
@@ -394,10 +395,10 @@ public class WalletService extends Service
             // Try to restore existing wallet.
             mHDWallet = null;
             try {
-				mHDWallet = HDWallet.restore(mContext,
+				mHDWallet = HDWallet.restore(mWalletApp,
 											 mParams,
-				                             mContext.getFilesDir(),
-				                             mFilePrefix, mKeyCrypter, mAesKey);
+				                             mKeyCrypter,
+                                             mAesKey);
 			} catch (InvalidCipherTextException ex) {
                 mLogger.error("wallet restore failed: " + ex.toString());
 			} catch (IOException ex) {
@@ -427,8 +428,8 @@ public class WalletService extends Service
             }
 
             mKit = new MyWalletAppKit(mParams,
-                                      mContext.getFilesDir(),
-                                      mFilePrefix,
+                                      mWalletApp.getWalletDir(),
+                                      mWalletApp.getWalletPrefix(),
                                       mKeyCrypter,
                                       scanTime)
                 {
@@ -478,7 +479,7 @@ public class WalletService extends Service
 
             // Bail if we're being shutdown ...
             if (mState == State.SHUTDOWN) {
-                mHDWallet.persist();
+                mHDWallet.persist(mWalletApp);
                 return null;
             }
 
@@ -497,7 +498,7 @@ public class WalletService extends Service
             int maxExtended = mHDWallet.ensureMargins(mKit.wallet());
 
             // Persist the new state.
-            mHDWallet.persist();
+            mHDWallet.persist(mWalletApp);
 
             // Listen for future wallet changes.
             mKit.wallet().addEventListener(mWalletListener);
@@ -543,6 +544,8 @@ public class WalletService extends Service
 
         mLogger.info("WalletService created");
 
+        mWalletApp = (WalletApplication) getApplicationContext();
+
         mContext = getApplicationContext();
         mRes = mContext.getResources();
 
@@ -564,8 +567,6 @@ public class WalletService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        WalletApplication wallapp = (WalletApplication) getApplicationContext();
-
         // Establish our SyncState
         Bundle bundle = intent.getExtras();
         String syncStateStr = bundle.getString("SyncState");
@@ -579,8 +580,8 @@ public class WalletService extends Service
             syncStateStr.equals("RERESCAN")	? SyncState.RERESCAN :
             SyncState.STARTUP;
             
-        mKeyCrypter = wallapp.mKeyCrypter;
-        mAesKey = wallapp.mAesKey;
+        mKeyCrypter = mWalletApp.mKeyCrypter;
+        mAesKey = mWalletApp.mAesKey;
 
         // Set any new key's creation time to now.
         long now = Utils.now().getTime() / 1000;
@@ -683,7 +684,7 @@ public class WalletService extends Service
     }
 
     public void persist() {
-        mHDWallet.persist();
+        mHDWallet.persist(mWalletApp);
     }
 
     public byte[] getWalletSeed() {
@@ -714,7 +715,7 @@ public class WalletService extends Service
 
         // Change the parameters on our HDWallet.
         mHDWallet.setPersistCrypter(keyCrypter, aesKey);
-        mHDWallet.persist();
+        mHDWallet.persist(mWalletApp);
 
         mLogger.info("persisted HD wallet");
 
@@ -773,7 +774,7 @@ public class WalletService extends Service
         mLogger.info(String.format("adding %d keys", keys.size()));
         mKit.wallet().addKeys(keys);
 
-        mHDWallet.persist();
+        mHDWallet.persist(mWalletApp);
     }
 
     public void rescanBlockchain(long rescanTime) {
@@ -804,7 +805,7 @@ public class WalletService extends Service
         // disturbing to see negative historical balances.  They'll
         // get completely refigured when the sync is done anyway ...
         //
-        mHDWallet.persist();
+        mHDWallet.persist(mWalletApp);
         mHDWallet = null;
 
         mLogger.info("resetting wallet state");
@@ -823,15 +824,15 @@ public class WalletService extends Service
 
         mLogger.info("removing spvchain file");
         File chainFile =
-            new File(mContext.getFilesDir(), mFilePrefix + ".spvchain");
+            new File(mContext.getFilesDir(),
+                     mWalletApp.getWalletPrefix() + ".spvchain");
         if (!chainFile.delete())
             mLogger.error("delete of spvchain file failed");
 
         mLogger.info("restarting wallet");
-        WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
-        mKeyCrypter = wallapp.mKeyCrypter;
-        mAesKey = wallapp.mAesKey;
+        mKeyCrypter = mWalletApp.mKeyCrypter;
+        mAesKey = mWalletApp.mAesKey;
 
         setState(State.SETUP);
         mTask = new SetupWalletTask();

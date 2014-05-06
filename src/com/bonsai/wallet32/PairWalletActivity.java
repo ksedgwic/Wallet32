@@ -120,10 +120,8 @@ public class PairWalletActivity extends ActionBarActivity {
             // Setup a wallet with the restore seed.
             HDWallet hdwallet;
             try {
-                hdwallet = new HDWallet(getApplicationContext(),
+                hdwallet = new HDWallet(wallapp,
                                         params,
-                                        getApplicationContext().getFilesDir(),
-                                        filePrefix,
                                         wallapp.mKeyCrypter,
                                         wallapp.mAesKey,
                                         codeObj,
@@ -134,7 +132,7 @@ public class PairWalletActivity extends ActionBarActivity {
                 mLogger.error(msg);
                 throw new RuntimeException(msg);
             }
-            hdwallet.persist();
+            hdwallet.persist(wallapp);
 			return null;
         }
 

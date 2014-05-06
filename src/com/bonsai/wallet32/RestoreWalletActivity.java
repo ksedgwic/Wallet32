@@ -196,17 +196,15 @@ public class RestoreWalletActivity extends ActionBarActivity {
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
         // Setup a wallet with the restore seed.
-        HDWallet hdwallet = new HDWallet(getApplicationContext(),
+        HDWallet hdwallet = new HDWallet(wallapp,
         							     params,
-                                         getApplicationContext().getFilesDir(),
-                                         filePrefix,
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
                                          numaccts,
                                          bip39version,
                                          hdsv);
-        hdwallet.persist();
+        hdwallet.persist(wallapp);
 
         // Spin up the WalletService.
         Intent svcintent = new Intent(this, WalletService.class);

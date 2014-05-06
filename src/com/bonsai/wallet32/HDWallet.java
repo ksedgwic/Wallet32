@@ -74,8 +74,6 @@ public class HDWallet {
     private static final transient SecureRandom secureRandom = new SecureRandom();
 
     private final NetworkParameters	mParams;
-    private final File				mDirectory;
-    private final String			mFilePrefix;
     private KeyCrypter				mKeyCrypter;
     private KeyParameter			mAesKey;
 
@@ -95,25 +93,18 @@ public class HDWallet {
 
     private ArrayList<HDAccount>	mAccounts;
 
-    public static String persistPath(String filePrefix) {
-        return filePrefix + ".hdwallet";
-    }
-
     // Create an HDWallet from persisted file data.
-    public static HDWallet restore(Context ctxt,
+    public static HDWallet restore(WalletApplication walletApp,
     							   NetworkParameters params,
-                                   File directory,
-                                   String filePrefix,
                                    KeyCrypter keyCrypter,
                                    KeyParameter aesKey)
         throws InvalidCipherTextException, IOException {
 
         try {
-            JSONObject node = deserialize(directory, filePrefix,
-                                          keyCrypter, aesKey);
+            JSONObject node = deserialize(walletApp, keyCrypter, aesKey);
 
-            return new HDWallet(ctxt, params, directory, filePrefix,
-                                keyCrypter, aesKey, node, false);
+            return new HDWallet(walletApp, params, keyCrypter,
+                                aesKey, node, false);
         }
         catch (JSONException ex) {
             String msg = "trouble deserializing wallet: " + ex.toString();
@@ -131,16 +122,16 @@ public class HDWallet {
     }
 
     // Deserialize the wallet data.
-    public static JSONObject deserialize(File directory,
-                                         String filePrefix,
+    public static JSONObject deserialize(WalletApplication walletApp,
                                          KeyCrypter keyCrypter,
                                          KeyParameter aesKey)
         throws IOException, InvalidCipherTextException, JSONException {
 
-        String path = persistPath(filePrefix);
-        mLogger.info("restoring HDWallet from " + path);
+        File file = walletApp.getHDWalletFile(null);
+        String path = file.getPath();
+
         try {
-            File file = new File(directory, path);
+            mLogger.info("restoring HDWallet from " + path);
             int len = (int) file.length();
 
             // Open persisted file.
@@ -203,18 +194,14 @@ public class HDWallet {
 		}
     }
 
-    public HDWallet(Context ctxt,
+    public HDWallet(WalletApplication walletApp,
                     NetworkParameters params,
-                    File directory,
-                    String filePrefix,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
                     JSONObject walletNode,
                     boolean isPairing) throws JSONException {
 
         mParams = params;
-        mDirectory = directory;
-        mFilePrefix = filePrefix;
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
 
@@ -267,7 +254,8 @@ public class HDWallet {
 
         byte[] hdseed;
         try {
-            InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
+            InputStream wis =
+                walletApp.getAssets().open("wordlist/english.txt");
             MnemonicCodeX mc =
                 new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
@@ -350,10 +338,8 @@ public class HDWallet {
         }
     }
 
-    public HDWallet(Context ctxt,
+    public HDWallet(WalletApplication walletApp,
                     NetworkParameters params,
-                    File directory,
-                    String filePrefix,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
                     byte[] walletSeed,
@@ -361,8 +347,6 @@ public class HDWallet {
                     MnemonicCodeX.Version bip39Version,
                     HDStructVersion hdsv) {
         mParams = params;
-        mDirectory = directory;
-        mFilePrefix = filePrefix;
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
         mWalletSeed = walletSeed;
@@ -382,7 +366,8 @@ public class HDWallet {
 
         byte[] hdseed;
         try {
-            InputStream wis = ctxt.getAssets().open("wordlist/english.txt");
+            InputStream wis =
+                walletApp.getAssets().open("wordlist/english.txt");
             MnemonicCodeX mc =
                 new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
@@ -727,9 +712,9 @@ public class HDWallet {
         return req.fee != null ? req.fee.longValue() : 0;
     }
 
-    public void persist() {
-        String path = persistPath(mFilePrefix);
-        String tmpPath = path + ".tmp";
+    public void persist(WalletApplication walletApp) {
+        File tmpFile = walletApp.getHDWalletFile(".tmp");
+        File newFile = walletApp.getHDWalletFile(null);
         try {
             // Serialize into a byte array.
             JSONObject jsonobj = dumps(false);
@@ -753,7 +738,6 @@ public class HDWallet {
             cipher.doFinal(encryptedBytes, length);
 
             // Ready a tmp file.
-            File tmpFile = new File(mDirectory, tmpPath);
             if (tmpFile.exists())
                 tmpFile.delete();
 
@@ -764,16 +748,16 @@ public class HDWallet {
 			ostrm.close();
 
             // Swap the tmp file into place.
-            File newFile = new File(mDirectory, path);
             if (!tmpFile.renameTo(newFile))
-                mLogger.warn("failed to rename to " + newFile);
+                mLogger.warn("failed to rename to " + newFile.getPath());
             else
-                mLogger.info("persisted to " + path);
+                mLogger.info("persisted to " + newFile.getPath());
 
         } catch (JSONException ex) {
             mLogger.warn("failed generating JSON: " + ex.toString());
         } catch (IOException ex) {
-            mLogger.warn("failed to write to " + tmpPath + ": " + ex.toString());
+            mLogger.warn("failed to write to " + tmpFile.getPath() + ": " +
+                         ex.toString());
 		} catch (DataLengthException ex) {
             mLogger.warn("encryption failed: " + ex.toString());
 		} catch (IllegalStateException ex) {

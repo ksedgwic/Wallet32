@@ -9,17 +9,48 @@
     android:gravity="center"
     >
 
-    <FrameLayout
-	android:layout_width="wrap_content"
+  <ScrollView
+      android:id="@+id/outer_scroll_id"
+      style="@style/OuterWidth"
+      android:layout_height="fill_parent"
+      android:fillViewport="true"
+      android:padding="20dp"
+      android:clipToPadding="false"
+      android:scrollbarStyle="outsideOverlay"
+      >
+
+    <LinearLayout
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:layout_gravity="center"
+	android:gravity="center"
 	>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/lobby_starting" />
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+      
+      <LinearLayout
+	  android:id="@+id/button_layout"
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="center"
+	  >
+      </LinearLayout>
+          
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
 
-    </FrameLayout>
+    </LinearLayout>
+
+  </ScrollView>
 
 </LinearLayout>

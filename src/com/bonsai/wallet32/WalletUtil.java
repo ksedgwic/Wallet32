@@ -138,37 +138,34 @@ public class WalletUtil {
         boolean accountDerivePrivate = true;
         
         // Setup a wallet with the seed.
-        HDWallet hdwallet = new HDWallet(context,
+        HDWallet hdwallet = new HDWallet(wallapp,
         								 params,
-                                         context.getFilesDir(),
-                                         filePrefix,
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
                                          numAccounts,
                                          bip39version,
                                          HDWallet.HDStructVersion.HDSV_STDV0);
-        hdwallet.persist();
+        hdwallet.persist(wallapp);
     }
 
     public static boolean passcodeValid(Context context, String passcode) {
+        WalletApplication wallapp =
+            (WalletApplication) context.getApplicationContext();
+
         byte[] salt = readSalt(context);
         KeyCrypter keyCrypter = getKeyCrypter(salt);
         KeyParameter aesKey = keyCrypter.deriveKey(passcode);
 
         // Can we parse our wallet file?
         try {
-            HDWallet.deserialize(context.getFilesDir(),
-                                 filePrefix, keyCrypter, aesKey);
+            HDWallet.deserialize(wallapp, keyCrypter, aesKey);
         } catch (Exception ex) {
             mLogger.warn("passcode didn't deserialize wallet");
             return false;
         }
 
         // It worked so we consider it valid ...
-
-        WalletApplication wallapp =
-            (WalletApplication) context.getApplicationContext();
 
         // Set up the application context with credentials.
         wallapp.mPasscode = passcode;
@@ -179,8 +176,12 @@ public class WalletUtil {
     }
 
     public static void writeSalt(Context context, byte[] salt) {
+        WalletApplication wallapp =
+            (WalletApplication) context.getApplicationContext();
+
         mLogger.info("writing salt " + new String(Hex.encode(salt)));
-        File saltFile = new File(context.getFilesDir(), "salt");
+
+        File saltFile = new File(wallapp.getWalletDir(), "salt");
         FileOutputStream saltStream;
 		try {
 			saltStream = new FileOutputStream(saltFile);
@@ -194,7 +195,11 @@ public class WalletUtil {
     }
 
     public static byte[] readSalt(Context context) {
-        File saltFile = new File(context.getFilesDir(), "salt");
+        WalletApplication wallapp =
+            (WalletApplication) context.getApplicationContext();
+
+        File saltFile = new File(wallapp.getWalletDir(), "salt");
+
         byte[] salt = new byte[(int) saltFile.length()];
         DataInputStream dis;
 		try {

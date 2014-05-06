@@ -65,6 +65,12 @@
 	/>
 
     <Preference
+        android:key="pref_addWallet"
+	android:title="@string/pref_add_wallet"
+        android:summary="@string/pref_add_wallet_summary"
+	/>
+
+    <Preference
         android:key="pref_about"
 	android:title="@string/pref_about"
 	/>
