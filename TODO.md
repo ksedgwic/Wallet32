@@ -48,7 +48,7 @@ Smoke test on attached device.
 
 Build Wallet32.apk.
 
-scp ~/Wallet32.apk sl0:htdocs/ken/public/
+scp ~/bonsai/workspace/Wallet32.apk sl0:htdocs/ken/public/
 
 Upload to Google Play Developer Console.
 
