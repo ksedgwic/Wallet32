@@ -89,6 +89,8 @@ public class HDWallet {
         HDSV_STDV0	// Standard, version 0.			M/0/0'/<acct>'/<chain>/<n>
     }
     
+    private ECKey					mWorkaroundKey = null;
+
     private HDStructVersion			mHDStructVersion;
 
     private ArrayList<HDAccount>	mAccounts;
@@ -206,6 +208,16 @@ public class HDWallet {
         mAesKey = aesKey;
 
         try {
+            // See WORKAROUND below.
+            if (!walletNode.has("workaroundPrivKey")) {
+                mWorkaroundKey = new ECKey();
+                mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
+            } else {
+                byte[] privKeyBytes =
+                    Base58.decode(walletNode.getString("workaroundPrivKey"));
+                mWorkaroundKey = new ECKey(privKeyBytes, null);
+            }
+
             mWalletSeed = Base58.decode(walletNode.getString("seed"));
 
             if (!walletNode.has("bip39_version")) {
@@ -249,7 +261,7 @@ public class HDWallet {
             }
 
         } catch (AddressFormatException e) {
-            throw new RuntimeException("couldn't decode wallet seed");
+            throw new RuntimeException("trouble decoding wallet");
         }
 
         byte[] hdseed;
@@ -300,6 +312,9 @@ public class HDWallet {
     public JSONObject dumps(boolean isPairing) {
         try {
             JSONObject obj = new JSONObject();
+
+            obj.put("workaroundPrivKey",
+                    Base58.encode(mWorkaroundKey.getPrivKeyBytes()));
 
             obj.put("seed", Base58.encode(mWalletSeed));
             switch (mBIP39Version) {
@@ -353,6 +368,15 @@ public class HDWallet {
         mBIP39Version = bip39Version;
         mHDStructVersion = hdsv;
         
+
+        // WORKAROUND - there is a bug that watch-only addresses
+        // don't seem to properly scan historically; they use
+        // quick catchup.  Create a real key (that we ignore) as a
+        // workaround.
+        //
+        mWorkaroundKey = new ECKey();
+        mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
+
         switch (mBIP39Version) {
         case V0_5:
             mLogger.info("BIP39 version V0_5");
@@ -458,6 +482,7 @@ public class HDWallet {
     }
 
     public void gatherAllKeys(long creationTime, List<ECKey> keys) {
+        keys.add(mWorkaroundKey.encrypt(mKeyCrypter, mAesKey));
         for (HDAccount acct : mAccounts)
             acct.gatherAllKeys(mKeyCrypter, mAesKey, creationTime, keys);
     }
