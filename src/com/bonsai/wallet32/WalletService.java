@@ -567,18 +567,20 @@ public class WalletService extends Service
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
         // Establish our SyncState
-        Bundle bundle = intent.getExtras();
-        String syncStateStr = bundle.getString("SyncState");
-        if (syncStateStr == null)
-            syncStateStr = "STARTUP";
-        mSyncState =
-            syncStateStr.equals("CREATED")	? SyncState.CREATED :
-            syncStateStr.equals("RESTORE")	? SyncState.RESTORE :
-            syncStateStr.equals("STARTUP")	? SyncState.STARTUP :
-            syncStateStr.equals("RESCAN")	? SyncState.RESCAN :
-            syncStateStr.equals("RERESCAN")	? SyncState.RERESCAN :
-            SyncState.STARTUP;
-            
+        mSyncState = SyncState.STARTUP;
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            String syncStateStr = bundle.getString("SyncState");
+            if (syncStateStr != null)
+                mSyncState =
+                    syncStateStr.equals("CREATED")	? SyncState.CREATED :
+                    syncStateStr.equals("RESTORE")	? SyncState.RESTORE :
+                    syncStateStr.equals("STARTUP")	? SyncState.STARTUP :
+                    syncStateStr.equals("RESCAN")	? SyncState.RESCAN :
+                    syncStateStr.equals("RERESCAN")	? SyncState.RERESCAN :
+                    SyncState.STARTUP;
+        }
+
         mKeyCrypter = wallapp.mKeyCrypter;
         mAesKey = wallapp.mAesKey;
 
