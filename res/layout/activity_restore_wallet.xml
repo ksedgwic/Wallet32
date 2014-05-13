@@ -162,6 +162,15 @@
 	    >
 
 	  <RadioButton
+	      android:id="@+id/format_v0_5"
+	      android:text="@string/restore_format_v0_5"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:textAppearance="@android:style/TextAppearance.Small"
+	      android:checked="true"
+	      />
+
+	  <RadioButton
 	      android:id="@+id/format_v0_4"
 	      android:text="@string/restore_format_v0_4"
 	      android:layout_width="wrap_content"

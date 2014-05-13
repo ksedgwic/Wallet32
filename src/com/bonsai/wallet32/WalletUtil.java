@@ -142,7 +142,7 @@ public class WalletUtil {
                                          seed,
                                          numAccounts,
                                          bip39version,
-                                         HDWallet.HDStructVersion.HDSV_STDV0);
+                                         HDWallet.HDStructVersion.HDSV_STDV1);
         hdwallet.persist();
     }
 

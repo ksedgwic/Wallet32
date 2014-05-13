@@ -73,7 +73,8 @@ public class HDAccount {
             break;
         case HDSV_L0PRV:
         case HDSV_STDV0:
-            // Both L0PRV and CNSV0 use private derivation.
+        case HDSV_STDV1:
+            // Both L0PRV and STDVx use private derivation.
             childnum |= ChildNumber.PRIV_BIT;
             break;
         }
@@ -136,7 +137,8 @@ public class HDAccount {
             break;
         case HDSV_L0PRV:
         case HDSV_STDV0:
-            // Both L0PRV and STDV0 use private derivation.
+        case HDSV_STDV1:
+            // Both L0PRV and STDVx use private derivation.
             childnum |= ChildNumber.PRIV_BIT;
             break;
         }
