@@ -84,9 +84,10 @@ public class HDWallet {
     private final MnemonicCodeX.Version	mBIP39Version;
     
     public enum HDStructVersion {
-        HDSV_L0PUB,	// Level0, public derivation.	M/<acct>/<chain>/<n>
-        HDSV_L0PRV,	// Level0, private derivation.	M/<acct>'/<chain>/<n>
-        HDSV_STDV0	// Standard, version 0.			M/0/0'/<acct>'/<chain>/<n>
+        HDSV_L0PUB,	// Level0, public derivation.	M/<acct>/<chnge>/<n>
+        HDSV_L0PRV,	// Level0, private derivation.	M/<acct>'/<chnge>/<n>
+        HDSV_STDV0,	// Standard, version 0.			M/0/0'/<acct>'/<chnge>/<n>
+        HDSV_STDV1	// BIP-0044.					M/44'/0'/<acct>'/<chnge>/<n>
     }
     
     private ECKey					mWorkaroundKey = null;
@@ -254,6 +255,9 @@ public class HDWallet {
                 } else if (acctderivstr.equals("STDV0")) {
                     mHDStructVersion = HDStructVersion.HDSV_STDV0;
                     mLogger.info("setting mHDStructVersion to HDSV_STDV0");
+                } else if (acctderivstr.equals("STDV1")) {
+                    mHDStructVersion = HDStructVersion.HDSV_STDV1;
+                    mLogger.info("setting mHDStructVersion to HDSV_STDV1");
                 } else {
                     throw new RuntimeException
                         ("unknown acct_derive value: " + acctderivstr);
@@ -291,6 +295,14 @@ public class HDWallet {
                 HDKeyDerivation.deriveChildKey(mMasterKey, 0);
             mWalletRoot =
                 HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+            break;
+        case HDSV_STDV1:
+            // BIP-0044 starts from M/44'/0'
+            DeterministicKey t1 =
+                HDKeyDerivation.deriveChildKey(mMasterKey,
+                                               44 | ChildNumber.PRIV_BIT);
+            mWalletRoot =
+                HDKeyDerivation.deriveChildKey(t1, ChildNumber.PRIV_BIT);
             break;
         default:
             throw new RuntimeException("invalid HDStructVersion");
@@ -337,6 +349,9 @@ public class HDWallet {
                 break;
             case HDSV_STDV0:
                 obj.put("acct_derive", "STDV0");
+                break;
+            case HDSV_STDV1:
+                obj.put("acct_derive", "STDV1");
                 break;
             }
 
@@ -416,6 +431,14 @@ public class HDWallet {
             mWalletRoot =
                 HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
             break;
+        case HDSV_STDV1:
+            // BIP-0044 starts from M/44'/0'
+            DeterministicKey t1 =
+                HDKeyDerivation.deriveChildKey(mMasterKey,
+                                               44 | ChildNumber.PRIV_BIT);
+            mWalletRoot =
+                HDKeyDerivation.deriveChildKey(t1, ChildNumber.PRIV_BIT);
+            break;
         default:
             throw new RuntimeException("invalid HDStructVersion");
         }
@@ -452,6 +475,8 @@ public class HDWallet {
                 return "0.3";
             case HDSV_STDV0:
                 return "0.4";
+            case HDSV_STDV1:
+                return "0.5";
             default:
                 throw new RuntimeException("unknown HDStructVersion");
             }

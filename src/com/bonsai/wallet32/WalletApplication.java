@@ -34,9 +34,6 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
-
-import com.google.bitcoin.crypto.KeyCrypter;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.android.LogcatAppender;
@@ -44,6 +41,8 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+
+import com.google.bitcoin.crypto.KeyCrypter;
 
 public class WalletApplication
     extends Application
@@ -100,7 +99,11 @@ public class WalletApplication
     }
 
     private void setBTCUnits(String src) {
-        if (src.equals("MBTC")) {
+        if (src.equals("UBTC")) {
+            mLogger.info("Setting BTC units to uBTC");
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_UBTC, this);
+        }
+        else if (src.equals("MBTC")) {
             mLogger.info("Setting BTC units to MBTC");
             mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC, this);
         }

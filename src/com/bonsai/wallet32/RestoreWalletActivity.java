@@ -175,6 +175,10 @@ public class RestoreWalletActivity extends ActionBarActivity {
         RadioGroup hdsrg = (RadioGroup) findViewById(R.id.format_choice);
         switch (hdsrg.getCheckedRadioButtonId()) {
         default:
+        case R.id.format_v0_5:
+            hdsv = HDWallet.HDStructVersion.HDSV_STDV1;
+            bip39version = MnemonicCodeX.Version.V0_6;
+            break;
         case R.id.format_v0_4:
             hdsv = HDWallet.HDStructVersion.HDSV_STDV0;
             bip39version = MnemonicCodeX.Version.V0_6;

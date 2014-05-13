@@ -18,7 +18,6 @@ package com.bonsai.wallet32;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,18 +28,16 @@ import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Hashtable;
 import java.util.List;
-
 import org.bitcoinj.wallet.Protos;
 import org.bitcoinj.wallet.Protos.ScryptParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.encoders.Hex;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.ECKey;
@@ -77,7 +74,8 @@ public class WalletUtil {
 
 	private final static QRCodeWriter sQRCodeWriter = new QRCodeWriter();
 
-    public static void setPasscode(Context context,
+    @SuppressLint("TrulyRandom")
+	public static void setPasscode(Context context,
                                    WalletService walletService,
                                    String passcode,
                                    boolean isChange) {
@@ -134,9 +132,6 @@ public class WalletUtil {
         // New wallets are version V0_6.
         MnemonicCodeX.Version bip39version = MnemonicCodeX.Version.V0_6;
 
-        // New wallets use private derivation for accounts.
-        boolean accountDerivePrivate = true;
-        
         // Setup a wallet with the seed.
         HDWallet hdwallet = new HDWallet(wallapp,
         								 params,
@@ -145,7 +140,7 @@ public class WalletUtil {
                                          seed,
                                          numAccounts,
                                          bip39version,
-                                         HDWallet.HDStructVersion.HDSV_STDV0);
+                                         HDWallet.HDStructVersion.HDSV_STDV1);
         hdwallet.persist(wallapp);
     }
 

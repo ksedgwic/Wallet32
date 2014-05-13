@@ -28,7 +28,8 @@ Wallet32 has been tracking the BIP39 and BIP32 standards as they
 develop. If you are restoring a wallet that was created with Wallet32
 using an earlier format version please select the appropriate choice below:
     ]]></string>
-    <string name="restore_format_v0_4">Version 0.4, current wallets</string>
+    <string name="restore_format_v0_5">Version 0.5, current wallets</string>
+    <string name="restore_format_v0_4">Version 0.4, before ~15-May-2014</string>
     <string name="restore_format_v0_3">Version 0.3, before ~30-Mar-2014</string>
     <string name="restore_format_v0_2">Version 0.2, before ~14-Mar-2014</string>
     <string name="restore_format_v0_1">Version 0.1, before ~19-Jan-2014</string>
@@ -302,14 +303,16 @@ This transaction is really large; it will take a while to process.\n
     <string name="settings_confirm_cancel">Cancel</string>
 
     <string name="pref_btc_units">BTC Units</string>
-    <string name="pref_btc_units_default">MBTC</string>
+    <string name="pref_btc_units_default">UBTC</string>
 
     <string-array name="pref_btc_units_entries">
+      <item>uBTC</item>
       <item>mBTC</item>
       <item>BTC</item>
     </string-array>
 
     <string-array name="pref_btc_units_values">
+      <item>UBTC</item>
       <item>MBTC</item>
       <item>BTC</item>
     </string-array>
@@ -383,6 +386,7 @@ This transaction is really large; it will take a while to process.\n
 
     <string name="app_units_btc">BTC</string>
     <string name="app_units_mbtc">mBTC</string>
+    <string name="app_units_ubtc">uBTC</string>
 
     <string name="title_activity_about">About Wallet32</string>
     <string name="about_contents">
