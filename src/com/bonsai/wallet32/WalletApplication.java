@@ -90,7 +90,11 @@ public class WalletApplication
     }
 
     private void setBTCUnits(String src) {
-        if (src.equals("MBTC")) {
+        if (src.equals("UBTC")) {
+            mLogger.info("Setting BTC units to uBTC");
+            mBTCFmt = new BTCFmt(BTCFmt.SCALE_UBTC, this);
+        }
+        else if (src.equals("MBTC")) {
             mLogger.info("Setting BTC units to MBTC");
             mBTCFmt = new BTCFmt(BTCFmt.SCALE_MBTC, this);
         }

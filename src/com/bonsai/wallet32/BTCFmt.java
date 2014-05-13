@@ -23,6 +23,7 @@ public class BTCFmt {
 
     public final static int SCALE_BTC = 8;
     public final static int SCALE_MBTC = 5;
+    public final static int SCALE_UBTC = 2;
 
     private int mScale;
     private String mUnitStr;
@@ -36,6 +37,9 @@ public class BTCFmt {
             break;
         case SCALE_MBTC:
             mUnitStr = res.getString(R.string.app_units_mbtc);
+            break;
+        case SCALE_UBTC:
+            mUnitStr = res.getString(R.string.app_units_ubtc);
             break;
         default:
             throw new RuntimeException(String.format("unknown scale %d", mScale));

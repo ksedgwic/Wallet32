@@ -380,7 +380,6 @@ public class WalletService extends Service
             // scanTime  0 : full rescan
             // scanTime  t : scan from time t
             final Long scanTime = params[0];
-            WalletApplication wallapp = (WalletApplication) mContext;
 
             setState(State.WALLET_SETUP);
 

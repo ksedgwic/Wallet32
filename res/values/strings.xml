@@ -302,14 +302,16 @@ This transaction is really large; it will take a while to process.\n
     <string name="settings_confirm_cancel">Cancel</string>
 
     <string name="pref_btc_units">BTC Units</string>
-    <string name="pref_btc_units_default">MBTC</string>
+    <string name="pref_btc_units_default">UBTC</string>
 
     <string-array name="pref_btc_units_entries">
+      <item>uBTC</item>
       <item>mBTC</item>
       <item>BTC</item>
     </string-array>
 
     <string-array name="pref_btc_units_values">
+      <item>UBTC</item>
       <item>MBTC</item>
       <item>BTC</item>
     </string-array>
@@ -380,6 +382,7 @@ This transaction is really large; it will take a while to process.\n
 
     <string name="app_units_btc">BTC</string>
     <string name="app_units_mbtc">mBTC</string>
+    <string name="app_units_ubtc">uBTC</string>
 
     <string name="title_activity_about">About Wallet32</string>
     <string name="about_contents">
