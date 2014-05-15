@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
-import com.bonsai.wallet32.HDAccount.AccountCoinSelector;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
@@ -75,7 +74,7 @@ public class HDAccount {
         case HDSV_STDV0:
         case HDSV_STDV1:
             // Both L0PRV and STDVx use private derivation.
-            childnum |= ChildNumber.PRIV_BIT;
+            childnum |= ChildNumber.HARDENED_BIT;
             break;
         }
 
@@ -139,7 +138,7 @@ public class HDAccount {
         case HDSV_STDV0:
         case HDSV_STDV1:
             // Both L0PRV and STDVx use private derivation.
-            childnum |= ChildNumber.PRIV_BIT;
+            childnum |= ChildNumber.HARDENED_BIT;
             break;
         }
         mAccountKey = HDKeyDerivation.deriveChildKey(masterKey, childnum);

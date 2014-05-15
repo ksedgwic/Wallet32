@@ -4,6 +4,8 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
+* Explore adding space in value formats. eg:   1 028 543.06
+
 * Make additional passcode entry based on timeout instead of always.
 
 * Advanced Features Setting (send change to account, private key ops)

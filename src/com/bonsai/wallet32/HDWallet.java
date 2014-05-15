@@ -26,7 +26,6 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,9 +39,7 @@ import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
-
-import android.content.Context;
-
+import android.annotation.SuppressLint;
 import com.bonsai.wallet32.WalletService.AmountAndFee;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -71,7 +68,8 @@ public class HDWallet {
 
     private static Logger mLogger = LoggerFactory.getLogger(HDWallet.class);
 
-    private static final transient SecureRandom secureRandom = new SecureRandom();
+    @SuppressLint("TrulyRandom")
+	private static final transient SecureRandom secureRandom = new SecureRandom();
 
     private final NetworkParameters	mParams;
     private KeyCrypter				mKeyCrypter;
@@ -216,7 +214,7 @@ public class HDWallet {
             } else {
                 byte[] privKeyBytes =
                     Base58.decode(walletNode.getString("workaroundPrivKey"));
-                mWorkaroundKey = new ECKey(privKeyBytes, null);
+                mWorkaroundKey = ECKey.fromPrivate(privKeyBytes);
             }
 
             mWalletSeed = Base58.decode(walletNode.getString("seed"));
@@ -294,15 +292,15 @@ public class HDWallet {
             DeterministicKey t0 =
                 HDKeyDerivation.deriveChildKey(mMasterKey, 0);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t0, ChildNumber.HARDENED_BIT);
             break;
         case HDSV_STDV1:
             // BIP-0044 starts from M/44'/0'
             DeterministicKey t1 =
                 HDKeyDerivation.deriveChildKey(mMasterKey,
-                                               44 | ChildNumber.PRIV_BIT);
+                                               44 | ChildNumber.HARDENED_BIT);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t1, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t1, ChildNumber.HARDENED_BIT);
             break;
         default:
             throw new RuntimeException("invalid HDStructVersion");
@@ -368,7 +366,8 @@ public class HDWallet {
         }
     }
 
-    public HDWallet(WalletApplication walletApp,
+    @SuppressLint("DefaultLocale")
+	public HDWallet(WalletApplication walletApp,
                     NetworkParameters params,
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
@@ -429,15 +428,15 @@ public class HDWallet {
             DeterministicKey t0 =
                 HDKeyDerivation.deriveChildKey(mMasterKey, 0);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t0, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t0, ChildNumber.HARDENED_BIT);
             break;
         case HDSV_STDV1:
             // BIP-0044 starts from M/44'/0'
             DeterministicKey t1 =
                 HDKeyDerivation.deriveChildKey(mMasterKey,
-                                               44 | ChildNumber.PRIV_BIT);
+                                               44 | ChildNumber.HARDENED_BIT);
             mWalletRoot =
-                HDKeyDerivation.deriveChildKey(t1, ChildNumber.PRIV_BIT);
+                HDKeyDerivation.deriveChildKey(t1, ChildNumber.HARDENED_BIT);
             break;
         default:
             throw new RuntimeException("invalid HDStructVersion");
@@ -499,7 +498,8 @@ public class HDWallet {
         return mAccounts.get(accountId);
     }
 
-    public void addAccount() {
+    @SuppressLint("DefaultLocale")
+	public void addAccount() {
         int ndx = mAccounts.size();
         String acctName = String.format("Account %d", ndx);
         mAccounts.add(new HDAccount(mParams, mWalletRoot, acctName, ndx,

@@ -94,7 +94,7 @@ public class HDAddress {
         mAvailable = addrNode.has("available") ?
             addrNode.getLong("available") : mBalance;
 
-        mLogger.info("read address " + mAddrKey.getPath() + ": " +
+        mLogger.info("read address " + mAddrKey.getPathAsString() + ": " +
                      mAddress.toString());
     }
 
@@ -126,7 +126,7 @@ public class HDAddress {
 
         // Derive ECKey.
         byte[] prvBytes = mAddrKey.getPrivKeyBytes();
-        mPubBytes = mAddrKey.getPubKeyBytes(); // Expensive, save.
+        mPubBytes = mAddrKey.getPubKey(); // Expensive, save.
         mECKey = new ECKey(prvBytes, mPubBytes);
 
         // Set creation time to now.
@@ -143,7 +143,7 @@ public class HDAddress {
         mBalance = 0;
         mAvailable = 0;
 
-        mLogger.info("created address " + mAddrKey.getPath() + ": " +
+        mLogger.info("created address " + mAddrKey.getPathAsString() + ": " +
                      mAddress.toString());
     }
 
@@ -179,7 +179,7 @@ public class HDAddress {
         if (avail)
             mAvailable += value;
 
-        mLogger.debug(mAddrKey.getPath() + " matched output of " +
+        mLogger.debug(mAddrKey.getPathAsString() + " matched output of " +
                       Long.toString(value));
     }
 
@@ -192,12 +192,12 @@ public class HDAddress {
         mBalance -= value;
         mAvailable -= value;
 
-        mLogger.debug(mAddrKey.getPath() + " matched input of " +
+        mLogger.debug(mAddrKey.getPathAsString() + " matched input of " +
                       Long.toString(value));
     }
 
     public String getPath() {
-        return mAddrKey.getPath();
+        return mAddrKey.getPathAsString();
     }
 
     public long getBalance() {
@@ -232,7 +232,7 @@ public class HDAddress {
 
     public void logBalance() {
         if (mNumTrans > 0) {
-            mLogger.info(mAddrKey.getPath() + " " +
+            mLogger.info(mAddrKey.getPathAsString() + " " +
                          Integer.toString(mNumTrans) + " " +
                          Long.toString(mBalance) + " " +
                          Long.toString(mAvailable));
