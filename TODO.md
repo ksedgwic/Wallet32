@@ -4,6 +4,8 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
+* Make additional passcode entry based on timeout instead of always.
+
 * Advanced Features Setting (send change to account, private key ops)
 
 * Multiple wallets
