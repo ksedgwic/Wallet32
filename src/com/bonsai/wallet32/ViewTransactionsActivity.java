@@ -66,7 +66,6 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
 
         Spinner spinner = (Spinner) findViewById(R.id.account_spinner);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-				@Override
 				public void onItemSelected(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
                     int index = arg0.getSelectedItemPosition();
@@ -74,7 +73,6 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                     updateTransactions();
 				}
 
-				@Override
 				public void onNothingSelected(AdapterView<?> arg0) {
 					// TODO Auto-generated method stub
 					

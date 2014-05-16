@@ -88,7 +88,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_changePasscode");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
@@ -107,7 +106,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_addAccount");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             showConfirmDialog
                                 (mRes.getString(R.string.pref_add_account_title),
@@ -125,7 +123,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_viewSeed");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
@@ -144,7 +141,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_showPairing");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
@@ -163,7 +159,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_rescanBlockchain");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, RescanActivity.class);
@@ -181,7 +176,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_sendLogs");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             sendLogs();
                             finish();
@@ -195,7 +189,6 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_addWallet");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             WalletApplication wallapp =
                                 (WalletApplication) getApplicationContext();
@@ -216,7 +209,6 @@ public class SettingsActivity extends PreferenceActivity {
             Preference butt = (Preference) findPreference("pref_about");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
-                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, AboutActivity.class);

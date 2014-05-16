@@ -200,7 +200,6 @@ public class WalletService extends Service
 
                 final TransactionConfidence.Listener listener = 
                     new TransactionConfidence.Listener() {
-                        @Override
                         public void onConfidenceChanged(Transaction tx,
                                                         ChangeReason reason) {
                             // Wait until it's not pending anymore.
@@ -283,7 +282,6 @@ public class WalletService extends Service
 
                 final TransactionConfidence.Listener listener = 
                     new TransactionConfidence.Listener() {
-                        @Override
                         public void onConfidenceChanged(Transaction tx,
                                                         ChangeReason reason) {
                             // Wait until it's not pending anymore.
@@ -1096,12 +1094,10 @@ public class WalletService extends Service
                 try {
                     Futures.addCallback(broadcaster.broadcastTransaction(tx),
                                         new FutureCallback<Transaction>() {
-                        @Override
                         public void onSuccess(Transaction transaction) {
                             mLogger.info("Successfully broadcast key rotation tx: {}", transaction);
                         }
 
-                        @Override
                         public void onFailure(Throwable throwable) {
                             mLogger.error("Failed to broadcast key rotation tx", throwable);
                         }

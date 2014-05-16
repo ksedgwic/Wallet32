@@ -171,7 +171,6 @@ public class PasscodeActivity extends ActionBarActivity {
         chkbx.setChecked(mShowPasscode);
         chkbx.setOnCheckedChangeListener
             (new CompoundButton.OnCheckedChangeListener() {
-                    @Override
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
                         mShowPasscode = isChecked;
