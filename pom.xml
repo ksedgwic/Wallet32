@@ -1,47 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bonsai</groupId>
-  <artifactId>wallet32</artifactId>
+  <artifactId>Wallet32</artifactId>
+  <version>0.2.6-SNAPSHOT</version>
   <packaging>apk</packaging>
-  <version>0.0.1-SNAPSHOT</version>
   <name>Wallet32</name>
-  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <platform.version>4.1.1.4</platform.version>
+    <android.plugin.version>3.8.0</android.plugin.version>
+  </properties>
+
   <dependencies>
+
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
-      <version>4.1.1.4</version>
+      <version>${platform.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- android.support.v4.* -->
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>r7</version>
+    </dependency>
+
+    <!-- com.google.bitcoin.* -->
+    <dependency>
+      <groupId>com.google</groupId>
+      <artifactId>bitcoinj</artifactId>
+      <version>0.12-SNAPSHOT</version>
+    </dependency>
+
+    <!-- org.slf4j.* -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+    </dependency>
+
+    <!-- ch.qos.logback.classic.* -->
+    <dependency>
+      <groupId>com.github.tony19</groupId>
+      <artifactId>logback-android-classic</artifactId>
+      <version>1.1.1-1</version>
+    </dependency>
+
+    <!-- ch.qos.logback.core.* -->
+    <dependency>
+      <groupId>com.github.tony19</groupId>
+      <artifactId>logback-android-core</artifactId>
+      <version>1.1.1-1</version>
+    </dependency>
+
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+	<plugin>
+	  <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+	  <artifactId>android-maven-plugin</artifactId>
+	  <version>${android.plugin.version}</version>
+	  <extensions>true</extensions>
+	</plugin>
+	<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+	<plugin>
+		<groupId>org.eclipse.m2e</groupId>
+		<artifactId>lifecycle-mapping</artifactId>
+		<version>1.0.0</version>
+		<configuration>
+			<lifecycleMappingMetadata>
+				<pluginExecutions>
+					<pluginExecution>
+						<pluginExecutionFilter>
+							<groupId>
+								com.jayway.maven.plugins.android.generation2
+							</groupId>
+							<artifactId>
+								android-maven-plugin
+							</artifactId>
+							<versionRange>[3.8.0,)</versionRange>
+							<goals>
+								<goal>consume-aar</goal>
+								<goal>generate-sources</goal>
+								<goal>proguard</goal>
+							</goals>
+						</pluginExecutionFilter>
+						<action>
+							<ignore></ignore>
+						</action>
+					</pluginExecution>
+				</pluginExecutions>
+			</lifecycleMappingMetadata>
+		</configuration>
+	</plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId>
-        <configuration>
-          <sdk>
-            <path>${env.ANDROID_HOME}</path>
-            <platform>18</platform>
-          </sdk>
-        </configuration>
-        <extensions>true</extensions>
+	<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+	<artifactId>android-maven-plugin</artifactId>
+	<configuration>
+	  <excludeJarResources>
+	    <excludeJarResource>.*\.jar$</excludeJarResource>
+	  </excludeJarResources>
+	  <sdk>
+	    <platform>18</platform>
+	  </sdk>
+	</configuration>
       </plugin>
     </plugins>
   </build>
-
 </project>

@@ -385,3 +385,34 @@ NPE at com.bonsai.wallet32.SweepKeyActivity$5.handleMessage(SweepKeyActivity.jav
 			Legacy BIP-0039
 			bip39_version = V0_5
 			acct_derive = HDSV_L0PUB
+
+================================================================
+
+https://code.google.com/p/maven-android-plugin/wiki/GettingStarted
+
+rgladwell.github.io/m2e-android/
+
+stand.spree.de/wiki_details_maven_archetypes
+
+    export JAVA_HOME=/usr/lib/jvm/java
+    export ANDROID_HOME=/usr/local/adt-bundle-linux-x86_64/sdk
+    export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
+
+    mvn archetype:generate \
+      -DarchetypeArtifactId=android-quickstart \
+      -DarchetypeGroupId=de.akquinet.android.archetypes \
+      -DarchetypeVersion=1.0.11 \
+      -DgroupId=com.bonsai \
+      -DartifactId=Wallet32 \
+      -Dplatform=18 \
+      -Dpackage=com.bonsai.wallet32
+
+    <platform.version>4.1.1.4</platform.version>
+
+    <android.plugin.version>3.8.0</android.plugin.version>
+
+    mvn clean install android:deploy
+
+    slf4j-api-1.7.6.jar
+    logback-android-1.1.1-1.jar
+    bitcoinj-0.12-SNAPSHOT-bundl
