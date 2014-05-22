@@ -16,7 +16,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/logback-android-1.1.1-2.jar"/>
-	<classpathentry kind="lib" path="libs/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
