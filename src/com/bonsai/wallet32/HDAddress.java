@@ -63,21 +63,33 @@ public class HDAddress {
                      JSONObject addrNode)
         throws RuntimeException, JSONException {
 
+        mLogger.info("CTOR starting");
+
         mParams = params;
 
         mAddrNum = addrNode.getInt("addrNum");
 
+        mLogger.info("got addr num");
+
         mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
+
+        mLogger.info("derived key");
 
         // Derive ECKey.
         byte[] prvBytes = mAddrKey.getPrivKeyBytes();
+        mLogger.info("got private bytes");
+
         try {
             mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
         } catch (AddressFormatException ex) {
             throw new RuntimeException("failed to decode pubBytes");
         }
         
+        mLogger.info("got decoded public");
+
         mECKey = new ECKey(prvBytes, mPubBytes);
+
+        mLogger.info("created key");
 
         // Set creation time to Wallet32 epoch.
         mECKey.setCreationTimeSeconds(EPOCH);
@@ -86,6 +98,8 @@ public class HDAddress {
         mPubKey = mECKey.getPubKey();
         mPubKeyHash = mECKey.getPubKeyHash();
         mAddress = mECKey.toAddress(mParams);
+
+        mLogger.info("derived stuff");
 
         // Initialize transaction count and balance.  If we don't have
         // a persisted available amount, presume it is all available.
@@ -96,6 +110,8 @@ public class HDAddress {
 
         mLogger.info("read address " + mAddrKey.getPathAsString() + ": " +
                      mAddress.toString());
+
+        mLogger.info("CTOR finished");
     }
 
     public JSONObject dumps() {

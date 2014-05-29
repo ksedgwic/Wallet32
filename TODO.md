@@ -416,3 +416,9 @@ stand.spree.de/wiki_details_maven_archetypes
     slf4j-api-1.7.6.jar
     logback-android-1.1.1-1.jar
     bitcoinj-0.12-SNAPSHOT-bundl
+
+    
+
+    mvn install android:deploy android:run
+
+    mvn install -Dmaven.test.skip=true
