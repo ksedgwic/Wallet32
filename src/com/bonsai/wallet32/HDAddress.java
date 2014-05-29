@@ -108,7 +108,7 @@ public class HDAddress {
         mAvailable = addrNode.has("available") ?
             addrNode.getLong("available") : mBalance;
 
-        mLogger.info("read address " + mAddrKey.getPathAsString() + ": " +
+        mLogger.info("read address " + mAddrKey.getPath() + ": " +
                      mAddress.toString());
 
         mLogger.info("CTOR finished");
@@ -142,7 +142,7 @@ public class HDAddress {
 
         // Derive ECKey.
         byte[] prvBytes = mAddrKey.getPrivKeyBytes();
-        mPubBytes = mAddrKey.getPubKey(); // Expensive, save.
+        mPubBytes = mAddrKey.getPubKeyBytes(); // Expensive, save.
         mECKey = new ECKey(prvBytes, mPubBytes);
 
         // Set creation time to now.
@@ -159,7 +159,7 @@ public class HDAddress {
         mBalance = 0;
         mAvailable = 0;
 
-        mLogger.info("created address " + mAddrKey.getPathAsString() + ": " +
+        mLogger.info("created address " + mAddrKey.getPath() + ": " +
                      mAddress.toString());
     }
 
@@ -195,7 +195,7 @@ public class HDAddress {
         if (avail)
             mAvailable += value;
 
-        mLogger.debug(mAddrKey.getPathAsString() + " matched output of " +
+        mLogger.debug(mAddrKey.getPath() + " matched output of " +
                       Long.toString(value));
     }
 
@@ -208,12 +208,12 @@ public class HDAddress {
         mBalance -= value;
         mAvailable -= value;
 
-        mLogger.debug(mAddrKey.getPathAsString() + " matched input of " +
+        mLogger.debug(mAddrKey.getPath() + " matched input of " +
                       Long.toString(value));
     }
 
     public String getPath() {
-        return mAddrKey.getPathAsString();
+        return mAddrKey.getPath();
     }
 
     public long getBalance() {
@@ -248,7 +248,7 @@ public class HDAddress {
 
     public void logBalance() {
         if (mNumTrans > 0) {
-            mLogger.info(mAddrKey.getPathAsString() + " " +
+            mLogger.info(mAddrKey.getPath() + " " +
                          Integer.toString(mNumTrans) + " " +
                          Long.toString(mBalance) + " " +
                          Long.toString(mAvailable));

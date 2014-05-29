@@ -83,8 +83,8 @@ public class ShowXPubActivity extends BaseWalletActivity {
             for (int ii = 0; ii < 10; ++ii) {
                 DeterministicKey kk =
                     HDKeyDerivation.deriveChildKey(recvChainKey, ii);
-                byte[] pubBytes = kk.getPubKey();
-                ECKey eckey = ECKey.fromPublicOnly(pubBytes);
+                byte[] pubBytes = kk.getPubKeyBytes();
+                ECKey eckey = new ECKey(null, pubBytes);
                 Address addr = eckey.toAddress(params);
                 mLogger.info(String.format("recv[%d] %s", ii, addr.toString()));
             }
@@ -94,8 +94,8 @@ public class ShowXPubActivity extends BaseWalletActivity {
             for (int ii = 0; ii < 10; ++ii) {
                 DeterministicKey kk =
                     HDKeyDerivation.deriveChildKey(chngChainKey, ii);
-                byte[] pubBytes = kk.getPubKey();
-                ECKey eckey = ECKey.fromPublicOnly(pubBytes);
+                byte[] pubBytes = kk.getPubKeyBytes();
+                ECKey eckey = new ECKey(null, pubBytes);
                 Address addr = eckey.toAddress(params);
                 mLogger.info(String.format("chng[%d] %s", ii, addr.toString()));
             }
