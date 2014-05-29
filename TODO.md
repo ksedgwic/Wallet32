@@ -422,3 +422,15 @@ stand.spree.de/wiki_details_maven_archetypes
     mvn install android:deploy android:run
 
     mvn install -Dmaven.test.skip=true
+
+Tracing
+----------------------------------------------------------------
+
+    <!-- DEBUG TRACING -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    import android.os.Debug;
+
+    Debug.startMethodTracing("w32");
+    ...
+    Debug.stopMethodTracing();
