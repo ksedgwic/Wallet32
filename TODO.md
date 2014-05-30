@@ -434,3 +434,13 @@ Tracing
     Debug.startMethodTracing("w32");
     ...
     Debug.stopMethodTracing();
+
+zxscanlib
+----------------------------------------------------------------
+
+    mvn install:install-file \
+         -Dfile=captureactivity.jar \
+         -DgroupId=eu.livotov \
+         -DartifactId=zxscan \
+         -Dversion=1.0 \
+         -Dpackaging=jar

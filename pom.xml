@@ -32,10 +32,17 @@
     </dependency>
 
     <!-- com.google.zxing.* -->
-    <dependency>
+     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
       <version>3.0.1</version>
+    </dependency>
+
+    <!-- zxscanlib -->
+    <dependency>
+      <groupId>eu.livotov</groupId>
+      <artifactId>zxscan</artifactId>
+      <version>1.0</version>
     </dependency>
 
     <!-- https://github.com/mosabua/maven-android-sdk-deployer -->
