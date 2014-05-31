@@ -47,7 +47,8 @@ public class HDAddress {
 
     private NetworkParameters	mParams;
     private int					mAddrNum;
-    private DeterministicKey	mAddrKey;
+    private String				mPath;
+    private byte[]				mPrvBytes;
     private byte[]				mPubBytes;
     private ECKey				mECKey;
     private byte[]				mPubKey;
@@ -67,17 +68,36 @@ public class HDAddress {
 
         mAddrNum = addrNode.getInt("addrNum");
 
-        mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
+        // If our persisted state doesn't have the path or prvBytes
+        // we'll need to use the expensive operation to derive them.
+        // We'll persist them going forward so we can do the faster
+        // deserialization.
+        //
+        if (!addrNode.has("path") || !addrNode.has("prvBytes")) {
 
-        // Derive ECKey.
-        byte[] prvBytes = mAddrKey.getPrivKeyBytes();
+            DeterministicKey dk =
+                HDKeyDerivation.deriveChildKey(chainKey, mAddrNum);
+
+            // Derive ECKey.
+            mPrvBytes = dk.getPrivKeyBytes();
+            mPath = dk.getPath();
+        }
+        else {
+            try {
+                mPrvBytes = Base58.decode(addrNode.getString("prvBytes"));
+            } catch (AddressFormatException ex) {
+                throw new RuntimeException("failed to decode prvBytes");
+            }
+            mPath = addrNode.getString("path");
+        }
+
         try {
             mPubBytes = Base58.decode(addrNode.getString("pubBytes"));
         } catch (AddressFormatException ex) {
             throw new RuntimeException("failed to decode pubBytes");
         }
         
-        mECKey = new ECKey(prvBytes, mPubBytes);
+        mECKey = new ECKey(mPrvBytes, mPubBytes);
 
         // Set creation time to Wallet32 epoch.
         mECKey.setCreationTimeSeconds(EPOCH);
@@ -94,7 +114,7 @@ public class HDAddress {
         mAvailable = addrNode.has("available") ?
             addrNode.getLong("available") : mBalance;
 
-        mLogger.info("read address " + mAddrKey.getPath() + ": " +
+        mLogger.info("read address " + mPath + ": " +
                      mAddress.toString());
     }
 
@@ -103,6 +123,8 @@ public class HDAddress {
             JSONObject obj = new JSONObject();
 
             obj.put("addrNum", mAddrNum);
+            obj.put("path", mPath);
+            obj.put("prvBytes", Base58.encode(mPrvBytes));
             obj.put("pubBytes", Base58.encode(mPubBytes));
             obj.put("numTrans", mNumTrans);
             obj.put("balance", mBalance);
@@ -122,12 +144,13 @@ public class HDAddress {
         mParams = params;
         mAddrNum = addrnum;
 
-        mAddrKey = HDKeyDerivation.deriveChildKey(chainKey, addrnum);
+        DeterministicKey dk = HDKeyDerivation.deriveChildKey(chainKey, addrnum);
+        mPath = dk.getPath();
 
         // Derive ECKey.
-        byte[] prvBytes = mAddrKey.getPrivKeyBytes();
-        mPubBytes = mAddrKey.getPubKeyBytes(); // Expensive, save.
-        mECKey = new ECKey(prvBytes, mPubBytes);
+        mPrvBytes = dk.getPrivKeyBytes();
+        mPubBytes = dk.getPubKeyBytes(); // Expensive, save.
+        mECKey = new ECKey(mPrvBytes, mPubBytes);
 
         // Set creation time to now.
         long now = Utils.now().getTime() / 1000;
@@ -143,7 +166,7 @@ public class HDAddress {
         mBalance = 0;
         mAvailable = 0;
 
-        mLogger.info("created address " + mAddrKey.getPath() + ": " +
+        mLogger.info("created address " + mPath + ": " +
                      mAddress.toString());
     }
 
@@ -179,7 +202,7 @@ public class HDAddress {
         if (avail)
             mAvailable += value;
 
-        mLogger.debug(mAddrKey.getPath() + " matched output of " +
+        mLogger.debug(mPath + " matched output of " +
                       Long.toString(value));
     }
 
@@ -192,12 +215,12 @@ public class HDAddress {
         mBalance -= value;
         mAvailable -= value;
 
-        mLogger.debug(mAddrKey.getPath() + " matched input of " +
+        mLogger.debug(mPath + " matched input of " +
                       Long.toString(value));
     }
 
     public String getPath() {
-        return mAddrKey.getPath();
+        return mPath;
     }
 
     public long getBalance() {
@@ -232,7 +255,7 @@ public class HDAddress {
 
     public void logBalance() {
         if (mNumTrans > 0) {
-            mLogger.info(mAddrKey.getPath() + " " +
+            mLogger.info(mPath + " " +
                          Integer.toString(mNumTrans) + " " +
                          Long.toString(mBalance) + " " +
                          Long.toString(mAvailable));

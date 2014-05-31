@@ -38,22 +38,69 @@ pre-release version.
 
 Instructions for installing the alpha version are in the first post ...
 
-Building Wallet32
+Building Wallet32 with Maven
 ===============
 
-### Setup
+### Install zxscanlib to local maven repository
 
-Clone the project source from github:
+    git clone git@github.com:LivotovLabs/zxscanlib.git
+
+    cd zxscanlib
+
+    patch -p1 <<"EOF"
+    --- a/build.gradle
+    +++ b/build.gradle
+    @@ -1,12 +1,38 @@
+     apply plugin: 'android-library'
+     
+    +apply plugin: 'maven'
+    +
+    +uploadArchives {
+    +    repositories {
+    +        mavenDeployer {
+    +            repository(url: mavenLocal().url)
+    +            pom.groupId = 'eu.livotov'
+    +            pom.artifactId = 'zxscan'
+    +            pom.version = '1.1'
+    +        }
+    +    }
+    +}
+    +
+    +buildscript {  
+    +    repositories {
+    +        mavenCentral()
+    +    }
+    +    dependencies {
+    +        classpath 'com.android.tools.build:gradle:0.10.+'
+    +    }
+    +}
+    +
+     dependencies {
+         compile fileTree(dir: 'libs', include: '*.jar')
+     }
+     
+     android {
+         compileSdkVersion 17
+    -    buildToolsVersion "18.0.1"
+    +    buildToolsVersion "19.1.0"
+    +
+    +    lintOptions {
+    +        abortOnError false
+    +    }
+     
+         sourceSets {
+             main {
+    EOF
+
+    gradle uploadArchives     
+
+### Build Wallet32
 
     git clone git@github.com:ksedgwic/Wallet32.git
 
-Import the project into Eclipse:
+    cd Wallet32
 
-File -> Import ... -> General -> Existing Projects into Workspace
-
-Add v7 appcompat to Eclipse:
-
-http://developer.android.com/tools/support-library/setup.html#libs-with-res
+    mvn install android:deploy android:run
 
 
 About Wallet32

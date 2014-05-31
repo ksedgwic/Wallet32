@@ -1,45 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bonsai</groupId>
-  <artifactId>wallet32</artifactId>
+  <artifactId>Wallet32</artifactId>
+  <version>0.2.6-SNAPSHOT</version>
   <packaging>apk</packaging>
-  <version>0.0.1-SNAPSHOT</version>
   <name>Wallet32</name>
-  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <platform.version>4.1.1.4</platform.version>
+    <android.plugin.version>3.9.0-rc.2</android.plugin.version>
+  </properties>
+
   <dependencies>
+
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
-      <version>4.1.1.4</version>
+      <version>${platform.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.google</groupId>
+      <artifactId>bitcoinj</artifactId>
+      <version>0.11.2</version>
+    </dependency>
+
+    <!-- com.google.zxing.* -->
+     <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
+    <!-- zxscanlib -->
+    <dependency>
+      <groupId>eu.livotov</groupId>
+      <artifactId>zxscan</artifactId>
+      <version>1.1</version>
+      <type>aar</type>
+    </dependency>
+
+    <!-- https://github.com/mosabua/maven-android-sdk-deployer -->
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v13</artifactId>
+      <version>19.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7-appcompat</artifactId>
+      <version>19.1.0</version>
+      <type>apklib</type>
+    </dependency>
+    <dependency>
+      <groupId>android.support</groupId>
+      <artifactId>compatibility-v7-appcompat</artifactId>
+      <version>19.1.0</version>
+      <type>jar</type>
+    </dependency>
+
+    <!-- https://github.com/tony19/logback-android -->
+    <dependency>
+      <groupId>com.github.tony19</groupId>
+      <artifactId>logback-android-core</artifactId>
+      <version>1.1.1-2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tony19</groupId>
+      <artifactId>logback-android-classic</artifactId>
+      <version>1.1.1-2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+    </dependency>
+
   </dependencies>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+          <artifactId>android-maven-plugin</artifactId>
+          <version>${android.plugin.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e
+             settings only. It has no influence on the Maven build
+             itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+        	<pluginExecution>
+        	  <pluginExecutionFilter>
+        	    <groupId>
+        	      com.jayway.maven.plugins.android.generation2
+        	    </groupId>
+        	    <artifactId>
+        	      android-maven-plugin
+        	    </artifactId>
+        	    <versionRange>[3.8.0,)</versionRange>
+        	    <goals>
+        	      <goal>consume-aar</goal>
+        	    </goals>
+        	  </pluginExecutionFilter>
+        	  <action>
+        	    <ignore></ignore>
+        	  </action>
+        	</pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
         <configuration>
           <sdk>
-            <path>${env.ANDROID_HOME}</path>
-            <platform>18</platform>
+            <!-- platform as api level (api level 16 = platform 4.1) -->
+            <platform>16</platform>
           </sdk>
         </configuration>
-        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+	<configuration>
+	  <downloadSources>true</downloadSources>
+	  <downloadJavadocs>false</downloadJavadocs>
+	  <additionalProjectnatures>
+	    <projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
+	  </additionalProjectnatures>
+	  <additionalBuildcommands>
+	    <buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
+	    <buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
+	    <buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
+	  </additionalBuildcommands>
+	  <classpathContainers>
+	    <classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
+	    <!-- This is a workaround: we do not want JRE_CONTAINER,
+	         however if we remove it, it will be automatically
+	         added, and placed first. So we add it in the second
+	         position, so that the project is recognized as an
+	         Android project. -->
+	    <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+	  </classpathContainers>
+	  <excludes>
+	    <exclude>android:android</exclude>
+	  </excludes>
+	</configuration>
       </plugin>
     </plugins>
   </build>
