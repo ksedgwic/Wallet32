@@ -438,9 +438,56 @@ Tracing
 zxscanlib
 ----------------------------------------------------------------
 
-    mvn install:install-file \
-         -Dfile=captureactivity.jar \
-         -DgroupId=eu.livotov \
-         -DartifactId=zxscan \
-         -Dversion=1.0 \
-         -Dpackaging=jar
+Installed gradle:
+
+    cd /usr/local
+    unzip gradle-1.12-all.zip
+
+cloned zxscanlib:
+
+    cd /tmp
+    git clone git@github.com:LivotovLabs/zxscanlib.git
+
+patched build.gradle:
+
+    cd /tmp/zxscanlib
+
+    diff --git a/build.gradle b/build.gradle
+    index 12b9428..f09fc1e 100644
+    --- a/build.gradle
+    +++ b/build.gradle
+    @@ -1,12 +1,27 @@
+     apply plugin: 'android-library'
+     
+    +apply plugin: 'maven'
+    +
+    +buildscript {  
+    +    repositories {
+    +        mavenCentral()
+    +    }
+    +    dependencies {
+    +        classpath 'com.android.tools.build:gradle:0.10.+'
+    +    }
+    +}
+    +
+     dependencies {
+         compile fileTree(dir: 'libs', include: '*.jar')
+     }
+     
+     android {
+         compileSdkVersion 17
+    -    buildToolsVersion "18.0.1"
+    +    buildToolsVersion "19.1.0"
+    +
+    +    lintOptions {
+    +        abortOnError false
+    +    }
+     
+         sourceSets {
+             main {
+        
+built library:
+
+    cd /tmp/zxscanlib
+
+    /usr/local/gradle-1.12/bin/gradle install
