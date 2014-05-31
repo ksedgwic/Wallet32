@@ -452,42 +452,54 @@ patched build.gradle:
 
     cd /tmp/zxscanlib
 
-    diff --git a/build.gradle b/build.gradle
-    index 12b9428..f09fc1e 100644
-    --- a/build.gradle
-    +++ b/build.gradle
-    @@ -1,12 +1,27 @@
-     apply plugin: 'android-library'
-     
-    +apply plugin: 'maven'
-    +
-    +buildscript {  
-    +    repositories {
-    +        mavenCentral()
-    +    }
-    +    dependencies {
-    +        classpath 'com.android.tools.build:gradle:0.10.+'
-    +    }
-    +}
-    +
-     dependencies {
-         compile fileTree(dir: 'libs', include: '*.jar')
-     }
-     
-     android {
-         compileSdkVersion 17
-    -    buildToolsVersion "18.0.1"
-    +    buildToolsVersion "19.1.0"
-    +
-    +    lintOptions {
-    +        abortOnError false
-    +    }
-     
-         sourceSets {
-             main {
-        
-built library:
+patch -p1 <<"EOF"
+--- a/build.gradle
++++ b/build.gradle
+@@ -1,12 +1,38 @@
+ apply plugin: 'android-library'
+ 
++apply plugin: 'maven'
++
++uploadArchives {
++    repositories {
++        mavenDeployer {
++            repository(url: "file://localhost/home/ksedgwic/.m2/repository")
++            pom.groupId = 'eu.livotov'
++            pom.artifactId = 'zxscan'
++            pom.version = '1.1'
++        }
++    }
++}
++
++buildscript {  
++    repositories {
++        mavenCentral()
++    }
++    dependencies {
++        classpath 'com.android.tools.build:gradle:0.10.+'
++    }
++}
++
+ dependencies {
+     compile fileTree(dir: 'libs', include: '*.jar')
+ }
+ 
+ android {
+     compileSdkVersion 17
+-    buildToolsVersion "18.0.1"
++    buildToolsVersion "19.1.0"
++
++    lintOptions {
++        abortOnError false
++    }
+ 
+     sourceSets {
+         main {
+EOF
+               
+build install into local maven repository:
 
     cd /tmp/zxscanlib
 
-    /usr/local/gradle-1.12/bin/gradle install
+    /usr/local/gradle-1.12/bin/gradle uploadArchives
+

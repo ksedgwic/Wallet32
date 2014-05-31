@@ -54,7 +54,7 @@ import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.bitcoin.uri.BitcoinURIParseException;
 
-// import eu.livotov.zxscan.ZXScanHelper;
+import eu.livotov.zxscan.ZXScanHelper;
 
 public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSender {
 
@@ -500,21 +500,17 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     {
         if (resultCode == RESULT_OK && requestCode == 12345)
         {
-            // FIXME - convert this to something else ...
-            // String scannedCode = ZXScanHelper.getScannedCode(data);
-            String scannedCode = "";
+            String scannedCode = ZXScanHelper.getScannedCode(data);
             mLogger.info("saw scannedCode " + scannedCode);
             updateToAddress(scannedCode);
         }
     }
 
     public void scanQR(View view) {
-        /* FIXME - convert this to something else
         // CaptureActivity
         ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12345);
-        */
     }
 
     public void computeFee(View view) {
