@@ -43,7 +43,7 @@ import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.bitcoin.uri.BitcoinURIParseException;
 
-// import eu.livotov.zxscan.ZXScanHelper;
+import eu.livotov.zxscan.ZXScanHelper;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -580,21 +580,17 @@ public class SweepKeyActivity extends BaseWalletActivity {
     {
         if (resultCode == RESULT_OK && requestCode == 12346)
         {
-            // FIXME - convert this to something else.
-            // String scannedCode = ZXScanHelper.getScannedCode(data);
-            String scannedCode = "";
+            String scannedCode = ZXScanHelper.getScannedCode(data);
             mLogger.info("saw scannedCode " + scannedCode);
             updatePrivateKey(scannedCode);
         }
     }
 
     public void scanQR(View view) {
-        /* FIXME - convert this to something else.
         // CaptureActivity
         ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12346);
-        */
     }
 
     public void sweepKey(View view) {

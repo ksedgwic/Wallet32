@@ -34,7 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-// import eu.livotov.zxscan.ZXScanHelper;
+import eu.livotov.zxscan.ZXScanHelper;
 
 public class PairWalletActivity extends ActionBarActivity {
 
@@ -83,9 +83,7 @@ public class PairWalletActivity extends ActionBarActivity {
             return;
         }
 
-        // FIXME - convert this to something else ...
-        // String scannedCode = ZXScanHelper.getScannedCode(data);
-        String scannedCode = "";
+        String scannedCode = ZXScanHelper.getScannedCode(data);
 
         JSONObject codeObj;
         try {
@@ -162,11 +160,9 @@ public class PairWalletActivity extends ActionBarActivity {
     public void scanPairingCode(View view) {
         mLogger.info("scanning pairing code");
 
-        /* FIXME - Convert this to something else ...
         // CaptureActivity
         ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12347);
-        */
     }
 }

@@ -463,7 +463,7 @@ patch -p1 <<"EOF"
 +uploadArchives {
 +    repositories {
 +        mavenDeployer {
-+            repository(url: "file://localhost/home/ksedgwic/.m2/repository")
++            repository(url: mavenLocal().url)
 +            pom.groupId = 'eu.livotov'
 +            pom.artifactId = 'zxscan'
 +            pom.version = '1.1'
