@@ -425,7 +425,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true)));
+        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true, true)));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -884,7 +884,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.amount_btc);
-                tv.setText(mBTCFmt.formatCol(mAmount, 0, true));
+                tv.setText(mBTCFmt.formatCol(mAmount, 0, true, true));
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.amount_fiat);
@@ -893,7 +893,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.fee_btc);
-                tv.setText(mBTCFmt.formatCol(mFee, 0, true));
+                tv.setText(mBTCFmt.formatCol(mFee, 0, true, true));
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.fee_fiat);
@@ -902,7 +902,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.total_btc);
-                tv.setText(mBTCFmt.formatCol(mAmount + mFee, 0, true));
+                tv.setText(mBTCFmt.formatCol(mAmount + mFee, 0, true, true));
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.total_fiat);

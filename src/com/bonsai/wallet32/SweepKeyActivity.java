@@ -301,7 +301,7 @@ public class SweepKeyActivity extends BaseWalletActivity {
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true)));
+        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true, true)));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));

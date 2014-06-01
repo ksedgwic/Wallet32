@@ -239,8 +239,8 @@ public class ViewTransactionsActivity extends BaseWalletActivity {
                 String datestr = dateFormater.format(tx.getUpdateTime());
                 String timestr = timeFormater.format(tx.getUpdateTime());
 
-                String btcstr = mBTCFmt.formatCol(btc, 0, true);
-                String btcbalstr = mBTCFmt.formatCol(btcbal, 0, true);
+                String btcstr = mBTCFmt.formatCol(btc, 0, true, true);
+                String btcbalstr = mBTCFmt.formatCol(btcbal, 0, true, true);
 
                 String fiatstr = String.format("%.02f", fiat);
                 String fiatbalstr = String.format("%.02f", fiatbal);
