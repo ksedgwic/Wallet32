@@ -38,21 +38,21 @@ Needed
 Checklist
 ----------------------------------------------------------------
 
-Update AndroidManifest.xml
+Update version in pom.xm
 
-Update README.txt version.
+Update versions in AndroidManifest.xml
 
-Update res/values/strings.xml version.
+Update version, date in README.txt.
+
+Update version, date, in res/values/strings.xml.
 
 Commit, tag, git push --tag
 
-Clean project.
+mkmvnrelease
 
-Smoke test on attached device.
+scp target/Wallet32.apk sl0:htdocs/ken/public/Wallet32.apk
 
-Build Wallet32.apk.
-
-scp ~/bonsai/workspace/Wallet32.apk sl0:htdocs/ken/public/
+Smoke test downloaded
 
 Upload to Google Play Developer Console.
 
