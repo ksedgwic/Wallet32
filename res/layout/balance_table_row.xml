@@ -19,7 +19,7 @@
       android:minWidth="0dp"
       />
 
-  <TextView
+  <com.bonsai.wallet32.SpaceyTextView
       android:id="@+id/row_btc"
       android:text="0.000000"
       android:layout_width="wrap_content"

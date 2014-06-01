@@ -142,7 +142,7 @@ public class BTCFmt {
             }
             while (ndx - 3 > 0) {
                 ndx -= 3;
-                sb.insert(ndx, ' ');
+                sb.insert(ndx, '\u202F');
             }
 
             // Insert following tri-spaces
@@ -157,7 +157,7 @@ public class BTCFmt {
             ++ndx;
             while (ndx + 3 < sb.length() - 1) {
                 ndx += 3;
-                sb.insert(ndx, ' ');
+                sb.insert(ndx, '\u202F');
                 ++ndx;
             }
         }

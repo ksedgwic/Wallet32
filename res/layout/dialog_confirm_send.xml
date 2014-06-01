@@ -129,7 +129,7 @@
 	    android:layout_height="fill_parent"
 	    />
 
-	<TextView
+        <com.bonsai.wallet32.SpaceyTextView
 	    android:id="@+id/amount_btc"
 	    android:text="0.000000"
 	    android:layout_width="wrap_content"
@@ -173,7 +173,7 @@
 	    android:layout_height="fill_parent"
 	    />
 
-	<TextView
+        <com.bonsai.wallet32.SpaceyTextView
 	    android:id="@+id/fee_btc"
 	    android:text="0.000000"
 	    android:layout_width="wrap_content"
@@ -218,7 +218,7 @@
 	    android:layout_height="fill_parent"
 	    />
 
-	<TextView
+        <com.bonsai.wallet32.SpaceyTextView
 	    android:id="@+id/total_btc"
 	    android:text="0.000000"
 	    android:layout_width="wrap_content"
