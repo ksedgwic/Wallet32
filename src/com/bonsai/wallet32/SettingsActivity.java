@@ -35,14 +35,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -53,6 +56,7 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String KEY_BTC_UNITS = "pref_btcUnits";
     public static final String KEY_FIAT_RATE_SOURCE = "pref_fiatRateSource";
     public static final String KEY_RESCAN_BLOCKCHAIN = "pref_rescanBlockchain";
+    public static final String KEY_EXPERIMENTAL = "pref_experimental";
 
     private WalletService	mWalletService = null;
     private SettingsActivity	mThis;
@@ -88,6 +92,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_changePasscode");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
@@ -106,6 +111,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_addAccount");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             showConfirmDialog
                                 (mRes.getString(R.string.pref_add_account_title),
@@ -123,6 +129,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_viewSeed");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
@@ -141,6 +148,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_showPairing");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, PasscodeActivity.class);
@@ -159,6 +167,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_rescanBlockchain");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, RescanActivity.class);
@@ -176,6 +185,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_sendLogs");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             sendLogs();
                             finish();
@@ -189,6 +199,7 @@ public class SettingsActivity extends PreferenceActivity {
                 (Preference) findPreference("pref_addWallet");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             WalletApplication wallapp =
                                 (WalletApplication) getApplicationContext();
@@ -209,6 +220,7 @@ public class SettingsActivity extends PreferenceActivity {
             Preference butt = (Preference) findPreference("pref_about");
             butt.setOnPreferenceClickListener
                 (new Preference.OnPreferenceClickListener() {
+                        @Override
                         public boolean onPreferenceClick(Preference arg0) {
                             Intent intent =
                                 new Intent(mThis, AboutActivity.class);
@@ -219,6 +231,21 @@ public class SettingsActivity extends PreferenceActivity {
                             return true;
                         }
                     });
+        }
+
+        // If we don't have experimental mode on remove experimental
+        // features.
+        SharedPreferences sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean isExperimental =
+            sharedPref.getBoolean(SettingsActivity.KEY_EXPERIMENTAL, false);
+        if (!isExperimental) {
+            PreferenceScreen prefScreen =
+                (PreferenceScreen) getPreferenceScreen();
+
+            // Dynamically remove the Add Wallet option.
+            Preference pref = prefScreen.findPreference("pref_addWallet");
+            prefScreen.removePreference(pref);
         }
     }
 

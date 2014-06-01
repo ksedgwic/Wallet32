@@ -18,15 +18,25 @@ package com.bonsai.wallet32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AboutActivity extends ActionBarActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(AboutActivity.class);
+
+    private int aboutClicks = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +51,72 @@ public class AboutActivity extends ActionBarActivity {
         TextView tv = (TextView) findViewById(R.id.about_contents);
         tv.setMovementMethod(LinkMovementMethod.getInstance());
 
+        // Catch touches on the walrus image.
+        ImageView aboutImage = (ImageView) findViewById(R.id.about_image);
+        aboutImage.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        ++aboutClicks;
+                        mLogger.info(String.format("%d clicks", aboutClicks));
+                        if (aboutClicks == 10) {
+                            toggleExperimental();
+                            aboutClicks = 0;
+                        }
+                        
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
         mLogger.info("AboutActivity created");
 	}
+
+	@Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reset the about click counter.
+        aboutClicks = 0;
+
+        mLogger.info("AboutActivity resumed");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mLogger.info("AboutActivity paused");
+    }
+
+    private void toggleExperimental() {
+        SharedPreferences sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Fetch the experimental preference.
+        Boolean isExperimental =
+            sharedPref.getBoolean(SettingsActivity.KEY_EXPERIMENTAL, false);
+
+        // Toggle the value.
+        isExperimental = !isExperimental;
+
+        // Store the modified value.
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(SettingsActivity.KEY_EXPERIMENTAL, isExperimental);
+        editor.commit();
+
+        // Let the user know what happened
+        Resources res = getApplicationContext().getResources();
+        if (isExperimental) {
+            mLogger.info("toggled experimental mode on");
+            String msg = res.getString(R.string.about_exper_on);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mLogger.info("toggled experimental mode off");
+            String msg = res.getString(R.string.about_exper_off);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

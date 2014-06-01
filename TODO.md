@@ -503,3 +503,36 @@ build install into local maven repository:
 
     /usr/local/gradle-1.12/bin/gradle uploadArchives
 
+ZipAlign
+----------------------------------------------------------------
+
+Clashes w/ late-model android.plugin.version.
+
+Late-model android.plugin.version needed to avoid multiple BuildConfig
+issue w/ gradle written aar files.
+
+      <plugin>
+        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+        <artifactId>maven-android-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <sign>
+            <debug>false</debug>
+          </sign>
+          <zipalign>
+            <verbose>true</verbose>
+            <inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
+            <outputApk>${project.build.directory}/${project.artifactId}-signed-aligned.apk
+            </outputApk>
+          </zipalign>
+        </configuration>
+        <executions>
+          <execution>
+            <id>alignApk</id>
+            <phase>package</phase>
+            <goals>
+              <goal>zipalign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>

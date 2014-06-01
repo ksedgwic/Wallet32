@@ -146,18 +146,21 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     }
 
     private final TextWatcher mToAddressWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
                                           int after) {
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 String uri = mToAddressEditText.getText().toString();
                 updateToAddress(uri);
             }
@@ -171,6 +174,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     // current rate.
 
     private final TextWatcher mBTCAmountWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
@@ -179,18 +183,21 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 mUserSetAmountFiat = false;
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 updateAmountFields();
             }
 
         };
 
     private final TextWatcher mFiatAmountWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
@@ -198,12 +205,14 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 mUserSetAmountFiat = true;
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 updateAmountFields();
             }
         };
@@ -267,6 +276,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     // current rate.
 
     private final TextWatcher mBTCFeeWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
@@ -275,18 +285,21 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 mUserSetFeeFiat = false;
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 updateFeeFields();
             }
 
         };
 
     private final TextWatcher mFiatFeeWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
@@ -294,12 +307,14 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 mUserSetFeeFiat = true;
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 updateFeeFields();
             }
         };
@@ -361,6 +376,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
     private OnCheckedChangeListener mSendFromListener =
         new OnCheckedChangeListener() {
+			@Override
 			public void onCheckedChanged(CompoundButton cb,
                                          boolean isChecked) {
                 if (cb.isChecked()) {
@@ -508,7 +524,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
     public void scanQR(View view) {
         // CaptureActivity
-        ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
+        // ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
+        ZXScanHelper.setPlaySoundOnRead(false);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12345);
     }

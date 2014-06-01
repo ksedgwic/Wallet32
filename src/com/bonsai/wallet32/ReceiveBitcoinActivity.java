@@ -95,6 +95,7 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
     // current rate.
 
     private final TextWatcher mBTCAmountWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
@@ -103,18 +104,21 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
                 mUserSetAmountFiat = false;
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 updateAmountFields();
             }
 
         };
 
     private final TextWatcher mFiatAmountWatcher = new TextWatcher() {
+            @Override
             public void beforeTextChanged(CharSequence ss,
                                           int start,
                                           int count,
@@ -122,12 +126,14 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
                 mUserSetAmountFiat = true;
             }
 
+            @Override
             public void onTextChanged(CharSequence ss,
                                       int start,
                                       int before,
                                       int count) {}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 updateAmountFields();
             }
         };
@@ -188,6 +194,7 @@ public class ReceiveBitcoinActivity extends BaseWalletActivity {
 
     private OnCheckedChangeListener mReceiveToListener =
         new OnCheckedChangeListener() {
+			@Override
 			public void onCheckedChanged(CompoundButton cb,
                                          boolean isChecked) {
                 if (cb.isChecked()) {

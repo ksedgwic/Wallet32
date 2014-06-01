@@ -387,10 +387,12 @@ This transaction is really large; it will take a while to process.\n
     <string name="app_units_ubtc">uBTC</string>
 
     <string name="title_activity_about">About Wallet32</string>
+    <string name="about_exper_on">Experimental Features Toggled On</string>
+    <string name="about_exper_off">Experimental Features Toggled Off</string>
     <string name="about_contents">
 Wallet32\n
 \n
-Version: 0.2.5 (15-May-2014)\n
+Version: 0.3.0 (01-Jun-2014)\n
 \n
 Source:  <a href="https://github.com/ksedgwic/Wallet32">https://github.com/ksedgwic/Wallet32</a>\n
 \n

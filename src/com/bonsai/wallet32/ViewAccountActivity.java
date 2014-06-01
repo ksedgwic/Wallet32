@@ -61,15 +61,18 @@ public class ViewAccountActivity extends BaseWalletActivity {
     private NameEditState	mNameEditState;
 
     private final TextWatcher mAccountNameWatcher = new TextWatcher() {
+			@Override
 			public void beforeTextChanged(CharSequence arg0, int arg1,
 					int arg2, int arg3) {
 			}
 
+			@Override
 			public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 					int arg3) {
 			}
 
-			public void afterTextChanged(Editable ss) {
+			@Override
+            public void afterTextChanged(Editable ss) {
                 setNameState(NameEditState.DIRTY);
             }
         };
