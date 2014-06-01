@@ -160,7 +160,8 @@ public class PairWalletActivity extends ActionBarActivity {
         mLogger.info("scanning pairing code");
 
         // CaptureActivity
-        ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
+        // ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
+        ZXScanHelper.setPlaySoundOnRead(false);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12347);
     }

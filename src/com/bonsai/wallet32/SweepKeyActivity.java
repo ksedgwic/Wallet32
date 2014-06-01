@@ -598,7 +598,8 @@ public class SweepKeyActivity extends BaseWalletActivity {
 
     public void scanQR(View view) {
         // CaptureActivity
-        ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
+        // ZXScanHelper.setCustomScanSound(R.raw.quiet_beep);
+        ZXScanHelper.setPlaySoundOnRead(false);
         ZXScanHelper.setCustomScanLayout(R.layout.scanner_layout);
         ZXScanHelper.scan(this, 12346);
     }
