@@ -177,6 +177,80 @@ public class WalletApplication
         return wallets;
     }
 
+    public int nextAvailableWallet() {
+        // Find the first available wallet directory.
+        for (int ndx = 1; ndx < 64; ++ndx) {
+            String path = String.format("wallet%03d", ndx);
+            File dir = new File(getFilesDir(), path);
+            if (!dir.exists()) {
+                mLogger.info("nextAvailableWallet " + path);
+                return ndx;
+            }
+        }
+        throw new RuntimeException("no wallet space available");
+    }
+
+    public void renameWallet(String path, String newName) {
+        mLogger.info("renmaing wallet " + path + " to " + newName);
+        List<WalletEntry> wallets = loadWalletDirectory();
+        for (WalletEntry entry : wallets) {
+            if (entry.mPath.equals(path)) {
+                entry.mName = newName;
+                persistWalletDirectory(wallets);
+                return;
+            }
+        }
+        throw new RuntimeException("wallet " + path + " not found");
+    }
+
+    public void deleteWallet(String path) {
+        mLogger.info("deleting wallet " + path);
+
+        File dir = new File(getFilesDir(), path);
+        File[] directoryListing = dir.listFiles();
+        for (File child : directoryListing) {
+            try {
+                child.delete();
+            }
+            catch (Exception ex) {
+                mLogger.error("delete of " + child.toString() + " failed");
+            }
+        }
+        try {
+            dir.delete();
+        }
+        catch (Exception ex) {
+            mLogger.error("delete of " + path + " failed");
+        }
+
+        List<WalletEntry> newWalletList = new ArrayList<WalletEntry>();
+        List<WalletEntry> walletList = loadWalletDirectory();
+        for (WalletEntry entry : walletList)
+            if (!entry.mPath.equals(path))
+                newWalletList.add(entry);
+        persistWalletDirectory(newWalletList);
+    }
+
+    public String addWallet() {
+        int ndx = nextAvailableWallet();
+        List<WalletEntry> wallets = loadWalletDirectory();
+        String name = String.format("Wallet %d", ndx);
+        String path = String.format("wallet%03d", ndx);
+        wallets.add(new WalletEntry(name, path));
+        makeWalletDirectory(path);
+        persistWalletDirectory(wallets);
+        return name;
+    }
+
+    public String walletName(String walletpath) {
+        List<WalletEntry> walletList = loadWalletDirectory();
+        for (WalletEntry entry : walletList) {
+            if (entry.mPath.equals(walletpath))
+                return entry.mName;
+        }
+        throw new RuntimeException("wallet path " + walletpath + " not found");
+    }
+
     public void persistWalletDirectory(List<WalletEntry> wallets) {
         File walletDirFile =
             new File(getFilesDir(), getWalletPrefix() + ".walletdir");

@@ -46,6 +46,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -203,14 +204,10 @@ public class SettingsActivity extends PreferenceActivity {
                         public boolean onPreferenceClick(Preference arg0) {
                             WalletApplication wallapp =
                                 (WalletApplication) getApplicationContext();
-                            List<WalletEntry> wallets =
-                                wallapp.loadWalletDirectory();
-                            int sz = wallets.size();
-                            String name = String.format("Wallet %d", sz + 1);
-                            String path = String.format("wallet%03d", sz + 1);
-                            wallets.add(new WalletEntry(name, path));
-                            wallapp.makeWalletDirectory(path);
-                            wallapp.persistWalletDirectory(wallets);
+                            String name = wallapp.addWallet();
+                            String msg =
+                                mRes.getString(R.string.settings_wallet_created, name);
+                            Toast.makeText(mThis, msg, Toast.LENGTH_SHORT).show();
 							return true;
                         }
                     });

@@ -9,6 +9,12 @@
     <string name="action_export_xpub">Export Account XPUB</string>
     <string name="title_activity_lobby">Wallet32</string>
     <string name="lobby_starting">Wallet32 Starting &#8230;</string>
+    <string name="lobby_edit">Edit</string>
+    <string name="lobby_edit_name">Edit Wallet Name:</string>
+    <string name="lobby_edit_apply">Apply</string>
+    <string name="lobby_edit_delete">Delete Wallet</string>
+    <string name="lobby_edit_cancel">Cancel</string>
+    <string name="lobby_confirm_delete">Are you sure you want to delete %1$s?</string>
     <string name="title_activity_create_restore">Create/Restore Wallet</string>
     <string name="create_nowallet">No Wallet Found</string>
     <string name="button_create">Create New Wallet</string>
@@ -299,6 +305,7 @@ This transaction is really large; it will take a while to process.\n
 
     <string name="settings_confirm_ok">OK</string>
     <string name="settings_confirm_cancel">Cancel</string>
+    <string name="settings_wallet_created">Created new wallet %1$s</string>
 
     <string name="pref_btc_units">BTC Units</string>
     <string name="pref_btc_units_default">UBTC</string>
