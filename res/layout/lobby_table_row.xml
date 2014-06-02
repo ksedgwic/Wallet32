@@ -11,7 +11,7 @@
       android:id="@+id/wallet_button"
       android:onClick="openWallet"
       android:text="Sample Wallet"
-      android:layout_width="300dp"
+      android:layout_width="200dp"
       android:layout_height="wrap_content"
       android:textAppearance="@android:style/TextAppearance.Large"
       />
