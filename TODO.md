@@ -536,3 +536,15 @@ issue w/ gradle written aar files.
           </execution>
         </executions>
       </plugin>
+
+Spend Unconfirmed
+----------------------------------------------------------------
+
+Confirm balance includes unconfirmed.
+
+Confirm send can send unconfirmed.
+
+Confirm useAll uses unconfirmed.
+
+It may be the case that use all *always* uses unconfirmed balances,
+this is a feature, yes?

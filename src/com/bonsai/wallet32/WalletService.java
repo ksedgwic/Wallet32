@@ -191,10 +191,12 @@ public class WalletService extends Service
 
                 showEventNotification(noteId,
                                       R.drawable.ic_note_bc_green_lt,
-                                      mRes.getString(R.string.wallet_service_note_rcvd_title,
-                                                     btcfmt.unitStr()),
-                                      mRes.getString(R.string.wallet_service_note_rcvd_msg,
-                                                     btcfmt.format(amount), btcfmt.unitStr()));
+                                      mRes.getString
+                                      (R.string.wallet_service_note_rcvd_title,
+                                       btcfmt.unitStr()),
+                                      mRes.getString
+                                      (R.string.wallet_service_note_rcvd_msg,
+                                       btcfmt.format(amount), btcfmt.unitStr()));
 
                 final TransactionConfidence txconf = tx.getConfidence();
 
@@ -218,10 +220,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_green,
-                                     mRes.getString(R.string.wallet_service_note_rcnf_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_rcnf_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rcnf_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rcnf_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else if (ct == ConfidenceType.DEAD) {
@@ -231,10 +235,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_gray,
-                                     mRes.getString(R.string.wallet_service_note_rdead_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_rdead_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rdead_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rdead_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else {
@@ -301,10 +307,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_red,
-                                     mRes.getString(R.string.wallet_service_note_scnf_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_scnf_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_scnf_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_scnf_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
                             }
                             else if (ct == ConfidenceType.DEAD) {
                                 mLogger.info(String.format("send %d dead",
@@ -313,10 +321,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_gray,
-                                     mRes.getString(R.string.wallet_service_note_sdead_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_sdead_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_sdead_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_sdead_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else {
@@ -966,17 +976,21 @@ public class WalletService extends Service
         }
     }
 
-    public AmountAndFee useAll(int acctnum) throws InsufficientMoneyException{
-        return mHDWallet.useAll(mKit.wallet(), acctnum);
+    public AmountAndFee useAll(int acctnum, boolean spendUnconfirmed)
+        throws InsufficientMoneyException {
+        return mHDWallet.useAll(mKit.wallet(), acctnum, spendUnconfirmed);
     }
 
-    public long computeRecommendedFee(int acctnum, long amount)
+    public long computeRecommendedFee(int acctnum,
+                                      long amount,
+                                      boolean spendUnconfirmed)
     		throws IllegalArgumentException, InsufficientMoneyException {
 
         mLogger.info("computeRecommendedFee starting");
         long fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
                                                    acctnum,
-                                                   amount);
+                                                   amount,
+                                                   spendUnconfirmed);
         mLogger.info("computeRecommendedFee finished");
         return fee;
     }
@@ -984,7 +998,10 @@ public class WalletService extends Service
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
                                      long amount,
-                                     long fee) throws RuntimeException {
+                                     long fee,
+                                     boolean spendUnconfirmed)
+        throws RuntimeException {
+
         if (mHDWallet == null)
             return;
 
@@ -996,7 +1013,7 @@ public class WalletService extends Service
                                  acctnum, address, amount, fee));
             
             mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest,
-                                       amount, fee);
+                                       amount, fee, spendUnconfirmed);
 
         } catch (WrongNetworkException ex) {
             String msg = "Address for wrong network: " + ex.getMessage();

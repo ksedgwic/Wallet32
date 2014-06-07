@@ -23,6 +23,13 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="pref_spendUnconfirmed"
+        android:summary="@string/pref_spend_unconfirmed_summary"
+        android:title="@string/pref_spend_unconfirmed"
+	/>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="pref_showPasscode"
         android:summary="@string/pref_show_passcode_summary"
         android:title="@string/pref_show_passcode"

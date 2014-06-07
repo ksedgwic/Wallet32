@@ -336,6 +336,9 @@ This transaction is really large; it will take a while to process.\n
       <item>BITSTAMPUSD</item>
     </string-array>
 
+    <string name="pref_spend_unconfirmed">Unconfirmed Balances Spendable</string>
+    <string name="pref_spend_unconfirmed_summary">Received but unconfirmed balances available for immediate spending</string>
+
     <string name="pref_show_passcode">Show Passcode</string>
     <string name="pref_show_passcode_summary">Passcode shown during entry</string>
 

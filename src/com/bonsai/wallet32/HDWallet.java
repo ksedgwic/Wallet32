@@ -694,7 +694,9 @@ public class HDWallet {
                                  int acctnum,
                                  Address dest,
                                  long value,
-                                 long fee) throws RuntimeException {
+                                 long fee,
+                                 boolean spendUnconfirmed)
+        throws RuntimeException {
 
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
@@ -704,7 +706,7 @@ public class HDWallet {
         req.feePerKb = BigInteger.ZERO;
         req.ensureMinRequiredFee = false;
         req.changeAddress = acct.nextChangeAddress();
-        req.coinSelector = acct.coinSelector();
+        req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;
 
 		try {
@@ -714,7 +716,9 @@ public class HDWallet {
 		}
     }
 
-    public AmountAndFee useAll(Wallet wallet, int acctnum)
+    public AmountAndFee useAll(Wallet wallet,
+                               int acctnum,
+                               boolean spendUnconfirmed)
         throws InsufficientMoneyException {
 
         // Create a pretend send request and extract the recommended
@@ -725,7 +729,7 @@ public class HDWallet {
         Address dest = acct.nextReceiveAddress();
             
         SendRequest req = SendRequest.emptyWallet(dest);
-        req.coinSelector = acct.coinSelector();
+        req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;
 
         // Let the wallet do the heavy lifting ...
@@ -741,7 +745,10 @@ public class HDWallet {
         return new AmountAndFee(inAmt.longValue(), feeAmt.longValue());
     }
 
-    public long computeRecommendedFee(Wallet wallet, int acctnum, long value)
+    public long computeRecommendedFee(Wallet wallet,
+                                      int acctnum,
+                                      long value,
+                                      boolean spendUnconfirmed)
         throws IllegalArgumentException, InsufficientMoneyException {
         
         // Create a pretend send request and extract the recommended
@@ -753,7 +760,7 @@ public class HDWallet {
             
         SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
         req.changeAddress = acct.nextChangeAddress();
-        req.coinSelector = acct.coinSelector();
+        req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;
 
         // Let the wallet do the heavy lifting ...
