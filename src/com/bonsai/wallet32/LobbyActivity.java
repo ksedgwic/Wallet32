@@ -40,6 +40,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 public class LobbyActivity extends Activity {
 
@@ -178,13 +179,6 @@ public class LobbyActivity extends Activity {
                                        doRenameWallet(path, newName);
                                    }
                                })
-            .setNeutralButton(R.string.lobby_edit_delete,
-                               new DialogInterface.OnClickListener() {
-                                   public void onClick
-                                       (DialogInterface dialog,int id) {
-                                       doConfirmDelete(path);
-                                   }
-                               })
             .setNegativeButton(R.string.lobby_edit_cancel,
                                new DialogInterface.OnClickListener() {
                                    public void onClick
@@ -193,6 +187,20 @@ public class LobbyActivity extends Activity {
                                    }
                                });
  
+        // If this isn't the last wallet we can delete it.
+        List<WalletApplication.WalletEntry> walletList =
+            mWalletApp.listWallets();
+        if (walletList.size() > 1) {
+            alertDialogBuilder
+                .setNeutralButton(R.string.lobby_edit_delete,
+                                  new DialogInterface.OnClickListener() {
+                                      public void onClick
+                                          (DialogInterface dialog,int id) {
+                                          doConfirmDelete(path);
+                                      }
+                                  });
+        }
+
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
  
@@ -211,12 +219,21 @@ public class LobbyActivity extends Activity {
     public void doConfirmDelete(final String path) {
         mLogger.info("doConfirmDelete " + path);
 
+        Resources res = getApplicationContext().getResources();
+
+        List<WalletApplication.WalletEntry> walletList =
+            mWalletApp.listWallets();
+        if (walletList.size() == 1) {
+            String msg = res.getString(R.string.lobby_nodelete_last);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String name = mWalletApp.walletName(path);
 
         AlertDialog.Builder alertDialogBuilder =
             new AlertDialog.Builder(this);
 
-        Resources res = getApplicationContext().getResources();
         String msg = res.getString(R.string.lobby_confirm_delete, name);
 
         alertDialogBuilder
@@ -246,10 +263,20 @@ public class LobbyActivity extends Activity {
 
     public void doDeleteWallet(String path) {
         mLogger.info("doDeleteWallet " + path);
-        mWalletApp.deleteWallet(path);
+
+        // Make sure we aren't deleting the last wallet.
         List<WalletApplication.WalletEntry> walletList =
             mWalletApp.listWallets();
-        updateWalletTable(walletList);
+        if (walletList.size() == 1) {
+            Resources res = getApplicationContext().getResources();
+            String msg = res.getString(R.string.lobby_nodelete_last);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mWalletApp.deleteWallet(path);
+            walletList = mWalletApp.listWallets();
+            updateWalletTable(walletList);
+        }
     }
 
     public void doOpenWallet(String walletPath) {

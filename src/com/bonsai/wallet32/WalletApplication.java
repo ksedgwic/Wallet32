@@ -207,22 +207,43 @@ public class WalletApplication
         mLogger.info("deleting wallet " + path);
 
         File dir = new File(getFilesDir(), path);
-        File[] directoryListing = dir.listFiles();
-        for (File child : directoryListing) {
+
+        // Special case, the root wallet is not in a subdirectory.
+        File child = null;
+        if (path.equals(".")) {
             try {
+                child = new File(dir, "salt");
+                child.delete();
+                child = new File(dir, "wallet32.spvchain");
+                child.delete();
+                child = new File(dir, "wallet32.hdwallet");
+                child.delete();
+                child = new File(dir, "wallet32.wallet");
                 child.delete();
             }
             catch (Exception ex) {
                 mLogger.error("delete of " + child.toString() + " failed");
             }
-        }
-        try {
-            dir.delete();
-        }
-        catch (Exception ex) {
-            mLogger.error("delete of " + path + " failed");
+        } else {
+            File[] directoryListing = dir.listFiles();
+            for (File child2 : directoryListing) {
+                try {
+                    mLogger.info("deleting " + child2.toString());
+                    child2.delete();
+                }
+                catch (Exception ex) {
+                    mLogger.error("delete of " + child2.toString() + " failed");
+                }
+            }
+            try {
+                dir.delete();
+            }
+            catch (Exception ex) {
+                mLogger.error("delete of " + path + " failed");
+            }
         }
 
+        // Re-persist the wallet list without the deleted entry.
         List<WalletEntry> newWalletList = new ArrayList<WalletEntry>();
         List<WalletEntry> walletList = loadWalletDirectory();
         for (WalletEntry entry : walletList)
