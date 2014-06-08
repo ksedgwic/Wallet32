@@ -240,8 +240,15 @@ public class SettingsActivity extends PreferenceActivity {
             PreferenceScreen prefScreen =
                 (PreferenceScreen) getPreferenceScreen();
 
-            // Dynamically remove the Add Wallet option.
-            Preference pref = prefScreen.findPreference("pref_addWallet");
+            // We aren't in experimental mode, remove some features.
+            Preference pref;
+
+            // Remove the Unconfirmed Balances Spendable option.
+            pref = prefScreen.findPreference("pref_spendUnconfirmed");
+            prefScreen.removePreference(pref);
+
+            // Remove the Add Wallet option.
+            pref = prefScreen.findPreference("pref_addWallet");
             prefScreen.removePreference(pref);
         }
     }
