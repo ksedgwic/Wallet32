@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
@@ -61,6 +63,11 @@ public class WalletApplication
 
     private String			mWalletDirName;
 
+    private WalletService	mWalletService = null;
+
+    private boolean			mEntered = false;	// Came through lobby?
+    private boolean			mLoggedIn = false;	// Past the passcode?
+
 	@Override
 	public void onCreate()
 	{
@@ -86,6 +93,25 @@ public class WalletApplication
         mLogger.info("WalletApplication created");
     }
 
+    public void doExit() {
+        mLogger.info("Application exiting");
+
+        if (mWalletService != null)
+            mWalletService.shutdown();
+
+        mLogger.info("Stopping WalletService");
+        stopService(new Intent(this, WalletService.class));
+
+        // Cancel any remaining notifications.
+        NotificationManager nm =
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.cancelAll();
+
+        // Kill everything
+        mLogger.info("Exiting");
+        System.exit(0);
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                           String key) {
         mLogger.info("saw pref key " + key);
@@ -98,6 +124,40 @@ public class WalletApplication
         }
     }
 
+    public void setWalletService(WalletService walletService) {
+        mWalletService = walletService;
+    }
+
+    public WalletService getWalletService() {
+        return mWalletService;
+    }
+
+    public void startBackgroundTimeout() {
+        if (mWalletService != null)
+            mWalletService.startBackgroundTimeout();
+    }
+
+    public void cancelBackgroundTimeout() {
+        if (mWalletService != null)
+            mWalletService.cancelBackgroundTimeout();
+    }
+
+    public void setEntered() {
+        mEntered = true;
+    }
+
+    public boolean hasEntered() {
+        return mEntered;
+    }
+        
+    public void setLoggedIn() {
+        mLoggedIn = true;
+    }
+
+    public boolean isLoggedIn() {
+        return mLoggedIn;
+    }
+        
     private void setBTCUnits(String src) {
         if (src.equals("UBTC")) {
             mLogger.info("Setting BTC units to uBTC");

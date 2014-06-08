@@ -54,8 +54,11 @@ public class SettingsActivity extends PreferenceActivity {
         LoggerFactory.getLogger(SettingsActivity.class);
     private Resources mRes;
 
+    private WalletApplication mApp;
+
     public static final String KEY_BTC_UNITS = "pref_btcUnits";
     public static final String KEY_FIAT_RATE_SOURCE = "pref_fiatRateSource";
+    public static final String KEY_BACKGROUND_TIMEOUT = "pref_backgroundTimeout";
     public static final String KEY_RESCAN_BLOCKCHAIN = "pref_rescanBlockchain";
     public static final String KEY_EXPERIMENTAL = "pref_experimental";
 
@@ -83,6 +86,8 @@ public class SettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        mApp = (WalletApplication) getApplicationContext();
 
         mThis = this;
 
@@ -294,19 +299,45 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+
+		super.onStart();
+
+        // All derived classes represent "logged in" activities; make
+        // sure we haven't short-cut here from the recent activities
+        // menu etc.
+        //
+        if (!mApp.isLoggedIn())
+        {
+            mLogger.info("started without login; back to the lobby");
+
+            // Go to the lobby and get logged in ...
+            Intent intent = new Intent(this, LobbyActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
 	@Override
     protected void onResume() {
         super.onResume();
+        mLogger.info("SettingsActivity resumed");
+
+        mApp.cancelBackgroundTimeout();
+
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
-        mLogger.info("SettingsActivity resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(mConnection);
         mLogger.info("SettingsActivity paused");
+
+        unbindService(mConnection);
+
+        mApp.startBackgroundTimeout();
     }
 
     public void sendLogs() {

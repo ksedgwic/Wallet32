@@ -47,7 +47,7 @@ public class LobbyActivity extends Activity {
     private static Logger mLogger =
         LoggerFactory.getLogger(LobbyActivity.class);
 
-    private WalletApplication mWalletApp;
+    private WalletApplication mApp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class LobbyActivity extends Activity {
         editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
         editor.commit();
 
-        mWalletApp = (WalletApplication) getApplicationContext();
+        mApp = (WalletApplication) getApplicationContext();
 
         // Were we called with VIEW intent URI (another app wants to send)?
         {
@@ -80,7 +80,7 @@ public class LobbyActivity extends Activity {
                 && "bitcoin".equals(scheme))
             {
                 mLogger.info("saw URI " + intentUri.toString());
-                mWalletApp.setIntentURI(intentUri.toString());
+                mApp.setIntentURI(intentUri.toString());
             }
         }
 
@@ -94,8 +94,7 @@ public class LobbyActivity extends Activity {
         }
 
         else {
-            List<WalletApplication.WalletEntry> walletList =
-                mWalletApp.listWallets();
+            List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
 
             if (walletList.size() == 1) {
                 // If there is one wallet, open it by default.
@@ -112,8 +111,7 @@ public class LobbyActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        List<WalletApplication.WalletEntry> walletList =
-            mWalletApp.listWallets();
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
         updateWalletTable(walletList);
 
         mLogger.info("LobbyActivity resumed");
@@ -145,7 +143,7 @@ public class LobbyActivity extends Activity {
 
     public void openWallet(View view) {
         String path = (String) view.getTag();
-        mWalletApp.makeWalletDirectory(path);
+        mApp.makeWalletDirectory(path);
         doOpenWallet(path);
     }
 
@@ -164,7 +162,7 @@ public class LobbyActivity extends Activity {
         final EditText editName =
             (EditText) editDialog.findViewById(R.id.edit_name);
 
-        String name = mWalletApp.walletName(path);
+        String name = mApp.walletName(path);
         editName.setText(name);
         editName.setSelection(editName.getText().length());
 
@@ -188,8 +186,7 @@ public class LobbyActivity extends Activity {
                                });
  
         // If this isn't the last wallet we can delete it.
-        List<WalletApplication.WalletEntry> walletList =
-            mWalletApp.listWallets();
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
         if (walletList.size() > 1) {
             alertDialogBuilder
                 .setNeutralButton(R.string.lobby_edit_delete,
@@ -210,9 +207,8 @@ public class LobbyActivity extends Activity {
 
     public void doRenameWallet(String path, String newName) {
         mLogger.info("doRenameRallet " + path + " to " + newName);
-        mWalletApp.renameWallet(path, newName);
-        List<WalletApplication.WalletEntry> walletList =
-            mWalletApp.listWallets();
+        mApp.renameWallet(path, newName);
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
         updateWalletTable(walletList);
     }
 
@@ -221,15 +217,14 @@ public class LobbyActivity extends Activity {
 
         Resources res = getApplicationContext().getResources();
 
-        List<WalletApplication.WalletEntry> walletList =
-            mWalletApp.listWallets();
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
         if (walletList.size() == 1) {
             String msg = res.getString(R.string.lobby_nodelete_last);
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String name = mWalletApp.walletName(path);
+        String name = mApp.walletName(path);
 
         AlertDialog.Builder alertDialogBuilder =
             new AlertDialog.Builder(this);
@@ -265,28 +260,29 @@ public class LobbyActivity extends Activity {
         mLogger.info("doDeleteWallet " + path);
 
         // Make sure we aren't deleting the last wallet.
-        List<WalletApplication.WalletEntry> walletList =
-            mWalletApp.listWallets();
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
         if (walletList.size() == 1) {
             Resources res = getApplicationContext().getResources();
             String msg = res.getString(R.string.lobby_nodelete_last);
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
         else {
-            mWalletApp.deleteWallet(path);
-            walletList = mWalletApp.listWallets();
+            mApp.deleteWallet(path);
+            walletList = mApp.listWallets();
             updateWalletTable(walletList);
         }
     }
 
     public void doOpenWallet(String walletPath) {
 
-        mWalletApp.setWalletDirName(walletPath);
+        mApp.setWalletDirName(walletPath);
 
-        File walletFile = mWalletApp.getHDWalletFile(null);
+        File walletFile = mApp.getHDWalletFile(null);
         if (walletFile.exists()) {
 
             mLogger.info("Existing wallet found");
+
+            mApp.setEntered();
 
             Intent intent = new Intent(this, PasscodeActivity.class);
             Bundle bundle = new Bundle();

@@ -49,6 +49,8 @@ public class PasscodeActivity extends ActionBarActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(PasscodeActivity.class);
 
+    private WalletApplication mApp;
+
     private enum State {
         PASSCODE_CREATE,
         PASSCODE_CONFIRM,
@@ -98,7 +100,23 @@ public class PasscodeActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_passcode);
 
+        mApp = (WalletApplication) getApplicationContext();
+
         mRes = getResources();
+
+        // If we haven't entered through the lobby at some point
+        // we've gotten here via the "recent activities" menu or
+        // similar.  Go to the lobby ...
+        //
+        if (!mApp.hasEntered())
+        {
+            mLogger.info("at passcode without entry; back to the lobby");
+
+            // Go to the lobby and get logged in ...
+            Intent intent = new Intent(this, LobbyActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         Bundle bundle = getIntent().getExtras();
 
@@ -192,6 +210,10 @@ public class PasscodeActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
+        mLogger.info("PasscodeActivity resumed");
+
+        mApp.cancelBackgroundTimeout();
+
         // NOTE - this passcode activity can happen on initial create
         // and login and the WalletService will not be started at that
         // time.  This is ok.
@@ -201,15 +223,16 @@ public class PasscodeActivity extends ActionBarActivity {
         //
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
-
-        mLogger.info("PasscodeActivity resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(mConnection);
         mLogger.info("PasscodeActivity paused");
+
+        unbindService(mConnection);
+
+        mApp.startBackgroundTimeout();
     }
 
 	@Override
@@ -410,6 +433,8 @@ public class PasscodeActivity extends ActionBarActivity {
             bundle.putString("SyncState", "STARTUP");
             svcintent.putExtras(bundle);
             startService(svcintent);
+
+            mApp.setLoggedIn();
 
             // Off to the main activity.
             Intent intent = new Intent(this, MainActivity.class);

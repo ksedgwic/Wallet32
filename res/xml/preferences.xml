@@ -21,6 +21,15 @@
         android:defaultValue="@string/pref_fiat_rate_sources_default"
 	/>
 
+    <com.bonsai.wallet32.BetterListPreference
+        android:key="pref_backgroundTimeout"
+        android:title="@string/pref_background_timeout"
+        android:dialogTitle="@string/pref_background_timeout"
+        android:entries="@array/pref_background_timeout_entries"
+        android:entryValues="@array/pref_background_timeout_values"
+        android:defaultValue="@string/pref_background_timeout_default"
+	/>
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_spendUnconfirmed"
