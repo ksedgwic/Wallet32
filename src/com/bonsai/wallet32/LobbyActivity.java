@@ -277,12 +277,12 @@ public class LobbyActivity extends Activity {
 
         mApp.setWalletDirName(walletPath);
 
+        mApp.setEntered();
+
         File walletFile = mApp.getHDWalletFile(null);
         if (walletFile.exists()) {
 
             mLogger.info("Existing wallet found");
-
-            mApp.setEntered();
 
             Intent intent = new Intent(this, PasscodeActivity.class);
             Bundle bundle = new Bundle();
