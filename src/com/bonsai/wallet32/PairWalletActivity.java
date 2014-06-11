@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.params.MainNetParams;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -142,7 +141,7 @@ public class PairWalletActivity extends ActionBarActivity {
 
             WalletApplication wallapp =
                 (WalletApplication) getApplicationContext();
-            NetworkParameters params = MainNetParams.get();
+            NetworkParameters params = Constants.getNetworkParameters(wallapp);
             String filePrefix = "wallet32";
 
             // Setup a wallet with the restore seed.

@@ -78,7 +78,6 @@ import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.MnemonicCodeX;
-import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
 import com.google.common.util.concurrent.FutureCallback;
@@ -461,7 +460,7 @@ public class WalletService extends Service
 
             mLogger.info("getting network parameters");
 
-            mParams = MainNetParams.get();
+            mParams = Constants.getNetworkParameters(getApplicationContext());
 
             // Try to restore existing wallet.
             mHDWallet = null;
@@ -492,7 +491,7 @@ public class WalletService extends Service
             InputStream chkpntis = null;
             if (scanTime != 0) {
                 try {
-                    chkpntis = getAssets().open("checkpoints");
+                    chkpntis = getAssets().open(Constants.CHECKPOINTS_FILENAME);
                 } catch (IOException e) {
                     chkpntis = null;
                 }
