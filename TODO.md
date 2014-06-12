@@ -4,13 +4,9 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Explore adding space in value formats. eg:   1 028 543.06
-
 * Make additional passcode entry based on timeout instead of always.
 
 * Advanced Features Setting (send change to account, private key ops)
-
-* Multiple wallets
 
 * Testnet build.
 
@@ -25,8 +21,6 @@ Needed
 * Make passcode creation estimate of brute-force difficulty.
 
 * Add transaction label support.
-
-* Auto logout of service after idle for N minutes.
 
 * Non-USD fiat support.
 
