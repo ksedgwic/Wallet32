@@ -537,14 +537,23 @@ issue w/ gradle written aar files.
         </executions>
       </plugin>
 
-Spend Unconfirmed
+
 ----------------------------------------------------------------
 
-Confirm balance includes unconfirmed.
+Debug Restore Problem.
 
-Confirm send can send unconfirmed.
+Add Optional Passphrase.
 
-Confirm useAll uses unconfirmed.
+Investigate Signing Options.
 
-It may be the case that use all *always* uses unconfirmed balances,
-this is a feature, yes?
+Investigate Slush's Sync Hang.
+
+Update Store Version.
+
+Consider 18 and 24 word wallet seeds.
+
+Smash case on wallet word lists.
+
+Set lower-case mode on keyboard during word list entry.
+
+Investigate Miron's wallet.

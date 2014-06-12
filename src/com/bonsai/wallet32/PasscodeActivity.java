@@ -357,6 +357,9 @@ public class PasscodeActivity extends ActionBarActivity {
 
         Intent intent;
 
+        // In all cases we are effectively logged in now.
+        mApp.setLoggedIn();
+
         switch (mAction) {
         case ACTION_CREATE:
             // Create the wallet.
