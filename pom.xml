@@ -6,9 +6,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bonsai</groupId>
   <artifactId>Wallet32</artifactId>
-  <version>0.2.6-SNAPSHOT</version>
   <packaging>apk</packaging>
   <name>Wallet32</name>
+  <version>0.3.8</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

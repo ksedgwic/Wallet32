@@ -54,26 +54,31 @@ public class BTCFmt {
     // necessary precision.
     //
     public String format(long amt) {
-        return formatInternal(mScale, amt, 0, false);
+        return formatInternal(mScale, amt, 0, false, false);
     }
 
     // Used for formatting column aligned values.
     //
-    public String formatCol(long amt, int reducePrecision, boolean colPad) {
-        return formatInternal(mScale, amt, reducePrecision, colPad);
+    public String formatCol(long amt,
+                            int reducePrecision,
+                            boolean colPad,
+                            boolean triSpace) {
+        return formatInternal(mScale, amt, reducePrecision, colPad, triSpace);
     }
 
     // Always formats using the BTC units, for cases where scaled
     // units are not acceptable (eg: request urls)
     //
     public String formatBTC(long amt) {
-        return formatInternal(SCALE_BTC, amt, 0, false);
+        return formatInternal(SCALE_BTC, amt, 0, false, false);
     }
 
     protected String formatInternal(int scale,
                                     long amt,
                                     int reducePrecision,
-                                    boolean colPad) {
+                                    boolean colPad,
+                                    boolean triSpace) {
+        // Convert negative numbers to positive, reverse at end.
         boolean isNeg = false;
         if (amt < 0) {
             amt = -amt;
@@ -123,6 +128,38 @@ public class BTCFmt {
             // If the last character is the '.', remove it too.
             if (sb.charAt(sb.length() - 1) == '.')
                 sb.deleteCharAt(sb.length() - 1);
+        }
+
+        if (triSpace) {
+            // Insert leading tri-spaces
+            int ndx = sb.indexOf(".");
+            if (ndx == -1) {
+                // Find the last non-space char.
+                for (ndx = sb.length() - 1; ndx >= 0; ndx--)
+                    if (sb.charAt(ndx) != ' ')
+                        break;
+                ++ndx;
+            }
+            while (ndx - 3 > 0) {
+                ndx -= 3;
+                sb.insert(ndx, '\u202F');
+            }
+
+            // Insert following tri-spaces
+            ndx = sb.indexOf(".");
+            if (ndx == -1) {
+                // Find the last non-space char.
+                for (ndx = sb.length() - 1; ndx >= 0; ndx--)
+                    if (sb.charAt(ndx) != ' ')
+                        break;
+                ++ndx;
+            }
+            ++ndx;
+            while (ndx + 3 < sb.length() - 1) {
+                ndx += 3;
+                sb.insert(ndx, '\u202F');
+                ++ndx;
+            }
         }
 
         // If we were negative prepend a "-".

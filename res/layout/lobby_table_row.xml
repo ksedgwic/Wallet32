@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    >
+
+  <Button
+      android:id="@+id/wallet_button"
+      android:onClick="openWallet"
+      android:text="Sample Wallet"
+      android:layout_width="200dp"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Large"
+      />
+
+  <Button
+      android:id="@+id/edit_button"
+      android:onClick="editWallet"
+      android:text="@string/lobby_edit"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="@android:style/TextAppearance.Small"
+      android:minHeight="0dp"
+      android:minWidth="0dp"
+      android:layout_marginLeft="12dp"
+      />
+
+</TableRow>

@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import android.app.Application;
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
@@ -61,6 +63,11 @@ public class WalletApplication
 
     private String			mWalletDirName;
 
+    private WalletService	mWalletService = null;
+
+    private boolean			mEntered = false;	// Came through lobby?
+    private boolean			mLoggedIn = false;	// Past the passcode?
+
 	@Override
 	public void onCreate()
 	{
@@ -86,6 +93,25 @@ public class WalletApplication
         mLogger.info("WalletApplication created");
     }
 
+    public void doExit() {
+        mLogger.info("Application exiting");
+
+        if (mWalletService != null)
+            mWalletService.shutdown();
+
+        mLogger.info("Stopping WalletService");
+        stopService(new Intent(this, WalletService.class));
+
+        // Cancel any remaining notifications.
+        NotificationManager nm =
+            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.cancelAll();
+
+        // Kill everything
+        mLogger.info("Exiting");
+        System.exit(0);
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                           String key) {
         mLogger.info("saw pref key " + key);
@@ -98,6 +124,40 @@ public class WalletApplication
         }
     }
 
+    public void setWalletService(WalletService walletService) {
+        mWalletService = walletService;
+    }
+
+    public WalletService getWalletService() {
+        return mWalletService;
+    }
+
+    public void startBackgroundTimeout() {
+        if (mWalletService != null)
+            mWalletService.startBackgroundTimeout();
+    }
+
+    public void cancelBackgroundTimeout() {
+        if (mWalletService != null)
+            mWalletService.cancelBackgroundTimeout();
+    }
+
+    public void setEntered() {
+        mEntered = true;
+    }
+
+    public boolean hasEntered() {
+        return mEntered;
+    }
+        
+    public void setLoggedIn() {
+        mLoggedIn = true;
+    }
+
+    public boolean isLoggedIn() {
+        return mLoggedIn;
+    }
+        
     private void setBTCUnits(String src) {
         if (src.equals("UBTC")) {
             mLogger.info("Setting BTC units to uBTC");
@@ -175,6 +235,101 @@ public class WalletApplication
         }
 
         return wallets;
+    }
+
+    public int nextAvailableWallet() {
+        // Find the first available wallet directory.
+        for (int ndx = 1; ndx < 64; ++ndx) {
+            String path = String.format("wallet%03d", ndx);
+            File dir = new File(getFilesDir(), path);
+            if (!dir.exists()) {
+                mLogger.info("nextAvailableWallet " + path);
+                return ndx;
+            }
+        }
+        throw new RuntimeException("no wallet space available");
+    }
+
+    public void renameWallet(String path, String newName) {
+        mLogger.info("renmaing wallet " + path + " to " + newName);
+        List<WalletEntry> wallets = loadWalletDirectory();
+        for (WalletEntry entry : wallets) {
+            if (entry.mPath.equals(path)) {
+                entry.mName = newName;
+                persistWalletDirectory(wallets);
+                return;
+            }
+        }
+        throw new RuntimeException("wallet " + path + " not found");
+    }
+
+    public void deleteWallet(String path) {
+        mLogger.info("deleting wallet " + path);
+
+        File dir = new File(getFilesDir(), path);
+
+        // Special case, the root wallet is not in a subdirectory.
+        File child = null;
+        if (path.equals(".")) {
+            try {
+                child = new File(dir, "salt");
+                child.delete();
+                child = new File(dir, "wallet32.spvchain");
+                child.delete();
+                child = new File(dir, "wallet32.hdwallet");
+                child.delete();
+                child = new File(dir, "wallet32.wallet");
+                child.delete();
+            }
+            catch (Exception ex) {
+                mLogger.error("delete of " + child.toString() + " failed");
+            }
+        } else {
+            File[] directoryListing = dir.listFiles();
+            for (File child2 : directoryListing) {
+                try {
+                    mLogger.info("deleting " + child2.toString());
+                    child2.delete();
+                }
+                catch (Exception ex) {
+                    mLogger.error("delete of " + child2.toString() + " failed");
+                }
+            }
+            try {
+                dir.delete();
+            }
+            catch (Exception ex) {
+                mLogger.error("delete of " + path + " failed");
+            }
+        }
+
+        // Re-persist the wallet list without the deleted entry.
+        List<WalletEntry> newWalletList = new ArrayList<WalletEntry>();
+        List<WalletEntry> walletList = loadWalletDirectory();
+        for (WalletEntry entry : walletList)
+            if (!entry.mPath.equals(path))
+                newWalletList.add(entry);
+        persistWalletDirectory(newWalletList);
+    }
+
+    public String addWallet() {
+        int ndx = nextAvailableWallet();
+        List<WalletEntry> wallets = loadWalletDirectory();
+        String name = String.format("Wallet %d", ndx);
+        String path = String.format("wallet%03d", ndx);
+        wallets.add(new WalletEntry(name, path));
+        makeWalletDirectory(path);
+        persistWalletDirectory(wallets);
+        return name;
+    }
+
+    public String walletName(String walletpath) {
+        List<WalletEntry> walletList = loadWalletDirectory();
+        for (WalletEntry entry : walletList) {
+            if (entry.mPath.equals(walletpath))
+                return entry.mName;
+        }
+        throw new RuntimeException("wallet path " + walletpath + " not found");
     }
 
     public void persistWalletDirectory(List<WalletEntry> wallets) {

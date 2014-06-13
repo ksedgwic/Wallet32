@@ -4,13 +4,9 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Explore adding space in value formats. eg:   1 028 543.06
-
 * Make additional passcode entry based on timeout instead of always.
 
 * Advanced Features Setting (send change to account, private key ops)
-
-* Multiple wallets
 
 * Testnet build.
 
@@ -26,8 +22,6 @@ Needed
 
 * Add transaction label support.
 
-* Auto logout of service after idle for N minutes.
-
 * Non-USD fiat support.
 
 * Font selections for tables.
@@ -38,21 +32,21 @@ Needed
 Checklist
 ----------------------------------------------------------------
 
-Update AndroidManifest.xml
+Update version in pom.xm
 
-Update README.txt version.
+Update versions in AndroidManifest.xml
 
-Update res/values/strings.xml version.
+Update version, date in README.txt.
+
+Update version, date, in res/values/strings.xml.
 
 Commit, tag, git push --tag
 
-Clean project.
+mkmvnrelease
 
-Smoke test on attached device.
+scp target/Wallet32.apk sl0:htdocs/ken/public/Wallet32.apk
 
-Build Wallet32.apk.
-
-scp ~/bonsai/workspace/Wallet32.apk sl0:htdocs/ken/public/
+Smoke test downloaded
 
 Upload to Google Play Developer Console.
 
@@ -536,3 +530,24 @@ issue w/ gradle written aar files.
           </execution>
         </executions>
       </plugin>
+
+
+----------------------------------------------------------------
+
+Wallet restoration broken on HDW branch.  Check wallet create.
+
+Investigate Signing Options.
+
+Investigate Slush's Sync Hang.
+
+Update Store Version.
+
+Consider 18 and 24 word wallet seeds.
+
+Smash case on wallet word lists.
+
+Set lower-case mode on keyboard during word list entry.
+
+Investigate Miron's wallet.
+
+Merge master onto bitcoinj-hdw branch.

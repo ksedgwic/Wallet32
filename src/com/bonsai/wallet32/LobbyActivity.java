@@ -23,23 +23,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar.LayoutParams;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.Toast;
 
 public class LobbyActivity extends Activity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(LobbyActivity.class);
 
-    private WalletApplication mWalletApp;
+    private WalletApplication mApp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +66,7 @@ public class LobbyActivity extends Activity {
         editor.putString(SettingsActivity.KEY_RESCAN_BLOCKCHAIN, "CANCEL");
         editor.commit();
 
-        mWalletApp = (WalletApplication) getApplicationContext();
+        mApp = (WalletApplication) getApplicationContext();
 
         // Were we called with VIEW intent URI (another app wants to send)?
         {
@@ -72,7 +80,7 @@ public class LobbyActivity extends Activity {
                 && "bitcoin".equals(scheme))
             {
                 mLogger.info("saw URI " + intentUri.toString());
-                mWalletApp.setIntentURI(intentUri.toString());
+                mApp.setIntentURI(intentUri.toString());
             }
         }
 
@@ -86,42 +94,192 @@ public class LobbyActivity extends Activity {
         }
 
         else {
-            List<WalletApplication.WalletEntry> walletList = mWalletApp.listWallets();
+            List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
+
             if (walletList.size() == 1) {
                 // If there is one wallet, open it by default.
-                openWallet(walletList.get(0).mPath);
+                doOpenWallet(walletList.get(0).mPath);
                 finish();
             }
             else {
-                LinearLayout ll =
-                    (LinearLayout) findViewById(R.id.button_layout);
-                LayoutParams lp =
-                    new LayoutParams(LayoutParams.MATCH_PARENT,
-                                     LayoutParams.WRAP_CONTENT);
-
-                for (WalletApplication.WalletEntry entry : walletList) {
-                    Button butt = new Button(this);
-                    butt.setText(entry.mName);
-                    butt.setTag(entry.mPath);
-                    butt.setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View view) {
-                                String path = (String) view.getTag();
-                                mWalletApp.makeWalletDirectory(path);
-                                openWallet(path);
-                            }
-                        });
-                            
-                    ll.addView(butt, lp);
-                }
+                updateWalletTable(walletList);
             }
         }
 	}
 
-    public void openWallet(String walletPath) {
+	@Override
+    protected void onResume() {
+        super.onResume();
 
-        mWalletApp.setWalletDirName(walletPath);
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
+        updateWalletTable(walletList);
 
-        File walletFile = mWalletApp.getHDWalletFile(null);
+        mLogger.info("LobbyActivity resumed");
+    }
+
+    public void updateWalletTable(List<WalletApplication.WalletEntry> walletList) {
+        TableLayout table =
+            (TableLayout) findViewById(R.id.lobby_table);
+
+        table.removeAllViews();
+                
+        for (WalletApplication.WalletEntry entry : walletList) {
+            TableRow row =
+                (TableRow) LayoutInflater.from(this)
+                .inflate(R.layout.lobby_table_row, table, false);
+
+            // Setup the wallet button.
+            Button wb = (Button) row.findViewById(R.id.wallet_button);
+            wb.setText(entry.mName);
+            wb.setTag(entry.mPath);
+
+            // Setup the wallet entry edit button.
+            Button eb = (Button) row.findViewById(R.id.edit_button);
+            eb.setTag(entry.mPath);
+
+            table.addView(row);
+        }
+    }
+
+    public void openWallet(View view) {
+        String path = (String) view.getTag();
+        mApp.makeWalletDirectory(path);
+        doOpenWallet(path);
+    }
+
+    public void editWallet(View view) {
+        final String path = (String) view.getTag();
+        mLogger.info(String.format("edit %s", path));
+
+        AlertDialog.Builder alertDialogBuilder =
+            new AlertDialog.Builder(this);
+
+        LayoutInflater li = LayoutInflater.from(this);
+        View editDialog = li.inflate(R.layout.dialog_edit_wallet, null);
+
+        alertDialogBuilder.setView(editDialog);
+
+        final EditText editName =
+            (EditText) editDialog.findViewById(R.id.edit_name);
+
+        String name = mApp.walletName(path);
+        editName.setText(name);
+        editName.setSelection(editName.getText().length());
+
+        alertDialogBuilder
+            .setCancelable(false)
+            .setPositiveButton(R.string.lobby_edit_apply,
+                               new DialogInterface.OnClickListener() {
+                                   public void onClick
+                                       (DialogInterface dialog,int id) {
+                                       String newName =
+                                           editName.getText().toString();
+                                       doRenameWallet(path, newName);
+                                   }
+                               })
+            .setNegativeButton(R.string.lobby_edit_cancel,
+                               new DialogInterface.OnClickListener() {
+                                   public void onClick
+                                       (DialogInterface dialog,int id) {
+                                       // Do nothing.
+                                   }
+                               });
+ 
+        // If this isn't the last wallet we can delete it.
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
+        if (walletList.size() > 1) {
+            alertDialogBuilder
+                .setNeutralButton(R.string.lobby_edit_delete,
+                                  new DialogInterface.OnClickListener() {
+                                      public void onClick
+                                          (DialogInterface dialog,int id) {
+                                          doConfirmDelete(path);
+                                      }
+                                  });
+        }
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+        // show it
+        alertDialog.show();
+    }
+
+    public void doRenameWallet(String path, String newName) {
+        mLogger.info("doRenameRallet " + path + " to " + newName);
+        mApp.renameWallet(path, newName);
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
+        updateWalletTable(walletList);
+    }
+
+    public void doConfirmDelete(final String path) {
+        mLogger.info("doConfirmDelete " + path);
+
+        Resources res = getApplicationContext().getResources();
+
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
+        if (walletList.size() == 1) {
+            String msg = res.getString(R.string.lobby_nodelete_last);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String name = mApp.walletName(path);
+
+        AlertDialog.Builder alertDialogBuilder =
+            new AlertDialog.Builder(this);
+
+        String msg = res.getString(R.string.lobby_confirm_delete, name);
+
+        alertDialogBuilder
+            .setMessage(msg)
+            .setCancelable(false)
+            .setPositiveButton(R.string.lobby_edit_delete,
+                               new DialogInterface.OnClickListener() {
+                                   public void onClick
+                                       (DialogInterface dialog,int id) {
+                                       doDeleteWallet(path);
+                                   }
+                               })
+            .setNegativeButton(R.string.lobby_edit_cancel,
+                               new DialogInterface.OnClickListener() {
+                                   public void onClick
+                                       (DialogInterface dialog,int id) {
+                                       // Do nothing.
+                                   }
+                               });
+ 
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+        // show it
+        alertDialog.show();
+    }
+
+    public void doDeleteWallet(String path) {
+        mLogger.info("doDeleteWallet " + path);
+
+        // Make sure we aren't deleting the last wallet.
+        List<WalletApplication.WalletEntry> walletList = mApp.listWallets();
+        if (walletList.size() == 1) {
+            Resources res = getApplicationContext().getResources();
+            String msg = res.getString(R.string.lobby_nodelete_last);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mApp.deleteWallet(path);
+            walletList = mApp.listWallets();
+            updateWalletTable(walletList);
+        }
+    }
+
+    public void doOpenWallet(String walletPath) {
+
+        mApp.setWalletDirName(walletPath);
+
+        mApp.setEntered();
+
+        File walletFile = mApp.getHDWalletFile(null);
         if (walletFile.exists()) {
 
             mLogger.info("Existing wallet found");

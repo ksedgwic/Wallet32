@@ -36,6 +36,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.script.Script;
+import com.google.bitcoin.wallet.AllowUnconfirmedCoinSelector;
 import com.google.bitcoin.wallet.CoinSelection;
 import com.google.bitcoin.wallet.CoinSelector;
 import com.google.bitcoin.wallet.DefaultCoinSelector;
@@ -240,16 +241,18 @@ public class HDAccount {
         return mChangeChain.nextUnusedAddress();
     }
 
-    public CoinSelector coinSelector() {
-        return new AccountCoinSelector();
+    public CoinSelector coinSelector(boolean spendUnconfirmed) {
+        return new AccountCoinSelector(spendUnconfirmed);
     }
 
     public class AccountCoinSelector implements CoinSelector {
 
         private DefaultCoinSelector mDefaultCoinSelector;
 
-        public AccountCoinSelector() {
-            mDefaultCoinSelector = new DefaultCoinSelector();
+        public AccountCoinSelector(boolean spendUnconfirmed) {
+            mDefaultCoinSelector = spendUnconfirmed ?
+                new AllowUnconfirmedCoinSelector() :
+                new DefaultCoinSelector();
         }
 
         public CoinSelection select(BigInteger biTarget,

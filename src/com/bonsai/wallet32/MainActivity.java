@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,8 +41,6 @@ public class MainActivity extends BaseWalletActivity {
 
     private static Logger mLogger =
         LoggerFactory.getLogger(MainActivity.class);
-
-    private WalletApplication	mWalletApp;
 
     private View mSyncDialogView = null;
     private DialogFragment mSyncProgressDialog = null;
@@ -64,8 +61,6 @@ public class MainActivity extends BaseWalletActivity {
 
 		setContentView(R.layout.activity_main);
 
-        mWalletApp = (WalletApplication) getApplicationContext();
-
         mLogger.info("MainActivity created");
 	}
 
@@ -78,9 +73,9 @@ public class MainActivity extends BaseWalletActivity {
         if (mWalletService != null &&
             mWalletService.getState() == WalletService.State.READY)
         {
-            String intentURI = mWalletApp.getIntentURI();
+            String intentURI = mApp.getIntentURI();
             if (intentURI != null) {
-                mWalletApp.setIntentURI(null);	// Clear it ASAP.
+                mApp.setIntentURI(null);	// Clear it ASAP.
                 Intent intent = new Intent(this, SendBitcoinActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("uri", intentURI);
@@ -149,9 +144,9 @@ public class MainActivity extends BaseWalletActivity {
             }
 
             // Did we have an intent uri? (Sent from another application ...)
-            String intentURI = mWalletApp.getIntentURI();
+            String intentURI = mApp.getIntentURI();
             if (intentURI != null) {
-                mWalletApp.setIntentURI(null);	// Clear it ASAP.
+                mApp.setIntentURI(null);	// Clear it ASAP.
                 Intent intent = new Intent(this, SendBitcoinActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("uri", intentURI);
@@ -191,21 +186,9 @@ public class MainActivity extends BaseWalletActivity {
     }
 
     private void doExit() {
-        mLogger.info("Application exiting");
-        if (mWalletService != null)
-            mWalletService.shutdown();
-        mLogger.info("Stopping WalletService");
-        stopService(new Intent(this, WalletService.class));
-
-        // Cancel any remaining notifications.
-        NotificationManager nm =
-            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.cancelAll();
-
         mLogger.info("Finished");
         finish();
-        mLogger.info("Exiting");
-        System.exit(0);
+        mApp.doExit();
     }
 
     @SuppressLint("ValidFragment")
@@ -365,7 +348,7 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(mBTCFmt.formatCol(btc, 0, true));
+        tv1.setText(mBTCFmt.formatCol(btc, 0, true, true));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -385,7 +368,7 @@ public class MainActivity extends BaseWalletActivity {
         tv0.setText(acct);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(mBTCFmt.formatCol(btc, 0, true));
+        tv1.setText(mBTCFmt.formatCol(btc, 0, true, true));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));

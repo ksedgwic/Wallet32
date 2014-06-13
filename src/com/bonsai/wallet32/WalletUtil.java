@@ -127,6 +127,9 @@ public class WalletUtil {
         byte seed[] = new byte[16];
         random.nextBytes(seed);
 
+        // We currently don't use BIP-0039 passphrases.
+        String passphrase = "";
+
         int numAccounts = 2;
 
         // New wallets are version V0_6.
@@ -138,6 +141,7 @@ public class WalletUtil {
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
+                                         passphrase,
                                          numAccounts,
                                          bip39version,
                                          HDWallet.HDStructVersion.HDSV_STDV1);

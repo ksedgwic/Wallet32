@@ -16,11 +16,16 @@
 package com.bonsai.wallet32;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,7 +92,10 @@ public class WalletService extends Service
     private static Logger mLogger =
         LoggerFactory.getLogger(WalletService.class);
 
-    private WalletApplication mWalletApp;
+    private ScheduledExecutorService mTimeoutWorker;
+    private ScheduledFuture<?> mBackgroundTimeout = null;
+
+    private WalletApplication mApp;
 
     public enum State {
         SETUP,			// CTOR
@@ -145,11 +153,18 @@ public class WalletService extends Service
 
     private MyDownloadListener mkDownloadListener() {
         return new MyDownloadListener() {
-            protected void progress(double pct, int blocksToGo, Date date, long msecsLeft) {
-                Date cmplDate = new Date(System.currentTimeMillis() + msecsLeft);
-                mLogger.info(String.format("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO, COMPLETE AT %s",
-                                           (int) pct, blocksToGo,
-                                           DateFormat.getDateTimeInstance().format(cmplDate)));
+            protected void progress(double pct,
+                                    int blocksToGo,
+                                    Date date,
+                                    long msecsLeft) {
+                Date cmplDate =
+                    new Date(System.currentTimeMillis() + msecsLeft);
+                mLogger.info(String.format
+                             ("CHAIN DOWNLOAD %d%% DONE WITH %d BLOCKS TO GO, "
+                              + "COMPLETE AT %s",
+                              (int) pct, blocksToGo,
+                              DateFormat
+                              .getDateTimeInstance().format(cmplDate)));
                 mBlocksToGo = blocksToGo;
                 mScanDate = date;
                 mMsecsLeft = msecsLeft;
@@ -191,10 +206,12 @@ public class WalletService extends Service
 
                 showEventNotification(noteId,
                                       R.drawable.ic_note_bc_green_lt,
-                                      mRes.getString(R.string.wallet_service_note_rcvd_title,
-                                                     btcfmt.unitStr()),
-                                      mRes.getString(R.string.wallet_service_note_rcvd_msg,
-                                                     btcfmt.format(amount), btcfmt.unitStr()));
+                                      mRes.getString
+                                      (R.string.wallet_service_note_rcvd_title,
+                                       btcfmt.unitStr()),
+                                      mRes.getString
+                                      (R.string.wallet_service_note_rcvd_msg,
+                                       btcfmt.format(amount), btcfmt.unitStr()));
 
                 final TransactionConfidence txconf = tx.getConfidence();
 
@@ -218,10 +235,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_green,
-                                     mRes.getString(R.string.wallet_service_note_rcnf_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_rcnf_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rcnf_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rcnf_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else if (ct == ConfidenceType.DEAD) {
@@ -231,10 +250,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_gray,
-                                     mRes.getString(R.string.wallet_service_note_rdead_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_rdead_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rdead_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_rdead_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else {
@@ -301,10 +322,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_red,
-                                     mRes.getString(R.string.wallet_service_note_scnf_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_scnf_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_scnf_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_scnf_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
                             }
                             else if (ct == ConfidenceType.DEAD) {
                                 mLogger.info(String.format("send %d dead",
@@ -313,10 +336,12 @@ public class WalletService extends Service
                                 showEventNotification
                                     (noteId,
                                      R.drawable.ic_note_bc_gray,
-                                     mRes.getString(R.string.wallet_service_note_sdead_title,
-                                                    btcfmt.unitStr()),
-                                     mRes.getString(R.string.wallet_service_note_sdead_msg,
-                                                    btcfmt.format(amount), btcfmt.unitStr()));
+                                     mRes.getString
+                                     (R.string.wallet_service_note_sdead_title,
+                                      btcfmt.unitStr()),
+                                     mRes.getString
+                                     (R.string.wallet_service_note_sdead_msg,
+                                      btcfmt.format(amount), btcfmt.unitStr()));
 
                             }
                             else {
@@ -343,7 +368,7 @@ public class WalletService extends Service
                 int maxExtended = mHDWallet.ensureMargins(mKit.wallet());
 
                 // Persist the new state.
-                mHDWallet.persist(mWalletApp);
+                mHDWallet.persist(mApp);
 
                 Intent intent = new Intent("wallet-state-changed");
                 mLBM.sendBroadcast(intent);
@@ -365,6 +390,52 @@ public class WalletService extends Service
         }
         catch (Exception ex) {
             mLogger.error("Trouble during shutdown: " + ex.toString());
+        }
+    }
+
+    // Called when UI activities all pause, terminates the service
+    // unless canceled.
+    //
+    public void startBackgroundTimeout() {
+
+        // Cancel any pre-existing timeout.
+        cancelBackgroundTimeout();
+
+        Runnable task = new Runnable() {
+                public void run() {
+                    mLogger.info("background timeout");
+                    mApp.doExit();
+                }
+            };
+
+        SharedPreferences sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        String delaystr = 
+            sharedPref.getString(SettingsActivity.KEY_BACKGROUND_TIMEOUT, "600");
+        long delay;
+        try {
+            delay = Long.parseLong(delaystr);
+        }
+        catch (NumberFormatException ex) {
+            throw new RuntimeException(ex.toString());	// Shouldn't happen.
+        }
+
+        if (delay != -1) {
+            mBackgroundTimeout = 
+                mTimeoutWorker.schedule(task, delay, TimeUnit.SECONDS);
+
+            mLogger.info(String.format
+                         ("background timeout scheduled in %d seconds", delay));
+        }
+    }
+
+    // Called when UI activites resume.
+    //
+    public void cancelBackgroundTimeout() {
+        if (mBackgroundTimeout != null) {
+            mBackgroundTimeout.cancel(false);
+            mBackgroundTimeout = null;
+            mLogger.info("background timeout canceled");
         }
     }
     
@@ -395,7 +466,7 @@ public class WalletService extends Service
             // Try to restore existing wallet.
             mHDWallet = null;
             try {
-				mHDWallet = HDWallet.restore(mWalletApp,
+				mHDWallet = HDWallet.restore(mApp,
 											 mParams,
 				                             mKeyCrypter,
                                              mAesKey);
@@ -428,8 +499,8 @@ public class WalletService extends Service
             }
 
             mKit = new MyWalletAppKit(mParams,
-                                      mWalletApp.getWalletDir(),
-                                      mWalletApp.getWalletPrefix(),
+                                      mApp.getWalletDir(),
+                                      mApp.getWalletPrefix(),
                                       scanTime)
                 {
                     @Override
@@ -478,7 +549,7 @@ public class WalletService extends Service
 
             // Bail if we're being shutdown ...
             if (mState == State.SHUTDOWN) {
-                mHDWallet.persist(mWalletApp);
+                mHDWallet.persist(mApp);
                 return null;
             }
 
@@ -497,7 +568,7 @@ public class WalletService extends Service
             int maxExtended = mHDWallet.ensureMargins(mKit.wallet());
 
             // Persist the new state.
-            mHDWallet.persist(mWalletApp);
+            mHDWallet.persist(mApp);
 
             // Listen for future wallet changes.
             mKit.wallet().addEventListener(mWalletListener);
@@ -543,10 +614,12 @@ public class WalletService extends Service
 
         mLogger.info("WalletService created");
 
-        mWalletApp = (WalletApplication) getApplicationContext();
+        mApp = (WalletApplication) getApplicationContext();
 
         mContext = getApplicationContext();
         mRes = mContext.getResources();
+
+        mTimeoutWorker = Executors.newSingleThreadScheduledExecutor();
 
 		final String lockName = getPackageName() + " blockchain sync";
 		final PowerManager pm =
@@ -561,6 +634,9 @@ public class WalletService extends Service
 
         // Register for future preference changes.
         sharedPref.registerOnSharedPreferenceChangeListener(this);
+
+        // Register with the WalletApplication.
+        mApp.setWalletService(this);
     }
 
     @Override
@@ -581,8 +657,8 @@ public class WalletService extends Service
                     SyncState.STARTUP;
         }
 
-        mKeyCrypter = mWalletApp.mKeyCrypter;
-        mAesKey = mWalletApp.mAesKey;
+        mKeyCrypter = mApp.mKeyCrypter;
+        mAesKey = mApp.mAesKey;
 
         // Set any new key's creation time to now.
         long now = Utils.now().getTime() / 1000;
@@ -625,8 +701,6 @@ public class WalletService extends Service
     // Show a notification while this service is running.
     //
     private void showStatusNotification() {
-        // In this sample, we'll use the same text for the ticker and
-        // the expanded notification
         CharSequence started_txt = getText(R.string.wallet_service_started);
         CharSequence info_txt = getText(R.string.wallet_service_info);
 
@@ -685,7 +759,7 @@ public class WalletService extends Service
     }
 
     public void persist() {
-        mHDWallet.persist(mWalletApp);
+        mHDWallet.persist(mApp);
     }
 
     public byte[] getWalletSeed() {
@@ -716,7 +790,7 @@ public class WalletService extends Service
 
         // Change the parameters on our HDWallet.
         mHDWallet.setPersistCrypter(keyCrypter, aesKey);
-        mHDWallet.persist(mWalletApp);
+        mHDWallet.persist(mApp);
 
         mLogger.info("persisted HD wallet");
 
@@ -775,7 +849,7 @@ public class WalletService extends Service
         mLogger.info(String.format("adding %d keys", keys.size()));
         mKit.wallet().addKeys(keys);
 
-        mHDWallet.persist(mWalletApp);
+        mHDWallet.persist(mApp);
     }
 
     public void rescanBlockchain(long rescanTime) {
@@ -806,7 +880,7 @@ public class WalletService extends Service
         // disturbing to see negative historical balances.  They'll
         // get completely refigured when the sync is done anyway ...
         //
-        mHDWallet.persist(mWalletApp);
+        mHDWallet.persist(mApp);
         mHDWallet = null;
 
         mLogger.info("resetting wallet state");
@@ -826,14 +900,14 @@ public class WalletService extends Service
         mLogger.info("removing spvchain file");
         File chainFile =
             new File(mContext.getFilesDir(),
-                     mWalletApp.getWalletPrefix() + ".spvchain");
+                     mApp.getWalletPrefix() + ".spvchain");
         if (!chainFile.delete())
             mLogger.error("delete of spvchain file failed");
 
         mLogger.info("restarting wallet");
 
-        mKeyCrypter = mWalletApp.mKeyCrypter;
-        mAesKey = mWalletApp.mAesKey;
+        mKeyCrypter = mApp.mKeyCrypter;
+        mAesKey = mApp.mAesKey;
 
         setState(State.SETUP);
         mTask = new SetupWalletTask();
@@ -965,17 +1039,21 @@ public class WalletService extends Service
         }
     }
 
-    public AmountAndFee useAll(int acctnum) throws InsufficientMoneyException{
-        return mHDWallet.useAll(mKit.wallet(), acctnum);
+    public AmountAndFee useAll(int acctnum, boolean spendUnconfirmed)
+        throws InsufficientMoneyException {
+        return mHDWallet.useAll(mKit.wallet(), acctnum, spendUnconfirmed);
     }
 
-    public long computeRecommendedFee(int acctnum, long amount)
+    public long computeRecommendedFee(int acctnum,
+                                      long amount,
+                                      boolean spendUnconfirmed)
     		throws IllegalArgumentException, InsufficientMoneyException {
 
         mLogger.info("computeRecommendedFee starting");
         long fee = mHDWallet.computeRecommendedFee(mKit.wallet(),
                                                    acctnum,
-                                                   amount);
+                                                   amount,
+                                                   spendUnconfirmed);
         mLogger.info("computeRecommendedFee finished");
         return fee;
     }
@@ -983,7 +1061,10 @@ public class WalletService extends Service
     public void sendCoinsFromAccount(int acctnum,
                                      String address,
                                      long amount,
-                                     long fee) throws RuntimeException {
+                                     long fee,
+                                     boolean spendUnconfirmed)
+        throws RuntimeException {
+
         if (mHDWallet == null)
             return;
 
@@ -995,7 +1076,7 @@ public class WalletService extends Service
                                  acctnum, address, amount, fee));
             
             mHDWallet.sendAccountCoins(mKit.wallet(), acctnum, dest,
-                                       amount, fee);
+                                       amount, fee, spendUnconfirmed);
 
         } catch (WrongNetworkException ex) {
             String msg = "Address for wrong network: " + ex.getMessage();

@@ -33,15 +33,12 @@
 	  android:layout_weight="1"
 	  />
       
-      <LinearLayout
-	  android:id="@+id/button_layout"
-	  android:orientation="vertical"
-	  android:layout_width="fill_parent"
+      <TableLayout
+	  android:id="@+id/lobby_table"
+	  android:layout_width="wrap_content"
 	  android:layout_height="wrap_content"
-	  android:gravity="center"
-	  >
-      </LinearLayout>
-          
+	  />
+
       <!-- Stretchy Spacer -->
       <View
 	  android:layout_width="fill_parent"

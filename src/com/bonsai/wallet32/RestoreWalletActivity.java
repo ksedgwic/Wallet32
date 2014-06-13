@@ -158,6 +158,9 @@ public class RestoreWalletActivity extends ActionBarActivity {
             return;
         }
 
+        EditText ppEditText = (EditText) findViewById(R.id.passphrase);
+        String passphrase = ppEditText.getText().toString();
+
         // How many accounts to restore?
         int numaccts;
         try {
@@ -205,6 +208,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                                          wallapp.mKeyCrypter,
                                          wallapp.mAesKey,
                                          seed,
+                                         passphrase,
                                          numaccts,
                                          bip39version,
                                          hdsv);

@@ -320,7 +320,7 @@ public class ViewAccountActivity extends BaseWalletActivity {
             String path = addr.getPath();
             String addrstr = addr.getAbbrev();
             String ntrans = String.format("%d", addr.numTrans());
-            String bal = mBTCFmt.formatCol(addr.getBalance(), 0, true);
+            String bal = mBTCFmt.formatCol(addr.getBalance(), 0, true, true);
             String fiat = String.format
                 ("%.02f", mBTCFmt.fiatAtRate(addr.getBalance(), mFiatPerBTC));
             addAddressRow(tableId, ndx++, table, path,

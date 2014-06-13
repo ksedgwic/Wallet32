@@ -36,11 +36,15 @@ public class AboutActivity extends ActionBarActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(AboutActivity.class);
 
+    private WalletApplication mApp;
+
     private int aboutClicks = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        mApp = (WalletApplication) getApplicationContext();
 
         // Turn off "up" navigation since we can be called in
         // the lobby activities.
@@ -78,16 +82,20 @@ public class AboutActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        // Reset the about click counter.
-        aboutClicks = 0;
-
         mLogger.info("AboutActivity resumed");
+
+        mApp.cancelBackgroundTimeout();
+
+        aboutClicks = 0;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
         mLogger.info("AboutActivity paused");
+
+        mApp.startBackgroundTimeout();
     }
 
     private void toggleExperimental() {

@@ -29,8 +29,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -143,6 +145,12 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         updateAmountFields();
         updateFeeFields();
         updateAccounts();
+    }
+
+    public boolean spendUnconfirmed() {
+        SharedPreferences prefs =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getBoolean("pref_spendUnconfirmed", false);
     }
 
     private final TextWatcher mToAddressWatcher = new TextWatcher() {
@@ -425,7 +433,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             tv0.setChecked(true);
 
         TextView tv1 = (TextView) row.findViewById(R.id.row_btc);
-        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true)));
+        tv1.setText(String.format("%s", mBTCFmt.formatCol(btc, 0, true, true)));
 
         TextView tv2 = (TextView) row.findViewById(R.id.row_fiat);
         tv2.setText(String.format("%.02f", fiat));
@@ -450,12 +458,19 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         List<Balance> balances = mWalletService.getBalances();
         if (balances != null) {
             for (Balance bal : balances) {
+
+                // Our spendable balance depends on whether or not we
+                // can spend unconfirmed balances.
+                //
+                long spendBalance =
+                    spendUnconfirmed() ? bal.balance : bal.available;
+
                 // sumbtc += bal.balance;
                 addAccountRow(table,
                               bal.accountId,
                               bal.accountName,
-                              bal.available,
-                              mBTCFmt.fiatAtRate(bal.available, mFiatPerBTC));
+                              spendBalance,
+                              mBTCFmt.fiatAtRate(spendBalance, mFiatPerBTC));
                 mAccountIds.add(bal.accountId);
             }
         }
@@ -575,7 +590,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             Long fee = null;
             try {
                 fee = mWalletService.computeRecommendedFee(mCheckedFromId,
-                                                           amount);
+                                                           amount,
+                                                           spendUnconfirmed());
             } catch (IllegalArgumentException ex) {
                 // just return null fee
             } catch (InsufficientMoneyException ex) {
@@ -632,7 +648,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 		protected Void doInBackground(Void... arg0)
         {
             try {
-                amtnfee = mWalletService.useAll(mCheckedFromId);
+                amtnfee = mWalletService.useAll(mCheckedFromId,
+                                                spendUnconfirmed());
             } catch (InsufficientMoneyException ex) {
                 // just leave amtnfee null ...
             }
@@ -715,7 +732,9 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         }
 
         // Check to make sure we have enough money for this send.
-        long avail = mWalletService.availableForAccount(mCheckedFromId);
+        long avail = spendUnconfirmed() ?
+            mWalletService.balanceForAccount(mCheckedFromId) :
+            mWalletService.availableForAccount(mCheckedFromId);
         if (amount + fee > avail) {
             showErrorDialog(mRes.getString(R.string.send_error_insufficient));
             return;
@@ -725,7 +744,9 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         // confirm send dialog ...
         try {
             long recFee =
-                mWalletService.computeRecommendedFee(mCheckedFromId, amount);
+                mWalletService.computeRecommendedFee(mCheckedFromId,
+                                                     amount,
+                                                     spendUnconfirmed());
 
             if (fee > recFee) {
                 // Warn that fee is larger than recommended.
@@ -814,7 +835,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             mWalletService.sendCoinsFromAccount(acctId,
                                                 addrString,
                                                 amount,
-                                                fee);
+                                                fee,
+                                                spendUnconfirmed());
 
             mLogger.info("send finished");
 
@@ -884,7 +906,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.amount_btc);
-                tv.setText(mBTCFmt.formatCol(mAmount, 0, true));
+                tv.setText(mBTCFmt.formatCol(mAmount, 0, true, true));
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.amount_fiat);
@@ -893,7 +915,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.fee_btc);
-                tv.setText(mBTCFmt.formatCol(mFee, 0, true));
+                tv.setText(mBTCFmt.formatCol(mFee, 0, true, true));
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.fee_fiat);
@@ -902,7 +924,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.total_btc);
-                tv.setText(mBTCFmt.formatCol(mAmount + mFee, 0, true));
+                tv.setText(mBTCFmt.formatCol(mAmount + mFee, 0, true, true));
             }
             {
                 TextView tv = (TextView) dv.findViewById(R.id.total_fiat);

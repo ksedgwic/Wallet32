@@ -91,10 +91,35 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         mLogger.info("BaseWalletActivity created");
 	}
 
+    @Override
+    protected void onStart() {
+
+		super.onStart();
+
+        // All derived classes represent "logged in" activities; make
+        // sure we haven't short-cut here from the recent activities
+        // menu etc.
+        //
+        if (!mApp.isLoggedIn())
+        {
+            mLogger.info("started without login; back to the lobby");
+
+            // Go to the lobby and get logged in ...
+            Intent intent = new Intent(this, LobbyActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     @SuppressLint("InlinedApi")
 	@Override
     protected void onResume() {
         super.onResume();
+
+        mLogger.info("BaseWalletActivity resumed");
+
+        mApp.cancelBackgroundTimeout();
+
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
 
@@ -105,19 +130,20 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
                               new IntentFilter("wallet-state-changed"));
         mLBM.registerReceiver(mRateChangedReceiver,
                               new IntentFilter("rate-changed"));
-
-        mLogger.info("BaseWalletActivity resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        mLogger.info("BaseWalletActivity paused");
+
         unbindService(mConnection);
 
         mLBM.unregisterReceiver(mWalletStateChangedReceiver);
         mLBM.unregisterReceiver(mRateChangedReceiver);
 
-        mLogger.info("BaseWalletActivity paused");
+        mApp.startBackgroundTimeout();
     }
 
 	@Override

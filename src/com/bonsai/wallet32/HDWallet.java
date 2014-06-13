@@ -79,6 +79,7 @@ public class HDWallet {
     private final DeterministicKey	mWalletRoot;
 
     private final byte[]			mWalletSeed;
+    private final String			mPassphrase;
     private final MnemonicCodeX.Version	mBIP39Version;
     
     public enum HDStructVersion {
@@ -219,6 +220,9 @@ public class HDWallet {
 
             mWalletSeed = Base58.decode(walletNode.getString("seed"));
 
+            mPassphrase = walletNode.has("passphrase") ?
+                walletNode.getString("passphrase") : "";
+
             if (!walletNode.has("bip39_version")) {
                 mBIP39Version = MnemonicCodeX.Version.V0_5;
                 mLogger.info("defaulting BIP39 version to V0_5");
@@ -273,7 +277,7 @@ public class HDWallet {
             MnemonicCodeX mc =
                 new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
+            hdseed = MnemonicCodeX.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -327,6 +331,9 @@ public class HDWallet {
                     Base58.encode(mWorkaroundKey.getPrivKeyBytes()));
 
             obj.put("seed", Base58.encode(mWalletSeed));
+
+            obj.put("passphrase", mPassphrase);
+
             switch (mBIP39Version) {
             case V0_5:
                 obj.put("bip39_version", "V0_5");
@@ -372,6 +379,7 @@ public class HDWallet {
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
                     byte[] walletSeed,
+                    String passphrase,
                     int numAccounts,
                     MnemonicCodeX.Version bip39Version,
                     HDStructVersion hdsv) {
@@ -379,6 +387,7 @@ public class HDWallet {
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
         mWalletSeed = walletSeed;
+        mPassphrase = passphrase;
         mBIP39Version = bip39Version;
         mHDStructVersion = hdsv;
         
@@ -409,7 +418,7 @@ public class HDWallet {
             MnemonicCodeX mc =
                 new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
+            hdseed = MnemonicCodeX.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -694,7 +703,9 @@ public class HDWallet {
                                  int acctnum,
                                  Address dest,
                                  long value,
-                                 long fee) throws RuntimeException {
+                                 long fee,
+                                 boolean spendUnconfirmed)
+        throws RuntimeException {
 
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
@@ -704,7 +715,7 @@ public class HDWallet {
         req.feePerKb = BigInteger.ZERO;
         req.ensureMinRequiredFee = false;
         req.changeAddress = acct.nextChangeAddress();
-        req.coinSelector = acct.coinSelector();
+        req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;
 
 		try {
@@ -714,7 +725,9 @@ public class HDWallet {
 		}
     }
 
-    public AmountAndFee useAll(Wallet wallet, int acctnum)
+    public AmountAndFee useAll(Wallet wallet,
+                               int acctnum,
+                               boolean spendUnconfirmed)
         throws InsufficientMoneyException {
 
         // Create a pretend send request and extract the recommended
@@ -725,7 +738,7 @@ public class HDWallet {
         Address dest = acct.nextReceiveAddress();
             
         SendRequest req = SendRequest.emptyWallet(dest);
-        req.coinSelector = acct.coinSelector();
+        req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;
 
         // Let the wallet do the heavy lifting ...
@@ -741,7 +754,10 @@ public class HDWallet {
         return new AmountAndFee(inAmt.longValue(), feeAmt.longValue());
     }
 
-    public long computeRecommendedFee(Wallet wallet, int acctnum, long value)
+    public long computeRecommendedFee(Wallet wallet,
+                                      int acctnum,
+                                      long value,
+                                      boolean spendUnconfirmed)
         throws IllegalArgumentException, InsufficientMoneyException {
         
         // Create a pretend send request and extract the recommended
@@ -753,7 +769,7 @@ public class HDWallet {
             
         SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
         req.changeAddress = acct.nextChangeAddress();
-        req.coinSelector = acct.coinSelector();
+        req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;
 
         // Let the wallet do the heavy lifting ...
