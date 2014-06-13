@@ -81,6 +81,7 @@ public class HDWallet {
     private final DeterministicKey	mWalletRoot;
 
     private final byte[]			mWalletSeed;
+    private final String			mPassphrase;
     private final MnemonicCodeX.Version	mBIP39Version;
     
     public enum HDStructVersion {
@@ -221,6 +222,9 @@ public class HDWallet {
 
             mWalletSeed = Base58.decode(walletNode.getString("seed"));
 
+            mPassphrase = walletNode.has("passphrase") ?
+                walletNode.getString("passphrase") : "";
+
             if (!walletNode.has("bip39_version")) {
                 mBIP39Version = MnemonicCodeX.Version.V0_5;
                 mLogger.info("defaulting BIP39 version to V0_5");
@@ -275,7 +279,7 @@ public class HDWallet {
             MnemonicCodeX mc =
                 new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
+            hdseed = MnemonicCodeX.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -329,6 +333,9 @@ public class HDWallet {
                     Base58.encode(mWorkaroundKey.getPrivKeyBytes()));
 
             obj.put("seed", Base58.encode(mWalletSeed));
+
+            obj.put("passphrase", mPassphrase);
+
             switch (mBIP39Version) {
             case V0_5:
                 obj.put("bip39_version", "V0_5");
@@ -373,6 +380,7 @@ public class HDWallet {
                     KeyCrypter keyCrypter,
                     KeyParameter aesKey,
                     byte[] walletSeed,
+                    String passphrase,
                     int numAccounts,
                     MnemonicCodeX.Version bip39Version,
                     HDStructVersion hdsv) {
@@ -380,6 +388,7 @@ public class HDWallet {
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
         mWalletSeed = walletSeed;
+        mPassphrase = passphrase;
         mBIP39Version = bip39Version;
         mHDStructVersion = hdsv;
         
@@ -410,7 +419,7 @@ public class HDWallet {
             MnemonicCodeX mc =
                 new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCodeX.toSeed(wordlist, "", mBIP39Version);
+            hdseed = MnemonicCodeX.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }

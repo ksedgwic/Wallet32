@@ -30,6 +30,7 @@
 \nhere ...
     ]]></string>
     <string name="restore_numaccounts">Number of accounts to restore:</string>
+    <string name="restore_passphrase">Optional BIP0039 Passphrase (leave blank for Wallet32 created wallets):</string>
     <string name="restore_format_label"><![CDATA[
 Wallet32 has been tracking the BIP39 and BIP32 standards as they
 develop. If you are restoring a wallet that was created with Wallet32

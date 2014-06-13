@@ -85,6 +85,7 @@
 	<EditText
 	    android:id="@+id/mnemonic"
 	    android:inputType="textMultiLine"
+            android:capitalize="none"
 	    android:minWidth="200dp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="80dp"
@@ -124,6 +125,40 @@
 	    android:inputType="numberDecimal"
 	    android:singleLine="true"
 	    android:minWidth="40dp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="4"
+	  />
+
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginTop="16dp"
+	  android:gravity="left"
+	  >
+
+	<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/restore_passphrase"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+	<EditText
+	    android:id="@+id/passphrase"
+	    android:inputType="text"
+	    android:singleLine="true"
+	    android:minWidth="200dp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:textAppearance="@android:style/TextAppearance.Small"

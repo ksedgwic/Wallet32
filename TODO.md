@@ -534,8 +534,6 @@ issue w/ gradle written aar files.
 
 ----------------------------------------------------------------
 
-Debug Restore Problem.
-
 Add Optional Passphrase.
 
 Investigate Signing Options.
@@ -551,3 +549,5 @@ Smash case on wallet word lists.
 Set lower-case mode on keyboard during word list entry.
 
 Investigate Miron's wallet.
+
+Merge master onto bitcoinj-hdw branch.
