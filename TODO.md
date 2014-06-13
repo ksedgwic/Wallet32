@@ -534,8 +534,6 @@ issue w/ gradle written aar files.
 
 ----------------------------------------------------------------
 
-Add Optional Passphrase.
-
 Investigate Signing Options.
 
 Investigate Slush's Sync Hang.
