@@ -15,17 +15,20 @@
 
 package com.bonsai.wallet32;
 
+import android.annotation.SuppressLint;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,17 +36,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.BufferedBlockCipher;
 import org.spongycastle.crypto.DataLengthException;
-import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.crypto.engines.AESFastEngine;
+import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
-import android.annotation.SuppressLint;
-import com.bonsai.wallet32.WalletService.AmountAndFee;
+
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Base58;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -63,6 +66,8 @@ import com.google.bitcoin.crypto.KeyCrypterScrypt;
 import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
+
+import com.bonsai.wallet32.WalletService.AmountAndFee;
 
 public class HDWallet {
 
@@ -710,9 +715,9 @@ public class HDWallet {
         // Which account are we using for this send?
         HDAccount acct = mAccounts.get(acctnum);
 
-        SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
-        req.fee = BigInteger.valueOf(fee);
-        req.feePerKb = BigInteger.ZERO;
+        SendRequest req = SendRequest.to(dest, Coin.valueOf(value));
+        req.fee = Coin.valueOf(fee);
+        req.feePerKb = Coin.ZERO;
         req.ensureMinRequiredFee = false;
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector(spendUnconfirmed);
@@ -747,9 +752,9 @@ public class HDWallet {
         // It doesn't look like req.fee gets set to the required fee
         // when using emptyWallet.  Figure out the fee ourselves ...
         //
-        BigInteger outAmt = req.tx.getValueSentFromMe(wallet);
-        BigInteger inAmt = req.tx.getValueSentToMe(wallet);
-        BigInteger feeAmt = outAmt.subtract(inAmt);
+        Coin outAmt = req.tx.getValueSentFromMe(wallet);
+        Coin inAmt = req.tx.getValueSentToMe(wallet);
+        Coin feeAmt = outAmt.subtract(inAmt);
 
         return new AmountAndFee(inAmt.longValue(), feeAmt.longValue());
     }
@@ -767,7 +772,7 @@ public class HDWallet {
         // Pretend we are sending the bitcoin to ourselves.
         Address dest = acct.nextReceiveAddress();
             
-        SendRequest req = SendRequest.to(dest, BigInteger.valueOf(value));
+        SendRequest req = SendRequest.to(dest, Coin.valueOf(value));
         req.changeAddress = acct.nextChangeAddress();
         req.coinSelector = acct.coinSelector(spendUnconfirmed);
         req.aesKey = mAesKey;

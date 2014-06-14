@@ -62,6 +62,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.google.bitcoin.core.AbstractWalletEventListener;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
@@ -142,8 +143,8 @@ public class WalletService extends Service
 
     private RateUpdater			mRateUpdater;
 
-    private BigInteger			mBalanceAvailable;
-    private BigInteger			mBalanceEstimated;
+    private Coin				mBalanceAvailable;
+    private Coin				mBalanceEstimated;
 
 	private WakeLock			mWakeLock;
 
@@ -181,10 +182,10 @@ public class WalletService extends Service
             @Override
 			public void onCoinsReceived(Wallet wallet,
                                         Transaction tx,
-                                        BigInteger prevBalance,
-                                        BigInteger newBalance)
+                                        Coin prevBalance,
+                                        Coin newBalance)
             {
-                BigInteger amt = newBalance.subtract(prevBalance);
+                Coin amt = newBalance.subtract(prevBalance);
                 final long amount = amt.longValue();
 
                 WalletApplication app =
@@ -274,10 +275,10 @@ public class WalletService extends Service
             @Override
 			public void onCoinsSent(Wallet wallet,
                                     Transaction tx,
-                                    BigInteger prevBalance,
-                                    BigInteger newBalance)
+                                    Coin prevBalance,
+                                    Coin newBalance)
             {
-                BigInteger amt = prevBalance.subtract(newBalance);
+                Coin amt = prevBalance.subtract(newBalance);
                 final long amount = amt.longValue();
 
                 WalletApplication app =
@@ -985,7 +986,7 @@ public class WalletService extends Service
     }
 
     static public long getDefaultFee() {
-        final BigInteger dmtf = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
+        final Coin dmtf = Transaction.REFERENCE_DEFAULT_MIN_TX_FEE;
         return dmtf.longValue();
     }
 
@@ -1157,7 +1158,7 @@ public class WalletService extends Service
         mLogger.info("sweeping to " + to.toString());
 
         // Add output.
-        tx.addOutput(BigInteger.valueOf(amount), to);
+        tx.addOutput(Coin.valueOf(amount), to);
 
         WalletUtil.signTransactionInputs(tx, Transaction.SigHash.ALL, key, scripts);
 

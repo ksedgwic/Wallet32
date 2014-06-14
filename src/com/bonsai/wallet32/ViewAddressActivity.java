@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.uri.BitcoinURI;
 
 import com.google.zxing.BarcodeFormat;
@@ -65,7 +66,7 @@ public class ViewAddressActivity extends BaseWalletActivity {
         mAddress = intent.getExtras().getString("address");
         mAmount = intent.getExtras().getLong("amount");
 
-        BigInteger amt = mAmount == 0 ? null : BigInteger.valueOf(mAmount);
+        Coin amt = mAmount == 0 ? null : Coin.valueOf(mAmount);
 
         mURI = BitcoinURI.convertToBitcoinURI(mAddress, amt, null, null);
 

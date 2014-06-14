@@ -47,14 +47,16 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bonsai.wallet32.WalletService.AmountAndFee;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.uri.BitcoinURI;
 import com.google.bitcoin.uri.BitcoinURIParseException;
+
+import com.bonsai.wallet32.WalletService.AmountAndFee;
 
 import eu.livotov.zxscan.ZXScanHelper;
 
@@ -489,7 +491,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         try {
             BitcoinURI uri = new BitcoinURI(params, toval);
             Address addr = uri.getAddress();
-            BigInteger amt = uri.getAmount();
+            Coin amt = uri.getAmount();
 
             mToAddressEditText.setText(addr.toString(), 
                                        TextView.BufferType.EDITABLE);

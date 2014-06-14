@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
 
 import com.google.bitcoin.core.Address;
+import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.ScriptException;
@@ -255,7 +256,7 @@ public class HDAccount {
                 new DefaultCoinSelector();
         }
 
-        public CoinSelection select(BigInteger biTarget,
+        public CoinSelection select(Coin biTarget,
                                     LinkedList<TransactionOutput> candidates) {
             // Filter the candidates so only coins from this account
             // are considered.  Let the Wallet.DefaultCoinSelector do
