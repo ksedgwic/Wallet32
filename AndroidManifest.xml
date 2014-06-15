@@ -205,6 +205,12 @@
 	    >
         </activity>
         <activity
+            android:name="com.bonsai.wallet32.CountersignedWalletActivity"
+            android:label="@string/title_activity_countersigned_wallet"
+	    android:screenOrientation="sensorPortrait"
+	    >
+        </activity>
+        <activity
             android:name="com.bonsai.wallet32.SettingsActivity"
             android:label="@string/title_activity_settings"
 	    android:screenOrientation="sensorPortrait"

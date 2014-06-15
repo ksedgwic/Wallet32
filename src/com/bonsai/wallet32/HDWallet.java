@@ -580,6 +580,7 @@ public class HDWallet {
                     }
                     long value = cto.getValue().longValue();
                     try {
+                        // FIXME - use address instead of pubkey?
                         byte[] pubkey = ti.getScriptSig().getPubKey();
                         for (HDAccount hda : mAccounts)
                             hda.applyInput(pubkey, value);

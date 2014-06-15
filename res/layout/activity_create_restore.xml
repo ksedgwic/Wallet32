@@ -49,7 +49,7 @@
 	  android:id="@+id/create"
 	  android:layout_width="180dp"
 	  android:layout_height="wrap_content"
-	  android:text="@string/button_create"
+	  android:text="@string/setup_create"
 	  android:onClick="createWallet"
 	  />
 
@@ -63,7 +63,7 @@
 	  android:id="@+id/restore"
 	  android:layout_width="180dp"
 	  android:layout_height="wrap_content"
-	  android:text="@string/button_restore"
+	  android:text="@string/setup_restore"
 	  android:onClick="restoreWallet"
 	  />
 
@@ -77,8 +77,23 @@
 	  android:id="@+id/pair"
 	  android:layout_width="180dp"
 	  android:layout_height="wrap_content"
-	  android:text="@string/button_pair"
+	  android:text="@string/setup_pair"
 	  android:onClick="pairWallet"
+	  />
+
+      <!-- Rigid Spacer -->
+      <View
+	  android:id="@+id/countersigned_spacer"
+	  android:layout_width="fill_parent"
+	  android:layout_height="10dp"
+	  />
+
+      <Button
+	  android:id="@+id/countersigned"
+	  android:layout_width="180dp"
+	  android:layout_height="wrap_content"
+	  android:text="@string/setup_countersigned"
+	  android:onClick="countersignedWallet"
 	  />
 
       <!-- Stretchy Spacer -->

@@ -18,9 +18,10 @@
     <string name="lobby_confirm_delete">Are you sure you want to delete %1$s?</string>
     <string name="title_activity_create_restore">Create/Restore Wallet</string>
     <string name="create_nowallet">No Wallet Found</string>
-    <string name="button_create">Create New Wallet</string>
-    <string name="button_restore">Restore Wallet</string>
-    <string name="button_pair">Pair with Wallet on Other Device</string>
+    <string name="setup_create">Create New Wallet</string>
+    <string name="setup_restore">Restore Wallet</string>
+    <string name="setup_pair">Pair with Wallet on Other Device</string>
+    <string name="setup_countersigned">Create Countersigned Wallet</string>
     <string name="title_activity_restore_wallet">Restore Wallet</string>
     <string name="restore_seed">Enter Wallet Seed:</string>
     <string name="restore_seed_hint">Hexadecimal Seed</string>
@@ -56,6 +57,21 @@ Select Show Pairing Code from the other wallet\'s settings and scan it.
     <string name="pair_error_scanfail">Scan of pairing code failed</string>
     <string name="button_scan_pair">Scan Pairing Code</string>
     <string name="pair_wait_setup">Setting up Paired Wallet</string>
+    <string name="title_activity_countersigned_wallet">Create Countersigned Wallet</string>
+    <string name="countersigned_phone">Phone Number:</string>
+    <string name="countersigned_phone_hint">415 555 1212</string>
+    <string name="countersigned_email">Email (Optional):</string>
+    <string name="countersigned_email_hint">user@domain.com</string>
+    <string name="countersigned_wallet_mnemonic">Wallet Mnemonic Phrase</string>
+    <string name="countersigned_wallet_mnemonic_hint"><![CDATA[space separated ordered
+\nword list goes
+\nhere ...
+    ]]></string>
+    <string name="countersigned_recovery_mnemonic">Recovery Mnemonic Phrase</string>
+    <string name="countersigned_recovery_mnemonic_hint"><![CDATA[space separated ordered
+\nword list goes
+\nhere ...
+    ]]></string>
     <string name="title_activity_passcode">Enter Passcode</string>
     <string name="passcode_create">Create Passcode</string>
     <string name="passcode_confirm">Confirm Passcode</string>
