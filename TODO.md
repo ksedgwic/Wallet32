@@ -535,6 +535,10 @@ issue w/ gradle written aar files.
 ----------------------------------------------------------------
 
 Wallet restoration broken on HDW branch.  Check wallet create.
+Fix wallet encryption on bitcoinj-hdw branch.
+> 1. Incorporate KeyCrypter.
+> 2. Disable 100 key intrinsic chain.
+> 3. Remove scan time workaround key.
 
 Investigate broken About menu in lobby.
 
@@ -545,8 +549,6 @@ Consider 18 and 24 word wallet seeds.
 Smash case on wallet word lists.
 
 Set lower-case mode on keyboard during word list entry.
-
-Fix wallet encryption on bitcoinj-hdw branch.
 
 Fix P2SH transaction scoring:
 

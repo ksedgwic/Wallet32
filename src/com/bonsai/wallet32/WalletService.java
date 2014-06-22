@@ -518,7 +518,9 @@ public class WalletService extends Service
                         mHDWallet.gatherAllKeys(scanTime, keys);
                         mLogger.info(String.format("adding %d keys",
                                                    keys.size()));
-                        wallet().addKeys(keys);
+                        int nAdded =
+                            wallet().importKeysAndEncrypt(keys, mAesKey);
+                        mLogger.info(String.format("%d keys added", nAdded));
 
                         // Do we have enough margin on all our chains?
                         // Add keys to chains which don't have enough
@@ -848,7 +850,8 @@ public class WalletService extends Service
         ArrayList<ECKey> keys = new ArrayList<ECKey>();
         mHDWallet.gatherAllKeys(now, keys);
         mLogger.info(String.format("adding %d keys", keys.size()));
-        mKit.wallet().addKeys(keys);
+        int nAdded = mKit.wallet().importKeysAndEncrypt(keys, mAesKey);
+        mLogger.info(String.format("%d keys added", nAdded));
 
         mHDWallet.persist(mApp);
     }

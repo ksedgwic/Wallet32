@@ -233,8 +233,10 @@ public class HDChain {
                 mAddrs.add(hda);
                 hda.gatherKey(keyCrypter, aesKey, now, keys);
             }
+
             mLogger.info(String.format("adding %d keys", keys.size()));
-            wallet.addKeys(keys);
+            int nAdded = wallet.importKeysAndEncrypt(keys, aesKey);
+            mLogger.info(String.format("%d keys added", nAdded));
 
             return numAdd;
         }
