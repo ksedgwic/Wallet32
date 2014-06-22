@@ -53,6 +53,10 @@ using an earlier format version please select the appropriate choice below:
     <string name="pair_directions"><![CDATA[
 Select Show Pairing Code from the other wallet\'s settings and scan it.
     ]]></string>
+    <string name="pair_directions_nfc"><![CDATA[
+If both devices are NFC enabled you can touch them together instead to
+pair them.
+    ]]></string>
     <string name="pair_error_scanfail">Scan of pairing code failed</string>
     <string name="button_scan_pair">Scan Pairing Code</string>
     <string name="pair_wait_setup">Setting up Paired Wallet</string>
@@ -121,6 +125,8 @@ safe places that only you have access to.\n
     <string name="title_activity_show_pairing">Wallet Pairing Code</string>
     <string name="pairing_directions"><![CDATA[
 \nYou can scan this code when you setup Wallet32 on another device.\n
+\nIf both devices are NFC enabled you can touch them together instead to pair
+the new wallet.\n 
 \nBoth wallets will concurrently control the same funds.
     ]]></string>
     <string name="title_activity_rescan">Rescan Blockchain</string>
@@ -431,6 +437,7 @@ Author:  Ken Sedgwick <a href="mailto:ken@bonsai.com">&lt;ken@bonsai.com&gt;</a>
 \n
 With contributions from:\n
 \tKarel Bílek\n
+\tHarald Hoyer\n
 \n
 Wallet32 is made possible by:\n
 \t<a href="https://code.google.com/p/bitcoinj">bitcoinj</a>\n
