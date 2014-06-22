@@ -108,11 +108,15 @@ About Wallet32
 
 Wallet32
 
-Version: 0.3.8 (12-Jun-2014)
+Version: 0.3.9 (21-Jun-2014)
 
 Source:  https://github.com/ksedgwic/Wallet32
 
 Author:  Ken Sedgwick <ken@bonsai.com>
+
+With contributions from:
+* Karel Bílek
+* Harald Hoyer
 
 Wallet32 is made possible by:
 * [bitcoinj](https://code.google.com/p/bitcoinj/)

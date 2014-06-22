@@ -26,6 +26,9 @@ import com.google.bitcoin.params.MainNetParams;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -48,6 +51,31 @@ public class PairWalletActivity extends ActionBarActivity {
         mRes = getApplicationContext().getResources();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pair_wallet);
+
+		if (savedInstanceState == null) {
+			final Intent intent = this.getIntent();
+			final String action = intent.getAction();
+			final String mimeType = intent.getType();
+
+			if ((NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) && Nfc.MIMETYPE_WALLET32PAIRING.equals(mimeType)) {
+				final NdefMessage ndefMessage = (NdefMessage) intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)[0];
+				final byte[] ndefMessagePayload = Nfc.extractMimePayload(Nfc.MIMETYPE_WALLET32PAIRING, ndefMessage);
+				JSONObject codeObj;
+
+				try {
+					String msg = new String(ndefMessagePayload, "UTF-8");
+					codeObj = new JSONObject(msg);
+				} catch (Exception ex) {
+					String msg = "trouble deserializing pairing code: " + ex.toString() + " : " + ndefMessagePayload.toString();
+					mLogger.error(msg);
+					Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+					return;
+				}
+
+				// Setup the wallet in a background task.
+				new PairWalletTask().execute(codeObj);
+			}
+		}
 	}
 
 	@Override

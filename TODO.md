@@ -536,11 +536,9 @@ issue w/ gradle written aar files.
 
 Wallet restoration broken on HDW branch.  Check wallet create.
 
-Investigate Signing Options.
+Investigate broken About menu in lobby.
 
 Investigate Slush's Sync Hang.
-
-Update Store Version.
 
 Consider 18 and 24 word wallet seeds.
 
@@ -548,6 +546,28 @@ Smash case on wallet word lists.
 
 Set lower-case mode on keyboard during word list entry.
 
-Investigate Miron's wallet.
+Fix wallet encryption on bitcoinj-hdw branch.
 
-Merge master onto bitcoinj-hdw branch.
+Fix P2SH transaction scoring:
+
+06-21 19:14:59.711 I/MemoryPool(28320): [NioClientManager] [176.223.201.250]:8333: Peer announced new transaction [1] 6d803430f02fdd7d5cb659d9e0cbc978033273d04d686453bf3e1b1ede7ba02d
+06-21 19:14:59.711 W/System.err(28320): 	at com.bonsai.wallet32.HDWallet.applyAllTransactions(HDWallet.java:578)
+06-21 19:14:59.711 W/System.err(28320): 	at com.bonsai.wallet32.WalletService$SetupWalletTask.doInBackground(WalletService.java:566)
+06-21 19:14:59.711 W/System.err(28320): 	at com.bonsai.wallet32.WalletService$SetupWalletTask.doInBackground(WalletService.java:442)
+06-21 19:14:59.711 W/System.err(28320): 	at android.os.AsyncTask$2.call(AsyncTask.java:288)
+06-21 19:14:59.711 W/System.err(28320): 	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+06-21 19:14:59.711 W/System.err(28320): 	at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:231)
+06-21 19:14:59.711 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+06-21 19:14:59.711 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+06-21 19:14:59.711 W/System.err(28320): 	at java.lang.Thread.run(Thread.java:841)
+06-21 19:14:59.721 W/System.err(28320): com.google.bitcoin.core.ScriptException: Script not of right size, expecting 2 but got 4
+06-21 19:14:59.731 W/System.err(28320): 	at com.google.bitcoin.script.Script.getPubKey(Script.java:277)
+06-21 19:14:59.731 W/System.err(28320): 	at com.bonsai.wallet32.HDWallet.applyAllTransactions(HDWallet.java:578)
+06-21 19:14:59.731 W/System.err(28320): 	at com.bonsai.wallet32.WalletService$SetupWalletTask.doInBackground(WalletService.java:566)
+06-21 19:14:59.731 W/System.err(28320): 	at com.bonsai.wallet32.WalletService$SetupWalletTask.doInBackground(WalletService.java:442)
+06-21 19:14:59.731 W/System.err(28320): 	at android.os.AsyncTask$2.call(AsyncTask.java:288)
+06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+06-21 19:14:59.731 W/System.err(28320): 	at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:231)
+06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+06-21 19:14:59.731 W/System.err(28320): 	at java.lang.Thread.run(Thread.java:841)
