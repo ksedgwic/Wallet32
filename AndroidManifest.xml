@@ -20,6 +20,7 @@
                   android:required="false" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:name="com.bonsai.wallet32.WalletApplication"
@@ -203,6 +204,14 @@
             android:label="@string/title_activity_pair_wallet"
 	    android:screenOrientation="sensorPortrait"
 	    >
+            <intent-filter android:label="@string/title_activity_pair_wallet" >
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <data android:mimeType="application/wallet32-pairing" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name="com.bonsai.wallet32.SettingsActivity"

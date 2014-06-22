@@ -19,11 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.widget.ImageView;
 
 public class ShowPairingActivity extends BaseWalletActivity {
+    private NfcManager nfcManager;
 
     private static Logger mLogger =
         LoggerFactory.getLogger(ShowPairingActivity.class);
@@ -35,12 +38,19 @@ public class ShowPairingActivity extends BaseWalletActivity {
 
         mSeedFetched = false;
 
-		super.onCreate(savedInstanceState);
+	super.onCreate(savedInstanceState);
+	this.nfcManager = (NfcManager) this.getSystemService(Context.NFC_SERVICE);
 
         mLogger.info("ShowPairingActivity created");
 
 		setContentView(R.layout.activity_show_pairing);
 	}
+
+    public void onPause() {
+	Nfc.unpublish(nfcManager, this);
+	super.onPause();
+    }
+
 
 	@Override
     protected void onWalletServiceBound() {
@@ -54,5 +64,6 @@ public class ShowPairingActivity extends BaseWalletActivity {
             ImageView iv = (ImageView) findViewById(R.id.pairing_qr_view);
             iv.setImageBitmap(bm);
         }
+	final boolean nfcSuccess = Nfc.publishMimeObject(nfcManager, this, Nfc.MIMETYPE_WALLET32PAIRING, pairingCode.getBytes(Nfc.UTF_8));
     }
 }
