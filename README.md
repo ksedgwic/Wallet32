@@ -114,6 +114,9 @@ Source:  https://github.com/ksedgwic/Wallet32
 
 Author:  Ken Sedgwick <ken@bonsai.com>
 
+With contributions from:
+* Karel Bílek
+
 Wallet32 is made possible by:
 * [bitcoinj](https://code.google.com/p/bitcoinj/)
 * [bitcoin-wallet](https://github.com/schildbach/bitcoin-wallet)

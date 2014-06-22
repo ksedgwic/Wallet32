@@ -536,14 +536,7 @@ issue w/ gradle written aar files.
 
 Merge NFC pairing.
 
-Investigate Signing Options.
-
-    jarsigner \
-        -verbose \
-        -sigalg MD5withRSA \
-        -digestalg SHA1 \
-        -keystore my-release-key.keystore \
-        my_app.apk alias_name
+Investigate broken About menu in lobby.
 
 Investigate Slush's Sync Hang.
 

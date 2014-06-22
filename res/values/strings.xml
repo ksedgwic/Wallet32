@@ -429,6 +429,9 @@ Source:  <a href="https://github.com/ksedgwic/Wallet32">https://github.com/ksedg
 \n
 Author:  Ken Sedgwick <a href="mailto:ken@bonsai.com">&lt;ken@bonsai.com&gt;</a>\n
 \n
+With contributions from:\n
+\tKarel Bílek\n
+\n
 Wallet32 is made possible by:\n
 \t<a href="https://code.google.com/p/bitcoinj">bitcoinj</a>\n
 \t<a href="https://github.com/schildbach/bitcoin-wallet">bitcoin-wallet</a>\n
