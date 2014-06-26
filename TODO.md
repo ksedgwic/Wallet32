@@ -540,6 +540,8 @@ Fix wallet encryption on bitcoinj-hdw branch.
 > 2. Disable 100 key intrinsic chain.
 > 3. Remove scan time workaround key.
 
+
+
 Investigate broken About menu in lobby.
 
 Investigate Slush's Sync Hang.
