@@ -6,17 +6,7 @@ Needed
 
 * Make additional passcode entry based on timeout instead of always.
 
-* Advanced Features Setting (send change to account, private key ops)
-
 * Testnet build.
-
-* Electrum compatibility.
-
-* Embelish messages and directions.
-
-* Send dump feature.
-
-* Tune for slow platforms.
 
 * Make passcode creation estimate of brute-force difficulty.
 
@@ -24,9 +14,19 @@ Needed
 
 * Non-USD fiat support.
 
-* Font selections for tables.
-
 * Factor wallet file prefix into single location.
+
+* Investigate Slush's Sync Hang.
+
+* Consider 18 and 24 word wallet seeds.
+
+* Smash case on wallet word lists.
+
+* Set lower-case mode on keyboard during word list entry.
+
+* Fix wallet encryption on bitcoinj-hdw branch.
+
+* Fix P2SH transaction scoring (see log below).
 
 
 Checklist
@@ -533,22 +533,6 @@ issue w/ gradle written aar files.
 
 
 ----------------------------------------------------------------
-
-Merge NFC pairing.
-
-Investigate broken About menu in lobby.
-
-Investigate Slush's Sync Hang.
-
-Consider 18 and 24 word wallet seeds.
-
-Smash case on wallet word lists.
-
-Set lower-case mode on keyboard during word list entry.
-
-Fix wallet encryption on bitcoinj-hdw branch.
-
-Fix P2SH transaction scoring:
 
 06-21 19:14:59.711 I/MemoryPool(28320): [NioClientManager] [176.223.201.250]:8333: Peer announced new transaction [1] 6d803430f02fdd7d5cb659d9e0cbc978033273d04d686453bf3e1b1ede7ba02d
 06-21 19:14:59.711 W/System.err(28320): 	at com.bonsai.wallet32.HDWallet.applyAllTransactions(HDWallet.java:578)
