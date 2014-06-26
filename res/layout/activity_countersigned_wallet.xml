@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".RestoreWalletActivity"
+    tools:context=".CosignedWalletActivity"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -43,18 +43,52 @@
 	<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/restore_seed"
+            android:text="@string/countersigned_phone"
 	    android:textAppearance="@android:style/TextAppearance.Small"
 	    />
 
 	<EditText
-	    android:id="@+id/seed"
+	    android:id="@+id/phone"
 	    android:inputType="text"
 	    android:singleLine="true"
 	    android:minWidth="200dp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:hint="@string/restore_seed_hint"
+	    android:hint="@string/countersigned_phone_hint"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+      </LinearLayout>
+
+      <!-- Stretchy Spacer -->
+      <View
+	  android:layout_width="fill_parent"
+	  android:layout_height="0dp"
+	  android:layout_weight="1"
+	  />
+
+      <LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:gravity="left"
+	  >
+
+	<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/countersigned_email"
+	    android:textAppearance="@android:style/TextAppearance.Small"
+	    />
+
+	<EditText
+	    android:id="@+id/email"
+	    android:inputType="text"
+	    android:singleLine="true"
+	    android:minWidth="200dp"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:hint="@string/countersigned_email_hint"
 	    android:textAppearance="@android:style/TextAppearance.Small"
 	    />
 
@@ -78,19 +112,19 @@
 	<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/restore_mnemonic"
+            android:text="@string/countersigned_wallet_mnemonic"
 	    android:textAppearance="@android:style/TextAppearance.Small"
 	    />
 
 	<EditText
-	    android:id="@+id/mnemonic"
+	    android:id="@+id/wallet_mnemonic"
 	    android:inputType="textMultiLine"
             android:capitalize="none"
 	    android:minWidth="200dp"
 	    android:layout_width="wrap_content"
 	    android:layout_height="80dp"
 	    android:gravity="left|top"
-	    android:hint="@string/restore_mnemonic_hint"
+	    android:hint="@string/countersigned_wallet_mnemonic_hint"
 	    android:textAppearance="@android:style/TextAppearance.Small"
 	    >
 	    <requestFocus />
@@ -116,128 +150,23 @@
 	<TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/restore_numaccounts"
+            android:text="@string/countersigned_recovery_mnemonic"
 	    android:textAppearance="@android:style/TextAppearance.Small"
 	    />
 
 	<EditText
-	    android:id="@+id/numaccounts"
-	    android:inputType="numberDecimal"
-	    android:singleLine="true"
-	    android:minWidth="40dp"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:textAppearance="@android:style/TextAppearance.Small"
-	    />
-
-      </LinearLayout>
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="4"
-	  />
-
-      <LinearLayout
-	  android:orientation="vertical"
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:layout_marginTop="16dp"
-	  android:gravity="left"
-	  >
-
-	<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/restore_passphrase"
-	    android:textAppearance="@android:style/TextAppearance.Small"
-	    />
-
-	<EditText
-	    android:id="@+id/passphrase"
-	    android:inputType="text"
-	    android:singleLine="true"
+	    android:id="@+id/recovery_mnemonic"
+	    android:inputType="textMultiLine"
+            android:capitalize="none"
 	    android:minWidth="200dp"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
+	    android:layout_height="80dp"
+	    android:gravity="left|top"
+	    android:hint="@string/countersigned_recovery_mnemonic_hint"
 	    android:textAppearance="@android:style/TextAppearance.Small"
-	    />
-
-      </LinearLayout>
-
-      <!-- Stretchy Spacer -->
-      <View
-	  android:layout_width="fill_parent"
-	  android:layout_height="0dp"
-	  android:layout_weight="4"
-	  />
-
-      <LinearLayout
-	  android:orientation="vertical"
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:layout_marginTop="16dp"
-	  android:gravity="left"
-	  >
-
-	<TextView
-	    android:id="@+id/format_directions"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-            android:text="@string/restore_format_label"
-	    android:textAppearance="@android:style/TextAppearance.Small"
-	    />
-	
-	<RadioGroup
-	    android:id="@+id/format_choice"
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
 	    >
-
-	  <RadioButton
-	      android:id="@+id/format_v0_5"
-	      android:text="@string/restore_format_v0_5"
-	      android:layout_width="wrap_content"
-	      android:layout_height="wrap_content"
-	      android:textAppearance="@android:style/TextAppearance.Small"
-	      android:checked="true"
-	      />
-
-	  <RadioButton
-	      android:id="@+id/format_v0_4"
-	      android:text="@string/restore_format_v0_4"
-	      android:layout_width="wrap_content"
-	      android:layout_height="wrap_content"
-	      android:textAppearance="@android:style/TextAppearance.Small"
-	      />
-
-	  <RadioButton
-	      android:id="@+id/format_v0_3"
-	      android:text="@string/restore_format_v0_3"
-	      android:layout_width="wrap_content"
-	      android:layout_height="wrap_content"
-	      android:textAppearance="@android:style/TextAppearance.Small"
-	      />
-
-	  <RadioButton
-	      android:id="@+id/format_v0_2"
-	      android:text="@string/restore_format_v0_2"
-	      android:layout_width="wrap_content"
-	      android:layout_height="wrap_content"
-	      android:textAppearance="@android:style/TextAppearance.Small"
-	      />
-
-	  <RadioButton
-	      android:id="@+id/format_v0_1"
-	      android:text="@string/restore_format_v0_1"
-	      android:layout_width="wrap_content"
-	      android:layout_height="wrap_content"
-	      android:textAppearance="@android:style/TextAppearance.Small"
-	      />
-
-	</RadioGroup>
+	    <requestFocus />
+	</EditText>
 
       </LinearLayout>
 
@@ -249,11 +178,11 @@
 	  />
 
       <Button
-	  android:id="@+id/restore"
+	  android:id="@+id/countersigned"
 	  android:layout_width="180dp"
 	  android:layout_height="wrap_content"
-	  android:text="@string/setup_restore"
-	  android:onClick="restoreWallet"
+	  android:text="@string/setup_countersigned"
+	  android:onClick="setupCountersigned"
 	  />
 
       <!-- Stretchy Spacer -->

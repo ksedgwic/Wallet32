@@ -61,6 +61,7 @@ public class PasscodeActivity extends ActionBarActivity {
         ACTION_CREATE,
         ACTION_RESTORE,
         ACTION_PAIR,
+        ACTION_COUNTERSIGNED,
         ACTION_LOGIN,
         ACTION_CHANGE,
         ACTION_VIEWSEED,
@@ -134,6 +135,9 @@ public class PasscodeActivity extends ActionBarActivity {
         } else if (action.equals("pair")) {
             mAction = Action.ACTION_PAIR;
             mLogger.info("ACTION_PAIR");
+        } else if (action.equals("countersigned")) {
+            mAction = Action.ACTION_COUNTERSIGNED;
+            mLogger.info("ACTION_COUNTERSIGNED");
         } else if (action.equals("login")) {
             mAction = Action.ACTION_LOGIN;
             mLogger.info("ACTION_LOGIN");
@@ -168,6 +172,7 @@ public class PasscodeActivity extends ActionBarActivity {
         case ACTION_CREATE:
         case ACTION_RESTORE:
         case ACTION_PAIR:
+        case ACTION_COUNTERSIGNED:
             mState = State.PASSCODE_CREATE;
             mChangePasscode = false;
             msgtv.setText(R.string.passcode_create);
@@ -386,6 +391,11 @@ public class PasscodeActivity extends ActionBarActivity {
 
         case ACTION_PAIR:
             intent = new Intent(this, PairWalletActivity.class);
+            startActivity(intent);
+            break;
+
+        case ACTION_COUNTERSIGNED:
+            intent = new Intent(this, CountersignedWalletActivity.class);
             startActivity(intent);
             break;
 

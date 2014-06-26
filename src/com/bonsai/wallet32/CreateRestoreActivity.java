@@ -20,7 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +37,17 @@ public class CreateRestoreActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_restore);
+
+        // If we don't have experimental mode on remove experimental
+        // features.
+        SharedPreferences sharedPref =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean isExperimental =
+            sharedPref.getBoolean(SettingsActivity.KEY_EXPERIMENTAL, false);
+        if (!isExperimental) {
+            findViewById(R.id.countersigned_spacer).setVisibility(View.GONE);
+            findViewById(R.id.countersigned).setVisibility(View.GONE);
+        }
 	}
 
 	@Override
@@ -89,6 +103,19 @@ public class CreateRestoreActivity extends Activity {
         Intent intent = new Intent(this, PasscodeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("action", "pair");
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+        // Prevent the user from coming back here.
+        finish();
+    }
+
+    public void countersignedWallet(View view) {
+        mLogger.info("countersigned wallet");
+
+        Intent intent = new Intent(this, PasscodeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("action", "countersigned");
         intent.putExtras(bundle);
         startActivity(intent);
 
