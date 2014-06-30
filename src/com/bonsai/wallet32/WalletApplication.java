@@ -150,7 +150,7 @@ public class WalletApplication
 
     public boolean passcodeFreshlyEntered() {
         long delta = System.currentTimeMillis() - mPasscodeValidTimestamp;
-        return delta < (10 * 60 * 1000);
+        return delta < (5 * 60 * 1000);
     }
 
     public void setEntered() {
