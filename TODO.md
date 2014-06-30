@@ -532,6 +532,7 @@ issue w/ gradle written aar files.
       </plugin>
 
 
+Wallet32 Issue w/ P2SH Stacktrace
 ----------------------------------------------------------------
 
 06-21 19:14:59.711 I/MemoryPool(28320): [NioClientManager] [176.223.201.250]:8333: Peer announced new transaction [1] 6d803430f02fdd7d5cb659d9e0cbc978033273d04d686453bf3e1b1ede7ba02d
@@ -555,3 +556,19 @@ issue w/ gradle written aar files.
 06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
 06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
 06-21 19:14:59.731 W/System.err(28320): 	at java.lang.Thread.run(Thread.java:841)
+
+
+Married Wallet Notes
+----------------------------------------------------------------
+
+Design and implement framework for wallet cosigners:
+
+    https://code.google.com/p/bitcoinj/issues/detail?id=540
+
+Married HD wallets: introduce shadow keychain notion:
+
+    https://github.com/bitcoinj/bitcoinj/pull/99
+
+Bounties:
+
+    https://github.com/Btc4All/bitcoinj-bounties/issues?direction=asc&page=1&sort=created&state=open

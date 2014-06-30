@@ -427,6 +427,7 @@ public class PasscodeActivity extends ActionBarActivity {
         }
 
         // The passcode was valid.
+        mApp.setPasscodeValidTimestamp();
 
         switch (mAction) {
         case ACTION_LOGIN:

@@ -65,6 +65,8 @@ public class WalletApplication
 
     private WalletService	mWalletService = null;
 
+    private long		    mPasscodeValidTimestamp = 0L;
+
     private boolean			mEntered = false;	// Came through lobby?
     private boolean			mLoggedIn = false;	// Past the passcode?
 
@@ -140,6 +142,15 @@ public class WalletApplication
     public void cancelBackgroundTimeout() {
         if (mWalletService != null)
             mWalletService.cancelBackgroundTimeout();
+    }
+
+    public void setPasscodeValidTimestamp() {
+        mPasscodeValidTimestamp = System.currentTimeMillis();
+    }
+
+    public boolean passcodeFreshlyEntered() {
+        long delta = System.currentTimeMillis() - mPasscodeValidTimestamp;
+        return delta < (10 * 60 * 1000);
     }
 
     public void setEntered() {
