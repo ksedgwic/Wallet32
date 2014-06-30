@@ -66,6 +66,7 @@ pair them.
     <string name="passcode_enter">Enter Passcode</string>
     <string name="passcode_current">Enter Current Passcode</string>
     <string name="passcode_show">Show Passcode</string>
+    <string name="passcode_esthack">Estimated cost to brute force:</string>
     <string name="passcode_error_maxlen">Passcode is maximum length</string>
     <string name="passcode_errortitle">Passcode Error</string>
     <string name="passcode_empty">Empty passcodes are not supported</string>

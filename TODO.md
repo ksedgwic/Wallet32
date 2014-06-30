@@ -572,3 +572,20 @@ Married HD wallets: introduce shadow keychain notion:
 Bounties:
 
     https://github.com/Btc4All/bitcoinj-bounties/issues?direction=asc&page=1&sort=created&state=open
+
+
+Scrypt Parameters
+----------------------------------------------------------------
+
+message ScryptParameters {
+  required bytes salt = 1;                        // Salt to use in generation of the wallet password (8 bytes)
+  optional int64 n = 2 [default = 16384];         // CPU/ memory cost parameter
+  optional int32 r = 3 [default = 8];             // Block size parameter
+  optional int32 p = 4 [default = 1];             // Parallelisation parameter
+}
+
+n = 16384
+r = 8
+p = 1
+
+http://stackoverflow.com/questions/11126315/what-are-optimal-scrypt-work-factors
