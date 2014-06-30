@@ -8,8 +8,6 @@ Needed
 
 * Testnet build.
 
-* Make passcode creation estimate of brute-force difficulty.
-
 * Add transaction label support.
 
 * Non-USD fiat support.
@@ -589,3 +587,26 @@ r = 8
 p = 1
 
 http://stackoverflow.com/questions/11126315/what-are-optimal-scrypt-work-factors
+
+
+https://blog.damballa.com/archives/330
+
+100K hosts * 24 hours is $200
+
+2.314e-8 $/host-sec
+
+43 200 000 per 1$
+
+4 320 000 000 10mSec scrypt / 1$
+
+4^9 scrypt per $
+
+1 1234 5678 9012
+
+1^12 combinations
+
+
+C - cost per host second
+R - scrypt/sec per host
+
+(1*10^len) * C / R
