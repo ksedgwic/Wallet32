@@ -610,3 +610,16 @@ C - cost per host second
 R - scrypt/sec per host
 
 (1*10^len) * C / R
+
+----------------------------------------------------------------
+
+https://github.com/mosabua/maven-android-sdk-deployer
+
+----------------------------------------------------------------
+
+Merging with devrandom's changes on a different fork:
+
+    git remote add devrandom git@github.com:devrandom/bitcoinj.git
+    git fetch devrandom
+    git merge devrandom/signer
+
