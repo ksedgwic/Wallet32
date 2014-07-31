@@ -579,8 +579,9 @@ public class HDWallet {
                         for (HDAccount hda : mAccounts)
                             hda.applyInput(pubkey, value);
                     } catch (ScriptException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        // This happens if the input doesn't have a
+                        // public key (eg P2SH).  No worries in this
+                        // case, it isn't one of ours ...
                     }
                 }
             }
