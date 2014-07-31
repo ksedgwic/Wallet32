@@ -44,7 +44,6 @@ import com.bonsai.wallet32.HDWallet.HDStructVersion;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
-import com.google.bitcoin.params.MainNetParams;
 
 public class RestoreWalletActivity extends ActionBarActivity {
 
@@ -87,7 +86,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
     public void restoreWallet(View view) {
         mLogger.info("restore wallet");
 
-        NetworkParameters params = MainNetParams.get();
+        NetworkParameters params = Constants.getNetworkParameters(getApplicationContext());
 
         String filePrefix = "wallet32";
 

@@ -54,7 +54,6 @@ import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
 import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.TransactionSignature;
-import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.protobuf.ByteString;
@@ -120,7 +119,7 @@ public class WalletUtil {
         WalletApplication wallapp =
             (WalletApplication) context.getApplicationContext();
 
-        NetworkParameters params = MainNetParams.get();
+        NetworkParameters params = Constants.getNetworkParameters(context);
 
         // Generate a new seed.
         SecureRandom random = new SecureRandom();
