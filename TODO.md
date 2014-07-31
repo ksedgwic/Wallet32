@@ -4,10 +4,6 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Make additional passcode entry based on timeout instead of always.
-
-* Testnet build.
-
 * Add transaction label support.
 
 * Non-USD fiat support.

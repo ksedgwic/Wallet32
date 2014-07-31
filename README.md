@@ -125,6 +125,8 @@ Wallet32 is made possible by:
 * [blockchain.info](https://blockchain.info)
 * [Bitstamp](https://www.bitstamp.net)
 
+Data Provided by [WINKDEX&#8480;](http://www.winkdex.com/)
+
 Powered by [CoinDesk](http://www.coindesk.com/price)
 
 Donate: [14qJ7PAfKCBtcMHzQNerHwUtgt4HVSZFRL](bitcoin:14qJ7PAfKCBtcMHzQNerHwUtgt4HVSZFRL)

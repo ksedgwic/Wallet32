@@ -812,7 +812,11 @@ public class WalletService extends Service
             mRateUpdater = null;
         }
 
-        if (src.equals("COINDESKUSD")) {
+        if (src.equals("WINKDEXUSD")) {
+            mLogger.info("Switching to WinkDex USD");
+            mRateUpdater = new WinkDexRateUpdater(getApplicationContext());
+        }
+        else if (src.equals("COINDESKUSD")) {
             mLogger.info("Switching to CoinDesk BPI USD");
             mRateUpdater = new CoinDeskRateUpdater(getApplicationContext());
         }

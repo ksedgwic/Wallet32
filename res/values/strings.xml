@@ -332,14 +332,16 @@ This transaction is really large; it will take a while to process.\n
     </string-array>
 
     <string name="pref_fiat_rate_source">Fiat Rate Source</string>
-    <string name="pref_fiat_rate_sources_default">COINDESKUSD</string>
+    <string name="pref_fiat_rate_sources_default">WINKDEXUSD</string>
 
     <string-array name="pref_fiat_rate_sources_entries">
+      <item>WinkDex USD</item>
       <item>CoinDesk BPI USD</item>
       <item>BitStamp USD</item>
     </string-array>
 
     <string-array name="pref_fiat_rate_sources_values">
+      <item>WINKDEXUSD</item>
       <item>COINDESKUSD</item>
       <item>BITSTAMPUSD</item>
     </string-array>
@@ -446,6 +448,8 @@ Wallet32 is made possible by:\n
 \t<a href="https://github.com/LivotovLabs/zxscanlib">ZXScanLib</a>\n
 \t<a href="https://blockchain.info">blockchain.info</a>\n
 \t<a href="https://www.bitstamp.net">Bitstamp</a>\n
+\n
+Data Provided by <a href="http://www.winkdex.com/">WINKDEX<sup>SM</sup></a>\n
 \n
 Powered by <a href="http://www.coindesk.com/price/">CoinDesk</a>\n
 \n
