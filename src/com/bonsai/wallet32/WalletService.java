@@ -518,7 +518,7 @@ public class WalletService extends Service
                         mLogger.info(String.format("adding %d keys",
                                                    keys.size()));
                         wallet().addKeys(keys);
-
+                        peerGroup().setFastCatchupTimeSecs(scanTime);
                         // Do we have enough margin on all our chains?
                         // Add keys to chains which don't have enough
                         // unused addresses at the end.
