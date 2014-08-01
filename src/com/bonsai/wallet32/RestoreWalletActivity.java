@@ -202,6 +202,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
         WalletApplication wallapp = (WalletApplication) getApplicationContext();
 
         // Setup a wallet with the restore seed.
+        boolean isCreate = false;
         HDWallet hdwallet = new HDWallet(wallapp,
         							     params,
                                          wallapp.mKeyCrypter,
@@ -210,7 +211,8 @@ public class RestoreWalletActivity extends ActionBarActivity {
                                          passphrase,
                                          numaccts,
                                          bip39version,
-                                         hdsv);
+                                         hdsv,
+                                         isCreate);
         hdwallet.persist(wallapp);
 
         // Spin up the WalletService.

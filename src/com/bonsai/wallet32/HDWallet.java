@@ -212,8 +212,7 @@ public class HDWallet {
         try {
             // See WORKAROUND below.
             if (!walletNode.has("workaroundPrivKey")) {
-                mWorkaroundKey = new ECKey();
-                mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
+                mWorkaroundKey = null;
             } else {
                 byte[] privKeyBytes =
                     Base58.decode(walletNode.getString("workaroundPrivKey"));
@@ -329,8 +328,10 @@ public class HDWallet {
         try {
             JSONObject obj = new JSONObject();
 
-            obj.put("workaroundPrivKey",
-                    Base58.encode(mWorkaroundKey.getPrivKeyBytes()));
+            if (mWorkaroundKey != null) {
+                obj.put("workaroundPrivKey",
+                        Base58.encode(mWorkaroundKey.getPrivKeyBytes()));
+            }
 
             obj.put("seed", Base58.encode(mWalletSeed));
 
@@ -383,7 +384,8 @@ public class HDWallet {
                     String passphrase,
                     int numAccounts,
                     MnemonicCodeX.Version bip39Version,
-                    HDStructVersion hdsv) {
+                    HDStructVersion hdsv,
+                    boolean isCreate) {
         mParams = params;
         mKeyCrypter = keyCrypter;
         mAesKey = aesKey;
@@ -398,8 +400,10 @@ public class HDWallet {
         // quick catchup.  Create a real key (that we ignore) as a
         // workaround.
         //
-        mWorkaroundKey = new ECKey();
-        mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
+        if (!isCreate) {
+            mWorkaroundKey = new ECKey();
+            mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
+        }
 
         switch (mBIP39Version) {
         case V0_5:
@@ -516,7 +520,8 @@ public class HDWallet {
     }
 
     public void gatherAllKeys(long creationTime, List<ECKey> keys) {
-        keys.add(mWorkaroundKey.encrypt(mKeyCrypter, mAesKey));
+        if (mWorkaroundKey != null)
+            keys.add(mWorkaroundKey.encrypt(mKeyCrypter, mAesKey));
         for (HDAccount acct : mAccounts)
             acct.gatherAllKeys(mKeyCrypter, mAesKey, creationTime, keys);
     }

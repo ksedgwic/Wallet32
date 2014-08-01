@@ -135,6 +135,7 @@ public class WalletUtil {
         MnemonicCodeX.Version bip39version = MnemonicCodeX.Version.V0_6;
 
         // Setup a wallet with the seed.
+        boolean isCreate = true;
         HDWallet hdwallet = new HDWallet(wallapp,
         								 params,
                                          wallapp.mKeyCrypter,
@@ -143,7 +144,8 @@ public class WalletUtil {
                                          passphrase,
                                          numAccounts,
                                          bip39version,
-                                         HDWallet.HDStructVersion.HDSV_STDV1);
+                                         HDWallet.HDStructVersion.HDSV_STDV1,
+                                         isCreate);
         hdwallet.persist(wallapp);
     }
 
