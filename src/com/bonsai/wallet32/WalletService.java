@@ -65,6 +65,7 @@ import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
@@ -518,12 +519,16 @@ public class WalletService extends Service
                         mLogger.info(String.format("adding %d keys",
                                                    keys.size()));
                         wallet().addKeys(keys);
-                        peerGroup().setFastCatchupTimeSecs(scanTime);
+
                         // Do we have enough margin on all our chains?
                         // Add keys to chains which don't have enough
                         // unused addresses at the end.
                         //
                         mHDWallet.ensureMargins(wallet());
+
+                        peerGroup().setFastCatchupTimeSecs((scanTime == 0
+                                ? mParams.getGenesisBlock().getTimeSeconds() : scanTime));
+                        peerGroup().setBloomFilterFalsePositiveRate(0.000001);
 
                         // We don't need to check for HDChain.maxSafeExtend()
                         // here because we are about to scan anyway.
@@ -580,6 +585,7 @@ public class WalletService extends Service
 
         @Override
         protected void onPostExecute(Integer maxExtended) {
+            mKit.peerGroup().setBloomFilterFalsePositiveRate(PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
 
             mWakeLock.release();
             mLogger.info("wakelock released");
