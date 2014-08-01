@@ -901,10 +901,10 @@ public class WalletService extends Service
             return;
 		}
 
-        mLogger.info("removing spvchain file");
-        File chainFile =
-            new File(mContext.getFilesDir(),
-                     mApp.getWalletPrefix() + ".spvchain");
+        File dir = mApp.getWalletDir();
+        String spvpath = mApp.getWalletPrefix() + ".spvchain";
+        mLogger.info("removing spvchain file " + dir + spvpath);
+        File chainFile = new File(dir, spvpath);
         if (!chainFile.delete())
             mLogger.error("delete of spvchain file failed");
 
