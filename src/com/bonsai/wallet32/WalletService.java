@@ -514,7 +514,7 @@ public class WalletService extends Service
                         // WalletAppKit.
                         //
                         ArrayList<ECKey> keys = new ArrayList<ECKey>();
-                        mHDWallet.gatherAllKeys(scanTime, keys);
+                        mHDWallet.gatherAllKeys(HDAddress.EPOCH, keys);
                         mLogger.info(String.format("adding %d keys",
                                                    keys.size()));
                         wallet().addKeys(keys);
