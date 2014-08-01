@@ -108,7 +108,7 @@ About Wallet32
 
 Wallet32
 
-Version: 0.3.10 (29-Jun-2014)
+Version: 0.3.11 (31-Jul-2014)
 
 Source:  https://github.com/ksedgwic/Wallet32
 
