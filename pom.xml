@@ -8,7 +8,7 @@
   <artifactId>Wallet32</artifactId>
   <packaging>apk</packaging>
   <name>Wallet32</name>
-  <version>0.3.11</version>
+  <version>0.3.12</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
