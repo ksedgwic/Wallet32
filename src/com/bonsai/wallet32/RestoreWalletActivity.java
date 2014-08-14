@@ -112,7 +112,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                 showErrorDialog(mRes.getString(R.string.restore_badhexvalue));
                 return;
             }
-            if (seed.length != 16) {
+            if (seed.length % 8 > 0) {
                 showErrorDialog(mRes.getString(R.string.restore_badhexlength));
                 return;
             }
