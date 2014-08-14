@@ -528,7 +528,7 @@ public class WalletService extends Service
 
                         peerGroup().setFastCatchupTimeSecs((scanTime == 0
                                 ? mParams.getGenesisBlock().getTimeSeconds() : scanTime));
-                        peerGroup().setBloomFilterFalsePositiveRate(0.000001);
+                        // peerGroup().setBloomFilterFalsePositiveRate(0.000001);
 
                         // We don't need to check for HDChain.maxSafeExtend()
                         // here because we are about to scan anyway.
@@ -585,7 +585,7 @@ public class WalletService extends Service
 
         @Override
         protected void onPostExecute(Integer maxExtended) {
-            mKit.peerGroup().setBloomFilterFalsePositiveRate(PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
+            // mKit.peerGroup().setBloomFilterFalsePositiveRate(PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
 
             mWakeLock.release();
             mLogger.info("wakelock released");
