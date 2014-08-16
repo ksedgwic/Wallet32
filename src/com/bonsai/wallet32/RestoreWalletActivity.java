@@ -30,13 +30,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
@@ -51,15 +54,42 @@ public class RestoreWalletActivity extends ActionBarActivity {
         LoggerFactory.getLogger(RestoreWalletActivity.class);
 
     private Resources			mRes;
+    private SharedPreferences	mPrefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         mRes = getApplicationContext().getResources();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restore_wallet);
 
         EditText edittext = (EditText) findViewById(R.id.numaccounts);
         edittext.setText("2");	// By default restore 2 accounts.
+
+        // Set the state of the reduce false positives checkbox.
+        boolean reduceFalsePositives =
+            mPrefs.getBoolean("pref_reduceBloomFalsePositives", false);
+        CheckBox chkbx = (CheckBox) findViewById(R.id.reduce_false_positives);
+        chkbx.setChecked(reduceFalsePositives);
+        chkbx.setOnCheckedChangeListener
+            (new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        SharedPreferences.Editor editor = mPrefs.edit();
+                        editor.putBoolean("pref_reduceBloomFalsePositives",
+                                          isChecked);
+                        editor.commit();
+                    }
+                });
+
+        // Hide the reduce bloom false positives if experimental off.
+        Boolean isExperimental =
+            mPrefs.getBoolean(SettingsActivity.KEY_EXPERIMENTAL, false);
+        if (!isExperimental) {
+            findViewById(R.id.reduce_false_positives).setVisibility(View.GONE);
+            findViewById(R.id.reduce_space).setVisibility(View.GONE);
+        }
 	}
 
 	@Override
@@ -86,7 +116,8 @@ public class RestoreWalletActivity extends ActionBarActivity {
     public void restoreWallet(View view) {
         mLogger.info("restore wallet");
 
-        NetworkParameters params = Constants.getNetworkParameters(getApplicationContext());
+        NetworkParameters params =
+            Constants.getNetworkParameters(getApplicationContext());
 
         String filePrefix = "wallet32";
 

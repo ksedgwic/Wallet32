@@ -266,6 +266,10 @@ public class SettingsActivity extends PreferenceActivity {
             pref = prefScreen.findPreference("pref_spendUnconfirmed");
             prefScreen.removePreference(pref);
 
+            // Remove the Reduced Bloom False Positives option.
+            pref = prefScreen.findPreference("pref_reduceBloomFalsePositives");
+            prefScreen.removePreference(pref);
+
             // Remove the Add Wallet option.
             pref = prefScreen.findPreference("pref_addWallet");
             prefScreen.removePreference(pref);

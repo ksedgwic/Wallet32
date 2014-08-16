@@ -131,6 +131,7 @@ public class WalletService extends Service
     private SetupWalletTask		mTask;
     private Context				mContext;
     private Resources			mRes;
+    private SharedPreferences	mPrefs;
     private double				mPercentDone = 0.0;
     private int					mBlocksToGo;
     private Date				mScanDate;
@@ -408,10 +409,8 @@ public class WalletService extends Service
                 }
             };
 
-        SharedPreferences sharedPref =
-            PreferenceManager.getDefaultSharedPreferences(this);
         String delaystr = 
-            sharedPref.getString(SettingsActivity.KEY_BACKGROUND_TIMEOUT, "600");
+            mPrefs.getString(SettingsActivity.KEY_BACKGROUND_TIMEOUT, "600");
         long delay;
         try {
             delay = Long.parseLong(delaystr);
@@ -528,7 +527,12 @@ public class WalletService extends Service
 
                         peerGroup().setFastCatchupTimeSecs((scanTime == 0
                                 ? mParams.getGenesisBlock().getTimeSeconds() : scanTime));
-                        // peerGroup().setBloomFilterFalsePositiveRate(0.000001);
+
+                        if (mPrefs.getBoolean("pref_reduceBloomFalsePositives",
+                                              false)) {
+                            mLogger.info("reducing bloom false positives");
+                            peerGroup().setBloomFilterFalsePositiveRate(0.000001);
+                        }
 
                         // We don't need to check for HDChain.maxSafeExtend()
                         // here because we are about to scan anyway.
@@ -585,7 +589,9 @@ public class WalletService extends Service
 
         @Override
         protected void onPostExecute(Integer maxExtended) {
-            // mKit.peerGroup().setBloomFilterFalsePositiveRate(PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
+            // Restore default (might have been reduced ...)
+            mLogger.info("setting bloom filter false positives to default");
+            mKit.peerGroup().setBloomFilterFalsePositiveRate(PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
 
             mWakeLock.release();
             mLogger.info("wakelock released");
@@ -632,14 +638,14 @@ public class WalletService extends Service
             (PowerManager) getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, lockName);
 
-        SharedPreferences sharedPref =
-            PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         String fiatRateSource =
-            sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
+            mPrefs.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
         setFiatRateSource(fiatRateSource);
 
         // Register for future preference changes.
-        sharedPref.registerOnSharedPreferenceChangeListener(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         // Register with the WalletApplication.
         mApp.setWalletService(this);
@@ -696,10 +702,8 @@ public class WalletService extends Service
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                           String key) {
         if (key.equals(SettingsActivity.KEY_FIAT_RATE_SOURCE)) {
-            SharedPreferences sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(this);
             String fiatRateSource =
-                sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
+                mPrefs.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
             setFiatRateSource(fiatRateSource);
         }
     }
