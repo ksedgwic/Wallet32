@@ -17,8 +17,14 @@
 *.apk
 *.class
 *.dex
+.idea/
+/.gradle
 /ID
+/Wallet32.iml
+/build
+/gradlew
+/gradlew.bat
+/target
 bin/
 gen/
 local.properties
-/target

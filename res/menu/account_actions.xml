@@ -1,8 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
-
-    <item android:id="@+id/action_export_xpub"
-          android:title="@string/action_export_xpub"
-          yourapp:showAsAction="never" />
-
-</menu>
