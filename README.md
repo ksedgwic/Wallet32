@@ -38,7 +38,7 @@ pre-release version.
 
 Instructions for installing the alpha version are in the first post ...
 
-Building Wallet32 with Gradle
+Building Wallet32
 ===============
 
 ### Install zxscanlib to local maven repository
@@ -94,13 +94,21 @@ Building Wallet32 with Gradle
 
     gradle uploadArchives     
 
-### Build Wallet32
+### Build Wallet32 with Gradle
 
     git clone git@github.com:ksedgwic/Wallet32.git
 
     cd Wallet32
 
     ./gradlew clean app:assembleDebug
+
+### Build Wallet32 with Android Studio
+
+    git clone git@github.com:ksedgwic/Wallet32.git
+
+    # Run Android Studio
+
+    # "Import Project", select Wallet32 top-level directory.
 
 
 About Wallet32

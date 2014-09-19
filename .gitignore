@@ -23,5 +23,5 @@
 bin/
 gen/
 local.properties
-app/app.iml
+*.iml
 app/build
