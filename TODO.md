@@ -26,7 +26,7 @@ Needed
 Checklist
 ----------------------------------------------------------------
 
-Update version in pom.xm
+Update versions in app/build.gradle
 
 Update versions in AndroidManifest.xml
 
@@ -36,9 +36,9 @@ Update version, date, in res/values/strings.xml.
 
 Commit, tag, git push --tag
 
-mkmvnrelease
+Generate signed apk in Android Studio.
 
-scp target/Wallet32.apk sl0:htdocs/ken/public/Wallet32.apk
+scp app/app-release.apk sl0:htdocs/ken/public/Wallet32.apk
 
 Smoke test downloaded
 
