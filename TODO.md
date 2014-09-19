@@ -619,3 +619,7 @@ Merging with devrandom's changes on a different fork:
     git fetch devrandom
     git merge devrandom/signer
 
+----------------------------------------------------------------
+
+    ./gradlew desktop:run
+    ./gradlew android:installDebug android:

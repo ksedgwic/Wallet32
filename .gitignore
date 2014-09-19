@@ -1,8 +1,3 @@
-
-
-
-
-
 # # Eclipse project files
 # .classpath
 # .project
@@ -28,3 +23,5 @@
 bin/
 gen/
 local.properties
+app/app.iml
+app/build
