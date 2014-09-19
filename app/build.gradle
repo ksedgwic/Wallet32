@@ -5,11 +5,11 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.bonsai.wallet32.WalletApplication"
+        applicationId "com.bonsai.wallet32"
         minSdkVersion 9
         targetSdkVersion 16
-        versionCode 1
-        versionName "1.0"
+        versionCode 40
+        versionName "0.3.13"
     }
     buildTypes {
         release {

@@ -622,4 +622,8 @@ Merging with devrandom's changes on a different fork:
 ----------------------------------------------------------------
 
     ./gradlew desktop:run
-    ./gradlew android:installDebug android:
+    ./gradlew android:installDebug android:run
+
+    ./gradlew android:AssembleDebug android:
+
+    /usr/local/android-studio-studio/bin/studio.sh
