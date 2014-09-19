@@ -108,7 +108,7 @@ Building Wallet32
 
     # Run Android Studio
 
-    # "Open Project", select Wallet32 top-level directory.
+    # Import Project ...", select Wallet32 top-level directory.
 
 
 About Wallet32
