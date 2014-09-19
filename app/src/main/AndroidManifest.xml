@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
     package="com.bonsai.wallet32"
-    android:versionCode="40"
-    android:versionName="0.3.13" >
+    android:versionCode="41"
+    android:versionName="0.3.14" >
 
     <uses-sdk
         android:minSdkVersion="9"
