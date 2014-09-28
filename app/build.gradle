@@ -8,7 +8,7 @@ android {
         applicationId "com.bonsai.wallet32"
         minSdkVersion 9
         targetSdkVersion 16
-        versionCode 41
+        versionCode 42
         versionName "0.3.14"
     }
     buildTypes {
