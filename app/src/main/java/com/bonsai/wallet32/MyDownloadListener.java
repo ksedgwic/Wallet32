@@ -22,9 +22,9 @@ package com.bonsai.wallet32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.bitcoin.core.AbstractPeerEventListener;
-import com.google.bitcoin.core.Block;
-import com.google.bitcoin.core.Peer;
+import org.bitcoinj.core.AbstractPeerEventListener;
+import org.bitcoinj.core.Block;
+import org.bitcoinj.core.Peer;
 
 import java.text.DateFormat;
 import java.util.Date;

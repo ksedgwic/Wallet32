@@ -30,8 +30,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.bitcoin.core.Coin;
-import com.google.bitcoin.uri.BitcoinURI;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.uri.BitcoinURI;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;

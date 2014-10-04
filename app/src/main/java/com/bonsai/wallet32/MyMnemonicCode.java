@@ -17,8 +17,12 @@ package com.bonsai.wallet32;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
-import com.google.bitcoin.crypto.MnemonicCode;
+import com.google.common.base.Joiner;
+
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.PBKDF2SHA512;
 
 // This derived version of MnemonicCode supports older wallets that
 // used a different number of rounds.

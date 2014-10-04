@@ -29,7 +29,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.bitcoin.crypto.MnemonicException;
+import org.bitcoinj.crypto.MnemonicException;
 
 public class ViewSeedActivity extends BaseWalletActivity {
 

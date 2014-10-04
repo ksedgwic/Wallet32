@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.bitcoin.core.NetworkParameters;
+import org.bitcoinj.core.NetworkParameters;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

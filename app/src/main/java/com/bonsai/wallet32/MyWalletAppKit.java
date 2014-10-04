@@ -17,12 +17,12 @@
 
 package com.bonsai.wallet32;
 
-import com.google.bitcoin.core.*;
-import com.google.bitcoin.net.discovery.DnsDiscovery;
-import com.google.bitcoin.store.BlockStoreException;
-import com.google.bitcoin.store.SPVBlockStore;
-import com.google.bitcoin.store.WalletProtobufSerializer;
-import com.google.bitcoin.wallet.KeyChainGroup;
+import org.bitcoinj.core.*;
+import org.bitcoinj.net.discovery.DnsDiscovery;
+import org.bitcoinj.store.BlockStoreException;
+import org.bitcoinj.store.SPVBlockStore;
+import org.bitcoinj.store.WalletProtobufSerializer;
+import org.bitcoinj.wallet.KeyChainGroup;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.AbstractIdleService;
 import com.google.common.util.concurrent.MoreExecutors;

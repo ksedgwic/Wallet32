@@ -44,8 +44,8 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.bonsai.wallet32.HDWallet.HDStructVersion;
-import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.crypto.MnemonicException;
+import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.MnemonicException;
 
 public class RestoreWalletActivity extends ActionBarActivity {
 

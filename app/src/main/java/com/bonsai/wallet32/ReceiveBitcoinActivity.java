@@ -35,7 +35,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.google.bitcoin.core.Address;
+import org.bitcoinj.core.Address;
 
 public class ReceiveBitcoinActivity extends BaseWalletActivity {
 
