@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
 
 public class ViewSeedActivity extends BaseWalletActivity {
@@ -37,7 +36,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
     private static Logger mLogger =
         LoggerFactory.getLogger(ViewSeedActivity.class);
 
-    private MnemonicCodeX	mCoder;
+    private MyMnemonicCode	mCoder;
 
     private boolean			mSeedFetched;
 
@@ -47,7 +46,7 @@ public class ViewSeedActivity extends BaseWalletActivity {
         try {
             InputStream wis = getApplicationContext()
                 .getAssets().open("wordlist/english.txt");
-            mCoder = new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
+            mCoder = new MyMnemonicCode(wis, MyMnemonicCode.BIP39_ENGLISH_SHA256);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -66,6 +66,7 @@ import com.google.bitcoin.core.Coin;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.InsufficientMoneyException;
 import com.google.bitcoin.core.NetworkParameters;
+import com.google.bitcoin.core.PeerGroup;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionBroadcaster;
@@ -78,8 +79,6 @@ import com.google.bitcoin.core.Wallet;
 import com.google.bitcoin.core.Wallet.BalanceType;
 import com.google.bitcoin.core.WrongNetworkException;
 import com.google.bitcoin.crypto.KeyCrypter;
-import com.google.bitcoin.crypto.MnemonicCodeX;
-import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
 import com.google.common.util.concurrent.FutureCallback;
@@ -132,6 +131,7 @@ public class WalletService extends Service
     private SetupWalletTask		mTask;
     private Context				mContext;
     private Resources			mRes;
+    private SharedPreferences	mPrefs;
     private double				mPercentDone = 0.0;
     private int					mBlocksToGo;
     private Date				mScanDate;
@@ -409,10 +409,8 @@ public class WalletService extends Service
                 }
             };
 
-        SharedPreferences sharedPref =
-            PreferenceManager.getDefaultSharedPreferences(this);
         String delaystr = 
-            sharedPref.getString(SettingsActivity.KEY_BACKGROUND_TIMEOUT, "600");
+            mPrefs.getString(SettingsActivity.KEY_BACKGROUND_TIMEOUT, "600");
         long delay;
         try {
             delay = Long.parseLong(delaystr);
@@ -462,7 +460,7 @@ public class WalletService extends Service
 
             mLogger.info("getting network parameters");
 
-            mParams = MainNetParams.get();
+            mParams = Constants.getNetworkParameters(getApplicationContext());
 
             // Try to restore existing wallet.
             mHDWallet = null;
@@ -493,7 +491,7 @@ public class WalletService extends Service
             InputStream chkpntis = null;
             if (scanTime != 0) {
                 try {
-                    chkpntis = getAssets().open("checkpoints");
+                    chkpntis = getAssets().open(Constants.CHECKPOINTS_FILENAME);
                 } catch (IOException e) {
                     chkpntis = null;
                 }
@@ -515,7 +513,7 @@ public class WalletService extends Service
                         // WalletAppKit.
                         //
                         ArrayList<ECKey> keys = new ArrayList<ECKey>();
-                        mHDWallet.gatherAllKeys(scanTime, keys);
+                        mHDWallet.gatherAllKeys(HDAddress.EPOCH, keys);
                         mLogger.info(String.format("adding %d keys",
                                                    keys.size()));
                         int nAdded =
@@ -527,6 +525,15 @@ public class WalletService extends Service
                         // unused addresses at the end.
                         //
                         mHDWallet.ensureMargins(wallet());
+
+                        peerGroup().setFastCatchupTimeSecs((scanTime == 0
+                                ? mParams.getGenesisBlock().getTimeSeconds() : scanTime));
+
+                        if (mPrefs.getBoolean("pref_reduceBloomFalsePositives",
+                                              false)) {
+                            mLogger.info("reducing bloom false positives");
+                            peerGroup().setBloomFilterFalsePositiveRate(0.000001);
+                        }
 
                         // We don't need to check for HDChain.maxSafeExtend()
                         // here because we are about to scan anyway.
@@ -583,6 +590,9 @@ public class WalletService extends Service
 
         @Override
         protected void onPostExecute(Integer maxExtended) {
+            // Restore default (might have been reduced ...)
+            mLogger.info("setting bloom filter false positives to default");
+            mKit.peerGroup().setBloomFilterFalsePositiveRate(PeerGroup.DEFAULT_BLOOM_FILTER_FP_RATE);
 
             mWakeLock.release();
             mLogger.info("wakelock released");
@@ -629,14 +639,14 @@ public class WalletService extends Service
             (PowerManager) getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, lockName);
 
-        SharedPreferences sharedPref =
-            PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         String fiatRateSource =
-            sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
+            mPrefs.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
         setFiatRateSource(fiatRateSource);
 
         // Register for future preference changes.
-        sharedPref.registerOnSharedPreferenceChangeListener(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
         // Register with the WalletApplication.
         mApp.setWalletService(this);
@@ -693,10 +703,8 @@ public class WalletService extends Service
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                           String key) {
         if (key.equals(SettingsActivity.KEY_FIAT_RATE_SOURCE)) {
-            SharedPreferences sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(this);
             String fiatRateSource =
-                sharedPref.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
+                mPrefs.getString(SettingsActivity.KEY_FIAT_RATE_SOURCE, "");
             setFiatRateSource(fiatRateSource);
         }
     }
@@ -782,7 +790,7 @@ public class WalletService extends Service
         return mHDWallet.getHDStructVersion();
     }
 
-    public MnemonicCodeX.Version getBIP39Version() {
+    public MyMnemonicCode.Version getBIP39Version() {
         return mHDWallet.getBIP39Version();
     }
 
@@ -815,7 +823,11 @@ public class WalletService extends Service
             mRateUpdater = null;
         }
 
-        if (src.equals("COINDESKUSD")) {
+        if (src.equals("WINKDEXUSD")) {
+            mLogger.info("Switching to WinkDex USD");
+            mRateUpdater = new WinkDexRateUpdater(getApplicationContext());
+        }
+        else if (src.equals("COINDESKUSD")) {
             mLogger.info("Switching to CoinDesk BPI USD");
             mRateUpdater = new CoinDeskRateUpdater(getApplicationContext());
         }
@@ -901,10 +913,10 @@ public class WalletService extends Service
             return;
 		}
 
-        mLogger.info("removing spvchain file");
-        File chainFile =
-            new File(mContext.getFilesDir(),
-                     mApp.getWalletPrefix() + ".spvchain");
+        File dir = mApp.getWalletDir();
+        String spvpath = mApp.getWalletPrefix() + ".spvchain";
+        mLogger.info("removing spvchain file " + dir + spvpath);
+        File chainFile = new File(dir, spvpath);
         if (!chainFile.delete())
             mLogger.error("delete of spvchain file failed");
 

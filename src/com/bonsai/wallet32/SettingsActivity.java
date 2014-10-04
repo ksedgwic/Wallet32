@@ -137,11 +137,18 @@ public class SettingsActivity extends PreferenceActivity {
                 (new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
-                            Intent intent =
-                                new Intent(mThis, PasscodeActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("action", "viewseed");
-                            intent.putExtras(bundle);
+                            Intent intent;
+                            if (mApp.passcodeFreshlyEntered()) {
+                                intent = new Intent(mThis,
+                                                    ViewSeedActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            } else {
+                                intent = new Intent(mThis,
+                                                    PasscodeActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("action", "viewseed");
+                                intent.putExtras(bundle);
+                            }
                             startActivity(intent);
                             finish();	// All done here...
                             return true;
@@ -156,11 +163,18 @@ public class SettingsActivity extends PreferenceActivity {
                 (new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
-                            Intent intent =
-                                new Intent(mThis, PasscodeActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("action", "showpairing");
-                            intent.putExtras(bundle);
+                            Intent intent;
+                            if (mApp.passcodeFreshlyEntered()) {
+                                intent = new Intent(mThis,
+                                                    ShowPairingActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            } else {                            
+                                intent = new Intent(mThis,
+                                                    PasscodeActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("action", "showpairing");
+                                intent.putExtras(bundle);
+                            }
                             startActivity(intent);
                             finish();	// All done here...
                             return true;
@@ -250,6 +264,10 @@ public class SettingsActivity extends PreferenceActivity {
 
             // Remove the Unconfirmed Balances Spendable option.
             pref = prefScreen.findPreference("pref_spendUnconfirmed");
+            prefScreen.removePreference(pref);
+
+            // Remove the Reduced Bloom False Positives option.
+            pref = prefScreen.findPreference("pref_reduceBloomFalsePositives");
             prefScreen.removePreference(pref);
 
             // Remove the Add Wallet option.

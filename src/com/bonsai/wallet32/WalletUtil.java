@@ -52,9 +52,7 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
-import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.TransactionSignature;
-import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.protobuf.ByteString;
@@ -120,7 +118,7 @@ public class WalletUtil {
         WalletApplication wallapp =
             (WalletApplication) context.getApplicationContext();
 
-        NetworkParameters params = MainNetParams.get();
+        NetworkParameters params = Constants.getNetworkParameters(context);
 
         // Generate a new seed.
         SecureRandom random = new SecureRandom();
@@ -133,7 +131,7 @@ public class WalletUtil {
         int numAccounts = 2;
 
         // New wallets are version V0_6.
-        MnemonicCodeX.Version bip39version = MnemonicCodeX.Version.V0_6;
+        MyMnemonicCode.Version bip39version = MyMnemonicCode.Version.V0_6;
 
         // Setup a wallet with the seed.
         HDWallet hdwallet = new HDWallet(wallapp,

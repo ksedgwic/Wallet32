@@ -165,6 +165,13 @@
     		android:minWidth="0dp"
     		/>
 
+	    <!-- Stretchy Horizontal Spacer -->
+	    <View
+    		android:layout_width="0dp"
+    		android:layout_height="fill_parent"
+    		android:layout_weight="2"
+    		/>
+
 	  </LinearLayout>
 
 	</TableRow>
@@ -278,6 +285,13 @@
     		android:textAppearance="@android:style/TextAppearance.Small"
     		android:minHeight="0dp"
     		android:minWidth="0dp"
+    		/>
+
+	    <!-- Stretchy Horizontal Spacer -->
+	    <View
+    		android:layout_width="0dp"
+    		android:layout_height="fill_parent"
+    		android:layout_weight="2"
     		/>
 
 	  </LinearLayout>

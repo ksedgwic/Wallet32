@@ -34,6 +34,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -115,6 +116,27 @@ public class LobbyActivity extends Activity {
         updateWalletTable(walletList);
 
         mLogger.info("LobbyActivity resumed");
+    }
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.lobby_actions, menu);
+		return true;
+	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        Intent intent;
+        switch (item.getItemId()) {
+        case R.id.action_about:
+            intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     public void updateWalletTable(List<WalletApplication.WalletEntry> walletList) {
@@ -298,11 +320,4 @@ public class LobbyActivity extends Activity {
             startActivity(intent);
         }
     }
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.lobby_actions, menu);
-		return true;
-	}
 }

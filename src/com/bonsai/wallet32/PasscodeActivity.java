@@ -162,6 +162,7 @@ public class PasscodeActivity extends ActionBarActivity {
             mState = State.PASSCODE_ENTER;
             mChangePasscode = false;
             msgtv.setText(R.string.passcode_enter);
+            show_esthack(false);
             break;
 
             // These actions directly create a passcode.
@@ -171,6 +172,7 @@ public class PasscodeActivity extends ActionBarActivity {
             mState = State.PASSCODE_CREATE;
             mChangePasscode = false;
             msgtv.setText(R.string.passcode_create);
+            show_esthack(true);
             break;
 
             // This action verifies the passcode and then creates a
@@ -179,6 +181,7 @@ public class PasscodeActivity extends ActionBarActivity {
             mState = State.PASSCODE_ENTER;
             mChangePasscode = true;
             msgtv.setText(R.string.passcode_current);
+            show_esthack(false);
             break;
         }
 
@@ -253,6 +256,16 @@ public class PasscodeActivity extends ActionBarActivity {
             return true;
         default:
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void show_esthack(boolean show) {
+        if (show) {
+            findViewById(R.id.esthack_spacer).setVisibility(View.VISIBLE);
+            findViewById(R.id.esthack_pair).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.esthack_spacer).setVisibility(View.GONE);
+            findViewById(R.id.esthack_pair).setVisibility(View.GONE);
         }
     }
 
@@ -427,6 +440,7 @@ public class PasscodeActivity extends ActionBarActivity {
         }
 
         // The passcode was valid.
+        mApp.setPasscodeValidTimestamp();
 
         switch (mAction) {
         case ACTION_LOGIN:
@@ -453,6 +467,7 @@ public class PasscodeActivity extends ActionBarActivity {
             TextView msgtv = (TextView) findViewById(R.id.message);
             msgtv.setText(R.string.passcode_create);
             setPasscode("");
+            show_esthack(true);
             return;
 
         case ACTION_VIEWSEED:
@@ -496,6 +511,21 @@ public class PasscodeActivity extends ActionBarActivity {
         }
         TextView pctv = (TextView) findViewById(R.id.passcode);
         pctv.setText(bldr.toString());
+
+        // Update the estimated hack cost.
+        String esthackstr = "$" + String.format("%.2f", esthack(len));
+        TextView ehtv = (TextView) findViewById(R.id.esthack_value);
+        ehtv.setText(esthackstr);
+    }
+
+    private double esthack(int len) {
+        // (1*10^len) * C / R
+
+        double nscrypt = Math.pow(10.0, len);
+        double cost_per_host_second = 2.314e-8;
+        double scrypt_per_host_second = 20;
+
+        return nscrypt * cost_per_host_second / scrypt_per_host_second;
     }
 
     public static class MyDialogFragment extends DialogFragment {

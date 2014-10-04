@@ -21,20 +21,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.params.MainNetParams;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import eu.livotov.zxscan.ZXScanHelper;
@@ -45,12 +48,39 @@ public class PairWalletActivity extends ActionBarActivity {
         LoggerFactory.getLogger(PairWalletActivity.class);
 
     private Resources			mRes;
+    private SharedPreferences	mPrefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         mRes = getApplicationContext().getResources();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pair_wallet);
+
+        // Set the state of the reduce false positives checkbox.
+        boolean reduceFalsePositives =
+            mPrefs.getBoolean("pref_reduceBloomFalsePositives", false);
+        CheckBox chkbx = (CheckBox) findViewById(R.id.reduce_false_positives);
+        chkbx.setChecked(reduceFalsePositives);
+        chkbx.setOnCheckedChangeListener
+            (new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        SharedPreferences.Editor editor = mPrefs.edit();
+                        editor.putBoolean("pref_reduceBloomFalsePositives",
+                                          isChecked);
+                        editor.commit();
+                    }
+                });
+
+        // Hide the reduce bloom false positives if experimental off.
+        Boolean isExperimental =
+            mPrefs.getBoolean(SettingsActivity.KEY_EXPERIMENTAL, false);
+        if (!isExperimental) {
+            findViewById(R.id.reduce_false_positives).setVisibility(View.GONE);
+            findViewById(R.id.reduce_space).setVisibility(View.GONE);
+        }
 
 		if (savedInstanceState == null) {
 			final Intent intent = this.getIntent();
@@ -143,7 +173,7 @@ public class PairWalletActivity extends ActionBarActivity {
 
             WalletApplication wallapp =
                 (WalletApplication) getApplicationContext();
-            NetworkParameters params = MainNetParams.get();
+            NetworkParameters params = Constants.getNetworkParameters(wallapp);
             String filePrefix = "wallet32";
 
             // Setup a wallet with the restore seed.

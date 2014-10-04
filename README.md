@@ -108,7 +108,7 @@ About Wallet32
 
 Wallet32
 
-Version: 0.3.9 (21-Jun-2014)
+Version: 0.3.13 (15-Aug-2014)
 
 Source:  https://github.com/ksedgwic/Wallet32
 
@@ -124,6 +124,8 @@ Wallet32 is made possible by:
 * [ZXScanLib](https://github.com/LivotovLabs/zxscanlib)
 * [blockchain.info](https://blockchain.info)
 * [Bitstamp](https://www.bitstamp.net)
+
+Data Provided by [WINKDEX&#8480;](http://www.winkdex.com/)
 
 Powered by [CoinDesk](http://www.coindesk.com/price)
 

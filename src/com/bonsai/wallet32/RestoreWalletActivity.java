@@ -30,21 +30,22 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.bonsai.wallet32.HDWallet.HDStructVersion;
 import com.google.bitcoin.core.NetworkParameters;
-import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.crypto.MnemonicException;
-import com.google.bitcoin.params.MainNetParams;
 
 public class RestoreWalletActivity extends ActionBarActivity {
 
@@ -52,15 +53,42 @@ public class RestoreWalletActivity extends ActionBarActivity {
         LoggerFactory.getLogger(RestoreWalletActivity.class);
 
     private Resources			mRes;
+    private SharedPreferences	mPrefs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         mRes = getApplicationContext().getResources();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restore_wallet);
 
         EditText edittext = (EditText) findViewById(R.id.numaccounts);
         edittext.setText("2");	// By default restore 2 accounts.
+
+        // Set the state of the reduce false positives checkbox.
+        boolean reduceFalsePositives =
+            mPrefs.getBoolean("pref_reduceBloomFalsePositives", false);
+        CheckBox chkbx = (CheckBox) findViewById(R.id.reduce_false_positives);
+        chkbx.setChecked(reduceFalsePositives);
+        chkbx.setOnCheckedChangeListener
+            (new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        SharedPreferences.Editor editor = mPrefs.edit();
+                        editor.putBoolean("pref_reduceBloomFalsePositives",
+                                          isChecked);
+                        editor.commit();
+                    }
+                });
+
+        // Hide the reduce bloom false positives if experimental off.
+        Boolean isExperimental =
+            mPrefs.getBoolean(SettingsActivity.KEY_EXPERIMENTAL, false);
+        if (!isExperimental) {
+            findViewById(R.id.reduce_false_positives).setVisibility(View.GONE);
+            findViewById(R.id.reduce_space).setVisibility(View.GONE);
+        }
 	}
 
 	@Override
@@ -87,7 +115,8 @@ public class RestoreWalletActivity extends ActionBarActivity {
     public void restoreWallet(View view) {
         mLogger.info("restore wallet");
 
-        NetworkParameters params = MainNetParams.get();
+        NetworkParameters params =
+            Constants.getNetworkParameters(getApplicationContext());
 
         String filePrefix = "wallet32";
 
@@ -113,7 +142,7 @@ public class RestoreWalletActivity extends ActionBarActivity {
                 showErrorDialog(mRes.getString(R.string.restore_badhexvalue));
                 return;
             }
-            if (seed.length != 16) {
+            if (seed.length % 8 > 0) {
                 showErrorDialog(mRes.getString(R.string.restore_badhexlength));
                 return;
             }
@@ -121,11 +150,11 @@ public class RestoreWalletActivity extends ActionBarActivity {
 
         // How about a mnemonic string?
         else if (mnemonicstr.length() > 0) {
-            MnemonicCodeX mc;
+            MyMnemonicCode mc;
 			try {
                 InputStream wis = getApplicationContext()
                     .getAssets().open("wordlist/english.txt");
-				mc = new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
+				mc = new MyMnemonicCode(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
@@ -173,30 +202,30 @@ public class RestoreWalletActivity extends ActionBarActivity {
             return;
         }
 
-        MnemonicCodeX.Version bip39version;
+        MyMnemonicCode.Version bip39version;
         HDStructVersion hdsv;
         RadioGroup hdsrg = (RadioGroup) findViewById(R.id.format_choice);
         switch (hdsrg.getCheckedRadioButtonId()) {
         default:
         case R.id.format_v0_5:
             hdsv = HDWallet.HDStructVersion.HDSV_STDV1;
-            bip39version = MnemonicCodeX.Version.V0_6;
+            bip39version = MyMnemonicCode.Version.V0_6;
             break;
         case R.id.format_v0_4:
             hdsv = HDWallet.HDStructVersion.HDSV_STDV0;
-            bip39version = MnemonicCodeX.Version.V0_6;
+            bip39version = MyMnemonicCode.Version.V0_6;
             break;
         case R.id.format_v0_3:
             hdsv = HDWallet.HDStructVersion.HDSV_L0PRV;
-            bip39version = MnemonicCodeX.Version.V0_6;
+            bip39version = MyMnemonicCode.Version.V0_6;
             break;
         case R.id.format_v0_2:
             hdsv = HDWallet.HDStructVersion.HDSV_L0PUB;
-            bip39version = MnemonicCodeX.Version.V0_6;
+            bip39version = MyMnemonicCode.Version.V0_6;
             break;
         case R.id.format_v0_1:
             hdsv = HDWallet.HDStructVersion.HDSV_L0PUB;
-            bip39version = MnemonicCodeX.Version.V0_5;
+            bip39version = MyMnemonicCode.Version.V0_5;
             break;
         }
 

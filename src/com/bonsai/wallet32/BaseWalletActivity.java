@@ -164,10 +164,15 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
             startActivity(intent);
             return true;
         case R.id.action_view_seed:
-            intent = new Intent(this, PasscodeActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("action", "viewseed");
-            intent.putExtras(bundle);
+            if (mApp.passcodeFreshlyEntered()) {
+                intent = new Intent(this, ViewSeedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            } else {
+                intent = new Intent(this, PasscodeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("action", "viewseed");
+                intent.putExtras(bundle);
+            }
             startActivity(intent);
             return true;
         case R.id.action_about:

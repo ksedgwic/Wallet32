@@ -4,29 +4,23 @@ Bugs
 Needed
 ----------------------------------------------------------------
 
-* Make additional passcode entry based on timeout instead of always.
-
-* Advanced Features Setting (send change to account, private key ops)
-
-* Testnet build.
-
-* Electrum compatibility.
-
-* Embelish messages and directions.
-
-* Send dump feature.
-
-* Tune for slow platforms.
-
-* Make passcode creation estimate of brute-force difficulty.
-
 * Add transaction label support.
 
 * Non-USD fiat support.
 
-* Font selections for tables.
-
 * Factor wallet file prefix into single location.
+
+* Investigate Slush's Sync Hang.
+
+* Consider 18 and 24 word wallet seeds.
+
+* Smash case on wallet word lists.
+
+* Set lower-case mode on keyboard during word list entry.
+
+* Fix wallet encryption on bitcoinj-hdw branch.
+
+* Fix P2SH transaction scoring (see log below).
 
 
 Checklist
@@ -532,6 +526,7 @@ issue w/ gradle written aar files.
       </plugin>
 
 
+Wallet32 Issue w/ P2SH Stacktrace
 ----------------------------------------------------------------
 
 Wallet restoration broken on HDW branch.  Check wallet create.
@@ -541,18 +536,11 @@ Fix wallet encryption on bitcoinj-hdw branch.
 > 3. Remove scan time workaround key.
 
 
-
-Investigate broken About menu in lobby.
-
 Investigate Slush's Sync Hang.
-
-Consider 18 and 24 word wallet seeds.
 
 Smash case on wallet word lists.
 
 Set lower-case mode on keyboard during word list entry.
-
-Fix P2SH transaction scoring:
 
 06-21 19:14:59.711 I/MemoryPool(28320): [NioClientManager] [176.223.201.250]:8333: Peer announced new transaction [1] 6d803430f02fdd7d5cb659d9e0cbc978033273d04d686453bf3e1b1ede7ba02d
 06-21 19:14:59.711 W/System.err(28320): 	at com.bonsai.wallet32.HDWallet.applyAllTransactions(HDWallet.java:578)
@@ -575,3 +563,72 @@ Fix P2SH transaction scoring:
 06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
 06-21 19:14:59.731 W/System.err(28320): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
 06-21 19:14:59.731 W/System.err(28320): 	at java.lang.Thread.run(Thread.java:841)
+
+
+Married Wallet Notes
+----------------------------------------------------------------
+
+Design and implement framework for wallet cosigners:
+
+    https://code.google.com/p/bitcoinj/issues/detail?id=540
+
+Married HD wallets: introduce shadow keychain notion:
+
+    https://github.com/bitcoinj/bitcoinj/pull/99
+
+Bounties:
+
+    https://github.com/Btc4All/bitcoinj-bounties/issues?direction=asc&page=1&sort=created&state=open
+
+
+Scrypt Parameters
+----------------------------------------------------------------
+
+message ScryptParameters {
+  required bytes salt = 1;                        // Salt to use in generation of the wallet password (8 bytes)
+  optional int64 n = 2 [default = 16384];         // CPU/ memory cost parameter
+  optional int32 r = 3 [default = 8];             // Block size parameter
+  optional int32 p = 4 [default = 1];             // Parallelisation parameter
+}
+
+n = 16384
+r = 8
+p = 1
+
+http://stackoverflow.com/questions/11126315/what-are-optimal-scrypt-work-factors
+
+
+https://blog.damballa.com/archives/330
+
+100K hosts * 24 hours is $200
+
+2.314e-8 $/host-sec
+
+43 200 000 per 1$
+
+4 320 000 000 10mSec scrypt / 1$
+
+4^9 scrypt per $
+
+1 1234 5678 9012
+
+1^12 combinations
+
+
+C - cost per host second
+R - scrypt/sec per host
+
+(1*10^len) * C / R
+
+----------------------------------------------------------------
+
+https://github.com/mosabua/maven-android-sdk-deployer
+
+----------------------------------------------------------------
+
+Merging with devrandom's changes on a different fork:
+
+    git remote add devrandom git@github.com:devrandom/bitcoinj.git
+    git fetch devrandom
+    git merge devrandom/signer
+

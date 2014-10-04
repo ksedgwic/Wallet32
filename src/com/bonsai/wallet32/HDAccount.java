@@ -257,7 +257,7 @@ public class HDAccount {
         }
 
         public CoinSelection select(Coin biTarget,
-                                    LinkedList<TransactionOutput> candidates) {
+                                    List<TransactionOutput> candidates) {
             // Filter the candidates so only coins from this account
             // are considered.  Let the Wallet.DefaultCoinSelector do
             // all the remaining work.

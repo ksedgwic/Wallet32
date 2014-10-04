@@ -63,7 +63,6 @@ import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.KeyCrypter;
 import com.google.bitcoin.crypto.KeyCrypterScrypt;
-import com.google.bitcoin.crypto.MnemonicCodeX;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.wallet.WalletTransaction;
 
@@ -85,7 +84,7 @@ public class HDWallet {
 
     private final byte[]			mWalletSeed;
     private final String			mPassphrase;
-    private final MnemonicCodeX.Version	mBIP39Version;
+    private final MyMnemonicCode.Version	mBIP39Version;
     
     public enum HDStructVersion {
         HDSV_L0PUB,	// Level0, public derivation.	M/<acct>/<chnge>/<n>
@@ -93,8 +92,6 @@ public class HDWallet {
         HDSV_STDV0,	// Standard, version 0.			M/0/0'/<acct>'/<chnge>/<n>
         HDSV_STDV1	// BIP-0044.					M/44'/0'/<acct>'/<chnge>/<n>
     }
-    
-    private ECKey					mWorkaroundKey = null;
 
     private HDStructVersion			mHDStructVersion;
 
@@ -213,32 +210,22 @@ public class HDWallet {
         mAesKey = aesKey;
 
         try {
-            // See WORKAROUND below.
-            if (!walletNode.has("workaroundPrivKey")) {
-                mWorkaroundKey = new ECKey();
-                mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
-            } else {
-                byte[] privKeyBytes =
-                    Base58.decode(walletNode.getString("workaroundPrivKey"));
-                mWorkaroundKey = ECKey.fromPrivate(privKeyBytes);
-            }
-
             mWalletSeed = Base58.decode(walletNode.getString("seed"));
 
             mPassphrase = walletNode.has("passphrase") ?
                 walletNode.getString("passphrase") : "";
 
             if (!walletNode.has("bip39_version")) {
-                mBIP39Version = MnemonicCodeX.Version.V0_5;
+                mBIP39Version = MyMnemonicCode.Version.V0_5;
                 mLogger.info("defaulting BIP39 version to V0_5");
             } else {
                 String bipverstr = walletNode.getString("bip39_version");
                 if (bipverstr.equals("V0_5")) {
-                    mBIP39Version = MnemonicCodeX.Version.V0_5;
+                    mBIP39Version = MyMnemonicCode.Version.V0_5;
                     mLogger.info("setting BIP39 version to V0_5");
                 }
                 else if (bipverstr.equals("V0_6")) {
-                    mBIP39Version = MnemonicCodeX.Version.V0_6;
+                    mBIP39Version = MyMnemonicCode.Version.V0_6;
                     mLogger.info("setting BIP39 version to V0_6");
                 }
                 else
@@ -279,10 +266,10 @@ public class HDWallet {
         try {
             InputStream wis =
                 walletApp.getAssets().open("wordlist/english.txt");
-            MnemonicCodeX mc =
-                new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
+            MyMnemonicCode mc =
+                new MyMnemonicCode(wis, MyMnemonicCode.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCodeX.toSeed(wordlist, mPassphrase, mBIP39Version);
+            hdseed = MyMnemonicCode.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -331,9 +318,6 @@ public class HDWallet {
     public JSONObject dumps(boolean isPairing) {
         try {
             JSONObject obj = new JSONObject();
-
-            obj.put("workaroundPrivKey",
-                    Base58.encode(mWorkaroundKey.getPrivKeyBytes()));
 
             obj.put("seed", Base58.encode(mWalletSeed));
 
@@ -386,7 +370,7 @@ public class HDWallet {
                     byte[] walletSeed,
                     String passphrase,
                     int numAccounts,
-                    MnemonicCodeX.Version bip39Version,
+                    MyMnemonicCode.Version bip39Version,
                     HDStructVersion hdsv) {
         mParams = params;
         mKeyCrypter = keyCrypter;
@@ -395,15 +379,6 @@ public class HDWallet {
         mPassphrase = passphrase;
         mBIP39Version = bip39Version;
         mHDStructVersion = hdsv;
-        
-
-        // WORKAROUND - there is a bug that watch-only addresses
-        // don't seem to properly scan historically; they use
-        // quick catchup.  Create a real key (that we ignore) as a
-        // workaround.
-        //
-        mWorkaroundKey = new ECKey();
-        mWorkaroundKey.setCreationTimeSeconds(HDAddress.EPOCH);
 
         switch (mBIP39Version) {
         case V0_5:
@@ -420,10 +395,10 @@ public class HDWallet {
         try {
             InputStream wis =
                 walletApp.getAssets().open("wordlist/english.txt");
-            MnemonicCodeX mc =
-                new MnemonicCodeX(wis, MnemonicCodeX.BIP39_ENGLISH_SHA256);
+            MyMnemonicCode mc =
+                new MyMnemonicCode(wis, MyMnemonicCode.BIP39_ENGLISH_SHA256);
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
-            hdseed = MnemonicCodeX.toSeed(wordlist, mPassphrase, mBIP39Version);
+            hdseed = MyMnemonicCode.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
             throw new RuntimeException("trouble decoding seed");
         }
@@ -477,7 +452,7 @@ public class HDWallet {
     }
 
     public String getFormatVersionString() {
-        if (mBIP39Version == MnemonicCodeX.Version.V0_5) {
+        if (mBIP39Version == MyMnemonicCode.Version.V0_5) {
             return "0.1";
         }
         else {
@@ -500,7 +475,7 @@ public class HDWallet {
         return mHDStructVersion;
     }
 
-    public MnemonicCodeX.Version getBIP39Version() {
+    public MyMnemonicCode.Version getBIP39Version() {
         return mBIP39Version;
     }
 
@@ -521,7 +496,6 @@ public class HDWallet {
     }
 
     public void gatherAllKeys(long creationTime, List<ECKey> keys) {
-        keys.add(mWorkaroundKey.encrypt(mKeyCrypter, mAesKey));
         for (HDAccount acct : mAccounts)
             acct.gatherAllKeys(mKeyCrypter, mAesKey, creationTime, keys);
     }
@@ -584,8 +558,9 @@ public class HDWallet {
                         for (HDAccount hda : mAccounts)
                             hda.applyInput(pubkey, value);
                     } catch (ScriptException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        // This happens if the input doesn't have a
+                        // public key (eg P2SH).  No worries in this
+                        // case, it isn't one of ours ...
                     }
                 }
             }
