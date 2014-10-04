@@ -96,7 +96,7 @@
 	  />
 
       <Button
-	  android:id="@+id/rescan"
+	  android:id="@+id/cancel"
 	  android:layout_width="180dp"
 	  android:layout_height="wrap_content"
 	  android:text="@string/rescan_cancel"

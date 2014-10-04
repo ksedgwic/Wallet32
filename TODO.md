@@ -26,7 +26,7 @@ Needed
 Checklist
 ----------------------------------------------------------------
 
-Update version in pom.xm
+Update versions in app/build.gradle
 
 Update versions in AndroidManifest.xml
 
@@ -36,9 +36,9 @@ Update version, date, in res/values/strings.xml.
 
 Commit, tag, git push --tag
 
-mkmvnrelease
+Generate signed apk in Android Studio.
 
-scp target/Wallet32.apk sl0:htdocs/ken/public/Wallet32.apk
+scp app/app-release.apk sl0:htdocs/ken/public/Wallet32.apk
 
 Smoke test downloaded
 
@@ -632,3 +632,11 @@ Merging with devrandom's changes on a different fork:
     git fetch devrandom
     git merge devrandom/signer
 
+----------------------------------------------------------------
+
+    ./gradlew desktop:run
+    ./gradlew android:installDebug android:run
+
+    ./gradlew android:AssembleDebug android:
+
+    /usr/local/android-studio-studio/bin/studio.sh

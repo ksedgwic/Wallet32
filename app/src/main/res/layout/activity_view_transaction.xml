@@ -173,7 +173,7 @@
     	  />
       
       <ScrollView
-	  android:id="@+id/inputs_scroll_id"
+	  android:id="@+id/outputs_scroll_id"
 	  android:layout_width="fill_parent"
 	  android:layout_height="0dp"
 	  android:layout_weight="10"

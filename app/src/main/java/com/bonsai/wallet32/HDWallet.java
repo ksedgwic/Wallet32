@@ -400,7 +400,7 @@ public class HDWallet {
             List<String> wordlist = mc.toMnemonic(mWalletSeed);
             hdseed = MyMnemonicCode.toSeed(wordlist, mPassphrase, mBIP39Version);
         } catch (Exception ex) {
-            throw new RuntimeException("trouble decoding seed");
+            throw new RuntimeException("trouble decoding seed: " + ex);
         }
 
         mMasterKey = HDKeyDerivation.createMasterPrivateKey(hdseed);
