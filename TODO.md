@@ -640,3 +640,38 @@ Merging with devrandom's changes on a different fork:
     ./gradlew android:AssembleDebug android:
 
     /usr/local/android-studio-studio/bin/studio.sh
+
+----------------------------------------------------------------
+
+[INFO] Verifying dependencies
+[INFO] Verifying URN: org.bitcoinj:orchid:1.0:jar:null:compile:bd98285f39f88875bb91bde940d6ca2d020edaa4
+[INFO] Verifying URN: cglib:cglib-nodep:2.2:jar:null:test:59afed7ab65e7ec6585d5bc60556c3cbd203532b
+[INFO] Verifying URN: com.google.code.findbugs:jsr305:2.0.1:jar:null:compile:516c03b21d50a644d538de0f0369c620989cd8f0
+[INFO] Verifying URN: com.google.guava:guava:16.0.1:jar:null:compile:5fa98cd1a63c99a44dd8d3b77e4762b066a5d0c5
+[INFO] Verifying URN: com.google.protobuf:protobuf-java:2.5.0:jar:null:compile:a10732c76bfacdbd633a7eb0f7968b1059a65dfa
+[INFO] Verifying URN: com.h2database:h2:1.3.167:jar:null:compile:d3867d586f087e53eb12fc65e5693d8ee9a5da17
+[INFO] Verifying URN: com.lambdaworks:scrypt:1.4.0:jar:null:compile:906506b74f30c8c20bccd9ed4a11112d8941fe87
+[INFO] Verifying URN: com.madgag.spongycastle:core:1.51.0.0:jar:null:compile:0f642963312ea0e615ad65f28adc5a5b3a2a0862
+[INFO] Verifying URN: junit:junit:4.11:jar:null:test:4e031bb61df09069aeb2bffb4019e7a5034a4ee0
+[INFO] Verifying URN: net.jcip:jcip-annotations:1.0:jar:null:compile:afba4942caaeaf46aab0b976afd57cc7c181467e
+[INFO] Verifying URN: org.apache.maven.plugins:maven-clean-plugin:2.5:maven-plugin:null:runtime:75653decaefa85ca8114ff3a4f869bb2ee6d605d
+[INFO] Verifying URN: org.apache.maven.plugins:maven-compiler-plugin:3.1:maven-plugin:null:runtime:9977a8d04e75609cf01badc4eb6a9c7198c4c5ea
+[INFO] Verifying URN: org.apache.maven.plugins:maven-dependency-plugin:2.8:maven-plugin:null:runtime:04c8dedf3d9b2a3f45f3daa93e11ca547d2063ca
+[INFO] Verifying URN: org.apache.maven.plugins:maven-deploy-plugin:2.7:maven-plugin:null:runtime:6dadfb75679ca010b41286794f737088ebfe12fd
+[INFO] Verifying URN: org.apache.maven.plugins:maven-enforcer-plugin:1.2:maven-plugin:null:runtime:6b755a9a0d618f8f57c0b5c4a0737a012e710a46
+[INFO] Verifying URN: org.apache.maven.plugins:maven-install-plugin:2.5.1:maven-plugin:null:runtime:b6f5a4b621b9c26699c8deadb20fdc35ce568e35
+[INFO] Verifying URN: org.apache.maven.plugins:maven-jar-plugin:2.5:maven-plugin:null:runtime:344d667f5ec8b90d03d698d096a1147672fc522f
+[INFO] Verifying URN: org.apache.maven.plugins:maven-resources-plugin:2.6:maven-plugin:null:runtime:dd093ff6a4b680eae7ae83b5ab04310249fc6590
+[INFO] Verifying URN: org.apache.maven.plugins:maven-shade-plugin:2.3:maven-plugin:null:runtime:d136adc7abccc9c12adcad6ae7a9bc51b2b7184b
+[INFO] Verifying URN: org.apache.maven.plugins:maven-site-plugin:3.3:maven-plugin:null:runtime:77ba1752b1ac4c4339d6f11554800960a56a4ae1
+[INFO] Verifying URN: org.apache.maven.plugins:maven-source-plugin:2.1.2:maven-plugin:null:runtime:35154aa8e6e0e84c2b5c10c3d5220d65670ba984
+[INFO] Verifying URN: org.apache.maven.plugins:maven-surefire-plugin:2.12.4:maven-plugin:null:runtime:2b435f7f77777d2e62354fdc690da3f1dc47a26b
+[INFO] Verifying URN: org.codehaus.mojo:cobertura-maven-plugin:2.6:maven-plugin:null:runtime:5204735a0642b42f5647d8ec876d4301e328c0d5
+[INFO] Verifying URN: org.easymock:easymock:3.0:jar:null:test:f28a4c31c330f95c9acbf1108cea19952b5c496f
+[INFO] Verifying URN: org.hamcrest:hamcrest-core:1.3:jar:null:test:42a25dc3219429f0e5d060061f71acb49bf010a0
+[INFO] Verifying URN: org.objenesis:objenesis:1.2:jar:null:test:bfcb0539a071a4c5a30690388903ac48c0667f2a
+[INFO] Verifying URN: org.slf4j:slf4j-api:1.7.6:jar:null:compile:562424e36df3d2327e8e9301a76027fca17d54ea
+[INFO] Verifying URN: org.slf4j:slf4j-jdk14:1.7.6:jar:null:test:1a3301a32ea7d90c3d33e9d60edbfdc9589fc748
+[INFO] Verifying URN: com.fasterxml.jackson.core:jackson-databind:2.4.2:jar:null:test:8e31266a272ad25ac4c089734d93e8d811652c1f
+[INFO] Verifying URN: com.fasterxml.jackson.core:jackson-core:2.4.2:jar:null:test:ceb72830d95c512b4b300a38f29febc85bdf6e4b
+[INFO] Verifying URN: com.fasterxml.jackson.core:jackson-annotations:2.4.2:jar:null:test:6bb52af09372d5064206d47d7887d41671f00f7d
