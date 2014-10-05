@@ -666,3 +666,9 @@ public class SweepKeyActivity extends BaseWalletActivity {
         return Double.parseDouble(numstr.toString().replace(',', '.'));
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

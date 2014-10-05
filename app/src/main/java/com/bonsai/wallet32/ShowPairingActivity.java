@@ -67,3 +67,9 @@ public class ShowPairingActivity extends BaseWalletActivity {
 	final boolean nfcSuccess = Nfc.publishMimeObject(nfcManager, this, Nfc.MIMETYPE_WALLET32PAIRING, pairingCode.getBytes(Nfc.UTF_8));
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

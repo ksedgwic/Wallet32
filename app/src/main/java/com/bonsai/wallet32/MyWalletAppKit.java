@@ -325,3 +325,9 @@ public class MyWalletAppKit extends AbstractIdleService {
         return directory;
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

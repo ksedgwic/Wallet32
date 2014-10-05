@@ -274,3 +274,9 @@ public class HDAddress {
         return mAddress.toString().equals(addr.toString());
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

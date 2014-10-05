@@ -292,3 +292,9 @@ public class RestoreWalletActivity extends ActionBarActivity {
         df.show(getSupportFragmentManager(), "error");
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

@@ -225,3 +225,9 @@ public class PairWalletActivity extends ActionBarActivity {
         ZXScanHelper.scan(this, 12347);
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

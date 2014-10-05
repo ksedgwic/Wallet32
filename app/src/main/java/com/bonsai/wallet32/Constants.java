@@ -35,3 +35,9 @@ public class Constants
 		return networkParameters;
 	}
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

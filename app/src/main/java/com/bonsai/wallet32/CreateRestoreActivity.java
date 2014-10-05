@@ -96,3 +96,9 @@ public class CreateRestoreActivity extends Activity {
         finish();
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:

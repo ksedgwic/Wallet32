@@ -438,3 +438,9 @@ public class MainActivity extends BaseWalletActivity {
         doExit();
     }
 }
+
+// Local Variables:
+// mode: java
+// c-basic-offset: 4
+// tab-width: 4
+// End:
