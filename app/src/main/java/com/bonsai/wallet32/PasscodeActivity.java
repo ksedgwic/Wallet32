@@ -80,6 +80,9 @@ public class PasscodeActivity extends ActionBarActivity {
 
     private WalletService mWalletService;
 
+	private boolean mIsPaused = false;
+	private boolean mPasscodeWasInvalid = false;
+
     protected ServiceConnection mConnection = new ServiceConnection() {
             public void onServiceConnected(ComponentName className,
                                            IBinder binder) {
@@ -226,11 +229,22 @@ public class PasscodeActivity extends ActionBarActivity {
         //
         bindService(new Intent(this, WalletService.class), mConnection,
                     Context.BIND_ADJUST_WITH_ACTIVITY);
+
+		mIsPaused = false;
+
+		// Did we have an invalid passcode attempt complete while paused?
+		if (mPasscodeWasInvalid) {
+			mLogger.info("showing deferred passcode invalid dialog");
+			mPasscodeWasInvalid = false;
+			showPasscodeInvalidDialog();
+		}
     }
 
     @Override
     protected void onPause() {
         mLogger.info("PasscodeActivity paused");
+
+		mIsPaused = true;
 
         unbindService(mConnection);
 
@@ -423,20 +437,36 @@ public class PasscodeActivity extends ActionBarActivity {
         new ValidatePasscodeTask().execute(mPasscode);
     }
 
+	private void showPasscodeInvalidDialog() {
+		showErrorDialog(mRes.getString(R.string.passcode_errortitle),
+						mRes.getString(R.string.passcode_invalid));
+
+		// Ask the user to create again.
+		TextView msgtv = (TextView) findViewById(R.id.message);
+		msgtv.setText(R.string.passcode_enter);
+	}
+
     private void validateComplete(boolean isValid) {
 
         if (!isValid) {
-            showErrorDialog(mRes.getString(R.string.passcode_errortitle),
-                            mRes.getString(R.string.passcode_invalid));
+			mLogger.info("passcode invalid");
 
             // Clear the passcode.
             setPasscode("");	// Clear the string.
 
-            // Ask the user to create again.
-            TextView msgtv = (TextView) findViewById(R.id.message);
-            msgtv.setText(R.string.passcode_enter);
-
             mState = State.PASSCODE_ENTER;
+
+			// If we are paused we defer the dialog to when we
+			// are resumed ...
+			//
+			if (!mIsPaused) {
+				showPasscodeInvalidDialog();
+			}
+			else {
+				mLogger.info("deferring passcode invalid dialog");
+				mPasscodeWasInvalid = true;
+			}
+
             return;
         }
 
