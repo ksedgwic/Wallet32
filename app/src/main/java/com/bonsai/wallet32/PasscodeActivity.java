@@ -230,12 +230,13 @@ public class PasscodeActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
         mLogger.info("PasscodeActivity paused");
 
         unbindService(mConnection);
 
         mApp.startBackgroundTimeout();
+
+        super.onPause();
     }
 
 	@Override

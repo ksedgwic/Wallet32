@@ -340,6 +340,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
     protected void onResume() {
         super.onResume();
+
         mLogger.info("SettingsActivity resumed");
 
         mApp.cancelBackgroundTimeout();
@@ -350,13 +351,14 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
         mLogger.info("SettingsActivity paused");
 
         unbindService(mConnection);
 
         mApp.startBackgroundTimeout();
-    }
+	
+	super.onPause();
+	}
 
     public void sendLogs() {
 		final StringBuilder text = new StringBuilder();

@@ -134,8 +134,6 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
-
         mLogger.info("BaseWalletActivity paused");
 
         unbindService(mConnection);
@@ -144,6 +142,8 @@ public abstract class BaseWalletActivity extends ActionBarActivity {
         mLBM.unregisterReceiver(mRateChangedReceiver);
 
         mApp.startBackgroundTimeout();
+
+        super.onPause();
     }
 
 	@Override

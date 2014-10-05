@@ -91,11 +91,11 @@ public class AboutActivity extends ActionBarActivity {
 
     @Override
     protected void onPause() {
-        super.onPause();
-
         mLogger.info("AboutActivity paused");
 
         mApp.startBackgroundTimeout();
+
+        super.onPause();
     }
 
     private void toggleExperimental() {
