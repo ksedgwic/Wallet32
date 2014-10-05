@@ -28,11 +28,11 @@ Checklist
 
 Update versions in app/build.gradle
 
-Update versions in AndroidManifest.xml
+Update versions in app/src/main/AndroidManifest.xml
+
+Update version, date, in app/src/main/res/values/strings.xml.
 
 Update version, date in README.txt.
-
-Update version, date, in res/values/strings.xml.
 
 Commit, tag, git push --tag
 
