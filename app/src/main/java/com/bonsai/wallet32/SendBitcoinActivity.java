@@ -74,6 +74,8 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
     protected boolean mUserSetAmountFiat;
     protected boolean mUserSetFeeFiat;
 
+	protected String mLastUnitStr = "";
+
     @SuppressLint({ "HandlerLeak", "DefaultLocale" })
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         long defaultFee = WalletService.getDefaultFee();
         String defaultFeeString = mBTCFmt.format(defaultFee);
         mBTCFeeEditText.setText(defaultFeeString);
+		feeSet();
 
         // Is there an intent uri (from another application)?
         if (intentURI != null)
@@ -146,6 +149,10 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
         updateFeeFields();
         updateAccounts();
     }
+
+	protected void feeSet() {
+		mLastUnitStr = mBTCFmt.unitStr();
+	}
 
     public boolean spendUnconfirmed() {
         SharedPreferences prefs =
@@ -291,6 +298,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                                           int after) {
                 // Note that the user changed the BTC last.
                 mUserSetFeeFiat = false;
+				feeSet();
             }
 
             @Override
@@ -313,6 +321,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                                           int count,
                                           int after) {
                 mUserSetFeeFiat = true;
+				feeSet();
             }
 
             @Override
@@ -329,6 +338,23 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
     @SuppressLint("DefaultLocale")
 	protected void updateFeeFields() {
+
+		// If the fee units changed, clear both fields.
+		if (!mBTCFmt.unitStr().equals(mLastUnitStr)) {
+
+			// Avoid recursion ..
+            mBTCFeeEditText.removeTextChangedListener(mBTCFeeWatcher);
+            mFiatFeeEditText.removeTextChangedListener(mFiatFeeWatcher);
+
+            mFiatFeeEditText.setText("", TextView.BufferType.EDITABLE);
+            mBTCFeeEditText.setText("", TextView.BufferType.EDITABLE);
+			
+            mFiatFeeEditText.addTextChangedListener(mFiatFeeWatcher);
+            mBTCFeeEditText.addTextChangedListener(mBTCFeeWatcher);
+
+			return;
+		}
+
         // Which field did the user last edit?
         if (mUserSetFeeFiat) {
             // The user set the Fiat fee.
@@ -353,6 +379,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
                 bbs = "";
             }
             mBTCFeeEditText.setText(bbs, TextView.BufferType.EDITABLE);
+			feeSet();
 
             // Restore the other fields listener.
             mBTCFeeEditText.addTextChangedListener(mBTCFeeWatcher);
@@ -620,6 +647,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
                 String feeString = mBTCFmt.format(fee);
                 mBTCFeeEditText.setText(feeString);
+				feeSet();
             }
         }
     }
@@ -679,6 +707,7 @@ public class SendBitcoinActivity extends BaseWalletActivity implements BitcoinSe
 
                 String feeString = mBTCFmt.format(amtnfee.mFee);
                 mBTCFeeEditText.setText(feeString);
+				feeSet();
             }
         }
     }
